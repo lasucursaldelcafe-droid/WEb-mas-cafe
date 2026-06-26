@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  src: url("/fonts/PlayfairDisplay-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  src: url("/fonts/PlayfairDisplay-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Marydale";
+  src: url("/fonts/Marydale-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --color-cream: #f6f5ef;
+  --color-cream-dark: #ebe8df;
+  --color-blue-deep: #073954;
+  --color-blue-mid: #0a4d6e;
+  --color-green: #1bb175;
+  --color-sage: #d8daa8;
+  --color-brown-light: #b07a3a;
+  --color-brown-dark: #8a4a24;
+  --color-cherry: #e84545;
+  --color-charcoal: #2b2b2b;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Satoshi", system-ui, sans-serif;
+  --font-accent: "Marydale", cursive;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-cream text-charcoal antialiased;
+    font-family: var(--font-body);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .section-padding {
+    @apply px-6 py-20 md:px-10 lg:px-16 lg:py-28;
+  }
+
+  .font-accent {
+    font-family: var(--font-accent);
+  }
+}
