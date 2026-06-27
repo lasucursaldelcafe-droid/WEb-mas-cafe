@@ -92,20 +92,6 @@ export function generateAdminPage() {
       </div>
       <div id="panel-root"></div>
     </div>
-    <aside class="live-preview" id="live-preview" aria-label="Vista previa en vivo">
-      <div class="live-preview-header">
-        <h3>Vista previa</h3>
-        <span class="chip hidden" id="preview-dirty-hint">Cambios pendientes</span>
-      </div>
-      <div class="live-preview-tabs" id="preview-tabs">
-        <button type="button" data-preview-tab="home" class="active">Inicio</button>
-        <button type="button" data-preview-tab="menu">Menú</button>
-        <button type="button" data-preview-tab="theme">Colores</button>
-      </div>
-      <p class="preview-device-label">Así se verá al publicar</p>
-      <div class="preview-device" id="preview-device"></div>
-      <p class="preview-note">La vista previa se actualiza en tiempo real mientras editas. Pulsa «Guardar y publicar» para aplicar los cambios al sitio público.</p>
-    </aside>
   </div>
 
   <script>

@@ -29,7 +29,11 @@
   }
 
   const SESSION_MAX_MS = 8 * 60 * 60 * 1000;
-  let previewTab = "home";
+
+  const PREVIEW_PANELS = new Set([
+    "brand", "theme", "sections", "pages", "experiences", "products",
+    "menu", "blog", "nosotros", "contacto", "marquee",
+  ]);
 
   function getSession() {
     const raw = sessionStorage.getItem("mc_admin");
@@ -90,7 +94,6 @@
   const PANELS = [
     { id: "overview", label: "Resumen", icon: "◉" },
     { id: "help", label: "Cómo funciona", icon: "?" },
-    { id: "preview", label: "Vista previa", icon: "◫" },
     { id: "analytics", label: "Análisis", icon: "▤" },
     { id: "brand", label: "Marca e inicio", icon: "◇" },
     { id: "theme", label: "Colores", icon: "◐" },
@@ -128,67 +131,183 @@
   function markDirty() {
     dirty = true;
     $("#dirty-badge")?.classList.remove("hidden");
-    $("#preview-dirty-hint")?.classList.remove("hidden");
-    updateLivePreview();
+    updateContextPreview(currentPanel);
   }
 
   function formatCop(n) {
     return new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
   }
 
-  function updateLivePreview() {
-    if (!requireAuth()) return;
-    const device = $("#preview-device");
-    if (!device) return;
-    const b = content.brand;
-    const t = content.theme;
-    document.documentElement.style.setProperty("--cream", t.cream);
-    document.documentElement.style.setProperty("--blue", t.blue);
-    document.documentElement.style.setProperty("--sage", t.sage);
-    document.documentElement.style.setProperty("--brown", t.brown);
-    document.documentElement.style.setProperty("--cream-dark", t.creamDark);
-
-    if (previewTab === "home") {
-      const mq = (content.marquee || []).slice(0, 3).join(" · ");
-      device.innerHTML = `
-        <div class="preview-hero">
-          <p class="pv-tagline">${escapeHtml(b.tagline || "")}</p>
-          <h2 class="pv-headline">${escapeHtml(b.headline || "")}</h2>
-          <p class="pv-sub">${escapeHtml(b.subheadline || "")}</p>
-          <span class="pv-btn">Comprar café fresco</span>
+  function wrapPanel(html, panelId) {
+    if (!PREVIEW_PANELS.has(panelId)) return html;
+    return `<div class="panel-split">
+      <div class="panel-editor">${html}</div>
+      <aside class="panel-preview-col" aria-label="Vista previa de ${panelId}">
+        <div class="panel-preview-sticky">
+          <div class="panel-preview-head">
+            <span class="panel-preview-label">Así se verá al publicar</span>
+            <span class="chip chip-warn${dirty ? "" : " hidden"}">Sin publicar</span>
+          </div>
+          <div class="panel-preview-frame" id="context-preview" data-panel="${panelId}"></div>
         </div>
-        <div class="preview-marquee">${escapeHtml(mq)}</div>`;
-    } else if (previewTab === "menu") {
-      const pm = content.pages?.menu || {};
-      const items = (content.menu?.[0]?.items || []).slice(0, 4);
-      device.innerHTML = `
-        <div class="preview-menu">
-          <p class="pv-soul">${escapeHtml(pm.tagline || b.tagline || "")}</p>
-          <h2 class="pv-menu-h">${escapeHtml(pm.headline || "Menú")}</h2>
-          ${items.map((i) => `<div class="pv-item"><span>${escapeHtml(i.name)}</span><span>${formatCop(i.price)}</span></div>`).join("")}
-        </div>`;
-    } else {
-      device.innerHTML = `
-        <div class="preview-swatches">
-          ${[["cream", t.cream], ["blue", t.blue], ["sage", t.sage], ["brown", t.brown], ["green", t.green], ["charcoal", t.charcoal], ["cream-dark", t.creamDark], ["blue-mid", t.blueMid]]
-            .map(([k, c]) => `<div class="preview-swatch" style="background:${c};color:${k.includes("cream") || k === "sage" ? t.blue : t.cream}">${k}</div>`).join("")}
-        </div>
-        <div class="preview-hero" style="padding:1rem">
-          <span class="pv-btn">Botón salvia</span>
-          <p style="margin-top:.75rem;font-size:.7rem;opacity:.7">Fondo crema del sitio</p>
-        </div>`;
-    }
-    if (!dirty) $("#preview-dirty-hint")?.classList.add("hidden");
+      </aside>
+    </div>`;
   }
 
-  function bindPreviewTabs() {
-    $$("#preview-tabs [data-preview-tab]").forEach((btn) => {
-      btn.onclick = () => {
-        previewTab = btn.dataset.previewTab;
-        $$("#preview-tabs [data-preview-tab]").forEach((b) => b.classList.toggle("active", b === btn));
-        updateLivePreview();
-      };
-    });
+  function previewBrand() {
+    const b = content.brand;
+    return `<div class="ctx-preview ctx-hero">
+      <p class="ctx-tagline">${escapeHtml(b.tagline || "")}</p>
+      <h2 class="ctx-title">${escapeHtml(b.headline || "")}</h2>
+      <p class="ctx-sub">${escapeHtml(b.subheadline || "")}</p>
+      <p class="ctx-desc">${escapeHtml(b.descriptor || "")}</p>
+      <span class="ctx-btn">Comprar café fresco</span>
+    </div>`;
+  }
+
+  function previewTheme() {
+    const t = content.theme;
+    return `<div class="ctx-preview ctx-swatches">
+      ${[["Crema", t.cream], ["Azul", t.blue], ["Salvia", t.sage], ["Marrón", t.brown]]
+        .map(([label, color]) => `<div class="ctx-swatch" style="background:${color}"><span>${label}</span></div>`).join("")}
+      <div class="ctx-hero ctx-hero-mini" style="margin-top:.75rem">
+        <span class="ctx-btn">Botón salvia</span>
+      </div>
+    </div>`;
+  }
+
+  function previewSections() {
+    const nav = content.routes.filter((r) => r.enabled && r.inNav && r.id !== "home");
+    return `<div class="ctx-preview ctx-nav">
+      <p class="ctx-label">Menú del sitio</p>
+      <div class="ctx-nav-links">${nav.map((r) => `<span>${escapeHtml(r.label)}</span>`).join("") || "<span class='ctx-muted'>Sin secciones en menú</span>"}
+        <span class="ctx-btn ctx-btn-sm">Comprar café</span>
+      </div>
+      <p class="ctx-note">${content.routes.filter((r) => r.enabled && r.id !== "home").length} secciones activas</p>
+    </div>`;
+  }
+
+  function previewPages() {
+    const ph = content.pages?.home || {};
+    return `<div class="ctx-preview ctx-page">
+      <p class="ctx-label">Inicio</p>
+      <p class="ctx-soul">${escapeHtml(ph.experiencesLabel || "")}</p>
+      <h3 class="ctx-h3">${escapeHtml(ph.experiencesTitle || "")}</h3>
+      <p class="ctx-label" style="margin-top:1rem">Tienda en inicio</p>
+      <p class="ctx-soul">${escapeHtml(ph.productsLabel || "")}</p>
+      <h3 class="ctx-h3">${escapeHtml(ph.productsTitle || "")}</h3>
+    </div>`;
+  }
+
+  function previewExperiences() {
+    const exp = content.experiences[0];
+    if (!exp) return `<p class="ctx-muted">Añade una experiencia para ver la vista previa.</p>`;
+    const src = imgPreviewSrc(exp.image);
+    return `<div class="ctx-preview ctx-card-row">
+      ${src ? `<img src="${src}" alt="" class="ctx-thumb"/>` : ""}
+      <div>
+        <h3 class="ctx-h3">${escapeHtml(exp.title)}</h3>
+        <p class="ctx-sub">${escapeHtml(exp.subtitle || "")}</p>
+        <p class="ctx-body">${escapeHtml((exp.description || "").slice(0, 120))}${(exp.description || "").length > 120 ? "…" : ""}</p>
+      </div>
+    </div>`;
+  }
+
+  function previewProducts() {
+    const p = content.products.find((x) => x.featured) || content.products[0];
+    if (!p) return `<p class="ctx-muted">Añade un producto para ver la vista previa.</p>`;
+    const src = imgPreviewSrc(p.image);
+    return `<div class="ctx-preview ctx-product">
+      ${src ? `<img src="${src}" alt="" class="ctx-product-img"/>` : ""}
+      <h3 class="ctx-h3">${escapeHtml(p.name)}</h3>
+      <p class="ctx-meta">${escapeHtml(p.variety || "")} · ${escapeHtml(p.region || "")}</p>
+      <p class="ctx-price">${formatCop(p.price)}</p>
+    </div>`;
+  }
+
+  function previewMenu() {
+    const pm = content.pages?.menu || {};
+    const cat = content.menu[0];
+    const items = (cat?.items || []).slice(0, 4);
+    return `<div class="ctx-preview ctx-menu">
+      <p class="ctx-soul">${escapeHtml(pm.tagline || content.brand.tagline || "")}</p>
+      <h2 class="ctx-menu-h">${escapeHtml(pm.headline || "Menú")}</h2>
+      ${pm.intro ? `<p class="ctx-body">${escapeHtml(pm.intro)}</p>` : ""}
+      ${cat ? `<p class="ctx-cat">${escapeHtml(cat.name)}</p>` : ""}
+      ${items.map((i) => `<div class="ctx-menu-item"><span>${escapeHtml(i.name)}</span><span>${formatCop(i.price)}</span></div>`).join("")}
+    </div>`;
+  }
+
+  function previewBlog() {
+    const post = content.blog.find((p) => p.published) || content.blog[0];
+    if (!post) return `<p class="ctx-muted">Añade un artículo para ver la vista previa.</p>`;
+    const src = imgPreviewSrc(post.image);
+    return `<div class="ctx-preview ctx-blog">
+      ${src ? `<img src="${src}" alt="" class="ctx-blog-img"/>` : ""}
+      <p class="ctx-label">${escapeHtml(post.category || "")} · ${escapeHtml(post.date || "")}</p>
+      <h3 class="ctx-h3">${escapeHtml(post.title)}</h3>
+      <p class="ctx-body">${escapeHtml(post.excerpt || "")}</p>
+    </div>`;
+  }
+
+  function previewNosotros() {
+    const b = content.brand;
+    const src = imgPreviewSrc(b.nosotrosImage || "/images/brand/mood.png");
+    const val = b.values?.[0];
+    return `<div class="ctx-preview ctx-nosotros">
+      ${src ? `<img src="${src}" alt="" class="ctx-blog-img"/>` : ""}
+      <p class="ctx-body">${escapeHtml((b.story || b.purpose || "Tu historia aparecerá aquí.").slice(0, 160))}${(b.story || b.purpose || "").length > 160 ? "…" : ""}</p>
+      ${b.quote ? `<blockquote class="ctx-quote">${escapeHtml(b.quote)}</blockquote>` : ""}
+      ${val ? `<div class="ctx-value"><strong>${escapeHtml(val.title)}</strong><p>${escapeHtml(val.text)}</p></div>` : ""}
+    </div>`;
+  }
+
+  function previewContacto() {
+    const b = content.brand;
+    return `<div class="ctx-preview ctx-contact">
+      <h3 class="ctx-h3">Visítanos</h3>
+      <p class="ctx-body">${escapeHtml(b.address || "")}<br/>${escapeHtml(b.city || "")}</p>
+      <p class="ctx-body">${escapeHtml(b.hours || "")}</p>
+      <p class="ctx-body" style="margin-top:.75rem">${escapeHtml(b.phone || "")}<br/>${escapeHtml(b.email || "")}</p>
+      <div class="ctx-links">
+        <span>WhatsApp</span>
+        ${b.social?.instagram ? "<span>Instagram</span>" : ""}
+        ${b.social?.facebook ? "<span>Facebook</span>" : ""}
+      </div>
+    </div>`;
+  }
+
+  function previewMarquee() {
+    const lines = (content.marquee || []).slice(0, 4);
+    return `<div class="ctx-preview ctx-marquee">
+      <p class="ctx-label">Banda inferior del inicio</p>
+      <div class="ctx-marquee-track">${escapeHtml(lines.join(" · ") || "Texto del marquee")}</div>
+    </div>`;
+  }
+
+  function buildContextPreview(panelId) {
+    const map = {
+      brand: previewBrand,
+      theme: previewTheme,
+      sections: previewSections,
+      pages: previewPages,
+      experiences: previewExperiences,
+      products: previewProducts,
+      menu: previewMenu,
+      blog: previewBlog,
+      nosotros: previewNosotros,
+      contacto: previewContacto,
+      marquee: previewMarquee,
+    };
+    return (map[panelId] || (() => ""))();
+  }
+
+  function updateContextPreview(panelId) {
+    const frame = $("#context-preview");
+    if (!frame || frame.dataset.panel !== panelId) return;
+    frame.innerHTML = buildContextPreview(panelId);
+    const chip = frame.closest(".panel-preview-sticky")?.querySelector(".chip-warn");
+    if (chip) chip.classList.toggle("hidden", !dirty);
   }
 
   function imgPreviewSrc(path) {
@@ -301,10 +420,8 @@
     $("#app").classList.remove("hidden");
     $("#user-name").textContent = session.name;
     buildNav();
-    bindPreviewTabs();
     renderPanel(currentPanel);
     updateStatus();
-    updateLivePreview();
     refreshFromServer();
   }
 
@@ -314,7 +431,6 @@
     if (!latest || dirty) return;
     content = mergeForPublish(latest, content);
     renderPanel(currentPanel);
-    updateLivePreview();
   }
 
   function logout() {
@@ -365,7 +481,7 @@
         else ref[last] = el.value;
         markDirty();
         if (currentPanel === "theme") applyThemePreview();
-        else updateLivePreview();
+        else updateContextPreview(currentPanel);
       });
       if (el.type === "color") {
         el.addEventListener("input", () => applyThemePreview());
@@ -384,14 +500,20 @@
     root.style.setProperty("--sage", t.sage);
     root.style.setProperty("--brown", t.brown);
     root.style.setProperty("--charcoal", t.charcoal);
-    updateLivePreview();
+    updateContextPreview("theme");
+  }
+
+  function finishPanel(id, main, html, bindFn) {
+    main.innerHTML = wrapPanel(html, id);
+    if (bindFn) bindFn(main);
+    updateContextPreview(id);
   }
 
   function renderPanel(id) {
     if (!requireAuth()) return;
     const main = $("#panel-root");
     const titles = {
-      overview: "Panel de administración", help: "Cómo funciona", preview: "Vista previa del sitio",
+      overview: "Panel de administración", help: "Cómo funciona",
       analytics: "Análisis e ingresos", brand: "Marca e inicio",
       sections: "Secciones del sitio", theme: "Colores del sitio", pages: "Textos de páginas", experiences: "Experiencias",
       products: "Café y tienda", menu: "Menú coffee shop", blog: "Blog", nosotros: "Nosotros",
@@ -402,66 +524,29 @@
     const handlers = {
       overview: () => { main.innerHTML = renderOverview(); },
       help: () => { main.innerHTML = renderHelp(); },
-      preview: () => { main.innerHTML = renderPreviewPanel(); bindPreviewPanelEvents(main); },
       analytics: () => { main.innerHTML = renderAnalytics(); bindAnalyticsEvents(main); },
-      brand: () => { main.innerHTML = renderBrand(); bindFields(main, content.brand); },
-      sections: () => { main.innerHTML = renderSections(); bindSectionsEvents(main); },
-      theme: () => { main.innerHTML = renderTheme(); bindThemeEvents(main); applyThemePreview(); },
-      pages: () => { main.innerHTML = renderPages(); bindPagesEvents(main); },
-      experiences: () => { main.innerHTML = renderExperiences(); bindExperienceEvents(main); },
-      products: () => { main.innerHTML = renderProducts(); bindProductEvents(main); },
-      menu: () => { main.innerHTML = renderMenu(); bindMenuEvents(main); },
-      blog: () => { main.innerHTML = renderBlog(); bindBlogEvents(main); },
-      nosotros: () => { main.innerHTML = renderNosotros(); bindNosotrosEvents(main); },
-      contacto: () => { main.innerHTML = renderContacto(); bindFields(main, content.brand); bindFields(main, content.brand.social, "social."); },
-      marquee: () => {
-        main.innerHTML = renderMarquee();
-        $("#marquee-lines").addEventListener("input", (e) => {
+      brand: () => finishPanel("brand", main, renderBrand(), (root) => bindFields(root, content.brand)),
+      sections: () => finishPanel("sections", main, renderSections(), bindSectionsEvents),
+      theme: () => finishPanel("theme", main, renderTheme(), (root) => { bindThemeEvents(root); applyThemePreview(); }),
+      pages: () => finishPanel("pages", main, renderPages(), bindPagesEvents),
+      experiences: () => finishPanel("experiences", main, renderExperiences(), bindExperienceEvents),
+      products: () => finishPanel("products", main, renderProducts(), bindProductEvents),
+      menu: () => finishPanel("menu", main, renderMenu(), bindMenuEvents),
+      blog: () => finishPanel("blog", main, renderBlog(), bindBlogEvents),
+      nosotros: () => finishPanel("nosotros", main, renderNosotros(), bindNosotrosEvents),
+      contacto: () => finishPanel("contacto", main, renderContacto(), (root) => {
+        bindFields(root, content.brand);
+        bindFields(root, content.brand.social, "social.");
+      }),
+      marquee: () => finishPanel("marquee", main, renderMarquee(), (root) => {
+        $("#marquee-lines", root)?.addEventListener("input", (e) => {
           content.marquee = e.target.value.split("\n").map((s) => s.trim()).filter(Boolean);
           markDirty();
         });
-      },
+      }),
       config: () => { main.innerHTML = renderConfig(); bindConfigEvents(main); },
     };
     (handlers[id] || handlers.overview)();
-    updateLivePreview();
-  }
-
-  function renderPreviewPanel() {
-    return `<div class="card"><h3>Vista previa en vivo</h3>
-      <p style="opacity:.8;line-height:1.65;margin-bottom:1rem">Mientras editas cualquier sección, la columna derecha muestra cómo quedará el sitio. En pantallas pequeñas, usa las pestañas de arriba en la columna de vista previa.</p>
-      <div class="live-preview-tabs" style="margin-bottom:1rem">
-        <button type="button" class="btn btn-ghost" data-set-preview="home">Inicio</button>
-        <button type="button" class="btn btn-ghost" data-set-preview="menu">Menú</button>
-        <button type="button" class="btn btn-ghost" data-set-preview="theme">Colores</button>
-      </div>
-      <button type="button" class="btn btn-blue" id="open-full-preview">Abrir sitio público</button>
-    </div>
-    <div class="card"><h3>Resumen de cambios pendientes</h3>
-      <p id="preview-summary" style="line-height:1.7;opacity:.85"></p>
-    </div>`;
-  }
-
-  function bindPreviewPanelEvents(root) {
-    root.querySelectorAll("[data-set-preview]").forEach((btn) => {
-      btn.onclick = () => {
-        previewTab = btn.dataset.setPreview;
-        $$("#preview-tabs [data-preview-tab]").forEach((b) => {
-          b.classList.toggle("active", b.dataset.previewTab === previewTab);
-        });
-        updateLivePreview();
-      };
-    });
-    $("#open-full-preview", root)?.addEventListener("click", () => window.open("../", "_blank"));
-    const summary = $("#preview-summary", root);
-    if (summary) {
-      const parts = [];
-      if (dirty) parts.push("Hay cambios sin publicar.");
-      parts.push(`Marca: «${content.brand.tagline}»`);
-      parts.push(`${content.routes.filter((r) => r.enabled && r.id !== "home").length} secciones activas`);
-      parts.push(`${content.products.length} productos · ${content.menu.length} categorías de menú`);
-      summary.textContent = parts.join(" · ");
-    }
   }
 
   function mergePendingClicks() {
@@ -551,7 +636,7 @@
     return `
     <div class="card"><h3>Guía rápida</h3>
       <ol class="help-steps">
-        <li><strong>Edita</strong> el contenido en las secciones del menú lateral (marca, menú, blog, colores, etc.).</li>
+        <li><strong>Edita</strong> el contenido en las secciones del menú lateral. Cada sección muestra a la derecha una vista previa de lo que estás cambiando.</li>
         <li><strong>Gestiona secciones</strong> — activa, desactiva o crea subcarpetas nuevas en «Secciones».</li>
         <li><strong>Revisa imágenes</strong> — cada campo muestra la imagen actual y las medidas recomendadas.</li>
         <li><strong>Publica</strong> con el botón azul «Guardar y publicar». El sitio se actualiza en ~1 minuto.</li>
@@ -566,7 +651,7 @@
       <p style="margin-top:1rem;opacity:.75;font-size:.9rem">Al subir una imagen, se guarda automáticamente al publicar. No necesitas subir archivos manualmente a GitHub.</p>
     </div>
     <div class="card"><h3>Colores</h3>
-      <p>En <strong>Colores</strong> puedes cambiar la paleta completa del sitio. Los cambios se ven en la vista previa del panel y se aplican al publicar.</p>
+      <p>En <strong>Colores</strong> puedes cambiar la paleta completa del sitio. Los cambios se ven en la vista previa de esa sección y se aplican al publicar.</p>
     </div>
     <div class="card"><h3>Acceso al panel</h3>
       <p>Desde el sitio público: pie de página → <strong>Administración</strong>.</p>
@@ -681,12 +766,6 @@
         </div>`).join("")}
       </div>
       <button type="button" class="btn btn-ghost" id="reset-theme" style="margin-top:1rem">Restaurar colores originales</button>
-    </div>
-    <div class="card theme-preview">
-      <h3>Vista previa</h3>
-      <div class="preview-swatch" style="background:var(--blue);color:var(--cream);padding:1rem;border-radius:.75rem">Encabezado</div>
-      <div class="preview-swatch" style="background:var(--cream);color:var(--charcoal);padding:1rem;border-radius:.75rem;margin-top:.5rem">Fondo crema</div>
-      <div class="preview-swatch" style="background:var(--sage);color:var(--blue);padding:1rem;border-radius:.75rem;margin-top:.5rem">Botón salvia</div>
     </div>`;
   }
 

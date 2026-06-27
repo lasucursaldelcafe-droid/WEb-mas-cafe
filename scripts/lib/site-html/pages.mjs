@@ -72,24 +72,23 @@ export function pageHome() {
   <section class="editorial-hero">
     <img class="decor decor-1" src="${img("/images/decor/Recurso-4.svg")}" alt="" aria-hidden="true"/>
     <img class="decor decor-2" src="${img("/images/decor/Recurso-6.svg")}" alt="" aria-hidden="true"/>
-    <div class="hero-art hero-art-main">
-      <img src="${img("/images/grafica/3.png")}" alt="" class="float-soft"/>
-    </div>
-    <div class="hero-art hero-art-secondary">
-      <img src="${img("/images/grafica/1.png")}" alt=""/>
-    </div>
-    <div class="wrap hero-content">
-      <p class="tagline">${brand.tagline}</p>
-      <h1>${brand.headline}</h1>
-      <p class="subhead">${brand.subheadline}</p>
-      <p class="descriptor">${brand.descriptor}</p>
-      <div class="actions">
-        <a class="btn btn-sage" href="${href("/tienda")}">Comprar café fresco</a>
-        <a class="btn btn-outline" href="${href("/nosotros")}">Nuestra historia</a>
+    <div class="wrap hero-grid">
+      <div class="hero-content">
+        <p class="tagline">${brand.tagline}</p>
+        <h1>${brand.headline}</h1>
+        <p class="subhead">${brand.subheadline}</p>
+        <p class="descriptor">${brand.descriptor}</p>
+        <div class="actions">
+          <a class="btn btn-sage" href="${href("/tienda")}">Comprar café fresco</a>
+          <a class="btn btn-outline" href="${href("/nosotros")}">Nuestra historia</a>
+        </div>
+        <div class="brand-note">
+          <img src="${img("/images/brand/favs.png")}" alt=""/>
+          <p>Una experiencia que se vive sin prisa. Hospitalidad consciente en Cali.</p>
+        </div>
       </div>
-      <div class="brand-note">
-        <img src="${img("/images/brand/favs.png")}" alt=""/>
-        <p>Una experiencia que se vive sin prisa. Hospitalidad consciente en Cali.</p>
+      <div class="hero-art hero-art-main">
+        <img src="${img("/images/grafica/3.png")}" alt="" loading="eager"/>
       </div>
     </div>
   </section>
