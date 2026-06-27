@@ -35,6 +35,14 @@ function visitBand(href, brand) {
   </section>`;
 }
 
+function sectionHead(label, title, intro = "") {
+  return `<header class="section-head">
+    ${label ? `<p class="label">${label}</p>` : ""}
+    <h2 class="section-title">${title}</h2>
+    ${intro ? `<p class="section-intro">${intro}</p>` : ""}
+  </header>`;
+}
+
 function experienceRow(e, img, reverse) {
   return `
   <div class="exp-row${reverse ? " reverse" : ""}">
@@ -97,33 +105,30 @@ export function pageHome() {
   </div>
   <section>
     <div class="wrap">
-      <p class="label">${ph.experiencesLabel}</p>
-      <h2>${ph.experiencesTitle}</h2>
-      <div style="margin-top:2.5rem">${experiences.map((e, i) => experienceRow(e, img, i % 2 === 1)).join("")}</div>
+      ${sectionHead(ph.experiencesLabel, ph.experiencesTitle)}
+      <div class="exp-list">${experiences.map((e, i) => experienceRow(e, img, i % 2 === 1)).join("")}</div>
       <p class="section-actions"><a class="text-link" href="${href("/nosotros")}">Conoce nuestra historia →</a></p>
     </div>
   </section>
   <section class="dark">
     <div class="wrap">
-      <p class="label">${ph.productsLabel}</p>
-      <h2>${ph.productsTitle}</h2>
-      <div class="products" style="margin-top:2rem">${featured.map((p) => productCard(p, img)).join("")}</div>
+      ${sectionHead(ph.productsLabel, ph.productsTitle)}
+      <div class="products">${featured.map((p) => productCard(p, img)).join("")}</div>
       <p class="section-actions"><a class="btn btn-outline" href="${href("/tienda")}">Ver tienda →</a></p>
     </div>
   </section>
   <section class="alt">
     <div class="wrap">
-      <p class="label">${ph.blogLabel}</p>
-      <h2>${ph.blogTitle}</h2>
-      <div style="margin-top:2rem;display:grid;gap:2rem">
+      ${sectionHead(ph.blogLabel, ph.blogTitle)}
+      <div class="post-list">
         ${posts.map((post) => `
-        <article class="grid-2 card">
-          <img src="${img(post.image)}" alt="${post.title}" loading="lazy" style="aspect-ratio:16/10;object-fit:cover"/>
+        <article class="card card-post">
           <div class="card-body">
             <p class="label">${post.category} · ${post.date}</p>
-            <h3>${post.title}</h3>
-            <p style="margin-top:.75rem;opacity:.75">${post.excerpt}</p>
+            <h3 class="post-title">${post.title}</h3>
+            <p class="post-excerpt">${post.excerpt}</p>
           </div>
+          <img src="${img(post.image)}" alt="${post.title}" loading="lazy" class="card-post-media"/>
         </article>`).join("")}
       </div>
       <p class="section-actions"><a class="text-link" href="${href("/blog")}">Ver todo el blog →</a></p>
@@ -261,9 +266,8 @@ export function pageNosotros() {
   </section>
   <section class="alt">
     <div class="wrap">
-      <p class="label">${pn.valuesLabel}</p>
-      <h2>${pn.valuesTitle}</h2>
-      <div class="values" style="margin-top:2rem">${brand.values.map((v) => `
+      ${sectionHead(pn.valuesLabel, pn.valuesTitle)}
+      <div class="values">${brand.values.map((v) => `
       <div class="value">
         <h3>${v.title}</h3>
         <p style="margin-top:.5rem;opacity:.75;line-height:1.65">${v.text}</p>
