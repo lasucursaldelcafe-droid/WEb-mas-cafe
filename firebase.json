@@ -1,9 +1,9 @@
 {
   "hosting": {
-    "public": "firebase-public",
+    "site": "mas-cafe",
+    "public": "mas-cafe",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "cleanUrls": true,
-    "trailingSlash": false,
     "headers": [
       {
         "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico)",
