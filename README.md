@@ -14,6 +14,8 @@ Settings → **Pages** → Branch **`gh-pages`** → **`/ (root)`** → Save
 
 **Guía:** [docs/ACTIVAR-GITHUB-PAGES.md](docs/ACTIVAR-GITHUB-PAGES.md)
 
+**Dominio mascafe.com:** [docs/DOMINIO-MASCAFE-COM.md](docs/DOMINIO-MASCAFE-COM.md)
+
 ### Actualizar
 
 Edita `content/site.json` → push a `main` → publicación automática.

@@ -45,6 +45,10 @@ writeFileSync(
 
 writeFileSync(path.join(outDir, ".nojekyll"), "");
 
+// Dominio personalizado (GitHub Pages lee este archivo en gh-pages)
+const customDomain = process.env.GITHUB_PAGES_DOMAIN ?? "mascafe.com";
+writeFileSync(path.join(outDir, "CNAME"), `${customDomain}\n`);
+
 const used = collectImagePaths();
 let copied = 0;
 
