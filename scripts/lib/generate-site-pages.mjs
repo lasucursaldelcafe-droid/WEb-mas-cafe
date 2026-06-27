@@ -25,5 +25,6 @@ export function collectImagePaths() {
   for (const exp of site.experiences) paths.add(exp.image);
   for (const p of site.products) paths.add(p.image);
   for (const b of site.blog ?? []) paths.add(b.image);
+  if (site.brand?.nosotrosImage) paths.add(site.brand.nosotrosImage);
   return [...paths];
 }

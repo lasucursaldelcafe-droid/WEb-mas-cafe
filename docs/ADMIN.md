@@ -1,46 +1,54 @@
 # Panel de administración — Más Café
 
-Edita todo el contenido del sitio (marca, coffee shop, menú, tienda, blog, nosotros, contacto) y publícalo en línea sin tocar código.
+Edita todo el contenido del sitio desde el navegador: textos, colores, imágenes, menú, blog y más.
 
 ## Acceso
 
-| Campo | Valor |
-|-------|--------|
+| | |
+|--|--|
 | **URL** | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/ |
+| **Desde el sitio** | Pie de página → **Administración** |
 | **Usuario** | `admin` |
 | **Contraseña** | `mascafe2025` |
 
-> Cambia la contraseña editando `content/users.json` en el repositorio y haciendo push (el build regenera los hashes).
+## Cómo publicar (sin tokens manuales)
+
+1. Edita el contenido en las secciones del panel.
+2. Pulsa **Guardar y publicar** (arriba a la derecha o en la sección Publicar).
+3. El sitio se actualiza automáticamente en ~1 minuto.
+
+No necesitas pegar tokens de GitHub. La publicación automática está configurada en el servidor.
 
 ## Qué puedes editar
 
 | Sección | Contenido |
 |---------|-----------|
-| **Marca** | Nombre, tagline, descripción, redes sociales |
-| **Experiencias** | Coffee shop, tienda, blog (títulos, textos, CTAs) |
-| **Productos / Tienda** | Catálogo con precio, categoría, imagen |
-| **Menú** | Categorías y platos del café |
-| **Blog** | Artículos (título, extracto, fecha, imagen) |
-| **Nosotros** | Historia, valores, equipo |
-| **Contacto** | Dirección, horarios, teléfono, email, mapa |
-| **Marquee** | Texto animado del pie de página |
+| **Marca e inicio** | Nombre, tagline, titulares |
+| **Colores** | Paleta completa del sitio (vista previa en vivo) |
+| **Textos de páginas** | Títulos y subtítulos de cada página |
+| **Experiencias** | Coffee shop: Pausa, Carta, Horno, Visita |
+| **Café / Tienda** | Productos, precios, imágenes |
+| **Menú** | Categorías y platos |
+| **Blog** | Artículos con imagen |
+| **Nosotros** | Historia, valores, imagen principal |
+| **Contacto** | Dirección, horarios, redes sociales |
+| **Marquee** | Texto animado del sitio |
 
-## Publicar cambios
+## Imágenes — especificaciones
 
-1. Edita en el panel y usa **Guardar borrador** (se guarda en el navegador).
-2. En **Publicar**, pega un **token de GitHub** con permiso `Contents: Read and write` en el repositorio.
-3. Pulsa **Publicar en el sitio**. El archivo `content/site.json` se sube a `main` y GitHub Actions despliega el sitio en ~1 minuto.
+Cada campo de imagen muestra la **vista previa actual** y las medidas recomendadas:
 
-### Crear token de GitHub
+| Uso | Medidas |
+|-----|---------|
+| Experiencias / Nosotros | 800 × 1000 px (4:5 vertical). PNG o WebP. Máx. 500 KB |
+| Productos | 600 × 600 px (cuadrada). PNG fondo transparente. Máx. 400 KB |
+| Blog | 1200 × 750 px (16:10 horizontal). JPG o WebP. Máx. 600 KB |
 
-1. GitHub → **Settings** → **Developer settings** → **Personal access tokens** → **Fine-grained tokens**
-2. Repositorio: `lasucursaldelcafe-droid/WEb-mas-cafe`
-3. Permisos: **Contents** → Read and write
-4. Copia el token y pégalo solo en el panel (se guarda en `sessionStorage` de tu sesión).
+Pulsa **Subir imagen** y se publicará automáticamente al guardar.
 
-### Sin token
+## Colores
 
-Puedes **Descargar site.json**, subirlo manualmente al repo en GitHub (editar `content/site.json`) y hacer commit. El deploy se dispara igual.
+En **Colores** puedes modificar la paleta completa. Los cambios se ven en la vista previa del panel y se aplican al sitio al publicar.
 
 ## Desarrollo local
 
@@ -49,8 +57,8 @@ npm run preview
 # Admin: http://localhost:4173/admin/
 ```
 
-## Seguridad
+En local, usa **Descargar JSON** y súbelo al repositorio manualmente.
 
-- El panel no está indexado (`noindex`).
-- Las contraseñas se validan con hash en el cliente; no es autenticación de nivel empresarial — cámbiala y no compartas la URL públicamente si te preocupa el acceso.
-- El token de GitHub solo vive en tu sesión del navegador hasta que cierres la pestaña.
+## Configuración técnica (una sola vez)
+
+Para que la publicación automática funcione en producción, el repositorio debe tener el secret `ADMIN_PUBLISH_KEY` en GitHub → Settings → Secrets → Actions (token con permiso Contents: Read and write).

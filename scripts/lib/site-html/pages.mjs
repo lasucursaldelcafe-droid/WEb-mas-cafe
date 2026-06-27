@@ -10,18 +10,30 @@ function visitBand(href, brand) {
   <section>
     <div class="wrap">
       <div class="cta">
-        <p class="tagline" style="color:var(--sage);font-size:1.75rem">${brand.tagline}</p>
+        <p class="tagline" style="color:var(--sage);font-family:'Playfair Display',serif;font-style:italic;font-size:1.65rem">${brand.tagline}</p>
         <h2>Te esperamos en Cali</h2>
         <p>${brand.address}<br/>${brand.city}</p>
-        <p style="font-size:.85rem;margin-top:.5rem">${brand.hours}</p>
-        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:.75rem;margin-top:1.5rem">
-          <a class="btn btn-sage" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener">WhatsApp</a>
+        <p style="font-size:.88rem;margin-top:.5rem;opacity:.8">${brand.hours}</p>
+        <div class="cta actions">
+          <a class="btn btn-sage" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
           <a class="btn btn-outline" href="${href("/contacto")}">Contacto</a>
-          <a class="btn btn-outline" href="https://maps.google.com/?q=${encodeURIComponent(brand.address + ", " + brand.city)}" target="_blank" rel="noopener">Cómo llegar</a>
+          <a class="btn btn-outline" href="https://maps.google.com/?q=${encodeURIComponent(brand.address + ", " + brand.city)}" target="_blank" rel="noopener noreferrer">Cómo llegar</a>
         </div>
       </div>
     </div>
   </section>`;
+}
+
+function experienceRow(e, img, reverse) {
+  return `
+  <div class="exp-row${reverse ? " reverse" : ""}">
+    <div class="exp-media"><img src="${img(e.image)}" alt="${e.title}" loading="lazy"/></div>
+    <div class="exp-copy">
+      <p class="label">${e.subtitle}</p>
+      <h3>${e.title}</h3>
+      <p style="margin-top:.85rem;opacity:.78;line-height:1.7">${e.description}</p>
+    </div>
+  </div>`;
 }
 
 function productCard(p, img) {
@@ -30,16 +42,17 @@ function productCard(p, img) {
     ${p.image ? `<div class="product-img"><img src="${img(p.image)}" alt="${p.name}" loading="lazy"/></div>` : ""}
     <p class="label" style="color:var(--sage)">${p.variety} · ${p.region}</p>
     <h3>${p.name}</h3>
-    ${p.farm ? `<p style="font-size:.85rem;opacity:.65">${p.farm}${p.altitude ? ` · ${p.altitude}` : ""}</p>` : ""}
-    <p style="font-size:.8rem;opacity:.7;margin-top:.5rem">${p.notes.join(" · ")}</p>
-    <p class="price">${price(p.price)}</p>
-    ${p.subscription ? `<p style="margin-top:.5rem;font-size:.75rem;background:var(--green);display:inline-block;padding:.2rem .75rem;border-radius:999px">Suscripción</p>` : ""}
+    ${p.farm ? `<p class="meta">${p.farm}${p.altitude ? ` · ${p.altitude}` : ""}</p>` : ""}
+    <p class="meta" style="margin-top:.4rem">${p.notes.join(" · ")}</p>
+    <p class="price">${price(p.price)}${p.weight ? ` <span style="font-size:.8rem;font-weight:400;opacity:.7">/ ${p.weight}</span>` : ""}</p>
+    ${p.subscription ? `<span class="badge">Suscripción</span>` : ""}
   </article>`;
 }
 
 export function pageHome() {
   const site = loadSite();
-  const { brand, experiences, products, marquee, blog } = site;
+  const { brand, experiences, products, marquee, blog, pages } = site;
+  const ph = pages.home;
   const { img, href } = createPathHelpers(0);
   const featured = products.filter((p) => p.featured);
   const posts = blog.filter((p) => p.published).slice(0, 2);
@@ -47,47 +60,41 @@ export function pageHome() {
   const body = `
   <section class="hero">
     <div class="wrap">
-      <p class="tagline">${brand.tagline}</p>
-      <h1>${brand.headline}</h1>
-      <p>${brand.subheadline}</p>
-      <p style="margin-top:.75rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.25em;opacity:.5">${brand.descriptor}</p>
-      <div class="actions">
-        <a class="btn btn-sage" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener">WhatsApp</a>
-        <a class="btn btn-outline" href="${href("/contacto")}">Visítanos</a>
+      <div class="inner">
+        <p class="tagline">${brand.tagline}</p>
+        <h1>${brand.headline}</h1>
+        <p>${brand.subheadline}</p>
+        <p class="descriptor">${brand.descriptor}</p>
+        <div class="actions">
+          <a class="btn btn-sage" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          <a class="btn btn-outline" href="${href("/contacto")}">Visítanos</a>
+        </div>
       </div>
     </div>
   </section>
-  <div class="marquee" aria-hidden="true">${[...marquee, ...marquee].map((t) => `<span>${t} ·</span>`).join("")}</div>
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">${[...marquee, ...marquee].map((t) => `<span>${t} ·</span>`).join("")}</div>
+  </div>
   <section>
     <div class="wrap">
-      <p class="label">La experiencia</p>
-      <h2>Una experiencia que se vive sin prisa</h2>
-      <div style="margin-top:2.5rem;display:grid;gap:2.5rem">
-        ${experiences.slice(0, 2).map((e) => `
-        <div class="grid-2 card">
-          <img src="${img(e.image)}" alt="${e.title}" loading="lazy"/>
-          <div class="card-body">
-            <p class="label">${e.subtitle}</p>
-            <h3>${e.title}</h3>
-            <p style="margin-top:.75rem;opacity:.75">${e.description}</p>
-          </div>
-        </div>`).join("")}
-      </div>
+      <p class="label">${ph.experiencesLabel}</p>
+      <h2>${ph.experiencesTitle}</h2>
+      <div style="margin-top:2.5rem">${experiences.map((e, i) => experienceRow(e, img, i % 2 === 1)).join("")}</div>
       <p class="section-actions"><a class="text-link" href="${href("/nosotros")}">Conoce nuestra historia →</a></p>
     </div>
   </section>
-  <section style="background:var(--blue);color:var(--cream)">
+  <section class="dark">
     <div class="wrap">
-      <p class="label" style="color:var(--sage)">Café fresco</p>
-      <h2 style="color:var(--cream)">Calidad extraordinaria, trazabilidad al origen</h2>
+      <p class="label">${ph.productsLabel}</p>
+      <h2>${ph.productsTitle}</h2>
       <div class="products" style="margin-top:2rem">${featured.map((p) => productCard(p, img)).join("")}</div>
       <p class="section-actions"><a class="btn btn-outline" href="${href("/tienda")}">Ver tienda →</a></p>
     </div>
   </section>
-  <section style="background:rgba(168,197,176,.2)">
+  <section class="alt">
     <div class="wrap">
-      <p class="label">Blog</p>
-      <h2>Historias & origen</h2>
+      <p class="label">${ph.blogLabel}</p>
+      <h2>${ph.blogTitle}</h2>
       <div style="margin-top:2rem;display:grid;gap:2rem">
         ${posts.map((post) => `
         <article class="grid-2 card">
@@ -116,34 +123,32 @@ export function pageHome() {
 
 export function pageCafe() {
   const site = loadSite();
-  const { brand, products } = site;
+  const { brand, products, brewGuide, pages } = site;
+  const pc = pages.cafe;
   const { img, href } = createPathHelpers(1);
-  const steps = [
-    "Calienta 320 ml de agua hasta que deje de hervir.",
-    "Usa 20 g de café (2 cucharadas colmadas aprox.).",
-    "Vierte el agua despacio, en círculos. Filtra en 3-4 minutos.",
-    "Sirve y disfruta. Ideal para goteo, prensa o pour over.",
-  ];
+  const featured = products.filter((p) => p.featured);
 
   const body = `
   <section class="page-hero" style="--hero-art:url('${img("/images/grafica/2.png")}')">
-    <div class="wrap">
-      <p class="tagline">Café fresco</p>
-      <h1>Calidad extraordinaria y trazabilidad al origen</h1>
+    <div class="wrap inner">
+      <p class="tagline">${pc.tagline}</p>
+      <h1>${pc.headline}</h1>
     </div>
   </section>
   <section>
     <div class="wrap">
       <div class="grid-2">
-        <div class="product-img" style="background:rgba(168,197,176,.2);border-radius:1.5rem;padding:2rem">
+        <div class="product-img" style="background:rgba(168,197,176,.2);border-radius:var(--radius);padding:2rem">
           <img src="${img("/images/products/caja-cafe.png")}" alt="Empaque Más Café"/>
         </div>
         <div>
-          <h2>Prepáralo en casa, a tu manera</h2>
-          <ol class="steps" style="margin-top:1.5rem">${steps.map((s, i) => `<li><span class="num">${String(i + 1).padStart(2, "0")}</span><span>${s}</span></li>`).join("")}</ol>
+          <h2>${pc.brewTitle}</h2>
+          <ol class="steps" style="margin-top:1.5rem">${brewGuide.map((s, i) => `<li><span class="num">${String(i + 1).padStart(2, "0")}</span><span>${s}</span></li>`).join("")}</ol>
         </div>
       </div>
-      <div class="products cols-3" style="margin-top:3rem">${products.map((p) => productCard(p, img)).join("")}</div>
+      <p class="label" style="margin-top:3rem">${pc.productsNote}</p>
+      <div class="products cols-3" style="margin-top:1rem">${featured.map((p) => productCard(p, img)).join("")}</div>
+      <p class="section-actions" style="text-align:center"><a class="btn btn-blue" href="${href("/tienda")}">Ver catálogo completo</a></p>
     </div>
   </section>
   ${visitBand(href, brand)}`;
@@ -159,18 +164,19 @@ export function pageCafe() {
 
 export function pageMenu() {
   const site = loadSite();
-  const { brand, menu } = site;
+  const { brand, menu, pages } = site;
+  const pm = pages.menu;
   const { href } = createPathHelpers(1);
 
   const body = `
   <section class="page-hero light">
-    <div class="wrap">
-      <p class="tagline">Menú</p>
-      <h1>Para cada momento del día</h1>
+    <div class="wrap inner">
+      <p class="tagline">${pm.tagline}</p>
+      <h1>${pm.headline}</h1>
     </div>
   </section>
   <section>
-    <div class="wrap" style="max-width:40rem">
+    <div class="wrap" style="max-width:42rem">
       ${menu.map((cat) => `
       <div class="menu-cat">
         <h3>${cat.name}</h3>
@@ -180,7 +186,7 @@ export function pageMenu() {
           <strong>${price(item.price)}</strong>
         </div>`).join("")}
       </div>`).join("")}
-      <p style="margin-top:2rem;text-align:center;font-size:.85rem;opacity:.6">Precios referenciales en COP. Pueden variar según temporada.</p>
+      <p class="note">${pm.disclaimer}</p>
     </div>
   </section>
   ${visitBand(href, brand)}`;
@@ -196,41 +202,42 @@ export function pageMenu() {
 
 export function pageNosotros() {
   const site = loadSite();
-  const { brand } = site;
+  const { brand, pages } = site;
+  const pn = pages.nosotros;
   const { img, href } = createPathHelpers(1);
 
   const body = `
   <section class="page-hero" style="--hero-art:url('${img("/images/grafica/3.png")}')">
-    <div class="wrap">
-      <p class="tagline">${brand.descriptor}</p>
-      <h1>Un espacio para pausar con intención</h1>
+    <div class="wrap inner">
+      <p class="tagline">${pn.tagline}</p>
+      <h1>${pn.headline}</h1>
     </div>
   </section>
   <section>
     <div class="wrap grid-2">
       <div>
-        <p style="font-size:1.05rem;margin-bottom:1rem">Toda historia tiene un comienzo. La nuestra comenzó con un café. Con una taza entre las manos y la certeza de que los mejores momentos merecen pausa.</p>
-        <p style="opacity:.8">${brand.vision}</p>
-        <p style="margin-top:1.25rem;opacity:.8">${brand.purpose}</p>
-        <p style="margin-top:1rem;opacity:.8">${brand.mission}</p>
+        <p style="font-size:1.08rem;margin-bottom:1rem;line-height:1.75">${brand.story}</p>
+        <p style="opacity:.8;line-height:1.7">${brand.vision}</p>
+        <p style="margin-top:1.15rem;opacity:.8;line-height:1.7">${brand.purpose}</p>
+        <p style="margin-top:1rem;opacity:.8;line-height:1.7">${brand.mission}</p>
       </div>
-      <img src="${img("/images/brand/mood.png")}" alt="Ambiente Más Café" style="border-radius:1rem 2rem 1rem 2rem;width:100%;aspect-ratio:4/5;object-fit:cover"/>
+      <img src="${img(brand.nosotrosImage)}" alt="Ambiente ${brand.name}" style="border-radius:1rem 2rem 1rem 2rem;width:100%;aspect-ratio:4/5;object-fit:cover;box-shadow:var(--shadow)"/>
     </div>
   </section>
-  <section style="background:rgba(168,197,176,.2)">
+  <section class="alt">
     <div class="wrap">
-      <p class="label">Nuestros valores</p>
-      <h2>Hospitalidad que va más allá del café</h2>
+      <p class="label">${pn.valuesLabel}</p>
+      <h2>${pn.valuesTitle}</h2>
       <div class="values" style="margin-top:2rem">${brand.values.map((v) => `
       <div class="value">
         <h3>${v.title}</h3>
-        <p style="margin-top:.5rem;opacity:.75">${v.text}</p>
+        <p style="margin-top:.5rem;opacity:.75;line-height:1.65">${v.text}</p>
       </div>`).join("")}</div>
     </div>
   </section>
-  <section style="text-align:center">
+  <section class="quote-block">
     <div class="wrap">
-      <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.35rem,3vw,2rem);color:var(--brown);max-width:36rem;margin:0 auto">&ldquo;Necesito un lugar donde pueda pausar, trabajar tranquilo y sentirme bien atendido.&rdquo;</p>
+      <p>&ldquo;${brand.quote}&rdquo;</p>
     </div>
   </section>
   ${visitBand(href, brand)}`;
@@ -246,20 +253,21 @@ export function pageNosotros() {
 
 export function pageTienda() {
   const site = loadSite();
-  const { brand, products } = site;
+  const { brand, products, pages } = site;
+  const pt = pages.tienda;
   const { img, href } = createPathHelpers(1);
 
   const body = `
   <section class="page-hero">
-    <div class="wrap">
-      <p class="tagline">Tienda</p>
-      <h1>Café fresco, directo del origen</h1>
+    <div class="wrap inner">
+      <p class="tagline">${pt.tagline}</p>
+      <h1>${pt.headline}</h1>
     </div>
   </section>
   <section>
     <div class="wrap">
       <div class="products cols-3">${products.map((p) => productCard(p, img)).join("")}</div>
-      <p style="margin-top:2rem;text-align:center"><a class="btn btn-blue" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener">Pedir por WhatsApp</a></p>
+      <p class="section-actions" style="text-align:center"><a class="btn btn-green" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer">Pedir por WhatsApp</a></p>
     </div>
   </section>
   ${visitBand(href, brand)}`;
@@ -275,15 +283,16 @@ export function pageTienda() {
 
 export function pageBlog() {
   const site = loadSite();
-  const { brand, blog } = site;
+  const { brand, blog, pages } = site;
+  const pb = pages.blog;
   const { img, href } = createPathHelpers(1);
   const published = blog.filter((p) => p.published);
 
   const body = `
   <section class="page-hero light">
-    <div class="wrap">
-      <p class="tagline">Blog</p>
-      <h1>Historias & origen</h1>
+    <div class="wrap inner">
+      <p class="tagline">${pb.tagline}</p>
+      <h1>${pb.headline}</h1>
     </div>
   </section>
   <section>
@@ -294,7 +303,7 @@ export function pageBlog() {
         <div>
           <p class="label">${post.category} · ${post.date}</p>
           <h2 style="margin-top:.5rem">${post.title}</h2>
-          <p style="margin-top:1rem;opacity:.75;font-size:1.05rem">${post.excerpt}</p>
+          <p style="margin-top:1rem;opacity:.75;font-size:1.05rem;line-height:1.7">${post.excerpt}</p>
         </div>
       </article>`).join("")}
     </div>
@@ -312,34 +321,39 @@ export function pageBlog() {
 
 export function pageContacto() {
   const site = loadSite();
-  const { brand } = site;
+  const { brand, pages } = site;
+  const pc = pages.contacto;
   const { href } = createPathHelpers(1);
 
   const body = `
   <section class="page-hero">
-    <div class="wrap">
-      <p class="tagline">Contacto</p>
-      <h1>Hablemos</h1>
+    <div class="wrap inner">
+      <p class="tagline">${pc.tagline}</p>
+      <h1>${pc.headline}</h1>
     </div>
   </section>
   <section>
     <div class="wrap grid-2">
-      <div>
-        <h2>Visítanos</h2>
+      <div class="contact-info">
+        <h2>${pc.visitTitle}</h2>
         <p style="margin-top:1rem;line-height:1.8">${brand.address}<br/>${brand.city}<br/><span style="font-size:.9rem;opacity:.7">${brand.hours}</span></p>
-        <h2 style="margin-top:2rem">Escríbenos</h2>
-        <p style="margin-top:1rem;line-height:2">
+        <h2 style="margin-top:2rem">${pc.writeTitle}</h2>
+        <p style="margin-top:1rem;line-height:2.2">
           <a href="tel:${brand.phone.replace(/\s/g, "")}">${brand.phone}</a><br/>
           <a href="mailto:${brand.email}">${brand.email}</a><br/>
-          <a href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener">WhatsApp</a>
+          <a href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
         </p>
+        <div class="social-links">
+          <a href="${brand.social.instagram}" target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a href="${brand.social.facebook}" target="_blank" rel="noopener noreferrer">Facebook</a>
+        </div>
       </div>
-      <form class="contact-form" action="https://wa.me/${brand.whatsapp}" method="get" target="_blank" rel="noopener">
-        <h2>Envíanos un mensaje</h2>
+      <form class="contact-form" action="https://wa.me/${brand.whatsapp}" method="get" target="_blank" rel="noopener noreferrer">
+        <h2>${pc.formTitle}</h2>
         <label>Nombre<input type="text" name="text" placeholder="Tu nombre" required/></label>
         <label>Email<input type="email" placeholder="tu@email.com"/></label>
         <label>Mensaje<textarea placeholder="¿En qué podemos ayudarte?"></textarea></label>
-        <button type="submit" class="btn btn-blue" style="width:100%;border:none;cursor:pointer">Enviar por WhatsApp</button>
+        <button type="submit" class="btn btn-blue" style="width:100%">Enviar por WhatsApp</button>
       </form>
     </div>
   </section>

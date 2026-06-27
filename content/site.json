@@ -13,8 +13,8 @@
     "city": "Cali, Valle del Cauca, Colombia",
     "hours": "Lunes a sábado 7:30am – 8:00pm · Domingos y festivos 9:00am – 7:00pm",
     "social": {
-      "instagram": "https://instagram.com/mascafecol315",
-      "facebook": "https://facebook.com/mascafecol"
+      "instagram": "https://www.instagram.com/mascafecol315",
+      "facebook": "https://www.facebook.com/mascafecol"
     },
     "purpose": "Crear un espacio donde las personas puedan hacer una pausa consciente en medio de su día, sentirse bien atendidas y reconectar consigo mismas y con otros, a través de una experiencia de hospitalidad que va más allá del café.",
     "mission": "Brindar una experiencia integral de hospitalidad a través del café de especialidad, la cocina y el servicio, cuidando cada detalle del espacio para que las personas puedan trabajar, compartir o simplemente desconectarse.",
@@ -36,8 +36,69 @@
         "title": "Crecimiento consciente",
         "text": "Apostamos por la mejora continua del equipo, del servicio y de la experiencia, de manera sostenible y humana."
       }
-    ]
+    ],
+    "story": "Toda historia tiene un comienzo. La nuestra comenzó con un café. Con una taza entre las manos y la certeza de que los mejores momentos merecen pausa.",
+    "quote": "Necesito un lugar donde pueda pausar, trabajar tranquilo y sentirme bien atendido.",
+    "nosotrosImage": "/images/brand/mood.png"
   },
+  "theme": {
+    "cream": "#f6f5ef",
+    "creamDark": "#ebe8df",
+    "blue": "#073954",
+    "blueMid": "#0a4d6e",
+    "green": "#1bb175",
+    "sage": "#a8c5b0",
+    "brown": "#8b6f47",
+    "charcoal": "#2a2a2a"
+  },
+  "pages": {
+    "home": {
+      "experiencesLabel": "La experiencia",
+      "experiencesTitle": "Una experiencia que se vive sin prisa",
+      "productsLabel": "Café fresco",
+      "productsTitle": "Calidad extraordinaria, trazabilidad al origen",
+      "blogLabel": "Blog",
+      "blogTitle": "Historias & origen"
+    },
+    "cafe": {
+      "tagline": "Café fresco",
+      "headline": "Calidad extraordinaria y trazabilidad al origen",
+      "brewTitle": "Prepáralo en casa, a tu manera",
+      "productsNote": "Selección destacada — compra el catálogo completo en la tienda."
+    },
+    "menu": {
+      "tagline": "Menú",
+      "headline": "Para cada momento del día",
+      "disclaimer": "Precios referenciales en COP. Pueden variar según temporada."
+    },
+    "nosotros": {
+      "tagline": "Nuestra historia",
+      "headline": "Un espacio para pausar con intención",
+      "valuesLabel": "Nuestros valores",
+      "valuesTitle": "Hospitalidad que va más allá del café"
+    },
+    "tienda": {
+      "tagline": "Tienda",
+      "headline": "Café fresco, directo del origen"
+    },
+    "blog": {
+      "tagline": "Blog",
+      "headline": "Historias & origen"
+    },
+    "contacto": {
+      "tagline": "Contacto",
+      "headline": "Hablemos",
+      "visitTitle": "Visítanos",
+      "writeTitle": "Escríbenos",
+      "formTitle": "Envíanos un mensaje"
+    }
+  },
+  "brewGuide": [
+    "Calienta 320 ml de agua hasta que deje de hervir.",
+    "Usa 20 g de café (2 cucharadas colmadas aprox.).",
+    "Vierte el agua despacio, en círculos. Filtra en 3-4 minutos.",
+    "Sirve y disfruta. Ideal para goteo, prensa o pour over."
+  ],
   "experiences": [
     {
       "id": "pausa",

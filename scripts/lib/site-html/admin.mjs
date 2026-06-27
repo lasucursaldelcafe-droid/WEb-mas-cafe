@@ -24,6 +24,8 @@ export function generateAdminPage() {
     hash: hashPassword(u.password),
   }));
 
+  const publishKey = process.env.ADMIN_PUBLISH_KEY || "";
+
   const css = readFileSync(path.join(root, "scripts/admin/admin.css"), "utf8");
   const js = readFileSync(path.join(root, "scripts/admin/admin.js"), "utf8");
 
@@ -63,7 +65,7 @@ export function generateAdminPage() {
       </div>
       <nav id="sidebar-nav"></nav>
       <div class="sidebar-footer">
-        <p id="token-status" class="status-bar" style="font-size:.75rem;margin:0"></p>
+        <p id="publish-status-bar" class="status-bar" style="font-size:.75rem;margin:0"></p>
         <button type="button" class="nav-btn" id="logout-btn" style="margin-top:.5rem">Salir</button>
       </div>
     </aside>
@@ -86,6 +88,7 @@ export function generateAdminPage() {
     const SITE_BOOT = ${JSON.stringify(site)};
     const REPO_CONFIG = ${JSON.stringify(REPO_CONFIG)};
     const USER_HASHES = ${JSON.stringify(userHashes)};
+    const PUBLISH_KEY = ${JSON.stringify(publishKey)};
   </script>
   <script>${js}</script>
 </body>

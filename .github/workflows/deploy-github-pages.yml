@@ -26,6 +26,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Generar sitio multipágina
+        env:
+          ADMIN_PUBLISH_KEY: ${{ secrets.ADMIN_PUBLISH_KEY }}
         run: node scripts/build-github-pages.mjs
 
       - name: Configurar GitHub Pages
