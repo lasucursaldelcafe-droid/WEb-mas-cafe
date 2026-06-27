@@ -7,6 +7,8 @@
     "build": "next build",
     "build:html": "node scripts/build-html.mjs",
     "build:publico": "node scripts/build-publico.mjs",
+    "build:firebase": "node scripts/build-firebase.mjs",
+    "deploy:firebase": "npm run build:firebase && firebase deploy --only hosting",
     "start": "next start",
     "lint": "eslint .",
     "health-check": "node scripts/health-check.mjs",
@@ -25,6 +27,7 @@
     "@types/react-dom": "^19.1.0",
     "eslint": "^9.28.0",
     "eslint-config-next": "^15.5.0",
+    "firebase-tools": "^14.9.0",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.8.3"
   }

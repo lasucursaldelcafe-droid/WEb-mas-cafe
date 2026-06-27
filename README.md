@@ -4,7 +4,22 @@ Sitio web oficial de **Más Café**, café de especialidad y hospitalidad consci
 
 Diseño editorial orgánico con identidad visual propia de Más Café.
 
-## Publicación (GitHub Pages — HTML permanente)
+## Publicación (Firebase Hosting — recomendado)
+
+Publica el sitio **públicamente** aunque el repo de GitHub sea privado.
+
+```bash
+npm install
+npm run deploy:firebase
+```
+
+**Guía completa:** [docs/FIREBASE.md](docs/FIREBASE.md)
+
+URL tras el deploy: `https://TU-PROYECTO.web.app`
+
+---
+
+## Publicación alternativa (GitHub Pages)
 
 **URL:** https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/
 

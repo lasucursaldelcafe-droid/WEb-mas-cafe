@@ -18,6 +18,10 @@
 # production
 /build
 /deploy
+/firebase-public/
+/.firebase/
+firebase-debug.log*
+firebase-debug.*.log*
 
 # brand source assets (large Drive download)
 /assets/brand/
