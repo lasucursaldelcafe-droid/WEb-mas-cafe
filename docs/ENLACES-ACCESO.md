@@ -1,16 +1,24 @@
 # Enlaces de acceso — Más Café
 
-## Ver el sitio en internet
+## Sitio en línea (7 páginas)
 
-| Enlace | Uso |
+Base: **https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/**
+
+| Página | URL |
 |--------|-----|
-| **https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/** | Sitio público (GitHub Pages) |
-| **https://mascafe.com/** | Dominio personalizado (requiere DNS configurado) |
-| **https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe** | Código fuente |
+| Inicio | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/ |
+| Café | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/cafe/ |
+| Menú | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/menu/ |
+| Nosotros | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/nosotros/ |
+| Tienda | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/tienda/ |
+| Blog | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/blog/ |
+| Contacto | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/contacto/ |
+
+Dominio: **https://mascafe.com/** (mismas rutas cuando DNS esté configurado)
 
 ---
 
-## Ver en tu computador (local)
+## Ver en local
 
 ```bash
 git clone https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe.git
@@ -18,23 +26,14 @@ cd WEb-mas-cafe
 npm run preview
 ```
 
-→ **http://localhost:4173/**
+→ http://localhost:4173/ (mismas 7 rutas)
 
 Guía: [GUIA-LOCAL.md](./GUIA-LOCAL.md)
 
 ---
 
-## Activar GitHub Pages (si da 404)
+## Actualizar
 
-1. https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/pages
-2. **Deploy from a branch** → `gh-pages` → `/ (root)` → **Save**
-
-Guía: [ACTIVAR-GITHUB-PAGES.md](./ACTIVAR-GITHUB-PAGES.md)
-
----
-
-## Actualizar contenido
-
-Edita `content/site.json` → push a `main` → publicación automática.
+Edita `content/site.json` → push a `main` → deploy automático.
 
 Guía: [COMO-ACTUALIZAR.md](./COMO-ACTUALIZAR.md)

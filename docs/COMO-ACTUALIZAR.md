@@ -14,9 +14,20 @@ El sitio es **HTML estático** con imágenes incluidas. Se publica automáticame
 ## Flujo de trabajo
 
 ```
-content/site.json  →  push a main  →  GitHub Actions  →  rama gh-pages  →  sitio en internet
-     (editas)                          (~1 min)
+content/site.json  →  npm run build:site  →  7 páginas HTML  →  push main  →  GitHub Pages
 ```
+
+### Páginas generadas
+
+| Archivo | Contenido |
+|---------|-----------|
+| `index.html` | Inicio |
+| `cafe/index.html` | Café de especialidad |
+| `menu/index.html` | Menú |
+| `nosotros/index.html` | Historia y valores |
+| `tienda/index.html` | Productos |
+| `blog/index.html` | Artículos |
+| `contacto/index.html` | Contacto |
 
 ---
 

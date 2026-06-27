@@ -1,41 +1,30 @@
 #!/usr/bin/env node
 /**
- * Sitio HTML autocontenido para GitHub Pages (HTML + imágenes locales).
- * No usa jsDelivr ni CDN externo — funciona con repo privado.
+ * Sitio HTML multipágina para GitHub Pages (HTML + imágenes locales).
  */
-import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
+import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { generatePublicHtml } from "./lib/generate-public-html.mjs";
+import { collectImagePaths, generateSitePages } from "./lib/generate-site-pages.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
 const outDir = path.join(root, "gh-pages-site");
 
-const site = JSON.parse(readFileSync(path.join(root, "content/site.json"), "utf8"));
-
-function collectImagePaths() {
-  const paths = new Set([
-    "/images/brand/horizontal-crema.png",
-    "/images/grafica/3.png",
-  ]);
-  for (const exp of site.experiences) paths.add(exp.image);
-  for (const p of site.products) paths.add(p.image);
-  for (const b of site.blog ?? []) paths.add(b.image);
-  return [...paths];
-}
-
-/** Rutas relativas para GitHub Pages (/WEb-mas-cafe/) */
-const img = (assetPath) => assetPath.replace(/^\//, "");
-
-console.log("\n▸ Generando sitio para GitHub Pages (HTML + imágenes)...\n");
+console.log("\n▸ Generando sitio multipágina para GitHub Pages...\n");
 
 if (existsSync(outDir)) {
   rmSync(outDir, { recursive: true, force: true });
 }
 mkdirSync(outDir, { recursive: true });
 
-writeFileSync(path.join(outDir, "index.html"), generatePublicHtml(img), "utf8");
+const pages = generateSitePages();
+for (const { path: relPath, html } of pages) {
+  const dest = path.join(outDir, relPath);
+  mkdirSync(path.dirname(dest), { recursive: true });
+  writeFileSync(dest, html, "utf8");
+  console.log(`  • ${relPath}`);
+}
 
 writeFileSync(
   path.join(outDir, "404.html"),
@@ -45,12 +34,8 @@ writeFileSync(
 
 writeFileSync(path.join(outDir, ".nojekyll"), "");
 
-// CNAME lo gestiona GitHub Pages en Settings (no lo sobrescribimos en deploy)
-
-const used = collectImagePaths();
 let copied = 0;
-
-for (const assetPath of used) {
+for (const assetPath of collectImagePaths()) {
   const rel = assetPath.replace(/^\//, "");
   const src = path.join(root, "public", rel);
   const dest = path.join(outDir, rel);
@@ -63,6 +48,6 @@ for (const assetPath of used) {
   copied++;
 }
 
-console.log(`✅ gh-pages-site/ listo (${copied} imágenes)\n`);
-console.log("Ver en local:  npm run preview");
-console.log("URL pública:   https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/\n");
+console.log(`\n✅ ${pages.length} páginas · ${copied} imágenes\n`);
+console.log("Local:    npm run preview");
+console.log("Público:  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/\n");

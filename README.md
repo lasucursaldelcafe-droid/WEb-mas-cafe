@@ -4,11 +4,20 @@ Sitio web de **Más Café** — café de especialidad en Cali, Colombia.
 
 ## Enlaces del sitio
 
-| Dónde | URL |
-|-------|-----|
-| **GitHub Pages** | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/ |
-| **Dominio** (cuando DNS esté listo) | https://mascafe.com/ |
+| Página | GitHub Pages |
+|--------|----------------|
+| Inicio | [/](https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/) |
+| Café | [/cafe/](https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/cafe/) |
+| Menú | [/menu/](https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/menu/) |
+| Nosotros | [/nosotros/](https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/nosotros/) |
+| Tienda | [/tienda/](https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/tienda/) |
+| Blog | [/blog/](https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/blog/) |
+| Contacto | [/contacto/](https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/contacto/) |
+
+| | |
+|-|-|
 | **Repositorio** | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe |
+| **Dominio** | https://mascafe.com/ (cuando DNS esté listo) |
 
 ---
 
@@ -60,7 +69,8 @@ Settings → **Pages** → Branch **`gh-pages`** → **`/ (root)`** → Save
 
 ```
 content/site.json              # Contenido editable
-scripts/build-github-pages.mjs # Genera HTML + imágenes
+scripts/lib/site-html/         # Generador HTML (7 páginas)
+scripts/build-github-pages.mjs # Build para GitHub Pages
 gh-pages-site/                 # Salida local (generada, no commitear)
 .github/workflows/             # Deploy automático → rama gh-pages
 ```

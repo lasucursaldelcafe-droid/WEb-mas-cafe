@@ -104,9 +104,13 @@ Sitio de desarrollo: http://localhost:3000
 | Comando | Qué hace |
 |---------|----------|
 | `npm run preview` | Genera el sitio y lo abre en localhost:4173 |
-| `npm run build:site` | Solo genera la carpeta `gh-pages-site/` |
+| `npm run build:site` | Genera 7 páginas en `gh-pages-site/` |
 | `npm run build:publico` | Genera `publico/` (mismo contenido) |
 | `npm run dev` | Servidor Next.js (requiere `npm install`) |
+
+### Rutas del sitio local
+
+`/ · /cafe/ · /menu/ · /nosotros/ · /tienda/ · /blog/ · /contacto/`
 
 ---
 

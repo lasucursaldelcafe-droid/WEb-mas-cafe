@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * Prepara mas-cafe/ para Firebase Hosting (HTML + imágenes + config).
+ * Prepara mas-cafe/ para Firebase Hosting (sitio multipágina + imágenes).
  */
-import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
+import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { generatePublicHtml } from "./lib/generate-public-html.mjs";
+import { collectImagePaths, generateSitePages } from "./lib/generate-site-pages.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
@@ -20,22 +20,7 @@ const FIREBASE_CONFIG = {
   appId: "1:431985221060:web:ca46cb9027955bac091891",
 };
 
-const site = JSON.parse(readFileSync(path.join(root, "content/site.json"), "utf8"));
-
-function collectImagePaths() {
-  const paths = new Set([
-    "/images/brand/horizontal-crema.png",
-    "/images/grafica/3.png",
-  ]);
-  for (const exp of site.experiences) paths.add(exp.image);
-  for (const p of site.products) paths.add(p.image);
-  for (const b of site.blog ?? []) paths.add(b.image);
-  return [...paths];
-}
-
-const img = (assetPath) => assetPath;
-
-console.log("\n▸ Generando Más Café para Firebase (mas-cafe-c8413)...\n");
+console.log("\n▸ Generando Más Café multipágina para Firebase...\n");
 
 if (existsSync(outDir)) {
   rmSync(outDir, { recursive: true, force: true });
@@ -43,7 +28,11 @@ if (existsSync(outDir)) {
 mkdirSync(outDir, { recursive: true });
 mkdirSync(path.join(outDir, "js"), { recursive: true });
 
-writeFileSync(path.join(outDir, "index.html"), generatePublicHtml(img), "utf8");
+for (const { path: relPath, html } of generateSitePages()) {
+  const dest = path.join(outDir, relPath);
+  mkdirSync(path.dirname(dest), { recursive: true });
+  writeFileSync(dest, html, "utf8");
+}
 
 writeFileSync(
   path.join(outDir, "404.html"),
@@ -57,23 +46,15 @@ writeFileSync(
   "utf8"
 );
 
-const used = collectImagePaths();
 let copied = 0;
-
-for (const assetPath of used) {
+for (const assetPath of collectImagePaths()) {
   const rel = assetPath.replace(/^\//, "");
   const src = path.join(root, "public", rel);
   const dest = path.join(outDir, rel);
-  if (!existsSync(src)) {
-    console.warn(`  ⚠ imagen no encontrada: ${rel}`);
-    continue;
-  }
+  if (!existsSync(src)) continue;
   mkdirSync(path.dirname(dest), { recursive: true });
   cpSync(src, dest);
   copied++;
 }
 
-console.log(`✅ mas-cafe/ listo (${copied} imágenes)\n`);
-console.log("URLs públicas tras deploy:");
-console.log("  https://mas-cafe-c8413.web.app/");
-console.log("  https://mas-cafe-c8413.firebaseapp.com/\n");
+console.log(`✅ mas-cafe/ listo (7 páginas, ${copied} imágenes)\n`);
