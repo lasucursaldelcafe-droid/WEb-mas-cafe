@@ -29,7 +29,19 @@ export function createPathHelpers(depth) {
       const clean = route.replace(/^\//, "").replace(/\/$/, "");
       return `${up}${clean}/`;
     },
+    asset: (file) => `${up}${file.replace(/^\//, "")}`,
   };
+}
+
+/** Iconos de pestaña (favicon) — rutas relativas según profundidad de página */
+export function faviconHead(depth) {
+  const { asset } = createPathHelpers(depth);
+  return `
+  <link rel="icon" href="${asset("favicon.ico")}" sizes="any"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="${asset("favicon-32x32.png")}"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="${asset("favicon-16x16.png")}"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="${asset("apple-touch-icon.png")}"/>
+  <link rel="manifest" href="${asset("site.webmanifest")}"/>`;
 }
 
 export function getNav(site) {
@@ -726,7 +738,7 @@ export function shell({ title, description, depth, pageId, heroArt, body, year =
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#073954"/>
   <title>${title} | ${brand.name}</title>
-  <meta name="description" content="${description}"/>
+  <meta name="description" content="${description}"/>${faviconHead(depth)}
   <style>${fontFaces(depth)}</style>
   <style>${brandThemeCss(site)}</style>
   <style>${siteStyles()}</style>

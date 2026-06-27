@@ -7,12 +7,15 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { collectImagePaths, generateSitePages } from "./lib/generate-site-pages.mjs";
 import { generateAdminPage } from "./lib/site-html/admin.mjs";
+import { FAVICON_FILES, generateFavicons } from "./lib/generate-favicons-lib.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
 const outDir = path.join(root, "gh-pages-site");
 
 console.log("\n▸ Generando sitio multipágina para GitHub Pages...\n");
+
+await generateFavicons(path.join(root, "public"));
 
 if (existsSync(outDir)) {
   rmSync(outDir, { recursive: true, force: true });
@@ -42,6 +45,16 @@ writeFileSync(
 writeFileSync(path.join(outDir, ".nojekyll"), "");
 
 let copied = 0;
+for (const fav of FAVICON_FILES) {
+  const src = path.join(root, "public", fav);
+  const dest = path.join(outDir, fav);
+  if (existsSync(src)) {
+    cpSync(src, dest);
+    copied++;
+  }
+}
+console.log("  • favicon.ico + iconos de pestaña");
+
 for (const assetPath of collectImagePaths()) {
   const rel = assetPath.replace(/^\//, "");
   const src = path.join(root, "public", rel);
