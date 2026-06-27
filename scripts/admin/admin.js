@@ -21,6 +21,43 @@
   if (!content.pages) content.pages = {};
   if (!content.brewGuide) content.brewGuide = [];
   if (!content.routes?.length) content.routes = structuredClone(DEFAULT_ROUTES);
+  if (!content.analytics) {
+    content.analytics = {
+      clicks: { whatsapp: 0, tienda: 0, contacto: 0, instagram: 0, facebook: 0 },
+      monthlyIncome: [],
+    };
+  }
+
+  const SESSION_MAX_MS = 8 * 60 * 60 * 1000;
+  let previewTab = "home";
+
+  function getSession() {
+    const raw = sessionStorage.getItem("mc_admin");
+    if (!raw) return null;
+    try {
+      const s = JSON.parse(raw);
+      if (!s.user || Date.now() - (s.at || 0) > SESSION_MAX_MS) {
+        sessionStorage.removeItem("mc_admin");
+        return null;
+      }
+      return s;
+    } catch {
+      sessionStorage.removeItem("mc_admin");
+      return null;
+    }
+  }
+
+  function requireAuth() {
+    if (!getSession()) {
+      document.body.classList.remove("admin-authed");
+      $("#app")?.classList.add("hidden");
+      $("#login-screen")?.classList.remove("hidden");
+      $("#panel-root") && ($("#panel-root").innerHTML = "");
+      toast("Sesión expirada. Inicia sesión de nuevo.", "error");
+      return false;
+    }
+    return true;
+  }
 
   function ensureRoutes() {
     const byId = new Map(content.routes.map((r) => [r.id, r]));
@@ -53,6 +90,8 @@
   const PANELS = [
     { id: "overview", label: "Resumen", icon: "◉" },
     { id: "help", label: "Cómo funciona", icon: "?" },
+    { id: "preview", label: "Vista previa", icon: "◫" },
+    { id: "analytics", label: "Análisis", icon: "▤" },
     { id: "brand", label: "Marca e inicio", icon: "◇" },
     { id: "theme", label: "Colores", icon: "◐" },
     { id: "sections", label: "Secciones", icon: "▣" },
@@ -89,6 +128,67 @@
   function markDirty() {
     dirty = true;
     $("#dirty-badge")?.classList.remove("hidden");
+    $("#preview-dirty-hint")?.classList.remove("hidden");
+    updateLivePreview();
+  }
+
+  function formatCop(n) {
+    return new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
+  }
+
+  function updateLivePreview() {
+    if (!requireAuth()) return;
+    const device = $("#preview-device");
+    if (!device) return;
+    const b = content.brand;
+    const t = content.theme;
+    document.documentElement.style.setProperty("--cream", t.cream);
+    document.documentElement.style.setProperty("--blue", t.blue);
+    document.documentElement.style.setProperty("--sage", t.sage);
+    document.documentElement.style.setProperty("--brown", t.brown);
+    document.documentElement.style.setProperty("--cream-dark", t.creamDark);
+
+    if (previewTab === "home") {
+      const mq = (content.marquee || []).slice(0, 3).join(" · ");
+      device.innerHTML = `
+        <div class="preview-hero">
+          <p class="pv-tagline">${escapeHtml(b.tagline || "")}</p>
+          <h2 class="pv-headline">${escapeHtml(b.headline || "")}</h2>
+          <p class="pv-sub">${escapeHtml(b.subheadline || "")}</p>
+          <span class="pv-btn">Comprar café fresco</span>
+        </div>
+        <div class="preview-marquee">${escapeHtml(mq)}</div>`;
+    } else if (previewTab === "menu") {
+      const pm = content.pages?.menu || {};
+      const items = (content.menu?.[0]?.items || []).slice(0, 4);
+      device.innerHTML = `
+        <div class="preview-menu">
+          <p class="pv-soul">${escapeHtml(pm.tagline || b.tagline || "")}</p>
+          <h2 class="pv-menu-h">${escapeHtml(pm.headline || "Menú")}</h2>
+          ${items.map((i) => `<div class="pv-item"><span>${escapeHtml(i.name)}</span><span>${formatCop(i.price)}</span></div>`).join("")}
+        </div>`;
+    } else {
+      device.innerHTML = `
+        <div class="preview-swatches">
+          ${[["cream", t.cream], ["blue", t.blue], ["sage", t.sage], ["brown", t.brown], ["green", t.green], ["charcoal", t.charcoal], ["cream-dark", t.creamDark], ["blue-mid", t.blueMid]]
+            .map(([k, c]) => `<div class="preview-swatch" style="background:${c};color:${k.includes("cream") || k === "sage" ? t.blue : t.cream}">${k}</div>`).join("")}
+        </div>
+        <div class="preview-hero" style="padding:1rem">
+          <span class="pv-btn">Botón salvia</span>
+          <p style="margin-top:.75rem;font-size:.7rem;opacity:.7">Fondo crema del sitio</p>
+        </div>`;
+    }
+    if (!dirty) $("#preview-dirty-hint")?.classList.add("hidden");
+  }
+
+  function bindPreviewTabs() {
+    $$("#preview-tabs [data-preview-tab]").forEach((btn) => {
+      btn.onclick = () => {
+        previewTab = btn.dataset.previewTab;
+        $$("#preview-tabs [data-preview-tab]").forEach((b) => b.classList.toggle("active", b === btn));
+        updateLivePreview();
+      };
+    });
   }
 
   function imgPreviewSrc(path) {
@@ -187,29 +287,39 @@
     const hash = await sha256(`mas-cafe-admin-v1:${pass}`);
     const match = USER_HASHES.find((u) => u.username === user && u.hash === hash);
     if (!match) { toast("Usuario o contraseña incorrectos", "error"); return; }
-    sessionStorage.setItem("mc_admin", JSON.stringify({ user: match.username, name: match.name, role: match.role }));
+    sessionStorage.setItem("mc_admin", JSON.stringify({
+      user: match.username, name: match.name, role: match.role, at: Date.now(),
+    }));
+    document.body.classList.add("admin-authed");
     showApp(match);
   }
 
   function showApp(session) {
+    if (!session?.user) return;
+    document.body.classList.add("admin-authed");
     $("#login-screen").classList.add("hidden");
     $("#app").classList.remove("hidden");
     $("#user-name").textContent = session.name;
     buildNav();
+    bindPreviewTabs();
     renderPanel(currentPanel);
     updateStatus();
+    updateLivePreview();
     refreshFromServer();
   }
 
   async function refreshFromServer() {
+    if (!requireAuth()) return;
     const latest = await fetchLatestContent();
     if (!latest || dirty) return;
     content = mergeForPublish(latest, content);
     renderPanel(currentPanel);
+    updateLivePreview();
   }
 
   function logout() {
     sessionStorage.removeItem("mc_admin");
+    document.body.classList.remove("admin-authed");
     location.reload();
   }
 
@@ -255,6 +365,7 @@
         else ref[last] = el.value;
         markDirty();
         if (currentPanel === "theme") applyThemePreview();
+        else updateLivePreview();
       });
       if (el.type === "color") {
         el.addEventListener("input", () => applyThemePreview());
@@ -273,12 +384,15 @@
     root.style.setProperty("--sage", t.sage);
     root.style.setProperty("--brown", t.brown);
     root.style.setProperty("--charcoal", t.charcoal);
+    updateLivePreview();
   }
 
   function renderPanel(id) {
+    if (!requireAuth()) return;
     const main = $("#panel-root");
     const titles = {
-      overview: "Panel de administración", help: "Cómo funciona", brand: "Marca e inicio",
+      overview: "Panel de administración", help: "Cómo funciona", preview: "Vista previa del sitio",
+      analytics: "Análisis e ingresos", brand: "Marca e inicio",
       sections: "Secciones del sitio", theme: "Colores del sitio", pages: "Textos de páginas", experiences: "Experiencias",
       products: "Café y tienda", menu: "Menú coffee shop", blog: "Blog", nosotros: "Nosotros",
       contacto: "Contacto", marquee: "Texto marquee", config: "Publicar cambios",
@@ -288,6 +402,8 @@
     const handlers = {
       overview: () => { main.innerHTML = renderOverview(); },
       help: () => { main.innerHTML = renderHelp(); },
+      preview: () => { main.innerHTML = renderPreviewPanel(); bindPreviewPanelEvents(main); },
+      analytics: () => { main.innerHTML = renderAnalytics(); bindAnalyticsEvents(main); },
       brand: () => { main.innerHTML = renderBrand(); bindFields(main, content.brand); },
       sections: () => { main.innerHTML = renderSections(); bindSectionsEvents(main); },
       theme: () => { main.innerHTML = renderTheme(); bindThemeEvents(main); applyThemePreview(); },
@@ -308,6 +424,103 @@
       config: () => { main.innerHTML = renderConfig(); bindConfigEvents(main); },
     };
     (handlers[id] || handlers.overview)();
+    updateLivePreview();
+  }
+
+  function renderPreviewPanel() {
+    return `<div class="card"><h3>Vista previa en vivo</h3>
+      <p style="opacity:.8;line-height:1.65;margin-bottom:1rem">Mientras editas cualquier sección, la columna derecha muestra cómo quedará el sitio. En pantallas pequeñas, usa las pestañas de arriba en la columna de vista previa.</p>
+      <div class="live-preview-tabs" style="margin-bottom:1rem">
+        <button type="button" class="btn btn-ghost" data-set-preview="home">Inicio</button>
+        <button type="button" class="btn btn-ghost" data-set-preview="menu">Menú</button>
+        <button type="button" class="btn btn-ghost" data-set-preview="theme">Colores</button>
+      </div>
+      <button type="button" class="btn btn-blue" id="open-full-preview">Abrir sitio público</button>
+    </div>
+    <div class="card"><h3>Resumen de cambios pendientes</h3>
+      <p id="preview-summary" style="line-height:1.7;opacity:.85"></p>
+    </div>`;
+  }
+
+  function bindPreviewPanelEvents(root) {
+    root.querySelectorAll("[data-set-preview]").forEach((btn) => {
+      btn.onclick = () => {
+        previewTab = btn.dataset.setPreview;
+        $$("#preview-tabs [data-preview-tab]").forEach((b) => {
+          b.classList.toggle("active", b.dataset.previewTab === previewTab);
+        });
+        updateLivePreview();
+      };
+    });
+    $("#open-full-preview", root)?.addEventListener("click", () => window.open("../", "_blank"));
+    const summary = $("#preview-summary", root);
+    if (summary) {
+      const parts = [];
+      if (dirty) parts.push("Hay cambios sin publicar.");
+      parts.push(`Marca: «${content.brand.tagline}»`);
+      parts.push(`${content.routes.filter((r) => r.enabled && r.id !== "home").length} secciones activas`);
+      parts.push(`${content.products.length} productos · ${content.menu.length} categorías de menú`);
+      summary.textContent = parts.join(" · ");
+    }
+  }
+
+  function mergePendingClicks() {
+    try {
+      const pending = JSON.parse(localStorage.getItem("mc_clicks_pending") || "{}");
+      for (const [k, v] of Object.entries(pending)) {
+        if (typeof v === "number" && content.analytics.clicks[k] !== undefined) {
+          content.analytics.clicks[k] += v;
+        }
+      }
+      localStorage.removeItem("mc_clicks_pending");
+    } catch { /* ignore */ }
+  }
+
+  function renderAnalytics() {
+    mergePendingClicks();
+    const c = content.analytics.clicks;
+    const totalClicks = Object.values(c).reduce((a, b) => a + b, 0);
+    const income = [...(content.analytics.monthlyIncome || [])].sort((a, b) => a.month.localeCompare(b.month));
+    const maxIncome = Math.max(...income.map((i) => i.amount), 1);
+    return `<div class="card"><h3>Clics registrados</h3>
+      <p class="analytics-stat">${totalClicks}</p>
+      <p style="opacity:.7;font-size:.85rem;margin-bottom:1rem">Interacciones en el sitio público (WhatsApp, tienda, contacto, redes)</p>
+      ${Object.entries(c).map(([k, v]) => `
+        <div style="margin-bottom:.65rem">
+          <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.25rem">
+            <span>${k}</span><strong>${v}</strong>
+          </div>
+          <div class="analytics-bar-wrap"><div class="analytics-bar" style="width:${totalClicks ? (v / totalClicks) * 100 : 0}%"></div></div>
+        </div>`).join("")}
+    </div>
+    <div class="card"><h3>Tendencia de ingresos (COP)</h3>
+      ${income.length ? income.map((row) => `
+        <div style="margin-bottom:.75rem">
+          <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.25rem">
+            <span>${row.month}</span><strong>${formatCop(row.amount)}</strong>
+          </div>
+          <div class="analytics-bar-wrap"><div class="analytics-bar" style="width:${(row.amount / maxIncome) * 100}%;background:var(--brown)"></div></div>
+        </div>`).join("") : '<p style="opacity:.7">Aún no hay registros. Añade el primer mes abajo.</p>'}
+      <div class="grid-2" style="margin-top:1rem">
+        <div class="field"><label>Mes (AAAA-MM)</label><input id="income-month" placeholder="2025-06" value="${new Date().toISOString().slice(0, 7)}"/></div>
+        <div class="field"><label>Monto COP</label><input id="income-amount" type="number" placeholder="4500000"/></div>
+      </div>
+      <button type="button" class="btn btn-blue" id="add-income" style="margin-top:.75rem">Registrar ingreso del mes</button>
+    </div>`;
+  }
+
+  function bindAnalyticsEvents(root) {
+    $("#add-income", root)?.addEventListener("click", () => {
+      const month = $("#income-month", root)?.value.trim();
+      const amount = Number($("#income-amount", root)?.value);
+      if (!/^\d{4}-\d{2}$/.test(month)) { toast("Mes inválido. Usa formato 2025-06", "error"); return; }
+      if (!amount || amount < 0) { toast("Monto inválido", "error"); return; }
+      const existing = content.analytics.monthlyIncome.findIndex((r) => r.month === month);
+      if (existing >= 0) content.analytics.monthlyIncome[existing].amount = amount;
+      else content.analytics.monthlyIncome.push({ month, amount });
+      markDirty();
+      renderPanel("analytics");
+    });
   }
 
   function renderOverview() {
@@ -847,13 +1060,21 @@
     for (const key of scalarKeys) {
       if (local[key]) out[key] = { ...server[key], ...local[key] };
     }
-    const arrayKeys = ["routes", "brewGuide", "marquee", "experiences", "products", "menu", "blog"];
+    const arrayKeys = ["routes", "brewGuide", "marquee", "experiences", "products", "menu", "blog", "analytics"];
     for (const key of arrayKeys) {
       if (local[key] === undefined || local[key] === null) continue;
       if (Array.isArray(local[key]) && local[key].length === 0 && Array.isArray(server[key]) && server[key].length > 0) {
         continue;
       }
       out[key] = local[key];
+    }
+    if (local.analytics) {
+      out.analytics = {
+        clicks: { ...(server.analytics?.clicks || {}), ...(local.analytics.clicks || {}) },
+        monthlyIncome: local.analytics.monthlyIncome?.length
+          ? local.analytics.monthlyIncome
+          : (server.analytics?.monthlyIncome || []),
+      };
     }
     return out;
   }
@@ -870,6 +1091,7 @@
   }
 
   async function publishSite() {
+    if (!requireAuth()) return;
     const status = $("#publish-status");
     if (status) status.textContent = "Sincronizando con el servidor...";
 
@@ -890,7 +1112,9 @@
       const latest = await fetchLatestContent();
       const toPublish = latest ? mergeForPublish(latest, content) : structuredClone(content);
       ensureRoutes();
+      mergePendingClicks();
       toPublish.routes = content.routes;
+      toPublish.analytics = content.analytics;
       validateBeforePublish(toPublish);
 
       for (const upload of pendingUploads) {
@@ -955,8 +1179,10 @@
     if (dirty) { e.preventDefault(); e.returnValue = ""; }
   });
 
-  const saved = sessionStorage.getItem("mc_admin");
+  const saved = getSession();
   if (saved) {
-    try { showApp(JSON.parse(saved)); } catch { /* ignore */ }
+    showApp(saved);
+  } else {
+    document.body.classList.remove("admin-authed");
   }
 })();

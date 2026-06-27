@@ -290,5 +290,15 @@
     "Más momentos que se quedan",
     "Café de especialidad",
     "Hospitalidad consciente"
-  ]
+  ],
+  "analytics": {
+    "clicks": {
+      "whatsapp": 0,
+      "tienda": 0,
+      "contacto": 0,
+      "instagram": 0,
+      "facebook": 0
+    },
+    "monthlyIncome": []
+  }
 }
