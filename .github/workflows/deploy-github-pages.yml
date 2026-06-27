@@ -25,6 +25,15 @@ jobs:
       - name: Obtener código
         uses: actions/checkout@v4
 
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
       - name: Generar sitio multipágina
         env:
           ADMIN_PUBLISH_KEY: ${{ secrets.ADMIN_PUBLISH_KEY }}
@@ -46,7 +55,14 @@ jobs:
         run: |
           URL="${{ steps.deployment.outputs.page_url }}"
           echo "URL publicada: $URL"
-          for path in "" "cafe/" "menu/" "tienda/" "informe/"; do
+          FAILED=0
+          for path in "" "cafe/" "menu/" "nosotros/" "tienda/" "blog/" "contacto/" "admin/" "informe/"; do
             CODE=$(curl -s -o /dev/null -w "%{http_code}" "${URL}${path}")
             echo "${URL}${path} → HTTP $CODE"
+            if [ "$CODE" != "200" ]; then FAILED=1; fi
           done
+          if [ "$FAILED" -ne 0 ]; then
+            echo "❌ Alguna ruta no respondió HTTP 200"
+            exit 1
+          fi
+          echo "✅ Todas las rutas verificadas"
