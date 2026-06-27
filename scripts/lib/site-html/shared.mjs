@@ -123,25 +123,25 @@ export function siteStyles() {
       font-size:.82rem;font-weight:500;letter-spacing:.02em;
       padding:0;position:relative;transition:color .3s;
     }
-    header:not(.scrolled):not(.inner-page) nav.site-nav a{color:rgba(246,245,239,.88)}
-    header:not(.scrolled):not(.inner-page) nav.site-nav a:hover{color:var(--sage)}
-    header.scrolled nav.site-nav a,header.inner-page.scrolled nav.site-nav a{color:rgba(43,43,43,.8)}
-    header.scrolled nav.site-nav a:hover,header.inner-page.scrolled nav.site-nav a:hover{color:var(--blue)}
-    header.inner-page:not(.scrolled) nav.site-nav a{color:rgba(246,245,239,.85)}
-    header.inner-page:not(.scrolled) nav.site-nav a:hover{color:var(--sage)}
+    header:not(.scrolled):not(.inner-page) nav.site-nav a:not(.nav-cta){color:rgba(246,245,239,.88)}
+    header:not(.scrolled):not(.inner-page) nav.site-nav a:not(.nav-cta):hover{color:var(--sage)}
+    header.scrolled nav.site-nav a:not(.nav-cta),header.inner-page.scrolled nav.site-nav a:not(.nav-cta){color:rgba(43,43,43,.8)}
+    header.scrolled nav.site-nav a:not(.nav-cta):hover,header.inner-page.scrolled nav.site-nav a:not(.nav-cta):hover{color:var(--blue)}
+    header.inner-page:not(.scrolled) nav.site-nav a:not(.nav-cta){color:rgba(246,245,239,.85)}
+    header.inner-page:not(.scrolled) nav.site-nav a:not(.nav-cta):hover{color:var(--sage)}
     nav.site-nav a.active{font-weight:600}
     header.scrolled nav.site-nav a.active,header.inner-page nav.site-nav a.active{color:var(--blue)}
     header:not(.scrolled):not(.inner-page) nav.site-nav a.active{color:var(--cream)}
-    .nav-cta{
+    nav.site-nav a.nav-cta{
       font-size:.78rem;font-weight:700;letter-spacing:.04em;
       padding:.55rem 1.35rem!important;border-radius:999px;transition:background .3s,color .3s;
     }
-    header:not(.scrolled):not(.inner-page) .nav-cta{background:var(--sage);color:var(--blue)}
-    header:not(.scrolled):not(.inner-page) .nav-cta:hover{background:var(--cream)}
-    header.scrolled .nav-cta,header.inner-page.scrolled .nav-cta{background:var(--blue);color:var(--cream)}
-    header.scrolled .nav-cta:hover,header.inner-page.scrolled .nav-cta:hover{background:var(--blue-mid)}
-    header.inner-page:not(.scrolled) .nav-cta{background:var(--sage);color:var(--blue)}
-    header.inner-page:not(.scrolled) .nav-cta:hover{background:var(--cream)}
+    header:not(.scrolled):not(.inner-page) nav.site-nav a.nav-cta{background:var(--sage);color:var(--blue)}
+    header:not(.scrolled):not(.inner-page) nav.site-nav a.nav-cta:hover{background:var(--cream);color:var(--blue)}
+    header.scrolled nav.site-nav a.nav-cta,header.inner-page.scrolled nav.site-nav a.nav-cta{background:var(--blue);color:var(--cream)}
+    header.scrolled nav.site-nav a.nav-cta:hover,header.inner-page.scrolled nav.site-nav a.nav-cta:hover{background:var(--blue-mid);color:var(--cream)}
+    header.inner-page:not(.scrolled) nav.site-nav a.nav-cta{background:var(--sage);color:var(--blue)}
+    header.inner-page:not(.scrolled) nav.site-nav a.nav-cta:hover{background:var(--cream);color:var(--blue)}
 
     /* ── Buttons ── */
     .btn{
@@ -152,8 +152,8 @@ export function siteStyles() {
     .btn:hover{transform:translateY(-1px)}
     .btn-sage{background:var(--sage);color:var(--blue)}
     .btn-sage:hover{background:var(--cream);box-shadow:0 8px 24px rgba(var(--sage-rgb),.4)}
-    .btn-outline{border:1px solid rgba(246,245,239,.3);color:var(--cream);background:transparent}
-    .btn-outline:hover{background:rgba(246,245,239,.1)}
+    .btn-outline{border:1px solid rgba(246,245,239,.35);color:var(--cream);background:transparent}
+    .btn-outline:hover{background:rgba(246,245,239,.12);color:var(--cream)}
     .btn-blue{background:var(--blue);color:var(--cream)}
     .btn-blue:hover{background:var(--blue-mid);box-shadow:0 8px 24px rgba(7,57,84,.25)}
     .btn-green{background:var(--green);color:#fff}
