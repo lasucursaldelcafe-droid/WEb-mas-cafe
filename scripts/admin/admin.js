@@ -14,7 +14,8 @@
   if (!content.theme) {
     content.theme = {
       cream: "#f6f5ef", creamDark: "#ebe8df", blue: "#073954", blueMid: "#0a4d6e",
-      green: "#1bb175", sage: "#a8c5b0", brown: "#8b6f47", charcoal: "#2a2a2a",
+      green: "#1bb175", sage: "#d8daa8", brown: "#b07a3a", brownDark: "#8a4a24",
+      cherry: "#e84545", charcoal: "#2b2b2b",
     };
   }
   if (!content.pages) content.pages = {};
@@ -425,7 +426,11 @@
       });
     });
     $("#reset-theme", root)?.addEventListener("click", () => {
-      content.theme = { cream: "#f6f5ef", creamDark: "#ebe8df", blue: "#073954", blueMid: "#0a4d6e", green: "#1bb175", sage: "#a8c5b0", brown: "#8b6f47", charcoal: "#2a2a2a" };
+      content.theme = {
+        cream: "#f6f5ef", creamDark: "#ebe8df", blue: "#073954", blueMid: "#0a4d6e",
+        green: "#1bb175", sage: "#d8daa8", brown: "#b07a3a", brownDark: "#8a4a24",
+        cherry: "#e84545", charcoal: "#2b2b2b",
+      };
       markDirty();
       renderPanel("theme");
     });

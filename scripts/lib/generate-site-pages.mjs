@@ -17,10 +17,14 @@ export function collectImagePaths() {
   const site = loadSite();
   const paths = new Set([
     "/images/brand/horizontal-crema.png",
+    "/images/brand/horizontal-azul.png",
+    "/images/brand/favs.png",
     "/images/grafica/1.png",
     "/images/grafica/2.png",
     "/images/grafica/3.png",
     "/images/products/caja-cafe.png",
+    "/images/decor/Recurso-4.svg",
+    "/images/decor/Recurso-6.svg",
   ]);
   for (const exp of site.experiences) paths.add(exp.image);
   for (const p of site.products) paths.add(p.image);

@@ -5,12 +5,22 @@ import {
   shell,
 } from "./shared.mjs";
 
+function marqueeHtml(items) {
+  const doubled = [...items, ...items];
+  return doubled
+    .map(
+      (t) =>
+        `<span class="marquee-item">${t}<span class="marquee-dot" aria-hidden="true"></span></span>`
+    )
+    .join("");
+}
+
 function visitBand(href, brand) {
   return `
   <section>
     <div class="wrap">
       <div class="cta">
-        <p class="tagline" style="color:var(--sage);font-family:'Playfair Display',serif;font-style:italic;font-size:1.65rem">${brand.tagline}</p>
+        <p class="cta-tagline">${brand.tagline}</p>
         <h2>Te esperamos en Cali</h2>
         <p>${brand.address}<br/>${brand.city}</p>
         <p style="font-size:.88rem;margin-top:.5rem;opacity:.8">${brand.hours}</p>
@@ -58,22 +68,32 @@ export function pageHome() {
   const posts = blog.filter((p) => p.published).slice(0, 2);
 
   const body = `
-  <section class="hero">
-    <div class="wrap">
-      <div class="inner">
-        <p class="tagline">${brand.tagline}</p>
-        <h1>${brand.headline}</h1>
-        <p>${brand.subheadline}</p>
-        <p class="descriptor">${brand.descriptor}</p>
-        <div class="actions">
-          <a class="btn btn-sage" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-          <a class="btn btn-outline" href="${href("/contacto")}">Visítanos</a>
-        </div>
+  <section class="editorial-hero">
+    <img class="decor decor-1" src="${img("/images/decor/Recurso-4.svg")}" alt="" aria-hidden="true"/>
+    <img class="decor decor-2" src="${img("/images/decor/Recurso-6.svg")}" alt="" aria-hidden="true"/>
+    <div class="hero-art hero-art-main">
+      <img src="${img("/images/grafica/3.png")}" alt="" class="float-soft"/>
+    </div>
+    <div class="hero-art hero-art-secondary">
+      <img src="${img("/images/grafica/1.png")}" alt=""/>
+    </div>
+    <div class="wrap hero-content">
+      <p class="tagline">${brand.tagline}</p>
+      <h1>${brand.headline}</h1>
+      <p class="subhead">${brand.subheadline}</p>
+      <p class="descriptor">${brand.descriptor}</p>
+      <div class="actions">
+        <a class="btn btn-sage" href="${href("/tienda")}">Comprar café fresco</a>
+        <a class="btn btn-outline" href="${href("/nosotros")}">Nuestra historia</a>
+      </div>
+      <div class="brand-note">
+        <img src="${img("/images/brand/favs.png")}" alt=""/>
+        <p>Una experiencia que se vive sin prisa. Hospitalidad consciente en Cali.</p>
       </div>
     </div>
   </section>
   <div class="marquee" aria-hidden="true">
-    <div class="marquee-track">${[...marquee, ...marquee].map((t) => `<span>${t} ·</span>`).join("")}</div>
+    <div class="marquee-track">${marqueeHtml(marquee)}</div>
   </div>
   <section>
     <div class="wrap">
@@ -138,7 +158,7 @@ export function pageCafe() {
   <section>
     <div class="wrap">
       <div class="grid-2">
-        <div class="product-img" style="background:rgba(168,197,176,.2);border-radius:var(--radius);padding:2rem">
+        <div class="product-img" style="border-radius:var(--radius);padding:2rem">
           <img src="${img("/images/products/caja-cafe.png")}" alt="Empaque Más Café"/>
         </div>
         <div>

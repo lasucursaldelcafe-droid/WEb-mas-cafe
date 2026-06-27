@@ -55,6 +55,20 @@ for (const assetPath of collectImagePaths()) {
   copied++;
 }
 
+const fontsDir = path.join(root, "public/fonts");
+if (existsSync(fontsDir)) {
+  const fontsOut = path.join(outDir, "fonts");
+  mkdirSync(fontsOut, { recursive: true });
+  for (const file of ["Satoshi-Regular.woff2", "Satoshi-Medium.woff2", "Satoshi-Bold.woff2", "PlayfairDisplay-Regular.ttf", "PlayfairDisplay-Medium.ttf", "Marydale-Regular.ttf"]) {
+    const src = path.join(fontsDir, file);
+    if (existsSync(src)) {
+      cpSync(src, path.join(fontsOut, file));
+      copied++;
+    }
+  }
+  console.log("  • fonts/ (tipografías de marca)");
+}
+
 console.log(`\n✅ ${pages.length + 1} páginas · ${copied} imágenes\n`);
 console.log("Local:    npm run preview");
 console.log("Público:  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/\n");
