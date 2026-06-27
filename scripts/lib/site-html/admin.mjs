@@ -14,6 +14,16 @@ const REPO_CONFIG = {
   path: "content/site.json",
 };
 
+const DEFAULT_ROUTES = [
+  { id: "home", slug: "", label: "Inicio", enabled: true, builtin: true, inNav: false },
+  { id: "cafe", slug: "cafe", label: "Café", enabled: true, builtin: true, inNav: true },
+  { id: "menu", slug: "menu", label: "Menú", enabled: true, builtin: true, inNav: true },
+  { id: "nosotros", slug: "nosotros", label: "Nosotros", enabled: true, builtin: true, inNav: true },
+  { id: "tienda", slug: "tienda", label: "Tienda", enabled: true, builtin: true, inNav: true },
+  { id: "blog", slug: "blog", label: "Blog", enabled: true, builtin: true, inNav: true },
+  { id: "contacto", slug: "contacto", label: "Contacto", enabled: true, builtin: true, inNav: true },
+];
+
 export function generateAdminPage() {
   const site = loadSite();
   const users = JSON.parse(readFileSync(path.join(root, "content/users.json"), "utf8"));
@@ -24,7 +34,7 @@ export function generateAdminPage() {
     hash: hashPassword(u.password),
   }));
 
-  const publishKey = process.env.ADMIN_PUBLISH_KEY || "";
+  const publishSecret = process.env.ADMIN_PUBLISH_KEY || "";
 
   const css = readFileSync(path.join(root, "scripts/admin/admin.css"), "utf8");
   const js = readFileSync(path.join(root, "scripts/admin/admin.js"), "utf8");
@@ -88,7 +98,8 @@ export function generateAdminPage() {
     const SITE_BOOT = ${JSON.stringify(site)};
     const REPO_CONFIG = ${JSON.stringify(REPO_CONFIG)};
     const USER_HASHES = ${JSON.stringify(userHashes)};
-    const PUBLISH_KEY = ${JSON.stringify(publishKey)};
+    const DEFAULT_ROUTES = ${JSON.stringify(DEFAULT_ROUTES)};
+    const PUBLISH_SECRET = ${JSON.stringify(publishSecret)};
   </script>
   <script>${js}</script>
 </body>

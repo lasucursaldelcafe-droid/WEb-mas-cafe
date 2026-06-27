@@ -17,11 +17,11 @@ jobs:
           RECEIVED: ${{ github.event.client_payload.key }}
         run: |
           if [ -z "$EXPECTED" ]; then
-            echo "::error::Falta el secret ADMIN_PUBLISH_KEY en el repositorio."
+            echo "::error::Falta configurar la publicación automática en el repositorio."
             exit 1
           fi
           if [ "$EXPECTED" != "$RECEIVED" ]; then
-            echo "::error::Clave de publicación inválida."
+            echo "::error::Solicitud de publicación no autorizada."
             exit 1
           fi
 
@@ -37,7 +37,8 @@ jobs:
           const path = require('path');
           const images = JSON.parse(process.env.IMAGES_JSON || '[]');
           for (const img of images) {
-            const dest = img.path.replace(/^\//, '');
+            const rel = img.path.replace(/^\//, '');
+            const dest = rel.startsWith('public/') ? rel : 'public/' + rel;
             fs.mkdirSync(path.dirname(dest), { recursive: true });
             fs.writeFileSync(dest, Buffer.from(img.content, 'base64'));
             console.log('✓', dest);

@@ -2,6 +2,7 @@ import { readFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { brandThemeCss, fontFaces } from "./brand.mjs";
+import { getNavRoutes } from "./routes.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "../../..");
@@ -31,14 +32,20 @@ export function createPathHelpers(depth) {
   };
 }
 
-export const NAV = [
-  { id: "cafe", label: "Café", route: "/cafe" },
-  { id: "menu", label: "Menú", route: "/menu" },
-  { id: "nosotros", label: "Nosotros", route: "/nosotros" },
-  { id: "tienda", label: "Tienda", route: "/tienda" },
-  { id: "blog", label: "Blog", route: "/blog" },
-  { id: "contacto", label: "Contacto", route: "/contacto" },
-];
+export function getNav(site) {
+  return getNavRoutes(site ?? loadSite()).map((r) => ({
+    id: r.id,
+    label: r.label,
+    route: r.slug ? `/${r.slug}` : "/",
+  }));
+}
+
+/** @deprecated use getNav(loadSite()) */
+export const NAV = getNavRoutes(loadSite()).map((r) => ({
+  id: r.id,
+  label: r.label,
+  route: r.slug ? `/${r.slug}` : "/",
+}));
 
 export function siteStyles() {
   return `
@@ -520,18 +527,19 @@ function whatsappFloat(whatsapp) {
 export function shell({ title, description, depth, pageId, heroArt, body, year = new Date().getFullYear() }) {
   const site = loadSite();
   const { brand } = site;
+  const nav = getNav(site);
   const { img, href } = createPathHelpers(depth);
   const heroVar = heroArt ? `--hero-art:url('${img(heroArt)}')` : `--hero-art:none`;
   const isHome = pageId === "home";
 
-  const navLinks = NAV.map(
-    (n) =>
-      `<a href="${href(n.route)}" class="${pageId === n.id ? "active" : ""}">${n.label}</a>`
-  ).join("");
+  const navLinks = nav
+    .map(
+      (n) =>
+        `<a href="${href(n.route)}" class="${pageId === n.id ? "active" : ""}">${n.label}</a>`
+    )
+    .join("");
 
-  const overlayLinks = NAV.map(
-    (n) => `<a href="${href(n.route)}">${n.label}</a>`
-  ).join("");
+  const overlayLinks = nav.map((n) => `<a href="${href(n.route)}">${n.label}</a>`).join("");
 
   return `<!DOCTYPE html>
 <html lang="es">

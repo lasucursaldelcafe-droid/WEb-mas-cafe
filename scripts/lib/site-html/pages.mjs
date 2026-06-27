@@ -4,6 +4,7 @@ import {
   price,
   shell,
 } from "./shared.mjs";
+import { getEnabledRoutes } from "./routes.mjs";
 
 function marqueeHtml(items) {
   const doubled = [...items, ...items];
@@ -403,12 +404,58 @@ export function pageContacto() {
   });
 }
 
-export const SITE_PAGES = [
-  { path: "index.html", generator: pageHome },
-  { path: "cafe/index.html", generator: pageCafe },
-  { path: "menu/index.html", generator: pageMenu },
-  { path: "nosotros/index.html", generator: pageNosotros },
-  { path: "tienda/index.html", generator: pageTienda },
-  { path: "blog/index.html", generator: pageBlog },
-  { path: "contacto/index.html", generator: pageContacto },
-];
+export function pageCustom(route) {
+  const site = loadSite();
+  const { brand } = site;
+  const pg = site.pages?.[route.slug] || site.pages?.[route.id] || {};
+  const { href } = createPathHelpers(1);
+
+  const body = `
+  <section class="page-hero light">
+    <div class="wrap inner">
+      <p class="tagline">${pg.tagline || route.label}</p>
+      <h1>${pg.headline || route.label}</h1>
+    </div>
+  </section>
+  <section>
+    <div class="wrap" style="max-width:42rem;margin:0 auto">
+      <p style="font-size:1.05rem;line-height:1.8;opacity:.85">${pg.intro || pg.body || ""}</p>
+    </div>
+  </section>
+  ${visitBand(href, brand)}`;
+
+  return shell({
+    title: route.label,
+    description: pg.intro || pg.headline || route.label,
+    depth: 1,
+    pageId: route.id,
+    body,
+  });
+}
+
+const BUILTIN_GENERATORS = {
+  cafe: pageCafe,
+  menu: pageMenu,
+  nosotros: pageNosotros,
+  tienda: pageTienda,
+  blog: pageBlog,
+  contacto: pageContacto,
+};
+
+export function buildSitePages() {
+  const site = loadSite();
+  const pages = [{ path: "index.html", generator: pageHome }];
+
+  for (const route of getEnabledRoutes(site)) {
+    if (route.builtin && BUILTIN_GENERATORS[route.id]) {
+      pages.push({ path: `${route.slug}/index.html`, generator: BUILTIN_GENERATORS[route.id] });
+    } else if (!route.builtin) {
+      const gen = () => pageCustom(route);
+      pages.push({ path: `${route.slug}/index.html`, generator: gen });
+    }
+  }
+  return pages;
+}
+
+/** @deprecated use buildSitePages() */
+export const SITE_PAGES = buildSitePages();

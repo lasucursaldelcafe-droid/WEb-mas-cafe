@@ -1,4 +1,4 @@
-/* global SITE_BOOT, REPO_CONFIG, USER_HASHES, PUBLISH_KEY */
+/* global SITE_BOOT, REPO_CONFIG, USER_HASHES, PUBLISH_SECRET, DEFAULT_ROUTES */
 
 (function () {
   "use strict";
@@ -20,6 +20,28 @@
   }
   if (!content.pages) content.pages = {};
   if (!content.brewGuide) content.brewGuide = [];
+  if (!content.routes?.length) content.routes = structuredClone(DEFAULT_ROUTES);
+
+  function ensureRoutes() {
+    const byId = new Map(content.routes.map((r) => [r.id, r]));
+    content.routes = DEFAULT_ROUTES.map((def) => ({ ...def, ...byId.get(def.id) }));
+    for (const r of byId.values()) {
+      if (!r.builtin && !content.routes.find((m) => m.id === r.id)) {
+        content.routes.push({ ...r });
+      }
+    }
+  }
+  ensureRoutes();
+
+  function slugify(text) {
+    return text
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 40);
+  }
 
   const IMAGE_SPECS = {
     experience: "800 × 1000 px (vertical 4:5). PNG o WebP. Máx. 500 KB. Luz natural, sin texto encima.",
@@ -33,6 +55,7 @@
     { id: "help", label: "Cómo funciona", icon: "?" },
     { id: "brand", label: "Marca e inicio", icon: "◇" },
     { id: "theme", label: "Colores", icon: "◐" },
+    { id: "sections", label: "Secciones", icon: "▣" },
     { id: "pages", label: "Textos de páginas", icon: "¶" },
     { id: "experiences", label: "Experiencias", icon: "◎" },
     { id: "products", label: "Café / Tienda", icon: "☕" },
@@ -175,6 +198,14 @@
     buildNav();
     renderPanel(currentPanel);
     updateStatus();
+    refreshFromServer();
+  }
+
+  async function refreshFromServer() {
+    const latest = await fetchLatestContent();
+    if (!latest || dirty) return;
+    content = mergeForPublish(latest, content);
+    renderPanel(currentPanel);
   }
 
   function logout() {
@@ -248,7 +279,7 @@
     const main = $("#panel-root");
     const titles = {
       overview: "Panel de administración", help: "Cómo funciona", brand: "Marca e inicio",
-      theme: "Colores del sitio", pages: "Textos de páginas", experiences: "Experiencias",
+      sections: "Secciones del sitio", theme: "Colores del sitio", pages: "Textos de páginas", experiences: "Experiencias",
       products: "Café y tienda", menu: "Menú coffee shop", blog: "Blog", nosotros: "Nosotros",
       contacto: "Contacto", marquee: "Texto marquee", config: "Publicar cambios",
     };
@@ -258,6 +289,7 @@
       overview: () => { main.innerHTML = renderOverview(); },
       help: () => { main.innerHTML = renderHelp(); },
       brand: () => { main.innerHTML = renderBrand(); bindFields(main, content.brand); },
+      sections: () => { main.innerHTML = renderSections(); bindSectionsEvents(main); },
       theme: () => { main.innerHTML = renderTheme(); bindThemeEvents(main); applyThemePreview(); },
       pages: () => { main.innerHTML = renderPages(); bindPagesEvents(main); },
       experiences: () => { main.innerHTML = renderExperiences(); bindExperienceEvents(main); },
@@ -290,6 +322,7 @@
         <div class="row" style="margin-top:.75rem;flex-wrap:wrap;gap:.5rem;display:flex">
           <button type="button" class="btn btn-primary" data-goto="brand">Editar marca</button>
           <button type="button" class="btn btn-ghost" data-goto="theme">Colores</button>
+          <button type="button" class="btn btn-ghost" data-goto="sections">Secciones</button>
           <button type="button" class="btn btn-ghost" data-goto="menu">Menú</button>
           <button type="button" class="btn btn-blue" data-goto="config">Publicar</button>
         </div>
@@ -306,6 +339,7 @@
     <div class="card"><h3>Guía rápida</h3>
       <ol class="help-steps">
         <li><strong>Edita</strong> el contenido en las secciones del menú lateral (marca, menú, blog, colores, etc.).</li>
+        <li><strong>Gestiona secciones</strong> — activa, desactiva o crea subcarpetas nuevas en «Secciones».</li>
         <li><strong>Revisa imágenes</strong> — cada campo muestra la imagen actual y las medidas recomendadas.</li>
         <li><strong>Publica</strong> con el botón azul «Guardar y publicar». El sitio se actualiza en ~1 minuto.</li>
       </ol>
@@ -336,6 +370,89 @@
       ${field("Titular principal", "headline", b.headline)}
       ${field("Subtítulo", "subheadline", b.subheadline, "textarea")}
     </div></div>`;
+  }
+
+  function renderSections() {
+    ensureRoutes();
+    const rows = content.routes
+      .filter((r) => r.id !== "home")
+      .map((r) => {
+        const idx = content.routes.indexOf(r);
+        return `<tr data-route-idx="${idx}">
+          <td><strong>${escapeHtml(r.label)}</strong>${r.builtin ? ' <span class="chip" style="font-size:.65rem">integrada</span>' : ""}</td>
+          <td><code>/${escapeHtml(r.slug || "")}/</code></td>
+          <td><label class="checkbox-row"><input type="checkbox" data-route-enabled="${idx}" ${r.enabled ? "checked" : ""}/> Activa</label></td>
+          <td><label class="checkbox-row"><input type="checkbox" data-route-nav="${idx}" ${r.inNav ? "checked" : ""} ${!r.enabled ? "disabled" : ""}/> En menú</label></td>
+          <td>${r.builtin ? "—" : `<button type="button" class="btn btn-ghost" data-del-route="${idx}">Eliminar</button>`}</td>
+        </tr>`;
+      })
+      .join("");
+
+    return `<div class="card"><h3>Subcarpetas del sitio</h3>
+      <p style="opacity:.75;margin-bottom:1rem;line-height:1.65">Activa o desactiva cada sección. Las desactivadas no aparecen en el menú ni se publican como página.</p>
+      <table class="data-table" style="width:100%;border-collapse:collapse;font-size:.9rem">
+        <thead><tr><th align="left">Nombre</th><th align="left">URL</th><th>Estado</th><th>Menú</th><th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div class="card"><h3>Nueva sección</h3>
+      <div class="grid-2">
+        <div class="field"><label for="new-route-label">Nombre visible</label><input id="new-route-label" placeholder="Ej. Eventos"/></div>
+        <div class="field"><label for="new-route-slug">URL (subcarpeta)</label><input id="new-route-slug" placeholder="eventos"/></div>
+      </div>
+      <button type="button" class="btn btn-blue" id="add-route-btn" style="margin-top:1rem">Crear sección</button>
+      <p style="margin-top:.75rem;font-size:.85rem;opacity:.7">Solo letras minúsculas, números y guiones. Se creará en <code>/tu-seccion/</code></p>
+    </div>`;
+  }
+
+  function bindSectionsEvents(root) {
+    root.querySelectorAll("[data-route-enabled]").forEach((el) => {
+      el.addEventListener("change", () => {
+        const r = content.routes[Number(el.dataset.routeEnabled)];
+        r.enabled = el.checked;
+        if (!r.enabled) r.inNav = false;
+        markDirty();
+        renderPanel("sections");
+      });
+    });
+    root.querySelectorAll("[data-route-nav]").forEach((el) => {
+      el.addEventListener("change", () => {
+        content.routes[Number(el.dataset.routeNav)].inNav = el.checked;
+        markDirty();
+      });
+    });
+    root.querySelectorAll("[data-del-route]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = Number(btn.dataset.delRoute);
+        const r = content.routes[idx];
+        if (r.builtin) return;
+        if (!confirm(`¿Eliminar la sección «${r.label}»?`)) return;
+        content.routes.splice(idx, 1);
+        delete content.pages[r.slug];
+        markDirty();
+        renderPanel("sections");
+      });
+    });
+    const labelInput = $("#new-route-label", root);
+    const slugInput = $("#new-route-slug", root);
+    if (labelInput && slugInput) {
+      labelInput.addEventListener("input", () => {
+        if (!slugInput.dataset.touched) slugInput.value = slugify(labelInput.value);
+      });
+      slugInput.addEventListener("input", () => { slugInput.dataset.touched = "1"; });
+    }
+    $("#add-route-btn", root)?.addEventListener("click", () => {
+      const label = labelInput?.value.trim();
+      const slug = slugify(slugInput?.value || label);
+      if (!label || !slug) { toast("Nombre y URL son obligatorios", "error"); return; }
+      if (content.routes.some((r) => r.slug === slug)) { toast("Ya existe una sección con esa URL", "error"); return; }
+      const id = `custom-${slug}-${Date.now()}`;
+      content.routes.push({ id, slug, label, enabled: true, builtin: false, inNav: true });
+      content.pages[slug] = { tagline: label, headline: label, intro: "" };
+      markDirty();
+      toast("Sección creada", "success");
+      renderPanel("sections");
+    });
   }
 
   function renderTheme() {
@@ -371,10 +488,14 @@
       ["blog", "Blog", ["tagline", "headline"]],
       ["contacto", "Contacto", ["tagline", "headline", "visitTitle", "writeTitle", "formTitle"]],
     ];
+    const custom = content.routes.filter((r) => !r.builtin && r.id !== "home");
+    for (const r of custom) {
+      sections.push([r.slug, r.label, ["tagline", "headline", "intro"]]);
+    }
     return sections.map(([key, title, fields]) => `
       <div class="card" data-page-section="${key}">
         <h3>${title}</h3>
-        ${fields.map((f) => field(f, `pg-${key}-${f}`, pg[key]?.[f] || "", ["intro", "disclaimer"].includes(f) || f.includes("Note") ? "textarea" : "text")).join("")}
+        ${fields.map((f) => field(f, `pg-${key}-${f}`, pg[key]?.[f] || "", ["intro", "disclaimer", "body"].includes(f) || f.includes("Note") ? "textarea" : "text")).join("")}
       </div>`).join("") + `
     <div class="card"><h3>Guía de preparación (página Café)</h3>
       <textarea id="brew-guide" style="width:100%;min-height:140px;font:inherit;padding:1rem;border-radius:.6rem;border:1px solid rgba(7,57,84,.15)">${content.brewGuide.join("\n")}</textarea>
@@ -680,15 +801,12 @@
   }
 
   function renderConfig() {
-    const canPublish = !!PUBLISH_KEY;
     return `<div class="card"><h3>Publicar en el sitio web</h3>
       <p style="margin-bottom:1rem;opacity:.85;line-height:1.65">
-        ${canPublish
-          ? "Pulsa <strong>Guardar y publicar</strong> y los cambios (textos, colores e imágenes) se suben automáticamente. El sitio se actualiza en ~1 minuto."
-          : "En local, descarga el JSON y súbelo al repositorio. En el sitio en línea, la publicación es automática."}
+        Pulsa <strong>Guardar y publicar</strong> y los cambios (textos, colores, secciones e imágenes) se suben automáticamente. El sitio se actualiza en ~1 minuto.
       </p>
       <button type="button" class="btn btn-blue" id="publish-btn" style="font-size:1rem;padding:.85rem 2rem">🚀 Guardar y publicar</button>
-      <button type="button" class="btn btn-ghost" id="download-json" style="margin-left:.5rem">Descargar JSON</button>
+      <button type="button" class="btn btn-ghost" id="download-json" style="margin-left:.5rem">Descargar copia de seguridad</button>
       <p id="publish-status" style="margin-top:1rem;opacity:.75"></p>
     </div>
     <div class="card"><h3>URL pública</h3>
@@ -711,24 +829,70 @@
     return btoa(unescape(encodeURIComponent(str)));
   }
 
+  async function fetchLatestContent() {
+    const { owner, repo, branch, path: jsonPath } = REPO_CONFIG;
+    const url = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${jsonPath}?t=${Date.now()}`;
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  }
+
+  function mergeForPublish(server, local) {
+    const out = structuredClone(server);
+    const scalarKeys = ["brand", "theme", "pages"];
+    for (const key of scalarKeys) {
+      if (local[key]) out[key] = { ...server[key], ...local[key] };
+    }
+    const arrayKeys = ["routes", "brewGuide", "marquee", "experiences", "products", "menu", "blog"];
+    for (const key of arrayKeys) {
+      if (local[key] === undefined || local[key] === null) continue;
+      if (Array.isArray(local[key]) && local[key].length === 0 && Array.isArray(server[key]) && server[key].length > 0) {
+        continue;
+      }
+      out[key] = local[key];
+    }
+    return out;
+  }
+
+  function validateBeforePublish(data) {
+    if (!data.brand?.name?.trim()) throw new Error("Falta el nombre de la marca. Revisa la sección Marca.");
+    if (!data.routes?.length) throw new Error("No hay secciones configuradas.");
+    const emptyArrays = ["experiences", "products", "menu"].filter(
+      (k) => !data[k]?.length
+    );
+    if (emptyArrays.length === 3) {
+      throw new Error("El contenido parece vacío. Recarga el panel antes de publicar para evitar borrar datos.");
+    }
+  }
+
   async function publishSite() {
     const status = $("#publish-status");
-    if (status) status.textContent = "Publicando...";
+    if (status) status.textContent = "Sincronizando con el servidor...";
 
-    if (!PUBLISH_KEY) {
-      if (status) status.textContent = "Descarga el JSON y súbelo al repositorio, o usa el panel en línea.";
-      toast("Publicación automática solo disponible en el sitio publicado", "error");
+    if (!PUBLISH_SECRET) {
+      if (status) status.textContent = "Publica desde el sitio en línea (/admin/).";
+      toast("La publicación automática solo funciona en el panel publicado", "error");
       return;
     }
 
     const { owner, repo, branch, path: jsonPath } = REPO_CONFIG;
     const headers = {
-      Authorization: `Bearer ${PUBLISH_KEY}`,
+      Authorization: `Bearer ${PUBLISH_SECRET}`,
       Accept: "application/vnd.github+json",
       "Content-Type": "application/json",
     };
 
     try {
+      const latest = await fetchLatestContent();
+      const toPublish = latest ? mergeForPublish(latest, content) : structuredClone(content);
+      ensureRoutes();
+      toPublish.routes = content.routes;
+      validateBeforePublish(toPublish);
+
       for (const upload of pendingUploads) {
         const filePath = "public/" + upload.path.replace(/^\//, "");
         if (status) status.textContent = `Subiendo ${filePath}...`;
@@ -736,9 +900,10 @@
       }
 
       if (status) status.textContent = "Actualizando contenido...";
-      const json = JSON.stringify(content, null, 2) + "\n";
+      const json = JSON.stringify(toPublish, null, 2) + "\n";
       await putGitHubFile(owner, repo, branch, jsonPath, toBase64Utf8(json), headers, "admin: actualizar contenido del sitio");
 
+      content = structuredClone(toPublish);
       dirty = false;
       pendingUploads.length = 0;
       $("#dirty-badge")?.classList.add("hidden");
@@ -769,11 +934,7 @@
 
   function updateStatus() {
     const bar = $("#publish-status-bar");
-    if (bar) {
-      bar.innerHTML = PUBLISH_KEY
-        ? '<span class="status-dot"></span> Publicación automática activa'
-        : '<span class="status-dot warn"></span> Modo local';
-    }
+    if (bar) bar.innerHTML = '<span class="status-dot"></span> Listo para editar y publicar';
   }
 
   document.addEventListener("click", (e) => {

@@ -53,6 +53,15 @@
     "cherry": "#e84545",
     "charcoal": "#2b2b2b"
   },
+  "routes": [
+    { "id": "home", "slug": "", "label": "Inicio", "enabled": true, "builtin": true, "inNav": false },
+    { "id": "cafe", "slug": "cafe", "label": "Café", "enabled": true, "builtin": true, "inNav": true },
+    { "id": "menu", "slug": "menu", "label": "Menú", "enabled": true, "builtin": true, "inNav": true },
+    { "id": "nosotros", "slug": "nosotros", "label": "Nosotros", "enabled": true, "builtin": true, "inNav": true },
+    { "id": "tienda", "slug": "tienda", "label": "Tienda", "enabled": true, "builtin": true, "inNav": true },
+    { "id": "blog", "slug": "blog", "label": "Blog", "enabled": true, "builtin": true, "inNav": true },
+    { "id": "contacto", "slug": "contacto", "label": "Contacto", "enabled": true, "builtin": true, "inNav": true }
+  ],
   "pages": {
     "home": {
       "experiencesLabel": "La experiencia",

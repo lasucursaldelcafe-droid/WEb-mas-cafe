@@ -1,5 +1,5 @@
 import { loadSite } from "./site-html/shared.mjs";
-import { pageHome, SITE_PAGES } from "./site-html/pages.mjs";
+import { buildSitePages, pageHome } from "./site-html/pages.mjs";
 
 /** Compatibilidad: devuelve solo la home */
 export function generatePublicHtml() {
@@ -7,7 +7,7 @@ export function generatePublicHtml() {
 }
 
 export function generateSitePages() {
-  return SITE_PAGES.map(({ path, generator }) => ({
+  return buildSitePages().map(({ path, generator }) => ({
     path,
     html: generator(),
   }));

@@ -177,3 +177,6 @@ a { color: var(--blue-mid); }
 .color-input-row input[type="text"] { flex: 1; }
 .theme-preview .preview-swatch { font-size: .9rem; font-weight: 600; }
 .btn-sm { padding: .35rem .75rem; font-size: .78rem; }
+.data-table th, .data-table td { padding: .65rem .5rem; border-bottom: 1px solid rgba(7,57,84,.08); vertical-align: middle; }
+.data-table th { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; opacity: .6; }
+.data-table tbody tr:last-child td { border-bottom: none; }
