@@ -30,11 +30,6 @@
 
   const SESSION_MAX_MS = 8 * 60 * 60 * 1000;
 
-  const PREVIEW_PANELS = new Set([
-    "brand", "theme", "sections", "pages", "experiences", "products",
-    "menu", "blog", "nosotros", "contacto", "marquee",
-  ]);
-
   function getSession() {
     const raw = sessionStorage.getItem("mc_admin");
     if (!raw) return null;
@@ -108,6 +103,8 @@
     { id: "marquee", label: "Marquee", icon: "∞" },
     { id: "config", label: "Publicar", icon: "⚙" },
   ];
+
+  const PREVIEW_PANELS = new Set(PANELS.map((p) => p.id));
 
   const THEME_FIELDS = [
     ["cream", "Crema (fondo)"],
@@ -187,15 +184,78 @@
     </div>`;
   }
 
+  function previewOverview() {
+    const lines = (content.marquee || []).slice(0, 3).join(" · ");
+    return `<div class="ctx-preview-stack">
+      ${previewBrand()}
+      <div class="ctx-preview ctx-marquee">
+        <p class="ctx-label">Marquee del inicio</p>
+        <div class="ctx-marquee-track">${escapeHtml(lines || "Texto del marquee")}</div>
+      </div>
+      <div class="ctx-preview ctx-stats">
+        <p class="ctx-label">Resumen del sitio</p>
+        <p class="ctx-body">${content.experiences.length} experiencias · ${content.products.length} productos · ${content.menu.length} categorías de menú</p>
+      </div>
+    </div>`;
+  }
+
+  function previewHelp() {
+    return `<div class="ctx-preview ctx-help">
+      <p class="ctx-label">Cómo editar</p>
+      <ol class="ctx-steps">
+        <li>Elige una sección del menú lateral</li>
+        <li>Edita los campos a la izquierda</li>
+        <li>Revisa la vista previa a la derecha</li>
+        <li>Pulsa «Guardar y publicar»</li>
+      </ol>
+      <div class="ctx-preview ctx-hero ctx-hero-mini" style="margin-top:.75rem">
+        <p class="ctx-sub" style="opacity:.7">Cada sección tiene su propia vista previa</p>
+      </div>
+    </div>`;
+  }
+
+  function previewAnalytics() {
+    const c = content.analytics.clicks;
+    const total = Object.values(c).reduce((a, b) => a + b, 0);
+    const income = [...(content.analytics.monthlyIncome || [])].sort((a, b) => a.month.localeCompare(b.month)).slice(-3);
+    const maxIncome = Math.max(...income.map((i) => i.amount), 1);
+    return `<div class="ctx-preview ctx-analytics">
+      <p class="ctx-label">Clics · ${total} total</p>
+      ${Object.entries(c).map(([k, v]) => `
+        <div class="ctx-bar-row"><span>${k}</span><div class="ctx-bar"><i style="width:${total ? (v / total) * 100 : 0}%"></i></div><strong>${v}</strong></div>`).join("")}
+      ${income.length ? `<p class="ctx-label" style="margin-top:.75rem">Ingresos recientes</p>
+        ${income.map((row) => `<div class="ctx-bar-row"><span>${row.month}</span><div class="ctx-bar ctx-bar-brown"><i style="width:${(row.amount / maxIncome) * 100}%"></i></div></div>`).join("")}` : ""}
+    </div>`;
+  }
+
+  function previewConfig() {
+    return `<div class="ctx-preview-stack">
+      ${previewBrand()}
+      <div class="ctx-preview ctx-publish-status">
+        <p class="ctx-label">Estado de publicación</p>
+        <p class="ctx-body">${dirty ? "Hay cambios sin publicar. Pulsa «Guardar y publicar»." : "Sin cambios pendientes."}</p>
+        <p class="ctx-note">${content.routes.filter((r) => r.enabled && r.id !== "home").length} secciones activas</p>
+      </div>
+    </div>`;
+  }
+
   function previewPages() {
-    const ph = content.pages?.home || {};
-    return `<div class="ctx-preview ctx-page">
-      <p class="ctx-label">Inicio</p>
-      <p class="ctx-soul">${escapeHtml(ph.experiencesLabel || "")}</p>
-      <h3 class="ctx-h3">${escapeHtml(ph.experiencesTitle || "")}</h3>
-      <p class="ctx-label" style="margin-top:1rem">Tienda en inicio</p>
-      <p class="ctx-soul">${escapeHtml(ph.productsLabel || "")}</p>
-      <h3 class="ctx-h3">${escapeHtml(ph.productsTitle || "")}</h3>
+    const blocks = [
+      ["home", "Inicio", content.pages?.home],
+      ["cafe", "Café", content.pages?.cafe],
+      ["menu", "Menú", content.pages?.menu],
+      ["nosotros", "Nosotros", content.pages?.nosotros],
+      ["tienda", "Tienda", content.pages?.tienda],
+      ["blog", "Blog", content.pages?.blog],
+      ["contacto", "Contacto", content.pages?.contacto],
+    ];
+    return `<div class="ctx-preview ctx-pages-list">
+      ${blocks.map(([key, label, pg]) => `
+        <div class="ctx-page-block">
+          <p class="ctx-label">${label}</p>
+          <p class="ctx-soul" style="text-align:left;font-size:.78rem">${escapeHtml(pg?.tagline || "—")}</p>
+          <h3 class="ctx-h3">${escapeHtml(pg?.headline || "—")}</h3>
+        </div>`).join("")}
     </div>`;
   }
 
@@ -287,6 +347,10 @@
 
   function buildContextPreview(panelId) {
     const map = {
+      overview: previewOverview,
+      help: previewHelp,
+      analytics: previewAnalytics,
+      config: previewConfig,
       brand: previewBrand,
       theme: previewTheme,
       sections: previewSections,
@@ -522,9 +586,9 @@
     $("#panel-title").textContent = titles[id] || id;
 
     const handlers = {
-      overview: () => { main.innerHTML = renderOverview(); },
-      help: () => { main.innerHTML = renderHelp(); },
-      analytics: () => { main.innerHTML = renderAnalytics(); bindAnalyticsEvents(main); },
+      overview: () => finishPanel("overview", main, renderOverview()),
+      help: () => finishPanel("help", main, renderHelp()),
+      analytics: () => finishPanel("analytics", main, renderAnalytics(), bindAnalyticsEvents),
       brand: () => finishPanel("brand", main, renderBrand(), (root) => bindFields(root, content.brand)),
       sections: () => finishPanel("sections", main, renderSections(), bindSectionsEvents),
       theme: () => finishPanel("theme", main, renderTheme(), (root) => { bindThemeEvents(root); applyThemePreview(); }),
@@ -544,7 +608,7 @@
           markDirty();
         });
       }),
-      config: () => { main.innerHTML = renderConfig(); bindConfigEvents(main); },
+      config: () => finishPanel("config", main, renderConfig(), bindConfigEvents),
     };
     (handlers[id] || handlers.overview)();
   }
@@ -1210,6 +1274,7 @@
       dirty = false;
       pendingUploads.length = 0;
       $("#dirty-badge")?.classList.add("hidden");
+      updateContextPreview(currentPanel);
       if (status) status.textContent = "✅ Publicado. El sitio se actualizará en 1-2 minutos.";
       toast("¡Contenido publicado!", "success");
     } catch (e) {

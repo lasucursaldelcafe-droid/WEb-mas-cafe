@@ -228,8 +228,17 @@ body.admin-authed #app { display: grid; }
   border: 1px solid rgba(7,57,84,.06);
 }
 @media (max-width: 959px) {
-  .panel-preview-sticky { position: static; margin-bottom: 1rem; }
-  .panel-split { display: flex; flex-direction: column-reverse; }
+  .panel-split { grid-template-columns: 1fr; gap: .85rem; }
+  .panel-preview-col { order: -1; }
+  .panel-preview-sticky { position: static; }
+  .panel-preview-frame { max-height: 300px; overflow-y: auto; }
+}
+@media (max-width: 767px) {
+  .main { padding: 1rem 1rem 2.5rem; }
+  .topbar { margin-bottom: 1rem; padding-bottom: .75rem; }
+  .topbar h2 { font-size: 1.2rem; }
+  .panel-preview-frame { max-height: 260px; }
+  .sidebar { padding: 1rem .75rem; }
 }
 .ctx-preview { font-size: .8rem; line-height: 1.5; color: var(--charcoal); }
 .ctx-hero {
@@ -371,6 +380,26 @@ body.admin-authed #app { display: grid; }
 }
 .ctx-muted { padding: 1rem; opacity: .6; font-size: .78rem; text-align: center; }
 .ctx-page { padding: 1rem; background: var(--cream); }
+.ctx-preview-stack .ctx-preview { border-radius: 0; box-shadow: none; border: none; border-top: 1px solid rgba(7,57,84,.06); }
+.ctx-preview-stack .ctx-preview:first-child { border-top: none; }
+.ctx-stats, .ctx-publish-status, .ctx-help { padding: .85rem 1rem; }
+.ctx-steps { font-size: .72rem; padding-left: 1.1rem; line-height: 1.65; margin-top: .35rem; }
+.ctx-steps li { margin-bottom: .25rem; }
+.ctx-analytics { padding: .85rem 1rem; }
+.ctx-bar-row {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr auto;
+  gap: .35rem .5rem;
+  align-items: center;
+  margin-bottom: .4rem;
+  font-size: .68rem;
+}
+.ctx-bar { height: .45rem; background: rgba(7,57,84,.08); border-radius: 999px; overflow: hidden; }
+.ctx-bar i { display: block; height: 100%; background: var(--sage); border-radius: 999px; }
+.ctx-bar-brown i { background: var(--brown); }
+.ctx-pages-list { padding: .5rem 0; }
+.ctx-page-block { padding: .65rem 1rem; border-bottom: 1px solid rgba(7,57,84,.06); }
+.ctx-page-block:last-child { border-bottom: none; }
 .analytics-bar-wrap { margin: .5rem 0; }
 .analytics-bar {
   height: 1.25rem; border-radius: .35rem; background: var(--sage);

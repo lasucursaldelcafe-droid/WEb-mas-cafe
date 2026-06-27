@@ -448,29 +448,118 @@ export function siteStyles() {
     }
     .wa-float:hover span{opacity:1}
 
-    /* ── Mobile nav overlay ── */
+    /* ── Mobile nav (lista compacta, no pantalla completa) ── */
+    .nav-backdrop{
+      display:none;position:fixed;inset:0;z-index:98;
+      background:rgba(7,57,84,.28);backdrop-filter:blur(2px);
+    }
+    body.nav-open .nav-backdrop{display:block}
     .nav-overlay{
-      display:none;position:fixed;inset:0;z-index:99;
-      background:rgba(7,57,84,.96);backdrop-filter:blur(8px);
-      flex-direction:column;align-items:center;justify-content:center;gap:2rem;
-      padding-top:5rem;
+      display:none;position:fixed;left:0;right:0;z-index:99;
+      top:3.85rem;
+      background:var(--cream);
+      border-bottom:1px solid rgba(7,57,84,.1);
+      box-shadow:0 14px 36px rgba(7,57,84,.12);
+      padding:.35rem 1.1rem 1rem;
+      max-height:min(72vh,480px);
+      overflow-y:auto;
     }
-    .nav-overlay.open{display:flex}
+    .nav-overlay.open{display:block}
     .nav-overlay a{
-      font-family:var(--font-display);font-size:clamp(1.75rem,5vw,2.25rem);
-      color:var(--cream);transition:color .3s;
+      display:flex;align-items:center;justify-content:space-between;gap:.75rem;
+      font-family:var(--font-body);font-size:.9rem;font-weight:500;
+      color:var(--blue);padding:.72rem 0;
+      border-bottom:1px solid rgba(7,57,84,.07);
     }
-    .nav-overlay a:hover{color:var(--sage)}
+    .nav-overlay a::after{content:"→";opacity:.35;font-size:.75rem;font-weight:400}
+    .nav-overlay a:hover{color:var(--blue-mid)}
     .nav-overlay .nav-cta-overlay{
-      margin-top:1rem;padding:.85rem 2rem;border-radius:999px;
-      background:var(--sage);color:var(--blue);font-family:var(--font-body);
-      font-size:.9rem;font-weight:700;
+      display:inline-flex;margin-top:.65rem;padding:.6rem 1.15rem;
+      border-radius:999px;background:var(--sage);color:var(--blue);
+      font-family:var(--font-body);font-size:.8rem;font-weight:700;
     }
+    .nav-overlay .nav-cta-overlay::after{display:none}
 
     @media(max-width:900px){
       .nav-toggle{display:flex;align-items:center;justify-content:center}
       nav.site-nav{display:none}
     }
+
+    /* ── Móvil (≤767px) ── */
+    @media(max-width:767px){
+      .wrap{padding:0 1.1rem}
+      header.site-header{padding:.85rem 0}
+      header.site-header.scrolled{padding:.55rem 0}
+      .logo,.logo img{height:1.85rem}
+      header .wrap{gap:1rem}
+
+      .editorial-hero{padding:4.75rem 0 1.75rem}
+      .editorial-hero .wrap.hero-grid{gap:1.15rem;text-align:center}
+      .editorial-hero .hero-content{margin:0 auto}
+      .editorial-hero .hero-art{max-width:220px;margin:0 auto;order:-1}
+      .editorial-hero .hero-art-main img{max-height:180px;margin:0 auto}
+      .editorial-hero .tagline{font-size:1.2rem}
+      .editorial-hero h1{font-size:1.6rem;margin-top:.5rem}
+      .editorial-hero .subhead{font-size:.86rem;margin:.65rem auto 0}
+      .editorial-hero .actions{justify-content:center;margin-top:1rem}
+      .editorial-hero .actions .btn{width:auto;min-width:0}
+      .editorial-hero .brand-note{justify-content:center;margin-top:1.15rem}
+      .editorial-hero .decor{display:none}
+
+      .page-hero{padding:4.5rem 0 1.35rem}
+      .page-hero::after{width:42%;height:45%;opacity:.18}
+      .page-hero h1{font-size:1.45rem}
+      .page-hero .tagline{font-size:.95rem}
+
+      section{padding:1.85rem 0}
+      h2{font-size:1.3rem}
+      h3{font-size:1.05rem}
+      .label{font-size:.62rem;margin-bottom:.4rem}
+      .grid-2{gap:1.25rem}
+      .exp-row{gap:1.25rem;margin-bottom:1.25rem}
+      .card-body{padding:1rem}
+      .card img{aspect-ratio:16/10}
+      .products{gap:.85rem}
+      .product{padding:1rem}
+      .product h3{font-size:1.05rem}
+      .product .price{font-size:1.05rem}
+      .section-actions{margin-top:1.25rem}
+
+      .menu-hero{padding:4.5rem 0 1rem}
+      .menu-hero .soul{font-size:1.05rem}
+      .menu-hero h1{font-size:1.35rem}
+      .menu-hero .intro{font-size:.86rem;margin-top:.75rem;padding:0 .25rem}
+      .menu-sheet{padding:0 0 2rem;max-width:none}
+      .menu-cat{margin-bottom:1.75rem}
+      .menu-cat-head{margin-bottom:.85rem;padding-bottom:.65rem}
+      .menu-cat-head h3{font-size:1.15rem}
+      .menu-item{padding:.65rem 0;gap:.5rem 1rem;grid-template-columns:1fr auto}
+      .menu-item-name{font-size:.92rem}
+      .menu-item small{font-size:.74rem}
+      .menu-item-price{font-size:.8rem}
+      .menu-footer{padding-top:1.25rem}
+
+      footer .wrap{grid-template-columns:1fr;gap:1.35rem;padding:2rem 0}
+      .footer-brand img{height:2rem!important}
+      .footer-bottom{flex-direction:column;gap:.35rem;text-align:center}
+
+      .wa-float{bottom:1rem;right:1rem;width:3rem;height:3rem}
+      .wa-float span{display:none}
+      .marquee{padding:.75rem 0}
+      .marquee-item{font-size:.68rem;gap:1.5rem}
+      .visit-band{padding:2rem 0}
+      .contact-grid{gap:1.25rem}
+      .cta{padding:2rem 1.25rem}
+    }
+
+    /* ── Escritorio (≥768px) ── */
+    @media(min-width:768px){
+      .editorial-hero .wrap.hero-grid{text-align:left}
+      .editorial-hero .hero-content{margin:0}
+      .editorial-hero .hero-art{margin:0}
+      .menu-sheet{padding-left:1.5rem;padding-right:1.5rem}
+    }
+
     @media(prefers-reduced-motion:reduce){
       .marquee-track,.float-soft{animation:none}
       .card,.product,.btn,.wa-float{transition:none}
@@ -484,7 +573,18 @@ function siteScripts(isHome) {
       var header=document.getElementById('site-header');
       var toggle=document.getElementById('nav-toggle');
       var overlay=document.getElementById('nav-overlay');
+      var backdrop=document.getElementById('nav-backdrop');
       var isHome=${isHome ? "true" : "false"};
+
+      function setNavOpen(open){
+        if(!overlay||!toggle)return;
+        overlay.classList.toggle('open',open);
+        toggle.setAttribute('aria-expanded',open);
+        toggle.textContent=open?'×':'☰';
+        document.body.classList.toggle('nav-open',open);
+        document.body.style.overflow=open?'hidden':'';
+        if(backdrop)backdrop.setAttribute('aria-hidden',open?'false':'true');
+      }
 
       function onScroll(){
         if(!header)return;
@@ -495,19 +595,10 @@ function siteScripts(isHome) {
       onScroll();
 
       if(toggle&&overlay){
-        toggle.addEventListener('click',function(){
-          var open=overlay.classList.toggle('open');
-          toggle.setAttribute('aria-expanded',open);
-          toggle.textContent=open?'×':'☰';
-          document.body.style.overflow=open?'hidden':'';
-        });
+        toggle.addEventListener('click',function(){setNavOpen(!overlay.classList.contains('open'));});
+        if(backdrop)backdrop.addEventListener('click',function(){setNavOpen(false);});
         overlay.querySelectorAll('a').forEach(function(a){
-          a.addEventListener('click',function(){
-            overlay.classList.remove('open');
-            toggle.setAttribute('aria-expanded','false');
-            toggle.textContent='☰';
-            document.body.style.overflow='';
-          });
+          a.addEventListener('click',function(){setNavOpen(false);});
         });
       }
 
@@ -580,6 +671,7 @@ export function shell({ title, description, depth, pageId, heroArt, body, year =
       </nav>
     </div>
   </header>
+  <div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
   <div class="nav-overlay" id="nav-overlay" role="dialog" aria-modal="true" aria-label="Menú de navegación">
     ${overlayLinks}
     <a href="${href("/tienda")}" class="nav-cta-overlay">Comprar café</a>
