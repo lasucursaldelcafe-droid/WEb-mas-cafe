@@ -4,8 +4,8 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#073954"/>
-  <title>Café de especialidad colombiano | Más Café</title>
-  <meta name="description" content="Tostadores de café de especialidad en Cali, Colombia."/>
+  <title>Menú | Más Café</title>
+  <meta name="description" content="Carta de café de especialidad, desayuno y repostería."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
@@ -94,105 +94,98 @@
     .section-actions{margin-top:1.5rem}
     .text-link{color:var(--blue);font-weight:600;text-decoration:underline;text-underline-offset:3px}
   </style>
-  <style>:root{--hero-art:url('images/grafica/3.png')}</style>
+  <style>:root{--hero-art:none}</style>
 </head>
 <body>
   <header>
     <div class="wrap">
-      <a href="./"><img src="images/brand/horizontal-crema.png" alt="Más Café"/></a>
-      <nav><a href="cafe/" class="">Café</a><a href="menu/" class="">Menú</a><a href="nosotros/" class="">Nosotros</a><a href="tienda/" class="">Tienda</a><a href="blog/" class="">Blog</a><a href="contacto/" class="">Contacto</a><a href="tienda/" class="btn btn-sage" style="padding:.45rem 1rem;font-size:.75rem">Comprar café</a></nav>
+      <a href="../"><img src="../images/brand/horizontal-crema.png" alt="Más Café"/></a>
+      <nav><a href="../cafe/" class="">Café</a><a href="../menu/" class="active">Menú</a><a href="../nosotros/" class="">Nosotros</a><a href="../tienda/" class="">Tienda</a><a href="../blog/" class="">Blog</a><a href="../contacto/" class="">Contacto</a><a href="../tienda/" class="btn btn-sage" style="padding:.45rem 1rem;font-size:.75rem">Comprar café</a></nav>
     </div>
   </header>
   <main>
-  <section class="hero">
+  <section class="page-hero light">
     <div class="wrap">
-      <p class="tagline">Pausa con intención</p>
-      <h1>Aquí siempre hay algo más esperándote</h1>
-      <p>Más encuentros. Más conversaciones. Más momentos que se quedan.</p>
-      <p style="margin-top:.75rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.25em;opacity:.5">Nuestra historia comenzó con un café</p>
-      <div class="actions">
-        <a class="btn btn-sage" href="https://wa.me/573156573897" target="_blank" rel="noopener">WhatsApp</a>
-        <a class="btn btn-outline" href="contacto/">Visítanos</a>
-      </div>
+      <p class="tagline">Menú</p>
+      <h1>Para cada momento del día</h1>
     </div>
   </section>
-  <div class="marquee" aria-hidden="true"><span>Pausa con intención ·</span><span>Más encuentros ·</span><span>Más conversaciones ·</span><span>Más momentos que se quedan ·</span><span>Café de especialidad ·</span><span>Hospitalidad consciente ·</span><span>Pausa con intención ·</span><span>Más encuentros ·</span><span>Más conversaciones ·</span><span>Más momentos que se quedan ·</span><span>Café de especialidad ·</span><span>Hospitalidad consciente ·</span></div>
   <section>
-    <div class="wrap">
-      <p class="label">La experiencia</p>
-      <h2>Una experiencia que se vive sin prisa</h2>
-      <div style="margin-top:2.5rem;display:grid;gap:2.5rem">
+    <div class="wrap" style="max-width:40rem">
+      
+      <div class="menu-cat">
+        <h3>Café de especialidad</h3>
         
-        <div class="grid-2 card">
-          <img src="images/brand/pausa.png" alt="Pausa" loading="lazy"/>
-          <div class="card-body">
-            <p class="label">Con intención</p>
-            <h3>Pausa</h3>
-            <p style="margin-top:.75rem;opacity:.75">Un espacio donde el tiempo baja, el ruido desaparece y cada elemento respira. Acompañamos sin saturar.</p>
-          </div>
+        <div class="menu-item">
+          <div>Espresso</div>
+          <strong>$ 6.500</strong>
         </div>
-        <div class="grid-2 card">
-          <img src="images/brand/carta.png" alt="Carta" loading="lazy"/>
-          <div class="card-body">
-            <p class="label">Café de especialidad</p>
-            <h3>Carta</h3>
-            <p style="margin-top:.75rem;opacity:.75">Microlotes colombianos con trazabilidad completa. Cada taza cuenta la historia de su origen y su productor.</p>
-          </div>
+        <div class="menu-item">
+          <div>Americano</div>
+          <strong>$ 7.000</strong>
+        </div>
+        <div class="menu-item">
+          <div>Capuchino</div>
+          <strong>$ 9.500</strong>
+        </div>
+        <div class="menu-item">
+          <div>Latte</div>
+          <strong>$ 10.000</strong>
+        </div>
+        <div class="menu-item">
+          <div>Flat white</div>
+          <strong>$ 10.500</strong>
+        </div>
+        <div class="menu-item">
+          <div>Pour over<small>Origen del día</small></div>
+          <strong>$ 12.000</strong>
+        </div>
+        <div class="menu-item">
+          <div>Cold brew</div>
+          <strong>$ 11.000</strong>
         </div>
       </div>
-      <p class="section-actions"><a class="text-link" href="nosotros/">Conoce nuestra historia →</a></p>
-    </div>
-  </section>
-  <section style="background:var(--blue);color:var(--cream)">
-    <div class="wrap">
-      <p class="label" style="color:var(--sage)">Café fresco</p>
-      <h2 style="color:var(--cream)">Calidad extraordinaria, trazabilidad al origen</h2>
-      <div class="products" style="margin-top:2rem">
-  <article class="product">
-    <div class="product-img"><img src="images/products/caja-cafe.png" alt="Caturra Colombia" loading="lazy"/></div>
-    <p class="label" style="color:var(--sage)">Caturra · Nariño</p>
-    <h3>Caturra Colombia</h3>
-    <p style="font-size:.85rem;opacity:.65">Ojo de agua · 1900 msnm</p>
-    <p style="font-size:.8rem;opacity:.7;margin-top:.5rem">Caramelo · Mandarina · Caña de azúcar · Nibs de cacao</p>
-    <p class="price">$ 45.000</p>
-    <p style="margin-top:.5rem;font-size:.75rem;background:var(--green);display:inline-block;padding:.2rem .75rem;border-radius:999px">Suscripción</p>
-  </article>
-  <article class="product">
-    <div class="product-img"><img src="images/products/caja-cafe.png" alt="Microlote Natural" loading="lazy"/></div>
-    <p class="label" style="color:var(--sage)">Geisha · Tolima</p>
-    <h3>Microlote Natural</h3>
-    
-    <p style="font-size:.8rem;opacity:.7;margin-top:.5rem">Floral · Bergamota · Frutal</p>
-    <p class="price">$ 68.000</p>
-    
-  </article></div>
-      <p class="section-actions"><a class="btn btn-outline" href="tienda/">Ver tienda →</a></p>
-    </div>
-  </section>
-  <section style="background:rgba(168,197,176,.2)">
-    <div class="wrap">
-      <p class="label">Blog</p>
-      <h2>Historias & origen</h2>
-      <div style="margin-top:2rem;display:grid;gap:2rem">
+      <div class="menu-cat">
+        <h3>Desayuno & brunch</h3>
         
-        <article class="grid-2 card">
-          <img src="images/brand/mood.png" alt="¿Qué significa pausar con intención?" loading="lazy" style="aspect-ratio:16/10;object-fit:cover"/>
-          <div class="card-body">
-            <p class="label">Marca · 26 jun 2025</p>
-            <h3>¿Qué significa pausar con intención?</h3>
-            <p style="margin-top:.75rem;opacity:.75">En Más Café creemos que cada taza es una oportunidad para detenerse, conectar y disfrutar el momento.</p>
-          </div>
-        </article>
-        <article class="grid-2 card">
-          <img src="images/products/caja-cafe.png" alt="Prepáralo en casa, a tu manera" loading="lazy" style="aspect-ratio:16/10;object-fit:cover"/>
-          <div class="card-body">
-            <p class="label">Barismo · 15 may 2025</p>
-            <h3>Prepáralo en casa, a tu manera</h3>
-            <p style="margin-top:.75rem;opacity:.75">Guía para disfrutar nuestro café en cafetera de goteo, prensa francesa o pour over.</p>
-          </div>
-        </article>
+        <div class="menu-item">
+          <div>Tostada de aguacate<small>Pan artesanal, aguacate, huevo poché</small></div>
+          <strong>$ 22.000</strong>
+        </div>
+        <div class="menu-item">
+          <div>Bowl de frutas<small>Yogurt griego, granola, frutas de temporada</small></div>
+          <strong>$ 18.000</strong>
+        </div>
+        <div class="menu-item">
+          <div>Tostadas francesas<small>Miel, frutos rojos, crema</small></div>
+          <strong>$ 20.000</strong>
+        </div>
+        <div class="menu-item">
+          <div>Sándwich club<small>Pollo, tocino, queso cheddar</small></div>
+          <strong>$ 24.000</strong>
+        </div>
       </div>
-      <p class="section-actions"><a class="text-link" href="blog/">Ver todo el blog →</a></p>
+      <div class="menu-cat">
+        <h3>Repostería</h3>
+        
+        <div class="menu-item">
+          <div>Croissant de chocolate</div>
+          <strong>$ 9.000</strong>
+        </div>
+        <div class="menu-item">
+          <div>Croissant de almendras</div>
+          <strong>$ 10.000</strong>
+        </div>
+        <div class="menu-item">
+          <div>Pastel de coco y limón</div>
+          <strong>$ 12.000</strong>
+        </div>
+        <div class="menu-item">
+          <div>Waffle belga</div>
+          <strong>$ 14.000</strong>
+        </div>
+      </div>
+      <p style="margin-top:2rem;text-align:center;font-size:.85rem;opacity:.6">Precios referenciales en COP. Pueden variar según temporada.</p>
     </div>
   </section>
   
@@ -205,7 +198,7 @@
         <p style="font-size:.85rem;margin-top:.5rem">Lunes a sábado 7:30am – 8:00pm · Domingos y festivos 9:00am – 7:00pm</p>
         <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:.75rem;margin-top:1.5rem">
           <a class="btn btn-sage" href="https://wa.me/573156573897" target="_blank" rel="noopener">WhatsApp</a>
-          <a class="btn btn-outline" href="contacto/">Contacto</a>
+          <a class="btn btn-outline" href="../contacto/">Contacto</a>
           <a class="btn btn-outline" href="https://maps.google.com/?q=Calle%205B%20%232-38-09%2C%20Barrio%20San%20Fernando%20Nuevo%2C%20Cali%2C%20Valle%20del%20Cauca%2C%20Colombia" target="_blank" rel="noopener">Cómo llegar</a>
         </div>
       </div>
@@ -214,7 +207,7 @@
   <footer>
     <div class="wrap">
       <div>
-        <img src="images/brand/horizontal-crema.png" alt="Más Café" style="height:2.5rem;margin-bottom:1rem"/>
+        <img src="../images/brand/horizontal-crema.png" alt="Más Café" style="height:2.5rem;margin-bottom:1rem"/>
         <p class="tagline" style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.75rem;color:var(--sage)">Pausa con intención</p>
         <p style="opacity:.6;margin-top:.5rem">Nuestra historia comenzó con un café</p>
       </div>
@@ -228,7 +221,7 @@
       </div>
       <div class="footer-bottom" style="grid-column:1/-1">
         <span>© 2026 Más Café</span>
-        <span><a href="contacto/">Contacto</a> · Cali, Colombia</span>
+        <span><a href="../contacto/">Contacto</a> · Cali, Colombia</span>
       </div>
     </div>
   </footer>
