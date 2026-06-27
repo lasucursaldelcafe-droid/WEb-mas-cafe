@@ -72,7 +72,10 @@ export function pageHome() {
   <section class="editorial-hero">
     <img class="decor decor-1" src="${img("/images/decor/Recurso-4.svg")}" alt="" aria-hidden="true"/>
     <img class="decor decor-2" src="${img("/images/decor/Recurso-6.svg")}" alt="" aria-hidden="true"/>
-    <div class="wrap hero-grid">
+    <div class="hero-art hero-art-bg" aria-hidden="true">
+      <img src="${img("/images/grafica/3.png")}" alt=""/>
+    </div>
+    <div class="wrap hero-content-wrap">
       <div class="hero-content">
         <p class="tagline">${brand.tagline}</p>
         <h1>${brand.headline}</h1>
@@ -86,9 +89,6 @@ export function pageHome() {
           <img src="${img("/images/brand/favs.png")}" alt=""/>
           <p>Una experiencia que se vive sin prisa. Hospitalidad consciente en Cali.</p>
         </div>
-      </div>
-      <div class="hero-art hero-art-main">
-        <img src="${img("/images/grafica/3.png")}" alt="" loading="eager"/>
       </div>
     </div>
   </section>
