@@ -1,0 +1,14 @@
+[
+  {
+    "username": "admin",
+    "password": "mascafe2025",
+    "name": "Administrador",
+    "role": "admin"
+  },
+  {
+    "username": "editor",
+    "password": "mascafe2025",
+    "name": "Editor de contenido",
+    "role": "editor"
+  }
+]

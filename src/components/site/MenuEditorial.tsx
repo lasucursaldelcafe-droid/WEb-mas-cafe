@@ -1,4 +1,4 @@
-import { formatPrice } from "@/lib/store";
+import { formatPrice } from "@/lib/format";
 import type { MenuCategory } from "@/lib/types";
 
 export function MenuEditorial({ menu }: { menu: MenuCategory[] }) {

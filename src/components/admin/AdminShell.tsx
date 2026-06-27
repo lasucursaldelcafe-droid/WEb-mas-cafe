@@ -6,10 +6,13 @@ import { usePathname, useRouter } from "next/navigation";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: "◉" },
+  { href: "/admin/analytics", label: "Analytics", icon: "◈" },
   { href: "/admin/productos", label: "Productos", icon: "☕" },
   { href: "/admin/menu", label: "Menú", icon: "☰" },
   { href: "/admin/blog", label: "Blog", icon: "✎" },
   { href: "/admin/experiencias", label: "Experiencias", icon: "✦" },
+  { href: "/admin/sync", label: "Google Sync", icon: "↻" },
+  { href: "/admin/sistema", label: "Sistema", icon: "⬡" },
   { href: "/admin/configuracion", label: "Configuración", icon: "⚙" },
 ];
 

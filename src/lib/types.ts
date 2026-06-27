@@ -84,3 +84,55 @@ export type SiteContent = {
   blog: BlogPost[];
   marquee: string[];
 };
+
+export type AnalyticsEvent = {
+  id: string;
+  type: "page_view" | "product_click" | "contact_click" | "admin_login";
+  path: string;
+  label?: string;
+  timestamp: number;
+  sessionId?: string;
+  userAgent?: string;
+};
+
+export type AnalyticsSummary = {
+  totalViews: number;
+  viewsToday: number;
+  viewsWeek: number;
+  topPages: { path: string; count: number }[];
+  recentEvents: AnalyticsEvent[];
+};
+
+export type SyncLog = {
+  id: string;
+  source: "google_apps_script" | "manual" | "admin";
+  status: "success" | "error" | "partial";
+  message: string;
+  filesProcessed?: number;
+  timestamp: number;
+};
+
+export type SystemHealth = {
+  status: "ok" | "warning" | "error";
+  provider: "firestore" | "json";
+  brokenAssets: string[];
+  brokenRoutes: string[];
+  envMissing: string[];
+  lastCheck: number;
+};
+
+export type AdminUser = {
+  username: string;
+  password: string;
+  name: string;
+  role: "admin" | "editor";
+};
+
+export type SiteSettings = {
+  accessMode: "public";
+  maintenanceMessage?: string;
+  godaddyReady: boolean;
+  firebaseEnabled: boolean;
+  lastSyncAt?: number;
+  googleDriveFolderId?: string;
+};

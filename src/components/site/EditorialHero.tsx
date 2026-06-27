@@ -9,7 +9,7 @@ export function EditorialHero({ brand }: { brand: Brand }) {
       <OrganicDecor index={0} className="right-0 top-20 h-64 w-64" />
       <OrganicDecor index={2} className="bottom-32 left-0 h-48 w-48" />
 
-      <div className="absolute inset-0">
+      <div className="pointer-events-none absolute inset-0">
         <div className="absolute right-[-10%] top-[15%] h-[70vh] w-[55vw] max-w-3xl opacity-90">
           <Image
             src="/images/grafica/3.png"

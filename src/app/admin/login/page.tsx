@@ -6,6 +6,7 @@ import { useState } from "react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -15,13 +16,13 @@ export default function AdminLoginPage() {
     const res = await fetch("/api/auth", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({ username, password }),
     });
     if (res.ok) {
       router.push("/admin");
       router.refresh();
     } else {
-      setError("Contraseña incorrecta");
+      setError("Usuario o contraseña incorrectos");
     }
   }
 
@@ -41,19 +42,36 @@ export default function AdminLoginPage() {
           />
           <p className="mt-4 text-sm text-charcoal/60">Panel de administración</p>
         </div>
-        <div>
-          <label htmlFor="password" className="mb-2 block text-sm font-medium">
-            Contraseña
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border border-blue-deep/10 px-4 py-3 outline-none focus:border-blue-deep"
-            placeholder="••••••••"
-          />
-          {error && <p className="mt-2 text-sm text-cherry">{error}</p>}
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="username" className="mb-2 block text-sm font-medium">
+              Usuario
+            </label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full rounded-xl border border-blue-deep/10 px-4 py-3 outline-none focus:border-blue-deep"
+              placeholder="admin"
+              autoComplete="username"
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="mb-2 block text-sm font-medium">
+              Contraseña
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-xl border border-blue-deep/10 px-4 py-3 outline-none focus:border-blue-deep"
+              placeholder="••••••••"
+              autoComplete="current-password"
+            />
+            {error && <p className="mt-2 text-sm text-cherry">{error}</p>}
+          </div>
         </div>
         <button
           type="submit"
@@ -61,6 +79,9 @@ export default function AdminLoginPage() {
         >
           Entrar
         </button>
+        <p className="text-center text-xs text-charcoal/45">
+          Acceso solo para el equipo. El sitio público no requiere contraseña.
+        </p>
       </form>
     </div>
   );

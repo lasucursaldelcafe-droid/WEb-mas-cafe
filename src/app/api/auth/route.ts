@@ -2,18 +2,27 @@ import { NextResponse } from "next/server";
 import { AUTH_COOKIE, createSessionValue } from "@/lib/auth";
 
 export async function POST(request: Request) {
-  const { password } = (await request.json()) as { password?: string };
+  const { username, password } = (await request.json()) as {
+    username?: string;
+    password?: string;
+  };
 
-  if (!password) {
-    return NextResponse.json({ error: "Contraseña requerida" }, { status: 400 });
+  if (!username || !password) {
+    return NextResponse.json(
+      { error: "Usuario y contraseña requeridos" },
+      { status: 400 },
+    );
   }
 
-  const session = createSessionValue(password);
+  const session = await createSessionValue(username, password);
   if (!session) {
-    return NextResponse.json({ error: "Contraseña incorrecta" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Usuario o contraseña incorrectos" },
+      { status: 401 },
+    );
   }
 
-  const response = NextResponse.json({ ok: true });
+  const response = NextResponse.json({ ok: true, username: session });
   response.cookies.set(AUTH_COOKIE, session, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

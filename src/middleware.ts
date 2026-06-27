@@ -1,18 +1,20 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+const ADMIN_COOKIE = "mas-cafe-admin";
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isAdminRoute = pathname.startsWith("/admin");
-  const isLoginPage = pathname === "/admin/login";
-  const isAuthenticated =
-    request.cookies.get("mas-cafe-admin")?.value === "authenticated";
 
-  if (isAdminRoute && !isLoginPage && !isAuthenticated) {
+  const isAdminRoute = pathname.startsWith("/admin");
+  const isAdminLogin = pathname === "/admin/login";
+  const isAdminAuthed = Boolean(request.cookies.get(ADMIN_COOKIE)?.value);
+
+  if (isAdminRoute && !isAdminLogin && !isAdminAuthed) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
-  if (isLoginPage && isAuthenticated) {
+  if (isAdminLogin && isAdminAuthed) {
     return NextResponse.redirect(new URL("/admin", request.url));
   }
 
@@ -20,5 +22,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin", "/admin/:path*"],
 };

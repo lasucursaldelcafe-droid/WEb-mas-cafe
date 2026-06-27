@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { formatPrice } from "@/lib/store";
+import { formatPrice } from "@/lib/format";
 import type { Product } from "@/lib/types";
 
 export function ProductRiver({ products }: { products: Product[] }) {
