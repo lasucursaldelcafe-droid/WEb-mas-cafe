@@ -1,15 +1,14 @@
-# Guía de despliegue en GoDaddy — Más Café
+# Despliegue estático en GoDaddy — Más Café
 
-Esta guía explica cómo publicar la web en tu hosting y dominio de GoDaddy (cPanel con Node.js).
+Sitio **100% estático** para hosting compartido de GoDaddy (`public_html`).  
+**Dominio:** `mascafecol.com`
 
-**Dominio objetivo:** `mascafecol.com`  
-**Requisito:** plan GoDaddy con **Setup Node.js App** en cPanel (Web Hosting Deluxe/Ultimate o VPS).
+> El panel admin no está incluido en esta versión estática.  
+> Para cambiar contenido, edita `content/site.json` y vuelve a ejecutar `npm run godaddy:prep`.
 
 ---
 
-## 1. Preparar el paquete en tu computador
-
-En la carpeta del proyecto:
+## 1. Generar el sitio
 
 ```bash
 npm install
@@ -17,148 +16,86 @@ npm run health-check
 npm run godaddy:prep
 ```
 
-Esto genera:
-
-- `deploy/mascafe-web/` — carpeta lista para el servidor
-- `deploy/mascafe-web-godaddy.zip` — archivo para subir por FTP o Administrador de archivos
-
-> **Importante:** compila en Linux (o en este entorno cloud). No subas `node_modules` compilado en Windows si el servidor es Linux.
+Resultado:
+- `out/` — archivos HTML del sitio
+- `deploy/mascafe-web-godaddy.zip` — subir a GoDaddy
 
 ---
 
-## 2. Subir archivos a GoDaddy
+## 2. Subir a GoDaddy
 
-1. Entra a **GoDaddy → Mi producto → Hosting → Administrar**
-2. Abre **cPanel**
-3. Ve a **Administrador de archivos**
-4. Crea la carpeta `mascafe-web` (recomendado fuera de `public_html`, ej. en la raíz del usuario: `~/mascafe-web`)
-5. Sube `mascafe-web-godaddy.zip` y **extrae** el contenido ahí
-6. Verifica que existan:
-   - `server.js`
-   - `package.json`
-   - `node_modules/`
-   - `.next/`
-   - `public/`
-   - `content/`
+1. **GoDaddy** → tu hosting → **Administrar** → **cPanel**
+2. **Administrador de archivos** → abre `public_html`
+3. **Respalda** lo que haya (si aplica)
+4. Borra el contenido viejo de `public_html`
+5. Sube `mascafe-web-godaddy.zip`
+6. **Extrae** el ZIP dentro de `public_html`
+7. Verifica que en la raíz estén:
+   - `index.html`
+   - `.htaccess`
+   - carpetas `_next/`, `cafe/`, `menu/`, etc.
 
 ---
 
-## 3. Crear la aplicación Node.js en cPanel
+## 3. Dominio
 
-1. En cPanel → **Software** → **Setup Node.js App** (o "Aplicación Node.js")
-2. Clic en **Create Application**
-3. Configura:
+Si el dominio `mascafecol.com` ya está en este hosting, debería funcionar al instante.
 
-| Campo | Valor |
-|-------|-------|
-| Node.js version | **18** o **20** (la más alta disponible) |
-| Application mode | **Production** |
-| Application root | `mascafe-web` |
-| Application URL | tu dominio (`mascafecol.com`) |
-| Application startup file | `server.js` |
-
-4. En **Environment variables** agrega:
-
-| Variable | Valor |
-|----------|-------|
-| `NODE_ENV` | `production` |
-| `HOSTNAME` | `0.0.0.0` |
-| `ADMIN_PASSWORD` | `mascafe2025` (cámbiala después) |
-
-5. Clic en **Create**
+Si el dominio está en GoDaddy pero apunta a otro lado:
+1. **GoDaddy → DNS** del dominio
+2. Registro **A** → IP de tu hosting (la muestra cPanel)
+3. Espera 15–60 min (propagación DNS)
 
 ---
 
-## 4. Permisos y arranque
-
-1. En Terminal de cPanel (o SSH):
-
-```bash
-cd ~/mascafe-web
-chmod -R 755 content
-```
-
-La carpeta `content/` debe ser **escribible** para que el panel admin guarde cambios.
-
-2. En Setup Node.js App → tu aplicación:
-   - Si aparece **Run NPM Install**, ejecútalo (opcional si ya viene `node_modules` en el ZIP)
-   - Clic en **Start App** o **Restart**
-
-3. Abre `https://mascafecol.com` en el navegador.
-
----
-
-## 5. Conectar el dominio
-
-Si el dominio está en GoDaddy pero apunta a otro sitio:
-
-1. **GoDaddy → DNS** del dominio `mascafecol.com`
-2. Asegura un registro **A** apuntando a la IP de tu hosting
-3. O un **CNAME** según indique GoDaddy para el hosting compartido
-4. En cPanel → **Dominios** → asocia `mascafecol.com` a la app Node.js
-
-Espera 15–60 minutos para propagación DNS.
-
----
-
-## 6. SSL (HTTPS)
+## 4. SSL (HTTPS)
 
 En cPanel → **SSL/TLS Status** → activa **Let's Encrypt** para `mascafecol.com`.
 
 ---
 
-## 7. Verificar que todo funciona
+## 5. Verificar
 
-| URL | Debe mostrar |
-|-----|----------------|
-| `/` | Home |
-| `/cafe` | Página café |
-| `/menu` | Menú |
-| `/admin/login` | Login admin |
-| `/admin` | Dashboard (tras login) |
+| URL | Página |
+|-----|--------|
+| `https://mascafecol.com/` | Inicio |
+| `https://mascafecol.com/cafe/` | Café |
+| `https://mascafecol.com/menu/` | Menú |
+| `https://mascafecol.com/nosotros/` | Nosotros |
+| `https://mascafecol.com/tienda/` | Tienda |
+| `https://mascafecol.com/blog/` | Blog |
+| `https://mascafecol.com/contacto/` | Contacto |
 
-**Login admin:**
-- Usuario: `admin`
-- Contraseña: `mascafe2025`
-
-El sitio público **no pide contraseña**.
+**No se pide contraseña** en ninguna página pública.
 
 ---
 
-## 8. Actualizar la web en el futuro
+## 6. Actualizar contenido
 
-1. En local: `npm run godaddy:prep`
-2. Sube el nuevo ZIP a GoDaddy (reemplaza archivos)
-3. En cPanel → **Restart** la app Node.js
+1. Edita `content/site.json` (productos, menú, textos, blog)
+2. Ejecuta `npm run godaddy:prep`
+3. Sube el nuevo ZIP a `public_html`
 
 ---
 
 ## Solución de problemas
 
-### Error 503
-- La app Node.js no está corriendo → **Start App** en cPanel
-- Revisa logs en Setup Node.js App → **Open Logs**
+### Página en blanco
+- ¿Existe `index.html` en `public_html`? Debe estar en la raíz, no dentro de una subcarpeta.
 
-### Página en blanco o sin estilos
-- Falta `.next/static` → vuelve a ejecutar `npm run godaddy:prep` y sube todo de nuevo
+### Sin estilos / imágenes rotas
+- Asegúrate de subir **todo** el ZIP, incluida la carpeta `_next/`
 
-### El admin no guarda cambios
-- Permisos: `chmod -R 775 content` en el servidor
+### Error 404 en rutas
+- Verifica que `.htaccess` se subió (archivos que empiezan con `.` a veces se ocultan)
+- En Administrador de archivos → **Configuración** → activa "Mostrar archivos ocultos"
 
-### Imágenes rotas
-- Verifica que la carpeta `public/images/` se subió completa
-
----
-
-## Alternativa: Firebase (opcional)
-
-Para datos en la nube en lugar de JSON local, configura en cPanel las variables `FIREBASE_*` y `NEXT_PUBLIC_FIREBASE_*`. Ver `.env.example`.
+### Enlaces no funcionan
+- Las rutas usan barra final: `/cafe/`, `/menu/`, etc.
 
 ---
 
-## Contacto técnico
+## Requisitos del plan GoDaddy
 
-Si tu plan GoDaddy **no tiene Node.js**, opciones:
-1. Actualizar a un plan con Node.js
-2. Usar **GoDaddy VPS** con Node 18+
-3. Contactar soporte GoDaddy y preguntar por "Setup Node.js App" en cPanel
+Cualquier plan con **hosting web estándar** (cPanel + `public_html`) sirve.  
+**No necesitas Node.js** en esta versión estática.

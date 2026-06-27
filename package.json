@@ -11,8 +11,6 @@
     "godaddy:prep": "node scripts/godaddy-prep.mjs"
   },
   "dependencies": {
-    "firebase": "^12.15.0",
-    "firebase-admin": "^14.1.0",
     "next": "^15.5.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

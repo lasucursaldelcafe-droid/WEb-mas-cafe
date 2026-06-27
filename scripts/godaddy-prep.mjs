@@ -1,80 +1,75 @@
 #!/usr/bin/env node
 /**
- * Prepara el paquete ZIP para subir a GoDaddy cPanel.
+ * Genera el sitio estático y el ZIP para subir a GoDaddy (public_html).
  * Uso: npm run godaddy:prep
  */
-import { cpSync, existsSync, mkdirSync, rmSync, readFileSync, writeFileSync } from "fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
 import { execSync } from "child_process";
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
+const outDir = path.join(root, "out");
 const deployRoot = path.join(root, "deploy");
-const deployDir = path.join(deployRoot, "mascafe-web");
 const zipPath = path.join(deployRoot, "mascafe-web-godaddy.zip");
+
+const htaccess = `# Más Café — GoDaddy Apache
+Options -Indexes
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Forzar HTTPS (opcional, si ya tienes SSL en GoDaddy)
+  RewriteCond %{HTTPS} off
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Servir archivos y carpetas existentes
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+</IfModule>
+`;
 
 function log(msg) {
   console.log(`\n▸ ${msg}`);
 }
 
-log("Compilando producción (standalone)...");
+log("Compilando sitio estático...");
 execSync("npm run build", { cwd: root, stdio: "inherit" });
 
-const standaloneDir = path.join(root, ".next", "standalone");
-if (!existsSync(standaloneDir)) {
-  console.error("Error: no se generó .next/standalone");
+if (!existsSync(outDir)) {
+  console.error("Error: no se generó la carpeta out/");
   process.exit(1);
 }
 
-log("Armando carpeta deploy/mascafe-web/...");
+writeFileSync(path.join(outDir, ".htaccess"), htaccess);
+
+log("Creando ZIP para GoDaddy...");
 rmSync(deployRoot, { recursive: true, force: true });
-mkdirSync(deployDir, { recursive: true });
+mkdirSync(deployRoot, { recursive: true });
 
-cpSync(standaloneDir, deployDir, { recursive: true });
-
-const staticSrc = path.join(root, ".next", "static");
-const staticDest = path.join(deployDir, ".next", "static");
-if (existsSync(staticSrc)) {
-  mkdirSync(path.join(deployDir, ".next"), { recursive: true });
-  cpSync(staticSrc, staticDest, { recursive: true });
-}
-
-cpSync(path.join(root, "public"), path.join(deployDir, "public"), { recursive: true });
-cpSync(path.join(root, "content"), path.join(deployDir, "content"), { recursive: true });
-
-// Passenger en GoDaddy a veces usa PASSENGER_PORT
-const serverPath = path.join(deployDir, "server.js");
-let serverCode = readFileSync(serverPath, "utf-8");
-serverCode = serverCode.replace(
-  "const currentPort = parseInt(process.env.PORT, 10) || 3000",
-  "const currentPort = parseInt(process.env.PORT || process.env.PASSENGER_PORT, 10) || 3000",
-);
-writeFileSync(serverPath, serverCode);
-
-writeFileSync(
-  path.join(deployDir, ".env.production.example"),
-  `NODE_ENV=production
-HOSTNAME=0.0.0.0
-ADMIN_PASSWORD=mascafe2025
-# PORT lo asigna GoDaddy/cPanel automáticamente
-`,
-);
-
-log("Creando ZIP (puede tardar 1-2 min)...");
-execSync(
-  `cd "${deployRoot}" && zip -rq "mascafe-web-godaddy.zip" mascafe-web`,
-  { stdio: "inherit" },
-);
+execSync(`cd "${outDir}" && zip -rq "${zipPath}" .`, { stdio: "inherit" });
 
 const sizeMb = (readFileSync(zipPath).length / 1024 / 1024).toFixed(1);
 
 console.log(`
-✅ Paquete listo para GoDaddy
+✅ Sitio estático listo para GoDaddy
 
-   Carpeta local: deploy/mascafe-web/
+   Carpeta local: out/
    ZIP a subir:   deploy/mascafe-web-godaddy.zip (${sizeMb} MB)
-   Startup file:  server.js
 
-   Sigue la guía: docs/MIGRACION-GODADDY.md
+   En GoDaddy cPanel:
+   1. Administrador de archivos → public_html
+   2. Borra el contenido anterior (respalda si hace falta)
+   3. Sube y extrae el ZIP
+   4. Verifica que exista index.html en la raíz
+
+   Guía completa: docs/MIGRACION-GODADDY.md
 `);

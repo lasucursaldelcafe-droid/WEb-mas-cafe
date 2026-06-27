@@ -1,6 +1,6 @@
 {
   "accessMode": "public",
+  "deployMode": "static",
   "godaddyReady": true,
-  "firebaseEnabled": false,
   "googleDriveFolderId": "153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC"
 }

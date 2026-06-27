@@ -81,9 +81,6 @@ export function SiteFooter({ brand }: { brand: Brand }) {
             <Link href="/contacto" className="hover:text-cream/70">
               Contacto
             </Link>
-            <Link href="/admin" className="hover:text-cream/70">
-              Admin
-            </Link>
           </div>
         </div>
       </div>
