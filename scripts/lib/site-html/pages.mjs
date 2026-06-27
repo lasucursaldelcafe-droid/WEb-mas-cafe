@@ -162,6 +162,12 @@ export function pageCafe() {
   });
 }
 
+const MENU_CAT_NOTES = {
+  cafe: "Trazabilidad al origen",
+  desayuno: "Para empezar con calma",
+  reposteria: "Dulce pausa",
+};
+
 export function pageMenu() {
   const site = loadSite();
   const { brand, menu, pages } = site;
@@ -169,24 +175,33 @@ export function pageMenu() {
   const { href } = createPathHelpers(1);
 
   const body = `
-  <section class="page-hero light">
-    <div class="wrap inner">
-      <p class="tagline">${pm.tagline}</p>
-      <h1>${pm.headline}</h1>
+  <section class="menu-page">
+    <div class="menu-hero">
+      <div class="wrap">
+        <p class="soul">${pm.tagline}</p>
+        <h1>${pm.headline}</h1>
+        <p class="intro">${pm.intro || brand.purpose}</p>
+      </div>
     </div>
-  </section>
-  <section>
-    <div class="wrap" style="max-width:42rem">
+    <div class="menu-sheet">
       ${menu.map((cat) => `
       <div class="menu-cat">
-        <h3>${cat.name}</h3>
+        <div class="menu-cat-head">
+          <h3>${cat.name}</h3>
+          ${MENU_CAT_NOTES[cat.id] ? `<p class="cat-note">${MENU_CAT_NOTES[cat.id]}</p>` : ""}
+        </div>
         ${cat.items.map((item) => `
         <div class="menu-item">
-          <div>${item.name}${item.description ? `<small>${item.description}</small>` : ""}</div>
-          <strong>${price(item.price)}</strong>
+          <div>
+            <span class="menu-item-name">${item.name}</span>
+            ${item.description ? `<small>${item.description}</small>` : ""}
+          </div>
+          <span class="menu-item-price">${price(item.price)}</span>
         </div>`).join("")}
       </div>`).join("")}
-      <p class="note">${pm.disclaimer}</p>
+      <div class="menu-footer">
+        <p>${pm.disclaimer}</p>
+      </div>
     </div>
   </section>
   ${visitBand(href, brand)}`;

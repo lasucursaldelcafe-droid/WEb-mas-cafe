@@ -81,22 +81,35 @@ export function siteStyles() {
     .skip-link:focus{left:1rem}
     header{
       position:sticky;top:0;z-index:100;
-      background:rgba(7,57,84,.97);backdrop-filter:blur(12px);
-      border-bottom:1px solid rgba(168,197,176,.12);padding:.85rem 0;
+      background:rgba(7,57,84,.92);backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(168,197,176,.08);padding:1rem 0;
     }
-    header .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem}
-    .logo img{height:2.35rem;width:auto;transition:opacity .2s}
-    .logo:hover img{opacity:.88}
+    header .wrap{display:flex;align-items:center;justify-content:space-between;gap:2rem}
+    .logo img{height:2rem;width:auto;transition:opacity .25s}
+    .logo:hover img{opacity:.85}
     .nav-toggle{
-      display:none;background:none;border:1px solid rgba(246,245,239,.25);
-      color:var(--cream);border-radius:.5rem;padding:.45rem .65rem;font:inherit;cursor:pointer;
+      display:none;background:transparent;border:none;
+      color:rgba(246,245,239,.7);padding:.5rem;font:inherit;cursor:pointer;
+      font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
     }
-    nav.site-nav{display:flex;align-items:center;flex-wrap:wrap;gap:.25rem 1.1rem;font-size:.84rem}
+    nav.site-nav{display:flex;align-items:center;gap:clamp(1rem,3vw,2rem)}
     nav.site-nav a{
-      color:rgba(246,245,239,.88);padding:.35rem 0;border-bottom:2px solid transparent;
-      transition:color .2s,border-color .2s;
+      color:rgba(246,245,239,.72);font-size:.78rem;letter-spacing:.06em;
+      padding:0;position:relative;transition:color .3s;
     }
-    nav.site-nav a:hover,nav.site-nav a.active{color:var(--sage);border-bottom-color:var(--sage)}
+    nav.site-nav a::after{
+      content:"";position:absolute;left:0;bottom:-4px;width:0;height:1px;
+      background:var(--sage);transition:width .3s var(--ease);
+    }
+    nav.site-nav a:hover,nav.site-nav a.active{color:var(--cream)}
+    nav.site-nav a:hover::after,nav.site-nav a.active::after{width:100%}
+    .nav-cta{
+      font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+      color:var(--sage)!important;padding:.45rem 0!important;
+      opacity:.9;
+    }
+    .nav-cta::after{display:none}
+    .nav-cta:hover{opacity:1;color:var(--cream)!important}
     .btn{
       display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
       padding:.75rem 1.75rem;border-radius:999px;font-size:.875rem;font-weight:600;
@@ -221,14 +234,63 @@ export function siteStyles() {
       display:inline-block;font-size:.7rem;font-weight:600;
       background:var(--green);color:#fff;padding:.25rem .75rem;border-radius:999px;margin-top:.5rem;
     }
-    .menu-cat{margin-bottom:2.5rem}
-    .menu-cat h3{font-size:1.3rem;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--sage)}
-    .menu-item{
-      display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
-      padding:.7rem 0;border-bottom:1px dotted rgba(7,57,84,.15);
+    .menu-page{background:var(--cream)}
+    .menu-hero{
+      text-align:center;padding:clamp(4rem,10vw,6rem) 0 clamp(2rem,5vw,3rem);
+      background:var(--cream);color:var(--blue);
     }
-    .menu-item strong{white-space:nowrap;color:var(--blue)}
-    .menu-item small{display:block;opacity:.6;font-size:.82rem;margin-top:.15rem}
+    .menu-hero .soul{
+      font-family:"Playfair Display",Georgia,serif;font-style:italic;
+      font-size:clamp(1.5rem,3.5vw,2.25rem);color:var(--brown);margin-bottom:.75rem;
+    }
+    .menu-hero h1{
+      font-family:"Playfair Display",Georgia,serif;font-weight:400;
+      font-size:clamp(1.75rem,4vw,2.5rem);line-height:1.2;color:var(--blue);
+    }
+    .menu-hero .intro{
+      max-width:32rem;margin:1.25rem auto 0;font-size:.95rem;line-height:1.75;
+      color:rgba(42,42,42,.65);font-weight:300;
+    }
+    .menu-sheet{max-width:34rem;margin:0 auto;padding:0 1.5rem clamp(4rem,8vw,5rem)}
+    .menu-cat{margin-bottom:clamp(3rem,6vw,4.5rem)}
+    .menu-cat:last-of-type{margin-bottom:2rem}
+    .menu-cat-head{
+      text-align:center;margin-bottom:2rem;padding-bottom:1.25rem;
+      border-bottom:1px solid rgba(7,57,84,.08);
+    }
+    .menu-cat-head h3{
+      font-family:"Playfair Display",Georgia,serif;font-weight:400;
+      font-size:clamp(1.35rem,3vw,1.65rem);color:var(--blue);letter-spacing:.02em;
+    }
+    .menu-cat-head .cat-note{
+      font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+      color:var(--brown);opacity:.55;margin-top:.35rem;
+    }
+    .menu-item{
+      display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:baseline;
+      padding:1.1rem 0;border-bottom:1px solid rgba(7,57,84,.05);
+    }
+    .menu-item:last-child{border-bottom:none}
+    .menu-item-name{
+      font-family:"Playfair Display",Georgia,serif;font-size:1.05rem;
+      color:var(--blue);font-weight:400;line-height:1.35;
+    }
+    .menu-item small{
+      display:block;font-family:system-ui,sans-serif;font-size:.8rem;
+      font-style:italic;color:rgba(42,42,42,.5);margin-top:.3rem;font-weight:300;
+    }
+    .menu-item-price{
+      font-size:.88rem;color:var(--brown);font-weight:400;
+      font-variant-numeric:tabular-nums;white-space:nowrap;letter-spacing:.02em;
+    }
+    .menu-footer{
+      text-align:center;padding-top:2rem;margin-top:1rem;
+      border-top:1px solid rgba(7,57,84,.06);
+    }
+    .menu-footer p{
+      font-size:.78rem;letter-spacing:.06em;color:rgba(42,42,42,.45);
+      font-style:italic;
+    }
     .values{display:grid;gap:1px;background:rgba(7,57,84,.08);border-radius:1.25rem;overflow:hidden}
     @media(min-width:640px){.values{grid-template-columns:1fr 1fr}}
     .value{padding:1.65rem;background:var(--cream)}
@@ -332,7 +394,7 @@ export function siteStyles() {
         background:rgba(7,57,84,.98);border-bottom:1px solid rgba(168,197,176,.12);
       }
       nav.site-nav.open{display:flex}
-      nav.site-nav .btn-sage{text-align:center;margin-top:.5rem}
+      nav.site-nav .nav-cta{margin-top:.75rem;padding-top:.75rem!important;border-top:1px solid rgba(168,197,176,.12)}
       header .wrap{position:relative;flex-wrap:wrap}
     }
     @media(prefers-reduced-motion:reduce){
@@ -401,7 +463,7 @@ export function shell({ title, description, depth, pageId, heroArt, body, year =
       <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-nav">Menú</button>
       <nav class="site-nav" id="site-nav" aria-label="Principal">
         ${navLinks}
-        <a href="${href("/tienda")}" class="btn btn-sage" style="padding:.45rem 1.1rem;font-size:.78rem">Comprar café</a>
+        <a href="${href("/tienda")}" class="nav-cta">Tienda</a>
       </nav>
     </div>
   </header>

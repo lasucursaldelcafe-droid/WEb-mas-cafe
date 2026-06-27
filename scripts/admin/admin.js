@@ -364,7 +364,7 @@
     const sections = [
       ["home", "Inicio", ["experiencesLabel", "experiencesTitle", "productsLabel", "productsTitle", "blogLabel", "blogTitle"]],
       ["cafe", "Café", ["tagline", "headline", "brewTitle", "productsNote"]],
-      ["menu", "Menú", ["tagline", "headline", "disclaimer"]],
+      ["menu", "Menú", ["tagline", "headline", "intro", "disclaimer"]],
       ["nosotros", "Nosotros", ["tagline", "headline", "valuesLabel", "valuesTitle"]],
       ["tienda", "Tienda", ["tagline", "headline"]],
       ["blog", "Blog", ["tagline", "headline"]],
@@ -373,7 +373,7 @@
     return sections.map(([key, title, fields]) => `
       <div class="card" data-page-section="${key}">
         <h3>${title}</h3>
-        ${fields.map((f) => field(f, `pg-${key}-${f}`, pg[key]?.[f] || "", f.includes("Note") || f === "disclaimer" ? "textarea" : "text")).join("")}
+        ${fields.map((f) => field(f, `pg-${key}-${f}`, pg[key]?.[f] || "", ["intro", "disclaimer"].includes(f) || f.includes("Note") ? "textarea" : "text")).join("")}
       </div>`).join("") + `
     <div class="card"><h3>Guía de preparación (página Café)</h3>
       <textarea id="brew-guide" style="width:100%;min-height:140px;font:inherit;padding:1rem;border-radius:.6rem;border:1px solid rgba(7,57,84,.15)">${content.brewGuide.join("\n")}</textarea>

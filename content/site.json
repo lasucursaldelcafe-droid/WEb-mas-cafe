@@ -67,9 +67,10 @@
       "productsNote": "Selección destacada — compra el catálogo completo en la tienda."
     },
     "menu": {
-      "tagline": "Menú",
+      "tagline": "Pausa con intención",
       "headline": "Para cada momento del día",
-      "disclaimer": "Precios referenciales en COP. Pueden variar según temporada."
+      "intro": "Cada plato pensado para acompañar tu pausa. Café de especialidad, cocina cuidada y repostería que invita a quedarse un poco más.",
+      "disclaimer": "Precios referenciales en COP · Pueden variar según temporada"
     },
     "nosotros": {
       "tagline": "Nuestra historia",
