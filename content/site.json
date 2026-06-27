@@ -5,6 +5,8 @@
     "tagline": "Pausa con intención",
     "headline": "Aquí siempre hay algo más esperándote",
     "subheadline": "Más encuentros. Más conversaciones. Más momentos que se quedan.",
+    "visitLine": "San Fernando Nuevo",
+    "footerLine": "Café de especialidad · Cali",
     "website": "https://www.mascafecol.com",
     "email": "hola@mascafecol.com",
     "phone": "+57 315 657 3897",
@@ -19,6 +21,7 @@
     "purpose": "Crear un espacio donde las personas puedan hacer una pausa consciente en medio de su día, sentirse bien atendidas y reconectar consigo mismas y con otros, a través de una experiencia de hospitalidad que va más allá del café.",
     "mission": "Brindar una experiencia integral de hospitalidad a través del café de especialidad, la cocina y el servicio, cuidando cada detalle del espacio para que las personas puedan trabajar, compartir o simplemente desconectarse.",
     "vision": "Convertirnos en una marca referente de hospitalidad contemporánea, reconocida por crear experiencias auténticas que combinan café, gastronomía y espacio.",
+    "about": "Somos una marca caleña de café de especialidad y gastronomía. Trabajamos con productores aliados, un equipo que crece junto y un espacio pensado para que cada visita se sienta natural, cálida y bien cuidada.",
     "values": [
       {
         "title": "Hospitalidad genuina",
@@ -26,7 +29,7 @@
       },
       {
         "title": "Intención en los detalles",
-        "text": "Desde el servicio hasta el ambiente, cada decisión busca generar bienestar, pausa y conexión."
+        "text": "Desde el servicio hasta el ambiente, cada decisión busca generar bienestar y conexión."
       },
       {
         "title": "Trabajo en equipo",
@@ -37,8 +40,8 @@
         "text": "Apostamos por la mejora continua del equipo, del servicio y de la experiencia, de manera sostenible y humana."
       }
     ],
-    "story": "Toda historia tiene un comienzo. La nuestra comenzó con un café. Con una taza entre las manos y la certeza de que los mejores momentos merecen pausa.",
-    "quote": "Necesito un lugar donde pueda pausar, trabajar tranquilo y sentirme bien atendido.",
+    "story": "Comenzamos con una taza y la certeza de que los mejores momentos no se apuran. Ese gesto sencillo se convirtió en un espacio en Cali donde el café, la cocina y el servicio se cuidan con la misma atención.",
+    "quote": "Busco un lugar tranquilo, con buen café y gente que te reciba de verdad.",
     "nosotrosImage": "/images/brand/mood.png"
   },
   "theme": {
@@ -64,38 +67,38 @@
   ],
   "pages": {
     "home": {
-      "experiencesLabel": "La experiencia",
-      "experiencesTitle": "Una experiencia que se vive sin prisa",
-      "productsLabel": "Café fresco",
-      "productsTitle": "Calidad extraordinaria, trazabilidad al origen",
-      "blogLabel": "Blog",
-      "blogTitle": "Historias & origen"
+      "experiencesLabel": "En el espacio",
+      "experiencesTitle": "Cuatro maneras de vivir Más Café",
+      "productsLabel": "Origen colombiano",
+      "productsTitle": "Microlotes con trazabilidad",
+      "blogLabel": "Lecturas",
+      "blogTitle": "Del grano a la mesa"
     },
     "cafe": {
-      "tagline": "Café fresco",
-      "headline": "Calidad extraordinaria y trazabilidad al origen",
+      "tagline": "Origen",
+      "headline": "Del grano a tu taza",
       "brewTitle": "Prepáralo en casa, a tu manera",
-      "productsNote": "Selección destacada — compra el catálogo completo en la tienda."
+      "productsNote": "Selección destacada — el catálogo completo está en la tienda."
     },
     "menu": {
-      "tagline": "Pausa con intención",
-      "headline": "Para cada momento del día",
-      "intro": "Cada plato pensado para acompañar tu pausa. Café de especialidad, cocina cuidada y repostería que invita a quedarse un poco más.",
+      "tagline": "En la mesa",
+      "headline": "Carta del día",
+      "intro": "Café de especialidad, brunch y repostería para la mañana, la tarde o ese rato entre reuniones.",
       "disclaimer": "Precios referenciales en COP · Pueden variar según temporada"
     },
     "nosotros": {
-      "tagline": "Nuestra historia",
-      "headline": "Un espacio para pausar con intención",
-      "valuesLabel": "Nuestros valores",
-      "valuesTitle": "Hospitalidad que va más allá del café"
+      "tagline": "Quiénes somos",
+      "headline": "Café, cocina y espacio en Cali",
+      "valuesLabel": "Lo que nos guía",
+      "valuesTitle": "Nuestros valores"
     },
     "tienda": {
-      "tagline": "Tienda",
-      "headline": "Café fresco, directo del origen"
+      "tagline": "Tienda online",
+      "headline": "Llévate el origen a casa"
     },
     "blog": {
-      "tagline": "Blog",
-      "headline": "Historias & origen"
+      "tagline": "Lecturas",
+      "headline": "Del grano a la mesa"
     },
     "contacto": {
       "tagline": "Contacto",
@@ -114,9 +117,9 @@
   "experiences": [
     {
       "id": "pausa",
-      "title": "Pausa",
-      "subtitle": "Con intención",
-      "description": "Un espacio donde el tiempo baja, el ruido desaparece y cada elemento respira. Acompañamos sin saturar.",
+      "title": "Ambiente",
+      "subtitle": "Sin prisa",
+      "description": "Un espacio donde el tiempo baja y cada detalle está pensado para que te sientas a gusto desde que entras.",
       "image": "/images/brand/pausa.png",
       "layout": "left"
     },
@@ -138,9 +141,9 @@
     },
     {
       "id": "visita",
-      "title": "Visita",
-      "subtitle": "Un espacio para quedarse",
-      "description": "Diseñado para trabajar, compartir o desconectarse. Hospitalidad consciente en cada rincón.",
+      "title": "Tiempo",
+      "subtitle": "Para quedarse",
+      "description": "Mesas amplias, luz natural y Wi‑Fi: un lugar para trabajar, conversar o simplemente desconectarse.",
       "image": "/images/brand/visita.png",
       "layout": "right"
     }
@@ -249,7 +252,7 @@
     {
       "id": "pausa-intencion",
       "title": "¿Qué significa pausar con intención?",
-      "excerpt": "En Más Café creemos que cada taza es una oportunidad para detenerse, conectar y disfrutar el momento.",
+      "excerpt": "No se trata de hacer menos: se trata de estar presente. Por qué dedicarle unos minutos a cada taza cambia el resto del día.",
       "date": "26 jun 2025",
       "category": "Marca",
       "image": "/images/brand/mood.png",
@@ -284,12 +287,11 @@
     }
   ],
   "marquee": [
-    "Pausa con intención",
-    "Más encuentros",
-    "Más conversaciones",
-    "Más momentos que se quedan",
-    "Café de especialidad",
-    "Hospitalidad consciente"
+    "Microlotes colombianos",
+    "Trazabilidad al origen",
+    "Café fresco tostado",
+    "Brunch & repostería",
+    "San Fernando Nuevo"
   ],
   "analytics": {
     "clicks": {

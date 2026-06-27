@@ -17,11 +17,12 @@ function marqueeHtml(items) {
 }
 
 function visitBand(href, brand) {
+  const ctaLine = brand.visitLine || "San Fernando Nuevo · Cali";
   return `
   <section>
     <div class="wrap">
       <div class="cta">
-        <p class="cta-tagline">${brand.tagline}</p>
+        <p class="cta-tagline">${ctaLine}</p>
         <h2>Te esperamos en Cali</h2>
         <p>${brand.address}<br/>${brand.city}</p>
         <p style="font-size:.88rem;margin-top:.5rem;opacity:.8">${brand.hours}</p>
@@ -91,11 +92,11 @@ export function pageHome() {
         <p class="descriptor">${brand.descriptor}</p>
         <div class="actions">
           <a class="btn btn-sage" href="${href("/tienda")}">Comprar café fresco</a>
-          <a class="btn btn-outline" href="${href("/nosotros")}">Nuestra historia</a>
+          <a class="btn btn-outline" href="${href("/nosotros")}">Conócenos</a>
         </div>
         <div class="brand-note">
           <img src="${img("/images/brand/favs.png")}" alt=""/>
-          <p>Una experiencia que se vive sin prisa. Hospitalidad consciente en Cali.</p>
+          <p>San Fernando Nuevo · Cali</p>
         </div>
       </div>
     </div>
@@ -107,7 +108,7 @@ export function pageHome() {
     <div class="wrap">
       ${sectionHead(ph.experiencesLabel, ph.experiencesTitle)}
       <div class="exp-list">${experiences.map((e, i) => experienceRow(e, img, i % 2 === 1)).join("")}</div>
-      <p class="section-actions"><a class="text-link" href="${href("/nosotros")}">Conoce nuestra historia →</a></p>
+      <p class="section-actions"><a class="text-link" href="${href("/nosotros")}">Sobre nosotros →</a></p>
     </div>
   </section>
   <section class="dark">
@@ -188,9 +189,9 @@ export function pageCafe() {
 }
 
 const MENU_CAT_NOTES = {
-  cafe: "Trazabilidad al origen",
-  desayuno: "Para empezar con calma",
-  reposteria: "Dulce pausa",
+  cafe: "Origen del día",
+  desayuno: "Mañanas con calma",
+  reposteria: "Para cerrar con dulce",
 };
 
 export function pageMenu() {
@@ -257,9 +258,7 @@ export function pageNosotros() {
     <div class="wrap grid-2">
       <div>
         <p style="font-size:1.08rem;margin-bottom:1rem;line-height:1.75">${brand.story}</p>
-        <p style="opacity:.8;line-height:1.7">${brand.vision}</p>
-        <p style="margin-top:1.15rem;opacity:.8;line-height:1.7">${brand.purpose}</p>
-        <p style="margin-top:1rem;opacity:.8;line-height:1.7">${brand.mission}</p>
+        <p style="opacity:.8;line-height:1.7">${brand.about}</p>
       </div>
       <img src="${img(brand.nosotrosImage)}" alt="Ambiente ${brand.name}" style="border-radius:1rem 2rem 1rem 2rem;width:100%;aspect-ratio:4/5;object-fit:cover;box-shadow:var(--shadow)"/>
     </div>
