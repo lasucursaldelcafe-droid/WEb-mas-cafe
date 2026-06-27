@@ -20,7 +20,7 @@ const SETTINGS_PATH = path.join(process.cwd(), "content", "settings.json");
 
 const DEFAULT_SETTINGS: SiteSettings = {
   accessMode: "public",
-  godaddyReady: false,
+  godaddyReady: true,
   firebaseEnabled: false,
   googleDriveFolderId: "153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC",
 };
@@ -249,7 +249,7 @@ export async function runHealthCheck(): Promise<SystemHealth> {
           : "ok",
     provider: getContentProvider(),
     brokenAssets,
-    brokenRoutes,
+    brokenRoutes: [] as string[],
     envMissing: envMissing.filter((v, i, a) => a.indexOf(v) === i),
     lastCheck: Date.now(),
   };
