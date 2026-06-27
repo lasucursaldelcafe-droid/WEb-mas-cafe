@@ -316,7 +316,7 @@
     const val = b.values?.[0];
     return `<div class="ctx-preview ctx-nosotros">
       ${src ? `<img src="${src}" alt="" class="ctx-blog-img"/>` : ""}
-      <p class="ctx-body">${escapeHtml((b.story || b.purpose || "Tu historia aparecerá aquí.").slice(0, 160))}${(b.story || b.purpose || "").length > 160 ? "…" : ""}</p>
+      <p class="ctx-body">${escapeHtml((b.story || b.about || "Tu historia aparecerá aquí.").slice(0, 160))}${(b.story || b.about || "").length > 160 ? "…" : ""}</p>
       ${b.quote ? `<blockquote class="ctx-quote">${escapeHtml(b.quote)}</blockquote>` : ""}
       ${val ? `<div class="ctx-value"><strong>${escapeHtml(val.title)}</strong><p>${escapeHtml(val.text)}</p></div>` : ""}
     </div>`;
@@ -731,6 +731,8 @@
       ${field("Tagline", "tagline", b.tagline)}
       ${field("Titular principal", "headline", b.headline)}
       ${field("Subtítulo", "subheadline", b.subheadline, "textarea")}
+      ${field("Línea CTA visita", "visitLine", b.visitLine || "")}
+      ${field("Línea pie de página", "footerLine", b.footerLine || "")}
     </div></div>`;
   }
 
@@ -1095,10 +1097,8 @@
     const b = content.brand;
     return `<div class="card"><h3>Historia y propósito</h3>
       ${field("Historia (intro)", "story", b.story || "", "textarea")}
+      ${field("Sobre nosotros", "about", b.about || "", "textarea")}
       ${field("Cita destacada", "quote", b.quote || "", "textarea")}
-      ${field("Propósito", "purpose", b.purpose, "textarea")}
-      ${field("Misión", "mission", b.mission, "textarea")}
-      ${field("Visión", "vision", b.vision, "textarea")}
     </div>
     ${imageField("nosotros-img", "Imagen de la página Nosotros", b.nosotrosImage || "/images/brand/mood.png", "nosotros")}
     <div class="card"><h3>Valores</h3>
@@ -1113,7 +1113,7 @@
   }
 
   function bindNosotrosEvents(root) {
-    ["story", "quote", "purpose", "mission", "vision"].forEach((key) => {
+    ["story", "about", "quote"].forEach((key) => {
       const el = $(`#${key}`, root);
       if (el) el.addEventListener("input", () => { content.brand[key] = el.value; markDirty(); });
     });
