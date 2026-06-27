@@ -14,6 +14,16 @@ Base: **https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/**
 | Blog | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/blog/ |
 | Contacto | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/contacto/ |
 
+## Constitución web (informe para la marca)
+
+| | |
+|--|--|
+| **URL** | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/ |
+| **Qué es** | Documento HTML vivo: activos Drive, arquitectura, recomendaciones |
+| **Repo** | `informes/constitucion-web.html` (se regenera en cada build) |
+
+No aparece en el menú del sitio público.
+
 ## Panel de administración
 
 | | |
@@ -36,7 +46,7 @@ cd WEb-mas-cafe
 npm run preview
 ```
 
-→ http://localhost:4173/ (mismas 7 rutas + `/admin/`)
+→ http://localhost:4173/ (7 rutas + `/admin/` + `/informe/`)
 
 Guía: [GUIA-LOCAL.md](./GUIA-LOCAL.md)
 

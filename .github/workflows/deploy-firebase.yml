@@ -12,7 +12,7 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # Solo necesario si usas Workload Identity Federation (ver docs/URL-PUBLICA.md)
+    # Solo necesario si usas Workload Identity Federation (ver docs/HOSTING.md)
     permissions:
       contents: read
       id-token: write
@@ -60,7 +60,7 @@ jobs:
             echo "Si tu organización BLOQUEA claves JSON de cuenta de servicio, usa una de estas opciones:"
             echo "  A) Deploy local: npm run deploy:firebase (tras npx firebase login)"
             echo "  B) GitHub Secret FIREBASE_TOKEN: ejecuta 'npx firebase login:ci' en tu PC"
-            echo "  C) Workload Identity Federation: ver docs/URL-PUBLICA.md"
+            echo "  C) Workload Identity Federation: ver docs/HOSTING.md"
             exit 1
           fi
 

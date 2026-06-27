@@ -46,7 +46,7 @@ jobs:
         run: |
           URL="${{ steps.deployment.outputs.page_url }}"
           echo "URL publicada: $URL"
-          for path in "" "cafe/" "menu/" "tienda/"; do
+          for path in "" "cafe/" "menu/" "tienda/" "informe/"; do
             CODE=$(curl -s -o /dev/null -w "%{http_code}" "${URL}${path}")
             echo "${URL}${path} → HTTP $CODE"
           done

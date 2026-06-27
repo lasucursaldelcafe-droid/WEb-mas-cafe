@@ -2,10 +2,20 @@
 
 Sitio web de **Más Café** — café de especialidad en Cali, Colombia.
 
-## Enlaces del sitio
+## Enlaces
 
-| Página | GitHub Pages |
-|--------|----------------|
+| | URL |
+|-|-----|
+| **Sitio público** | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/ |
+| **Informe marca (constitución web)** | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/ |
+| **Admin** | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/ |
+| **Repositorio** | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe |
+| **Dominio futuro** | https://mascafe.com/ |
+
+### Páginas del sitio
+
+| Página | URL |
+|--------|-----|
 | Inicio | [/](https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/) |
 | Café | [/cafe/](https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/cafe/) |
 | Menú | [/menu/](https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/menu/) |
@@ -14,14 +24,9 @@ Sitio web de **Más Café** — café de especialidad en Cali, Colombia.
 | Blog | [/blog/](https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/blog/) |
 | Contacto | [/contacto/](https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/contacto/) |
 
-| | |
-|-|-|
-| **Repositorio** | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe |
-| **Dominio** | https://mascafe.com/ (cuando DNS esté listo) |
-
 ---
 
-## Ver en local (desde GitHub)
+## Ver en local
 
 ```bash
 git clone https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe.git
@@ -29,41 +34,30 @@ cd WEb-mas-cafe
 npm run preview
 ```
 
-Abre **http://localhost:4173/** en el navegador. No necesitas `npm install` (solo Node.js).
+→ http://localhost:4173/ · Informe: http://localhost:4173/informe/
 
-**Guía completa:** [docs/GUIA-LOCAL.md](docs/GUIA-LOCAL.md)
+**Guía:** [docs/GUIA-LOCAL.md](docs/GUIA-LOCAL.md)
 
 ---
 
-## Publicar cambios en internet
+## Publicar cambios
 
-1. Edita `content/site.json`
+1. Edita `content/site.json` o usa el [panel admin](docs/ADMIN.md)
 2. `git push origin main`
-3. GitHub Actions publica en ~1 minuto
-
-**Guía:** [docs/COMO-ACTUALIZAR.md](docs/COMO-ACTUALIZAR.md)
-
----
-
-## Activar GitHub Pages (una vez)
-
-Settings → **Pages** → Source: **GitHub Actions** (no "Deploy from branch")
-
-Si hay dominio personalizado y el sitio falla, **quítalo** hasta configurar DNS.
-
-**Guía:** [docs/ACTIVAR-GITHUB-PAGES.md](docs/ACTIVAR-GITHUB-PAGES.md)
+3. GitHub Actions publica sitio + informe en ~1 minuto
 
 ---
 
 ## Documentación
 
+Índice completo: [docs/README.md](docs/README.md)
+
 | Guía | Para qué |
 |------|----------|
-| [GUIA-LOCAL.md](docs/GUIA-LOCAL.md) | Clonar, previsualizar y editar en tu PC |
-| [COMO-ACTUALIZAR.md](docs/COMO-ACTUALIZAR.md) | Cambiar textos, precios y menú |
-| [ACTIVAR-GITHUB-PAGES.md](docs/ACTIVAR-GITHUB-PAGES.md) | Activar el sitio público en GitHub |
-| [DOMINIO-MASCAFE-COM.md](docs/DOMINIO-MASCAFE-COM.md) | Conectar mascafe.com (DNS GoDaddy) |
-| [URL-PUBLICA.md](docs/URL-PUBLICA.md) | Firebase (alternativa) |
+| [ENLACES-ACCESO.md](docs/ENLACES-ACCESO.md) | URLs y credenciales |
+| [HOSTING.md](docs/HOSTING.md) | GitHub Pages, dominio, Firebase |
+| [COMO-ACTUALIZAR.md](docs/COMO-ACTUALIZAR.md) | Editar contenido |
+| [informes/README.md](informes/README.md) | Constitución web para la marca |
 
 ---
 
@@ -72,13 +66,15 @@ Si hay dominio personalizado y el sitio falla, **quítalo** hasta configurar DNS
 ```
 content/site.json              # Contenido editable
 scripts/lib/site-html/         # Generador HTML (7 páginas)
-scripts/build-github-pages.mjs # Build para GitHub Pages
-gh-pages-site/                 # Salida local (generada, no commitear)
-.github/workflows/             # Deploy automático → rama gh-pages
+scripts/lib/generate-constitution-report.mjs  # Informe marca
+scripts/build-github-pages.mjs # Build → gh-pages-site/
+informes/                      # Constitución web (generada)
+public/images/                 # Activos desde Drive
+.github/workflows/             # Deploy automático
 ```
 
 ## Marca
 
-- **Tagline:** Pausa con intención
-- **Colores:** Azul `#073954`, verde `#1BB175`, crema `#F6F5EF`
-- **Ubicación:** Calle 5B #2-38-09, San Fernando Nuevo, Cali
+- **Tagline:** Pausa con intención (solo en inicio)
+- **Colores:** Crema `#F6F5EF`, azul `#073954`, sage `#D8DAA8`
+- **Drive:** [Carpeta de marca](https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC)
