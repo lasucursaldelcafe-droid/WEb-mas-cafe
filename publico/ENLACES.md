@@ -1,25 +1,16 @@
-# Enlaces de acceso — Más Café
+# Enlaces — Más Café
 
-## Ver el sitio (sin instalar nada)
+## Internet
 
-| Enlace | Uso |
-|--------|-----|
-| **jsDelivr (recomendado)** | https://cdn.jsdelivr.net/gh/lasucursaldelcafe-droid/WEb-mas-cafe@main/publico/index.html |
-| **HTMLPreview** | https://htmlpreview.github.io/?https://raw.githubusercontent.com/lasucursaldelcafe-droid/WEb-mas-cafe/main/publico/index.html |
-| **Archivo en GitHub** | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/blob/main/publico/index.html |
+- https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/
+- https://mascafe.com/ (con DNS configurado)
 
-## GitHub Pages (cuando lo actives)
-
-1. Settings → Pages → Deploy from branch → `gh-pages` → / (root)
-2. URL: https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/
-
-## Actualizar
-
-Edita `content/site.json` y ejecuta:
+## Local
 
 ```bash
-npm run build:publico
-git add publico/ content/site.json
-git commit -m "Actualizar sitio público"
-git push
+npm run preview
 ```
+
+→ http://localhost:4173/
+
+Ver docs/GUIA-LOCAL.md en el repositorio.

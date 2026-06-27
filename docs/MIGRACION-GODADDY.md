@@ -1,33 +1,31 @@
-# Dominio GoDaddy + hosting GitHub Pages
+# GoDaddy — solo dominio (sin hosting)
 
-> **No necesitas hosting de GoDaddy.** Solo el dominio.
+El sitio **no** se sube a GoDaddy. Se publica en **GitHub Pages** gratis.
 
-La web se aloja gratis en **GitHub Pages**. El dominio `mascafecol.com` en GoDaddy apunta a GitHub mediante DNS.
+GoDaddy solo se usa para el **dominio** (`mascafe.com`) apuntando a GitHub con DNS.
 
-**Guía completa:** [GITHUB-PAGES-Y-DOMINIO.md](./GITHUB-PAGES-Y-DOMINIO.md)
+---
 
-## Resumen rápido
+## Qué hacer en GoDaddy
 
-1. **GitHub** → Settings → Pages → Source: **GitHub Actions**
-2. Push a `main` → el sitio se publica solo
-3. **GoDaddy DNS** → 4 registros A a las IPs de GitHub Pages
-4. **GitHub** → Pages → Custom domain: `mascafecol.com`
+1. **No compres hosting** — no lo necesitas
+2. Configura **DNS** según [DOMINIO-MASCAFE-COM.md](./DOMINIO-MASCAFE-COM.md)
+3. El sitio vive en GitHub: https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/
 
-## IPs de GitHub Pages (registros A)
+---
 
-```
-185.199.108.153
-185.199.109.153
-185.199.110.153
-185.199.111.153
-```
-
-## Si algún día compras hosting GoDaddy
-
-Puedes generar un ZIP estático local:
+## Ver en local
 
 ```bash
-npm run godaddy:prep
+git clone https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe.git
+cd WEb-mas-cafe
+npm run preview
 ```
 
-Sube `deploy/mascafe-web-godaddy.zip` a `public_html`. Pero con GitHub Pages **no hace falta**.
+---
+
+## Actualizar contenido
+
+Edita `content/site.json` → push a `main`.
+
+Guía: [COMO-ACTUALIZAR.md](./COMO-ACTUALIZAR.md)

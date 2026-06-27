@@ -1,46 +1,58 @@
 # Publicar el sitio — acceso permanente
 
-## URL permanente (HTML en GitHub)
+## URL del sitio
 
 **https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/**
 
-El sitio es **HTML estático** (no necesita servidor). GitHub lo guarda en la rama `gh-pages` y lo sirve gratis 24/7.
+HTML + imágenes autocontenidas. Funciona en móvil, tablet y PC.
+
+---
+
+## Ver en local (desde GitHub)
+
+```bash
+git clone https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe.git
+cd WEb-mas-cafe
+npm run preview
+```
+
+→ http://localhost:4173/
+
+---
+
+## Cómo funciona
 
 | Qué | Dónde |
 |-----|-------|
-| Código fuente (para editar) | Rama `main` |
-| HTML publicado (el sitio web) | Rama `gh-pages` |
-| Generación automática | GitHub Actions en cada push a `main` |
+| Código fuente | Rama `main` |
+| Sitio publicado | Rama `gh-pages` |
+| Generación | GitHub Actions en cada push a `main` |
 
 ---
 
 ## Activar GitHub Pages (una sola vez)
 
-Sin este paso la URL devuelve 404 aunque el HTML ya esté en GitHub.
+Sin este paso la URL devuelve 404.
 
-1. Abre: https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/pages
-2. **Build and deployment** → **Source** → **Deploy from a branch**
-3. **Branch** → `gh-pages` → carpeta **`/ (root)`**
-4. Clic en **Save**
+1. https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/pages
+2. **Deploy from a branch** → `gh-pages` → **`/ (root)`** → Save
 
-En 1–2 minutos el sitio queda público en móvil y PC.
+Guía: [ACTIVAR-GITHUB-PAGES.md](./ACTIVAR-GITHUB-PAGES.md)
 
 ---
 
-## Cómo hacer cambios después
+## Actualizar el sitio
 
-Ver guía completa: [COMO-ACTUALIZAR.md](./COMO-ACTUALIZAR.md)
+1. Edita `content/site.json`
+2. Push a `main`
+3. Espera ~1 minuto
 
-**Resumen:**
-
-1. Edita `content/site.json` (textos, precios, menú, blog)
-2. Haz commit y push a `main`
-3. GitHub Actions regenera el HTML y actualiza `gh-pages` en ~2 minutos
-
-No necesitas tocar el HTML a mano. El sistema lo genera desde el código.
+Guía: [COMO-ACTUALIZAR.md](./COMO-ACTUALIZAR.md)
 
 ---
 
-## Dominio mascafecol.com (opcional)
+## Dominio mascafe.com
 
-Cuando conectes GoDaddy: [GITHUB-PAGES-Y-DOMINIO.md](./GITHUB-PAGES-Y-DOMINIO.md)
+Configuración DNS en GoDaddy: [DOMINIO-MASCAFE-COM.md](./DOMINIO-MASCAFE-COM.md)
+
+**Nota:** `mascafecol.com` es el dominio del email/redes en el contenido del sitio. El dominio web configurado en GitHub es `mascafe.com`.

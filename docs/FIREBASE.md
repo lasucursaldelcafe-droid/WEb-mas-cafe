@@ -1,97 +1,23 @@
-# Publicar en Firebase Hosting
+# Firebase (referencia)
 
-Firebase Hosting publica el sitio **públicamente** aunque el repositorio de GitHub sea privado.
+Firebase Hosting es una **alternativa** a GitHub Pages.
 
----
+Para el flujo principal del proyecto, usa:
 
-## Paso 1: Crear proyecto Firebase (5 minutos)
-
-1. Abre https://console.firebase.google.com
-2. **Agregar proyecto** → nombre: `Más Café` (o el que prefieras)
-3. ID sugerido: `mas-cafe-col` (anótalo)
-4. No necesitas Google Analytics para el hosting
-5. En el menú lateral: **Build** → **Hosting** → **Comenzar**
+- [GUIA-LOCAL.md](./GUIA-LOCAL.md) — ver en local
+- [ACTIVAR-GITHUB-PAGES.md](./ACTIVAR-GITHUB-PAGES.md) — publicar en GitHub
 
 ---
 
-## Paso 2: Configurar el proyecto en el código
+## Deploy a Firebase
 
-Edita `.firebaserc` y pon tu ID de proyecto:
-
-```json
-{
-  "projects": {
-    "default": "TU-PROYECTO-ID"
-  }
-}
-```
-
----
-
-## Paso 3: Publicar desde tu computador
-
-```bash
-npm install
-npm run deploy:firebase
-```
-
-La primera vez te pedirá iniciar sesión:
+Proyecto: `mas-cafe-c8413`
 
 ```bash
 npx firebase login
+npm run deploy:firebase
 ```
 
-Al terminar verás la URL pública, por ejemplo:
+Si tu organización bloquea claves JSON: usa `firebase login` o `firebase login:ci`.
 
-**https://mas-cafe-col.web.app**
-
-**https://mas-cafe-col.firebaseapp.com**
-
----
-
-## Paso 4: Deploy automático (GitHub Actions)
-
-Para que cada `push` a `main` publique solo:
-
-### A) Crear cuenta de servicio
-
-1. Firebase Console → ⚙️ **Configuración del proyecto**
-2. **Cuentas de servicio** → **Generar nueva clave privada** (JSON)
-3. Guarda el archivo JSON
-
-### B) Secrets en GitHub
-
-Repo → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
-
-| Secret | Valor |
-|--------|-------|
-| `FIREBASE_PROJECT_ID` | Tu ID de proyecto (ej. `mas-cafe-col`) |
-| `FIREBASE_SERVICE_ACCOUNT` | Contenido completo del JSON de la cuenta de servicio |
-
-### C) Listo
-
-Cada push a `main` ejecuta **Publicar en Firebase Hosting** y actualiza el sitio.
-
----
-
-## Actualizar contenido
-
-1. Edita `content/site.json`
-2. Push a `main` (automático) o `npm run deploy:firebase` (manual)
-
----
-
-## Dominio mascafecol.com (opcional)
-
-Firebase Console → Hosting → **Agregar dominio personalizado** → `mascafecol.com`
-
-Sigue las instrucciones DNS en GoDaddy (registros que te da Firebase).
-
----
-
-## Enlaces útiles
-
-| Recurso | URL |
-|---------|-----|
-| Consola Firebase | https://console.firebase.google.com |
-| Documentación Hosting | https://firebase.google.com/docs/hosting |
+Guía: [GUIA-PUBLICAR-SIN-INSTALAR.md](./GUIA-PUBLICAR-SIN-INSTALAR.md)

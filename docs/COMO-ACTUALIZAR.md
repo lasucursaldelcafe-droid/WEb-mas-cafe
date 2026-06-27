@@ -1,106 +1,83 @@
 # Cómo actualizar el sitio web
 
-El sitio se genera como **HTML estático** y se publica automáticamente en GitHub Pages.
+El sitio es **HTML estático** con imágenes incluidas. Se publica automáticamente en GitHub Pages.
 
-## URL permanente
+## URLs
 
-**https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/**
-
-(Cuando conectes el dominio: **https://mascafecol.com**)
-
----
-
-## Cómo funciona
-
-```
-content/site.json  →  npm run build:html  →  carpeta out/  →  rama gh-pages  →  sitio web
-     (editas)            (automático)         (HTML)          (GitHub Pages)
-```
-
-Tú solo editas el contenido. GitHub publica el HTML solo.
+| Dónde | URL |
+|-------|-----|
+| GitHub Pages | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/ |
+| Dominio | https://mascafe.com/ (cuando DNS esté configurado) |
 
 ---
 
-## Cómo hacer cambios (3 pasos)
+## Flujo de trabajo
 
-### 1. Edita el contenido
+```
+content/site.json  →  push a main  →  GitHub Actions  →  rama gh-pages  →  sitio en internet
+     (editas)                          (~1 min)
+```
 
-Abre `content/site.json` en GitHub o en tu computador.
+---
 
-Ahí cambias:
-- Textos de la marca (tagline, headline, etc.)
-- Productos y precios
-- Menú del café
-- Artículos del blog
-- Experiencias de la home
+## Cambiar textos, precios o menú
 
-### 2. Guarda y sube a GitHub
+### Opción A — Desde GitHub (sin instalar nada)
 
-**Desde GitHub (sin instalar nada):**
-1. Repo → `content/site.json` → lápiz ✏️
-2. Edita el JSON
-3. **Commit changes**
+1. Abre `content/site.json` en el repo
+2. Clic en el lápiz ✏️
+3. Edita el JSON
+4. **Commit changes**
 
-**Desde tu computador:**
+### Opción B — Desde tu computador
+
 ```bash
-# editas content/site.json
+git clone https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe.git
+cd WEb-mas-cafe
+# edita content/site.json
+npm run preview          # ver cambios en http://localhost:4173
 git add content/site.json
-git commit -m "Actualizar menú y productos"
+git commit -m "Actualizar contenido"
 git push origin main
 ```
 
-### 3. Espera el deploy automático
-
-GitHub Actions genera el HTML nuevo y lo publica en ~2 minutos.
-
-Revisa en: **Actions** → **Publicar HTML en GitHub Pages** ✅
+Ver guía local: [GUIA-LOCAL.md](./GUIA-LOCAL.md)
 
 ---
 
-## Cambiar diseño o páginas
+## Qué editar en site.json
 
-Si necesitas modificar el diseño (colores, layout, nuevas secciones):
+| Sección | Contenido |
+|---------|-----------|
+| `brand` | Nombre, tagline, textos de inicio |
+| `products` | Productos de la tienda y precios |
+| `menu` | Menú del café por categorías |
+| `experiences` | Tarjetas de la home |
+| `blog` | Artículos |
 
-| Qué cambiar | Dónde editar |
-|-------------|--------------|
-| Textos, precios, menú | `content/site.json` |
-| Diseño / componentes | `src/components/site/` |
-| Páginas nuevas | `src/app/(site)/` |
+---
+
+## Cambiar diseño o imágenes
+
+| Qué | Dónde |
+|-----|-------|
+| Textos y datos | `content/site.json` |
 | Imágenes | `public/images/` |
+| Diseño HTML | `scripts/lib/generate-public-html.mjs` |
+| Diseño React (avanzado) | `src/` + `npm run dev` |
 
-Después del cambio: push a `main` → deploy automático.
+Después: push a `main` → deploy automático.
 
 ---
 
-## Generar HTML en local (opcional)
+## Verificar el deploy
 
-```bash
-npm install
-npm run build:html
-```
-
-Los archivos HTML quedan en la carpeta `out/`:
-- `out/index.html` → página de inicio
-- `out/cafe/index.html` → café
-- `out/menu/index.html` → menú
-- etc.
+1. Repo → pestaña **Actions**
+2. Workflow **Publicar HTML en GitHub Pages** → debe estar en verde ✅
+3. Abre la URL del sitio
 
 ---
 
 ## Activar GitHub Pages (solo una vez)
 
-1. https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/pages
-2. **Source** → **Deploy from a branch**
-3. **Branch** → `gh-pages` → carpeta `/ (root)`
-4. **Save**
-
----
-
-## Resumen
-
-| Quieres cambiar… | Edita… | Publicar con… |
-|------------------|--------|---------------|
-| Textos, precios, menú | `content/site.json` | push a `main` |
-| Diseño / código | archivos en `src/` | push a `main` |
-
-No necesitas hosting de pago. GitHub guarda el código y publica el HTML gratis.
+Si la URL da 404: [ACTIVAR-GITHUB-PAGES.md](./ACTIVAR-GITHUB-PAGES.md)

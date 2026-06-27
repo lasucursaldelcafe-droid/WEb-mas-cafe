@@ -35,8 +35,13 @@ check(
 );
 
 check(
-  existsSync(path.join(root, "public/CNAME")),
-  "Falta public/CNAME con el dominio (mascafecol.com)",
+  existsSync(path.join(root, "scripts/build-github-pages.mjs")),
+  "Falta scripts/build-github-pages.mjs",
+);
+
+check(
+  existsSync(path.join(root, "scripts/serve-local.mjs")),
+  "Falta scripts/serve-local.mjs",
 );
 
 check(
@@ -52,7 +57,7 @@ try {
   errors.push("content/site.json no es JSON válido");
 }
 
-console.log("\n═══ Health Check — Más Café estático / GoDaddy ═══\n");
+console.log("\n═══ Health Check — Más Café / GitHub Pages ═══\n");
 
 if (warnings.length) {
   warnings.forEach((w) => console.log(`  ⚠ ${w}`));

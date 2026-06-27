@@ -1,59 +1,54 @@
-# Activar el sitio en GitHub Pages (una sola vez)
-
-El sitio se genera automáticamente con **HTML + todas las imágenes** en la rama `gh-pages`. Solo falta activar Pages en GitHub.
+# Activar GitHub Pages
 
 ## URL del sitio
 
 **https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/**
 
-Funciona en celular, tablet y computador — sin instalar nada.
-
 ---
 
-## Paso 1 — Activar GitHub Pages
+## Paso 1 — Activar Pages (una sola vez)
 
-1. Abre: https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/pages
-2. En **Build and deployment** → **Source**:
-   - Elige **Deploy from a branch**
+1. https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/pages
+2. **Build and deployment** → **Source**: **Deploy from a branch**
 3. **Branch**: `gh-pages` → carpeta **`/ (root)`**
-4. Clic en **Save**
+4. **Save**
 
-Espera 1–2 minutos y abre la URL de arriba.
-
----
-
-## Paso 2 — Si el repo es privado
-
-En cuentas gratuitas, GitHub Pages **público** desde repo privado requiere **GitHub Pro** (de pago).
-
-Opciones:
-
-| Opción | Qué hacer |
-|--------|-----------|
-| **A** | Hacer el repo **público** (Settings → Danger zone → Change visibility) |
-| **B** | Contratar GitHub Pro (Pages público con repo privado) |
-| **C** | Usar Firebase: `npm run deploy:firebase` |
+Espera 1–2 minutos y abre la URL.
 
 ---
 
-## Actualizar el sitio
-
-1. Edita `content/site.json`
-2. Push a `main`
-3. GitHub Actions publica solo en ~1 minuto
-
-O localmente:
+## Paso 2 — Ver en local antes de publicar
 
 ```bash
-npm run build:github-pages
+git clone https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe.git
+cd WEb-mas-cafe
+npm run preview
 ```
+
+→ http://localhost:4173/
 
 ---
 
 ## Qué incluye el sitio publicado
 
 - `index.html` — página completa
-- `images/` — todas las fotos del sitio (sin CDN externo)
-- `.nojekyll` — para que GitHub sirva archivos correctamente
+- `images/` — todas las fotos (sin CDN externo)
+- `.nojekyll` — archivos servidos correctamente
 
-Ya **no** usa jsDelivr (no funcionaba con repo privado).
+El workflow **Publicar HTML en GitHub Pages** corre en cada push a `main`.
+
+---
+
+## Dominio personalizado (opcional)
+
+Para usar **mascafe.com**: [DOMINIO-MASCAFE-COM.md](./DOMINIO-MASCAFE-COM.md)
+
+Configura el dominio en GitHub → Settings → Pages → Custom domain. El archivo `CNAME` lo gestiona GitHub automáticamente.
+
+---
+
+## Actualizar contenido
+
+Edita `content/site.json` → push a `main`.
+
+Guía: [COMO-ACTUALIZAR.md](./COMO-ACTUALIZAR.md)

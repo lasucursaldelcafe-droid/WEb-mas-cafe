@@ -45,9 +45,7 @@ writeFileSync(
 
 writeFileSync(path.join(outDir, ".nojekyll"), "");
 
-// Dominio personalizado (GitHub Pages lee este archivo en gh-pages)
-const customDomain = process.env.GITHUB_PAGES_DOMAIN ?? "mascafe.com";
-writeFileSync(path.join(outDir, "CNAME"), `${customDomain}\n`);
+// CNAME lo gestiona GitHub Pages en Settings (no lo sobrescribimos en deploy)
 
 const used = collectImagePaths();
 let copied = 0;
@@ -66,5 +64,5 @@ for (const assetPath of used) {
 }
 
 console.log(`✅ gh-pages-site/ listo (${copied} imágenes)\n`);
-console.log("URL pública (tras activar GitHub Pages):");
-console.log("  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/\n");
+console.log("Ver en local:  npm run preview");
+console.log("URL pública:   https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/\n");
