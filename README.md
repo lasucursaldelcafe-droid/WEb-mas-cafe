@@ -4,20 +4,17 @@ Sitio web oficial de **Más Café**, café de especialidad y hospitalidad consci
 
 Diseño editorial orgánico con identidad visual propia de Más Café.
 
-## Publicación (Firebase — igual que La Sucursal)
+## Publicación (Firebase)
 
-**URL:** https://mas-cafe.web.app
+**URL:** https://mas-cafe-c8413.web.app
 
-Mismo Firebase que La Sucursal (`la-sucursal-del-cafe`). HTML puro en `mas-cafe/`, sin instalar nada para verlo.
-
-**Guía:** [docs/URL-PUBLICA.md](docs/URL-PUBLICA.md)
+Proyecto Firebase: `mas-cafe-c8413`. HTML estático en `mas-cafe/`.
 
 ```bash
-npm run build:mas-cafe
 npm run deploy:firebase
 ```
 
-**Una vez:** copia el secret `FIREBASE_SERVICE_ACCOUNT` del repo `feria-cafe-inscripcion` a este repo.
+**Guía:** [docs/URL-PUBLICA.md](docs/URL-PUBLICA.md)
 
 ---
 

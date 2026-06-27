@@ -9,7 +9,7 @@
     "build:publico": "node scripts/build-publico.mjs",
     "build:mas-cafe": "node scripts/build-mas-cafe.mjs",
     "build:firebase": "node scripts/build-mas-cafe.mjs",
-    "deploy:firebase": "npm run build:mas-cafe && npx firebase deploy --only hosting --project la-sucursal-del-cafe",
+    "deploy:firebase": "npm run build:mas-cafe && npx firebase deploy --only hosting --project mas-cafe-c8413",
     "start": "next start",
     "lint": "eslint .",
     "health-check": "node scripts/health-check.mjs",

@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /**
- * Prepara mas-cafe/ para Firebase (HTML + solo imágenes usadas).
- * Carpeta liviana para publicar en la-sucursal-del-cafe.web.app/mas-cafe
+ * Prepara mas-cafe/ para Firebase Hosting (HTML + imágenes + config).
  */
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
 import path from "path";
@@ -11,39 +10,50 @@ import { generatePublicHtml } from "./lib/generate-public-html.mjs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
 const outDir = path.join(root, "mas-cafe");
-const imagesSrc = path.join(root, "public", "images");
+
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyA0oWtlIDDgbYT_VUpRmIQ_g1KNXtOa0JU",
+  authDomain: "mas-cafe-c8413.firebaseapp.com",
+  projectId: "mas-cafe-c8413",
+  storageBucket: "mas-cafe-c8413.firebasestorage.app",
+  messagingSenderId: "431985221060",
+  appId: "1:431985221060:web:ca46cb9027955bac091891",
+};
 
 const site = JSON.parse(readFileSync(path.join(root, "content/site.json"), "utf8"));
 
-/** Rutas /images/... referenciadas en site.json y en el HTML fijo. */
 function collectImagePaths() {
   const paths = new Set([
     "/images/brand/horizontal-crema.png",
     "/images/grafica/3.png",
   ]);
-
   for (const exp of site.experiences) paths.add(exp.image);
   for (const p of site.products) paths.add(p.image);
   for (const b of site.blog ?? []) paths.add(b.image);
-
   return [...paths];
 }
 
-const prefix = process.env.MAS_CAFE_PREFIX ?? "";
-const img = (assetPath) => `${prefix}${assetPath}`;
+const img = (assetPath) => assetPath;
 
-console.log("\n▸ Generando Más Café para Firebase (La Sucursal)...\n");
+console.log("\n▸ Generando Más Café para Firebase (mas-cafe-c8413)...\n");
 
 if (existsSync(outDir)) {
   rmSync(outDir, { recursive: true, force: true });
 }
 mkdirSync(outDir, { recursive: true });
+mkdirSync(path.join(outDir, "js"), { recursive: true });
 
 writeFileSync(path.join(outDir, "index.html"), generatePublicHtml(img), "utf8");
 
 writeFileSync(
   path.join(outDir, "404.html"),
-  `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"/><meta http-equiv="refresh" content="0;url=/mas-cafe/"/><title>Más Café</title></head><body><p><a href="/mas-cafe/">Ir al inicio</a></p></body></html>`,
+  `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"/><meta http-equiv="refresh" content="0;url=/"/><title>Más Café</title></head><body><p><a href="/">Ir al inicio</a></p></body></html>`,
+  "utf8"
+);
+
+writeFileSync(
+  path.join(outDir, "js/firebase-config.js"),
+  `window.FIREBASE_CONFIG = ${JSON.stringify(FIREBASE_CONFIG, null, 2)};\n`,
   "utf8"
 );
 
@@ -64,6 +74,6 @@ for (const assetPath of used) {
 }
 
 console.log(`✅ mas-cafe/ listo (${copied} imágenes)\n`);
-console.log("URL pública tras deploy:");
-console.log("  https://mas-cafe.web.app/");
-console.log("  (mismo Firebase que La Sucursal: la-sucursal-del-cafe)\n");
+console.log("URLs públicas tras deploy:");
+console.log("  https://mas-cafe-c8413.web.app/");
+console.log("  https://mas-cafe-c8413.firebaseapp.com/\n");

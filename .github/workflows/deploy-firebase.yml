@@ -1,4 +1,4 @@
-name: Publicar en Firebase (como La Sucursal)
+name: Publicar en Firebase Hosting
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  FIREBASE_PROJECT: la-sucursal-del-cafe
+  FIREBASE_PROJECT: mas-cafe-c8413
 
 jobs:
   deploy:
@@ -24,37 +24,26 @@ jobs:
       - name: Generar sitio HTML
         run: node scripts/build-mas-cafe.mjs
 
-      - name: Crear sitio Firebase (si no existe)
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        run: |
-          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
-            echo "::error::Falta el secret FIREBASE_SERVICE_ACCOUNT en GitHub."
-            echo "Cópialo del repo feria-cafe-inscripcion (mismo Firebase)."
-            exit 1
-          fi
-          echo "$FIREBASE_SERVICE_ACCOUNT" > /tmp/firebase-sa.json
-          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/firebase-sa.json
-          npx -y firebase-tools@latest hosting:sites:create mas-cafe \
-            --project la-sucursal-del-cafe --non-interactive 2>/dev/null || true
-          rm -f /tmp/firebase-sa.json
-
       - name: Deploy Firebase Hosting
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "::error::Falta FIREBASE_SERVICE_ACCOUNT en GitHub Secrets."
+            echo "Firebase Console → mas-cafe-c8413 → Configuración → Cuentas de servicio → Generar clave"
+            exit 1
+          fi
           echo "$FIREBASE_SERVICE_ACCOUNT" > /tmp/firebase-sa.json
           export GOOGLE_APPLICATION_CREDENTIALS=/tmp/firebase-sa.json
           npx -y firebase-tools@latest deploy \
             --only hosting \
-            --project la-sucursal-del-cafe \
+            --project mas-cafe-c8413 \
             --non-interactive
           rm -f /tmp/firebase-sa.json
 
       - name: Verificar sitio en vivo
         run: |
-          CODE=$(curl -s -o /dev/null -w "%{http_code}" https://mas-cafe.web.app/)
-          echo "mas-cafe.web.app → HTTP $CODE"
-          if [ "$CODE" != "200" ]; then
-            echo "::warning::El sitio aún no responde 200 (propagación DNS)."
-          fi
+          for URL in https://mas-cafe-c8413.web.app/ https://mas-cafe-c8413.firebaseapp.com/; do
+            CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+            echo "$URL → HTTP $CODE"
+          done
