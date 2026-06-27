@@ -1,5 +1,13 @@
 # Firebase — Más Café (mas-cafe-c8413)
 
+## Empieza aquí
+
+| Situación | Guía |
+|-----------|------|
+| **No tengo Node ni quiero instalar nada** | [GUIA-PUBLICAR-SIN-INSTALAR.md](./GUIA-PUBLICAR-SIN-INSTALAR.md) |
+| **Quiero instalar en Windows** | [GUIA-INSTALAR-WINDOWS.md](./GUIA-INSTALAR-WINDOWS.md) |
+| **Org bloquea claves JSON** | Usa Cloud Shell o `firebase login:ci` (abajo) |
+
 ## URLs del sitio
 
 | URL |

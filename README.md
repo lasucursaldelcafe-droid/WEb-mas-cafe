@@ -10,14 +10,22 @@ Diseño editorial orgánico con identidad visual propia de Más Café.
 
 Proyecto Firebase: `mas-cafe-c8413`. HTML estático en `mas-cafe/`.
 
+### Sin instalar nada en tu PC (recomendado)
+
+Guía paso a paso con **Google Cloud Shell** (terminal en el navegador):
+
+**[docs/GUIA-PUBLICAR-SIN-INSTALAR.md](docs/GUIA-PUBLICAR-SIN-INSTALAR.md)**
+
+### Desde Windows con Node instalado
+
+**[docs/GUIA-INSTALAR-WINDOWS.md](docs/GUIA-INSTALAR-WINDOWS.md)**
+
 ```bash
 npx firebase login    # primera vez
 npm run deploy:firebase
 ```
 
-> Si tu organización **bloquea claves JSON** de cuenta de servicio, usa deploy local (`firebase login`) o token CI (`firebase login:ci`). Ver guía.
-
-**Guía:** [docs/URL-PUBLICA.md](docs/URL-PUBLICA.md)
+**Guía Firebase:** [docs/URL-PUBLICA.md](docs/URL-PUBLICA.md)
 
 ---
 
