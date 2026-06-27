@@ -66,7 +66,7 @@ jobs:
 
           echo "Autenticación: $AUTH_MODE"
           npx -y firebase-tools@latest deploy \
-            --only hosting \
+            --only hosting:mas-cafe-c8413 \
             --project mas-cafe-c8413 \
             --non-interactive
 

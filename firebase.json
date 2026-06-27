@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "mas-cafe-c8413",
     "public": "mas-cafe",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "cleanUrls": true,
