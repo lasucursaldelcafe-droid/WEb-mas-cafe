@@ -35,13 +35,13 @@ check(
 );
 
 check(
-  !existsSync(path.join(root, "src/middleware.ts")),
-  "Elimina src/middleware.ts — no compatible con export estático",
+  existsSync(path.join(root, "public/CNAME")),
+  "Falta public/CNAME con el dominio (mascafecol.com)",
 );
 
 check(
-  !existsSync(path.join(root, "src/app/api")),
-  "Elimina src/app/api — no compatible con hosting estático",
+  existsSync(path.join(root, ".github/workflows/deploy-github-pages.yml")),
+  "Falta workflow .github/workflows/deploy-github-pages.yml",
 );
 
 try {
@@ -67,4 +67,4 @@ if (errors.length) {
 const routes = ["/", "/cafe/", "/menu/", "/nosotros/", "/tienda/", "/blog/", "/contacto/"];
 console.log("Rutas que se generarán:");
 routes.forEach((r) => console.log(`  • ${r}`));
-console.log("\n✅ Listo para: npm run godaddy:prep\n");
+console.log("\n✅ Listo para GitHub Pages (push a main o npm run build)\n");

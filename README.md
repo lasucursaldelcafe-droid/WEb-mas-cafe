@@ -1,51 +1,63 @@
 # Más Café — Web
 
-Sitio web oficial de **Más Café**, marca de café de especialidad y hospitalidad consciente en Cali, Colombia.
+Sitio web oficial de **Más Café**, café de especialidad y hospitalidad consciente en Cali, Colombia.
 
-Diseño editorial orgánico inspirado en Tropicalia Coffee y Pergamino, con identidad visual propia de Más Café.
+Diseño editorial orgánico con identidad visual propia de Más Café.
 
-## Stack
+## Publicación (GitHub Pages + dominio GoDaddy)
 
-- Next.js 15 (App Router)
-- TypeScript
-- Tailwind CSS 4
-- Contenido editable vía JSON + panel admin
+**No necesitas hosting de GoDaddy** — solo el dominio `mascafecol.com`.
+
+| Qué | Dónde |
+|-----|-------|
+| Código | Este repositorio en GitHub |
+| Hosting | GitHub Pages (gratis) |
+| Dominio | GoDaddy → DNS apuntando a GitHub |
+
+**Guía paso a paso:** [docs/GITHUB-PAGES-Y-DOMINIO.md](docs/GITHUB-PAGES-Y-DOMINIO.md)
+
+### Activar (una sola vez)
+
+1. GitHub → **Settings** → **Pages** → Source: **GitHub Actions**
+2. GoDaddy → DNS → 4 registros **A** a las IPs de GitHub Pages
+3. GitHub → Pages → Custom domain: `mascafecol.com`
+
+### Actualizar el sitio
+
+Edita `content/site.json` y haz push a `main`. GitHub despliega automáticamente.
 
 ## Desarrollo local
 
 ```bash
 npm install
-cp .env.example .env.local   # opcional: cambiar ADMIN_PASSWORD
 npm run dev
 ```
 
-- Sitio: [http://localhost:3000](http://localhost:3000)
-- Admin: [http://localhost:3000/admin](http://localhost:3000/admin) (contraseña por defecto: `mascafe2025`)
+Sitio: [http://localhost:3000](http://localhost:3000)
+
+## Páginas
+
+- `/` — Inicio
+- `/cafe/` — Café de especialidad
+- `/menu/` — Menú
+- `/nosotros/` — Historia y valores
+- `/tienda/` — Productos
+- `/blog/` — Artículos
+- `/contacto/` — Contacto y ubicación
 
 ## Estructura
 
 ```
-content/site.json     # Datos del sitio (productos, menú, blog, marca)
+content/site.json     # Contenido del sitio (editar aquí)
 src/app/(site)/       # Páginas públicas
-src/app/admin/        # Panel de administración
-public/images/        # Logos, gráficas, ilustraciones y aplicaciones
+public/images/        # Logos, gráficas e ilustraciones
+.github/workflows/    # Deploy automático a GitHub Pages
 ```
-
-## Panel admin
-
-Gestiona desde `/admin`:
-
-- Productos y precios
-- Menú del café
-- Artículos del blog
-- Experiencias de la home
-- Configuración de marca y contacto
 
 ## Marca
 
 - **Tagline:** Pausa con intención
 - **Colores:** Azul `#073954`, verde `#1BB175`, crema `#F6F5EF`
-- **Tipografías:** Satoshi, Playfair Display, Marydale
 - **Ubicación:** Calle 5B #2-38-09, San Fernando Nuevo, Cali
 
 ## Repositorio

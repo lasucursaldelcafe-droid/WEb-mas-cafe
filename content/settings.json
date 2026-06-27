@@ -1,6 +1,7 @@
 {
   "accessMode": "public",
-  "deployMode": "static",
+  "deployMode": "github-pages",
   "godaddyReady": true,
+  "customDomain": "mascafecol.com",
   "googleDriveFolderId": "153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC"
 }

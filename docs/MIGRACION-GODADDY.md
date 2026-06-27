@@ -1,101 +1,33 @@
-# Despliegue estático en GoDaddy — Más Café
+# Dominio GoDaddy + hosting GitHub Pages
 
-Sitio **100% estático** para hosting compartido de GoDaddy (`public_html`).  
-**Dominio:** `mascafecol.com`
+> **No necesitas hosting de GoDaddy.** Solo el dominio.
 
-> El panel admin no está incluido en esta versión estática.  
-> Para cambiar contenido, edita `content/site.json` y vuelve a ejecutar `npm run godaddy:prep`.
+La web se aloja gratis en **GitHub Pages**. El dominio `mascafecol.com` en GoDaddy apunta a GitHub mediante DNS.
 
----
+**Guía completa:** [GITHUB-PAGES-Y-DOMINIO.md](./GITHUB-PAGES-Y-DOMINIO.md)
 
-## 1. Generar el sitio
+## Resumen rápido
+
+1. **GitHub** → Settings → Pages → Source: **GitHub Actions**
+2. Push a `main` → el sitio se publica solo
+3. **GoDaddy DNS** → 4 registros A a las IPs de GitHub Pages
+4. **GitHub** → Pages → Custom domain: `mascafecol.com`
+
+## IPs de GitHub Pages (registros A)
+
+```
+185.199.108.153
+185.199.109.153
+185.199.110.153
+185.199.111.153
+```
+
+## Si algún día compras hosting GoDaddy
+
+Puedes generar un ZIP estático local:
 
 ```bash
-npm install
-npm run health-check
 npm run godaddy:prep
 ```
 
-Resultado:
-- `out/` — archivos HTML del sitio
-- `deploy/mascafe-web-godaddy.zip` — subir a GoDaddy
-
----
-
-## 2. Subir a GoDaddy
-
-1. **GoDaddy** → tu hosting → **Administrar** → **cPanel**
-2. **Administrador de archivos** → abre `public_html`
-3. **Respalda** lo que haya (si aplica)
-4. Borra el contenido viejo de `public_html`
-5. Sube `mascafe-web-godaddy.zip`
-6. **Extrae** el ZIP dentro de `public_html`
-7. Verifica que en la raíz estén:
-   - `index.html`
-   - `.htaccess`
-   - carpetas `_next/`, `cafe/`, `menu/`, etc.
-
----
-
-## 3. Dominio
-
-Si el dominio `mascafecol.com` ya está en este hosting, debería funcionar al instante.
-
-Si el dominio está en GoDaddy pero apunta a otro lado:
-1. **GoDaddy → DNS** del dominio
-2. Registro **A** → IP de tu hosting (la muestra cPanel)
-3. Espera 15–60 min (propagación DNS)
-
----
-
-## 4. SSL (HTTPS)
-
-En cPanel → **SSL/TLS Status** → activa **Let's Encrypt** para `mascafecol.com`.
-
----
-
-## 5. Verificar
-
-| URL | Página |
-|-----|--------|
-| `https://mascafecol.com/` | Inicio |
-| `https://mascafecol.com/cafe/` | Café |
-| `https://mascafecol.com/menu/` | Menú |
-| `https://mascafecol.com/nosotros/` | Nosotros |
-| `https://mascafecol.com/tienda/` | Tienda |
-| `https://mascafecol.com/blog/` | Blog |
-| `https://mascafecol.com/contacto/` | Contacto |
-
-**No se pide contraseña** en ninguna página pública.
-
----
-
-## 6. Actualizar contenido
-
-1. Edita `content/site.json` (productos, menú, textos, blog)
-2. Ejecuta `npm run godaddy:prep`
-3. Sube el nuevo ZIP a `public_html`
-
----
-
-## Solución de problemas
-
-### Página en blanco
-- ¿Existe `index.html` en `public_html`? Debe estar en la raíz, no dentro de una subcarpeta.
-
-### Sin estilos / imágenes rotas
-- Asegúrate de subir **todo** el ZIP, incluida la carpeta `_next/`
-
-### Error 404 en rutas
-- Verifica que `.htaccess` se subió (archivos que empiezan con `.` a veces se ocultan)
-- En Administrador de archivos → **Configuración** → activa "Mostrar archivos ocultos"
-
-### Enlaces no funcionan
-- Las rutas usan barra final: `/cafe/`, `/menu/`, etc.
-
----
-
-## Requisitos del plan GoDaddy
-
-Cualquier plan con **hosting web estándar** (cPanel + `public_html`) sirve.  
-**No necesitas Node.js** en esta versión estática.
+Sube `deploy/mascafe-web-godaddy.zip` a `public_html`. Pero con GitHub Pages **no hace falta**.
