@@ -4,24 +4,24 @@
 
 **https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/**
 
+7 páginas: `/` · `/cafe/` · `/menu/` · `/nosotros/` · `/tienda/` · `/blog/` · `/contacto/`
+
 ---
 
-## Paso 1 — Activar Pages (una sola vez)
+## Configuración correcta (importante)
 
 1. https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/pages
-2. **Build and deployment** → **Source**: **Deploy from a branch**
-3. **Branch**: `gh-pages` → carpeta **`/ (root)`**
-4. **Save**
+2. **Build and deployment** → **Source**: **GitHub Actions** (no "Deploy from branch")
+3. **Quita** cualquier dominio personalizado si el sitio da 404 o redirige mal
+4. Guarda y espera 1–2 minutos tras el próximo push a `main`
 
-Espera 1–2 minutos y abre la URL.
+El workflow **Publicar HTML en GitHub Pages** publica el sitio automáticamente.
 
 ---
 
-## Paso 2 — Ver en local antes de publicar
+## Ver en local
 
 ```bash
-git clone https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe.git
-cd WEb-mas-cafe
 npm run preview
 ```
 
@@ -29,21 +29,11 @@ npm run preview
 
 ---
 
-## Qué incluye el sitio publicado
+## Dominio personalizado (solo cuando DNS esté listo)
 
-- `index.html` — página completa
-- `images/` — todas las fotos (sin CDN externo)
-- `.nojekyll` — archivos servidos correctamente
+No configures `mascafe.com` en GitHub hasta que el DNS apunte a GitHub.
 
-El workflow **Publicar HTML en GitHub Pages** corre en cada push a `main`.
-
----
-
-## Dominio personalizado (opcional)
-
-Para usar **mascafe.com**: [DOMINIO-MASCAFE-COM.md](./DOMINIO-MASCAFE-COM.md)
-
-Configura el dominio en GitHub → Settings → Pages → Custom domain. El archivo `CNAME` lo gestiona GitHub automáticamente.
+Guía DNS: [DOMINIO-MASCAFE-COM.md](./DOMINIO-MASCAFE-COM.md)
 
 ---
 

@@ -47,7 +47,9 @@ Abre **http://localhost:4173/** en el navegador. No necesitas `npm install` (sol
 
 ## Activar GitHub Pages (una vez)
 
-Settings → **Pages** → Branch **`gh-pages`** → **`/ (root)`** → Save
+Settings → **Pages** → Source: **GitHub Actions** (no "Deploy from branch")
+
+Si hay dominio personalizado y el sitio falla, **quítalo** hasta configurar DNS.
 
 **Guía:** [docs/ACTIVAR-GITHUB-PAGES.md](docs/ACTIVAR-GITHUB-PAGES.md)
 
