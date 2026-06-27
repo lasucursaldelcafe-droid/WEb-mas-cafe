@@ -11,8 +11,11 @@ Diseño editorial orgánico con identidad visual propia de Más Café.
 Proyecto Firebase: `mas-cafe-c8413`. HTML estático en `mas-cafe/`.
 
 ```bash
+npx firebase login    # primera vez
 npm run deploy:firebase
 ```
+
+> Si tu organización **bloquea claves JSON** de cuenta de servicio, usa deploy local (`firebase login`) o token CI (`firebase login:ci`). Ver guía.
 
 **Guía:** [docs/URL-PUBLICA.md](docs/URL-PUBLICA.md)
 

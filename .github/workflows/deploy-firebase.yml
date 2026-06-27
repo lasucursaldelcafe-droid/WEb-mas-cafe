@@ -12,6 +12,11 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Solo necesario si usas Workload Identity Federation (ver docs/URL-PUBLICA.md)
+    permissions:
+      contents: read
+      id-token: write
+
     steps:
       - name: Obtener código
         uses: actions/checkout@v4
@@ -24,21 +29,47 @@ jobs:
       - name: Generar sitio HTML
         run: node scripts/build-mas-cafe.mjs
 
+      - name: Autenticar con Workload Identity (opcional)
+        id: wif-auth
+        if: vars.WIF_PROVIDER != '' && vars.WIF_SERVICE_ACCOUNT != ''
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.WIF_PROVIDER }}
+          service_account: ${{ vars.WIF_SERVICE_ACCOUNT }}
+          create_credentials_file: true
+
       - name: Deploy Firebase Hosting
         env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.wif-auth.outputs.credentials_file_path }}
         run: |
-          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
-            echo "::error::Falta FIREBASE_SERVICE_ACCOUNT en GitHub Secrets."
-            echo "Firebase Console → mas-cafe-c8413 → Configuración → Cuentas de servicio → Generar clave"
+          AUTH_MODE=""
+
+          if [ -n "${{ steps.wif-auth.outputs.credentials_file_path }}" ]; then
+            AUTH_MODE="Workload Identity Federation"
+          elif [ -n "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            AUTH_MODE="cuenta de servicio (JSON)"
+            echo "$FIREBASE_SERVICE_ACCOUNT" > /tmp/firebase-sa.json
+            export GOOGLE_APPLICATION_CREDENTIALS=/tmp/firebase-sa.json
+          elif [ -n "$FIREBASE_TOKEN" ]; then
+            AUTH_MODE="token CI (firebase login:ci)"
+          else
+            echo "::error::No hay credenciales para deploy."
+            echo ""
+            echo "Si tu organización BLOQUEA claves JSON de cuenta de servicio, usa una de estas opciones:"
+            echo "  A) Deploy local: npm run deploy:firebase (tras npx firebase login)"
+            echo "  B) GitHub Secret FIREBASE_TOKEN: ejecuta 'npx firebase login:ci' en tu PC"
+            echo "  C) Workload Identity Federation: ver docs/URL-PUBLICA.md"
             exit 1
           fi
-          echo "$FIREBASE_SERVICE_ACCOUNT" > /tmp/firebase-sa.json
-          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/firebase-sa.json
+
+          echo "Autenticación: $AUTH_MODE"
           npx -y firebase-tools@latest deploy \
             --only hosting \
             --project mas-cafe-c8413 \
             --non-interactive
+
           rm -f /tmp/firebase-sa.json
 
       - name: Verificar sitio en vivo
