@@ -1,55 +1,40 @@
-name: Deploy GitHub Pages
+name: Publicar HTML en GitHub Pages
 
 on:
   push:
     branches:
       - main
-      - cursor/web-mas-cafe-5352
-      - cursor/godaddy-deploy-5352
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: github-pages
-  cancel-in-progress: false
+  contents: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Obtener código
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: npm
 
-      - name: Install dependencies
+      - name: Instalar dependencias
         run: npm ci
 
-      - name: Build static site
-        env:
-          GITHUB_PAGES: "true"
-        run: npm run build
+      - name: Generar HTML estático
+        run: npm run build:html
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Subir HTML a rama gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: ./out
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out
+          publish_branch: gh-pages
+          cname: mascafecol.com
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_message: "deploy: sitio HTML Más Café"

@@ -4,27 +4,25 @@ Sitio web oficial de **Más Café**, café de especialidad y hospitalidad consci
 
 Diseño editorial orgánico con identidad visual propia de Más Café.
 
-## Publicación (GitHub Pages + dominio GoDaddy)
+## Publicación (GitHub Pages — HTML permanente)
 
-**No necesitas hosting de GoDaddy** — solo el dominio `mascafecol.com`.
+**URL:** https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/
 
 | Qué | Dónde |
 |-----|-------|
-| Código | Este repositorio en GitHub |
-| Hosting | GitHub Pages (gratis) |
-| Dominio | GoDaddy → DNS apuntando a GitHub |
-
-**Guía paso a paso:** [docs/GITHUB-PAGES-Y-DOMINIO.md](docs/GITHUB-PAGES-Y-DOMINIO.md)
+| Código fuente | Rama `main` en GitHub |
+| HTML publicado | Rama `gh-pages` (automático) |
+| Dominio | GoDaddy → DNS a GitHub (opcional) |
 
 ### Activar (una sola vez)
 
-1. GitHub → **Settings** → **Pages** → Source: **GitHub Actions**
-2. GoDaddy → DNS → 4 registros **A** a las IPs de GitHub Pages
-3. GitHub → Pages → Custom domain: `mascafecol.com`
+GitHub → **Settings** → **Pages** → Source: **Deploy from branch** → `gh-pages` → `/ (root)`
 
 ### Actualizar el sitio
 
-Edita `content/site.json` y haz push a `main`. GitHub despliega automáticamente.
+Edita `content/site.json` → push a `main` → GitHub publica solo en ~2 min.
+
+**Guía:** [docs/COMO-ACTUALIZAR.md](docs/COMO-ACTUALIZAR.md)
 
 ## Desarrollo local
 
