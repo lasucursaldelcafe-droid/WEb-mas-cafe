@@ -2,7 +2,7 @@
 
 Usa esta guía **solo si quieres trabajar desde tu PC** en lugar de Cloud Shell.
 
-**Alternativa sin instalar nada:** [GUIA-PUBLICAR-SIN-INSTALAR.md](./GUIA-PUBLICAR-SIN-INSTALAR.md)
+**Alternativa sin instalar nada:** usa el [panel admin](https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/) o edita en GitHub.com directamente.
 
 ---
 

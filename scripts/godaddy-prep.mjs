@@ -71,5 +71,5 @@ console.log(`
    3. Sube y extrae el ZIP
    4. Verifica que exista index.html en la raíz
 
-   Guía completa: docs/MIGRACION-GODADDY.md
+   Guía completa: docs/DOMINIO-MASCAFE-COM.md y docs/HOSTING.md
 `);

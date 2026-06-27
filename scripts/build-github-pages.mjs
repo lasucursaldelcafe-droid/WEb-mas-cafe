@@ -7,6 +7,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { collectImagePaths, generateSitePages } from "./lib/generate-site-pages.mjs";
 import { generateAdminPage } from "./lib/site-html/admin.mjs";
+import { generateConstitutionReport } from "./lib/generate-constitution-report.mjs";
 import { FAVICON_FILES, generateFavicons } from "./lib/generate-favicons-lib.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -35,6 +36,15 @@ const adminDest = path.join(outDir, "admin/index.html");
 mkdirSync(path.dirname(adminDest), { recursive: true });
 writeFileSync(adminDest, adminHtml, "utf8");
 console.log("  • admin/index.html");
+
+const constitutionHtml = generateConstitutionReport();
+const informeDest = path.join(outDir, "informe/index.html");
+mkdirSync(path.dirname(informeDest), { recursive: true });
+writeFileSync(informeDest, constitutionHtml, "utf8");
+const informeSource = path.join(root, "informes/constitucion-web.html");
+mkdirSync(path.dirname(informeSource), { recursive: true });
+writeFileSync(informeSource, constitutionHtml, "utf8");
+console.log("  • informe/index.html (constitución web)");
 
 writeFileSync(
   path.join(outDir, "404.html"),
@@ -84,4 +94,5 @@ if (existsSync(fontsDir)) {
 
 console.log(`\n✅ ${pages.length + 1} páginas · ${copied} imágenes\n`);
 console.log("Local:    npm run preview");
-console.log("Público:  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/\n");
+console.log("Público:  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/");
+console.log("Informe:  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/\n");

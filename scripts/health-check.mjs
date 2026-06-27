@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Verifica que el proyecto esté listo para export estático y GoDaddy.
+ * Verifica que el proyecto esté listo para GitHub Pages.
  */
 import { existsSync, readFileSync } from "fs";
 import path from "path";
@@ -18,35 +18,21 @@ function check(condition, message) {
 
 const required = [
   "package.json",
-  "next.config.ts",
   "content/site.json",
   "public/images/brand/horizontal-azul.png",
-  "scripts/godaddy-prep.mjs",
+  "scripts/build-github-pages.mjs",
+  "scripts/lib/generate-constitution-report.mjs",
+  "scripts/serve-local.mjs",
+  ".github/workflows/deploy-github-pages.yml",
 ];
 
 for (const file of required) {
   check(existsSync(path.join(root, file)), `Falta: ${file}`);
 }
 
-const nextConfig = readFileSync(path.join(root, "next.config.ts"), "utf-8");
 check(
-  nextConfig.includes('output: "export"') || nextConfig.includes("output: 'export'"),
-  "next.config.ts debe tener output: 'export' (sitio estático)",
-);
-
-check(
-  existsSync(path.join(root, "scripts/build-github-pages.mjs")),
-  "Falta scripts/build-github-pages.mjs",
-);
-
-check(
-  existsSync(path.join(root, "scripts/serve-local.mjs")),
-  "Falta scripts/serve-local.mjs",
-);
-
-check(
-  existsSync(path.join(root, ".github/workflows/deploy-github-pages.yml")),
-  "Falta workflow .github/workflows/deploy-github-pages.yml",
+  existsSync(path.join(root, "next.config.ts")),
+  "Falta next.config.ts (prototipo Next.js en src/)",
 );
 
 try {
@@ -69,7 +55,7 @@ if (errors.length) {
   process.exit(1);
 }
 
-const routes = ["/", "/cafe/", "/menu/", "/nosotros/", "/tienda/", "/blog/", "/contacto/"];
+const routes = ["/", "/cafe/", "/menu/", "/nosotros/", "/tienda/", "/blog/", "/contacto/", "/informe/"];
 console.log("Rutas que se generarán:");
 routes.forEach((r) => console.log(`  • ${r}`));
 console.log("\n✅ Listo para GitHub Pages (push a main o npm run build)\n");
