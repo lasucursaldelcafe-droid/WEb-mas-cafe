@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:html": "node scripts/build-html.mjs",
+    "build:publico": "node scripts/build-publico.mjs",
     "start": "next start",
     "lint": "eslint .",
     "health-check": "node scripts/health-check.mjs",

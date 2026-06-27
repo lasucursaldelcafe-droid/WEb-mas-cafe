@@ -25,16 +25,20 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
-      - name: Generar HTML estático
+      - name: Generar HTML público (sin servidor)
+        run: npm run build:publico
+
+      - name: Generar HTML completo (sitio Next.js)
         run: npm run build:html
 
       - name: Subir HTML a rama gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./out
+          publish_dir: ./publico
           publish_branch: gh-pages
+          destination_dir: .
           cname: mascafecol.com
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
-          commit_message: "deploy: sitio HTML Más Café"
+          commit_message: "deploy: HTML público Más Café"
