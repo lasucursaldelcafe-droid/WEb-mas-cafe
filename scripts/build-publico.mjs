@@ -10,7 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
 const repo = "lasucursaldelcafe-droid/WEb-mas-cafe";
 const branch = "main";
-const rawBase = `https://raw.githubusercontent.com/${repo}/${branch}/public`;
+const rawBase = `https://cdn.jsdelivr.net/gh/${repo}/${branch}/public`;
 
 const site = JSON.parse(
   readFileSync(path.join(root, "content/site.json"), "utf8")
