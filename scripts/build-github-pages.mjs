@@ -6,6 +6,7 @@ import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { collectImagePaths, generateSitePages } from "./lib/generate-site-pages.mjs";
+import { generateAdminPage } from "./lib/site-html/admin.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
@@ -25,6 +26,12 @@ for (const { path: relPath, html } of pages) {
   writeFileSync(dest, html, "utf8");
   console.log(`  • ${relPath}`);
 }
+
+const adminHtml = generateAdminPage();
+const adminDest = path.join(outDir, "admin/index.html");
+mkdirSync(path.dirname(adminDest), { recursive: true });
+writeFileSync(adminDest, adminHtml, "utf8");
+console.log("  • admin/index.html");
 
 writeFileSync(
   path.join(outDir, "404.html"),
@@ -48,6 +55,6 @@ for (const assetPath of collectImagePaths()) {
   copied++;
 }
 
-console.log(`\n✅ ${pages.length} páginas · ${copied} imágenes\n`);
+console.log(`\n✅ ${pages.length + 1} páginas · ${copied} imágenes\n`);
 console.log("Local:    npm run preview");
 console.log("Público:  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/\n");

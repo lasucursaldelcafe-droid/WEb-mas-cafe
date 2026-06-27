@@ -14,6 +14,16 @@ Base: **https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/**
 | Blog | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/blog/ |
 | Contacto | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/contacto/ |
 
+## Panel de administración
+
+| | |
+|--|--|
+| **URL** | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/ |
+| **Usuario** | `admin` |
+| **Contraseña** | `mascafe2025` |
+
+Guía completa: [ADMIN.md](./ADMIN.md)
+
 Dominio: **https://mascafe.com/** (mismas rutas cuando DNS esté configurado)
 
 ---
@@ -26,7 +36,7 @@ cd WEb-mas-cafe
 npm run preview
 ```
 
-→ http://localhost:4173/ (mismas 7 rutas)
+→ http://localhost:4173/ (mismas 7 rutas + `/admin/`)
 
 Guía: [GUIA-LOCAL.md](./GUIA-LOCAL.md)
 
@@ -34,6 +44,8 @@ Guía: [GUIA-LOCAL.md](./GUIA-LOCAL.md)
 
 ## Actualizar
 
-Edita `content/site.json` → push a `main` → deploy automático.
+**Opción A — Panel admin (recomendado):** [ADMIN.md](./ADMIN.md) → edita y publica desde el navegador.
 
-Guía: [COMO-ACTUALIZAR.md](./COMO-ACTUALIZAR.md)
+**Opción B — Manual:** Edita `content/site.json` → push a `main` → deploy automático.
+
+Guía manual: [COMO-ACTUALIZAR.md](./COMO-ACTUALIZAR.md)
