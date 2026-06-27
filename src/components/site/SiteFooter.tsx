@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { assetPath } from "@/lib/paths";
 import type { Brand } from "@/lib/types";
 
 export function SiteFooter({ brand }: { brand: Brand }) {
@@ -12,7 +13,7 @@ export function SiteFooter({ brand }: { brand: Brand }) {
         <div className="flex flex-col gap-16 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-md space-y-6">
             <Image
-              src="/images/brand/horizontal-crema.png"
+              src={assetPath("/images/brand/horizontal-crema.png")}
               alt="Más Café"
               width={200}
               height={60}

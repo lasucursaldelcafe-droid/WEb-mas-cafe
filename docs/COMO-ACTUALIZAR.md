@@ -1,12 +1,23 @@
 # Cómo actualizar el sitio web
 
-El sitio se genera como **HTML estático** y se publica en GitHub Pages.
+El sitio se genera como **HTML estático** y se publica automáticamente en GitHub Pages.
 
 ## URL permanente
 
 **https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/**
 
 (Cuando conectes el dominio: **https://mascafecol.com**)
+
+---
+
+## Cómo funciona
+
+```
+content/site.json  →  npm run build:html  →  carpeta out/  →  rama gh-pages  →  sitio web
+     (editas)            (automático)         (HTML)          (GitHub Pages)
+```
+
+Tú solo editas el contenido. GitHub publica el HTML solo.
 
 ---
 
@@ -46,6 +57,21 @@ Revisa en: **Actions** → **Publicar HTML en GitHub Pages** ✅
 
 ---
 
+## Cambiar diseño o páginas
+
+Si necesitas modificar el diseño (colores, layout, nuevas secciones):
+
+| Qué cambiar | Dónde editar |
+|-------------|--------------|
+| Textos, precios, menú | `content/site.json` |
+| Diseño / componentes | `src/components/site/` |
+| Páginas nuevas | `src/app/(site)/` |
+| Imágenes | `public/images/` |
+
+Después del cambio: push a `main` → deploy automático.
+
+---
+
 ## Generar HTML en local (opcional)
 
 ```bash
@@ -72,10 +98,9 @@ Los archivos HTML quedan en la carpeta `out/`:
 
 ## Resumen
 
-| Quieres cambiar… | Edita… |
-|------------------|--------|
-| Textos, precios, menú | `content/site.json` |
-| Diseño / código | archivos en `src/` |
-| Publicar | push a `main` (automático) |
+| Quieres cambiar… | Edita… | Publicar con… |
+|------------------|--------|---------------|
+| Textos, precios, menú | `content/site.json` | push a `main` |
+| Diseño / código | archivos en `src/` | push a `main` |
 
 No necesitas hosting de pago. GitHub guarda el código y publica el HTML gratis.

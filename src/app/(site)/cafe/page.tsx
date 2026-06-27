@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ProductDetailCard } from "@/components/site/ProductRiver";
 import { SubscriptionBand } from "@/components/site/CTABands";
+import { assetPath } from "@/lib/paths";
 import { getContent } from "@/lib/store";
 import type { Metadata } from "next";
 
@@ -17,7 +18,7 @@ export default async function CafePage() {
       <section className="relative min-h-[70vh] overflow-hidden bg-blue-deep pt-32 text-cream">
         <div className="absolute right-0 top-0 h-full w-1/2 opacity-30">
           <Image
-            src="/images/grafica/2.png"
+            src={assetPath("/images/grafica/2.png")}
             alt=""
             fill
             className="object-contain object-right"
@@ -35,7 +36,7 @@ export default async function CafePage() {
         <div className="mb-20 flex flex-col gap-12 lg:flex-row lg:items-center">
           <div className="relative aspect-square flex-1 overflow-hidden rounded-[3rem_1rem_3rem_1rem] bg-sage/20">
             <Image
-              src="/images/products/caja-cafe.png"
+              src={assetPath("/images/products/caja-cafe.png")}
               alt="Empaque Más Café"
               fill
               className="object-contain p-10"

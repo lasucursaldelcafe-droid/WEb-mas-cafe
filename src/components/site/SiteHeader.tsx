@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { assetPath } from "@/lib/paths";
 
 const navLinks = [
   { href: "/cafe", label: "Café" },
@@ -49,8 +50,8 @@ export function SiteHeader() {
           <Image
             src={
               scrolled
-                ? "/images/brand/horizontal-azul.png"
-                : "/images/brand/horizontal-crema.png"
+                ? assetPath("/images/brand/horizontal-azul.png")
+                : assetPath("/images/brand/horizontal-crema.png")
             }
             alt="Más Café"
             width={170}

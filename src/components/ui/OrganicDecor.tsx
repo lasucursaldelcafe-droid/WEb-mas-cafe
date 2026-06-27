@@ -1,10 +1,11 @@
 import Image from "next/image";
+import { assetPath } from "@/lib/paths";
 
 const decorPaths = [
-  "/images/decor/Recurso-4.svg",
-  "/images/decor/Recurso-5.svg",
-  "/images/decor/Recurso-6.svg",
-  "/images/decor/Recurso-7.svg",
+  assetPath("/images/decor/Recurso-4.svg"),
+  assetPath("/images/decor/Recurso-5.svg"),
+  assetPath("/images/decor/Recurso-6.svg"),
+  assetPath("/images/decor/Recurso-7.svg"),
 ];
 
 export function OrganicDecor({

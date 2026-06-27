@@ -4,11 +4,16 @@ import type { NextConfig } from "next";
 const repo = "WEb-mas-cafe";
 const useBasePath = process.env.GITHUB_PAGES === "true";
 
+const basePath = useBasePath ? `/${repo}` : "";
+
 const nextConfig: NextConfig = {
   output: "export",
   trailingSlash: true,
-  basePath: useBasePath ? `/${repo}` : "",
-  assetPrefix: useBasePath ? `/${repo}/` : undefined,
+  basePath,
+  assetPrefix: useBasePath ? `${basePath}/` : undefined,
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
   images: {
     unoptimized: true,
     remotePatterns: [

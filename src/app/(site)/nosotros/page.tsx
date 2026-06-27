@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { StorySection, ValuesBand } from "@/components/site/StorySection";
+import { assetPath } from "@/lib/paths";
 import { getContent } from "@/lib/store";
 import type { Metadata } from "next";
 
@@ -14,7 +15,7 @@ export default async function NosotrosPage() {
     <>
       <section className="relative min-h-[60vh] overflow-hidden bg-blue-deep pt-32 text-cream">
         <div className="absolute inset-0 opacity-20">
-          <Image src="/images/grafica/3.png" alt="" fill className="object-cover" />
+          <Image src={assetPath("/images/grafica/3.png")} alt="" fill className="object-cover" />
         </div>
         <div className="relative mx-auto max-w-[1400px] px-6 pb-20 md:px-12">
           <p className="font-accent text-4xl text-sage">{brand.descriptor}</p>
@@ -36,7 +37,7 @@ export default async function NosotrosPage() {
           </div>
           <div className="relative aspect-[4/5] flex-1 overflow-hidden rounded-[1rem_3rem_1rem_3rem]">
             <Image
-              src="/images/brand/mood.png"
+              src={assetPath("/images/brand/mood.png")}
               alt="Ambiente Más Café"
               fill
               className="object-cover"

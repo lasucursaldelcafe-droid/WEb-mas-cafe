@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { OrganicDecor } from "@/components/ui/OrganicDecor";
+import { assetPath } from "@/lib/paths";
 import type { Brand } from "@/lib/types";
 
 export function EditorialHero({ brand }: { brand: Brand }) {
@@ -12,7 +13,7 @@ export function EditorialHero({ brand }: { brand: Brand }) {
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute right-[-10%] top-[15%] h-[70vh] w-[55vw] max-w-3xl opacity-90">
           <Image
-            src="/images/grafica/3.png"
+            src={assetPath("/images/grafica/3.png")}
             alt=""
             fill
             className="object-contain object-right float-soft"
@@ -22,7 +23,7 @@ export function EditorialHero({ brand }: { brand: Brand }) {
         </div>
         <div className="absolute bottom-0 left-[5%] hidden h-[45vh] w-[35vw] max-w-md lg:block">
           <Image
-            src="/images/grafica/1.png"
+            src={assetPath("/images/grafica/1.png")}
             alt=""
             fill
             className="object-contain object-bottom"
@@ -64,7 +65,7 @@ export function EditorialHero({ brand }: { brand: Brand }) {
 
         <div className="mt-20 flex items-center gap-6">
           <Image
-            src="/images/brand/favs.png"
+            src={assetPath("/images/brand/favs.png")}
             alt=""
             width={56}
             height={56}

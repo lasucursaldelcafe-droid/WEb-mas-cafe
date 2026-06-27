@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { OrganicDecor } from "@/components/ui/OrganicDecor";
+import { assetPath } from "@/lib/paths";
 import type { Brand } from "@/lib/types";
 
 export function StorySection({ brand }: { brand: Brand }) {
@@ -18,7 +19,7 @@ export function StorySection({ brand }: { brand: Brand }) {
             <div className="relative lg:w-[55%]">
               <div className="relative aspect-[5/4] overflow-hidden rounded-[4rem_1.5rem_4rem_1.5rem] organic-shadow">
                 <Image
-                  src="/images/aplicaciones/fachada2.png"
+                  src={assetPath("/images/aplicaciones/fachada2.png")}
                   alt="Fachada Más Café"
                   fill
                   className="object-cover"
@@ -27,7 +28,7 @@ export function StorySection({ brand }: { brand: Brand }) {
               </div>
               <div className="absolute -bottom-8 -right-4 hidden h-48 w-48 overflow-hidden rounded-full border-8 border-cream md:block">
                 <Image
-                  src="/images/grafica/2.png"
+                  src={assetPath("/images/grafica/2.png")}
                   alt=""
                   fill
                   className="object-cover"
