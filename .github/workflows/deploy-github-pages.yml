@@ -16,29 +16,25 @@ jobs:
       - name: Obtener código
         uses: actions/checkout@v4
 
-      - name: Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: npm
+      - name: Generar sitio (HTML + imágenes incluidas)
+        run: node scripts/build-github-pages.mjs
 
-      - name: Instalar dependencias
-        run: npm ci
-
-      - name: Generar HTML público (sin servidor)
-        run: npm run build:publico
-
-      - name: Generar HTML completo (sitio Next.js)
-        run: npm run build:html
-
-      - name: Subir HTML a rama gh-pages
+      - name: Publicar en rama gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./publico
+          publish_dir: ./gh-pages-site
           publish_branch: gh-pages
           destination_dir: .
-          cname: mascafecol.com
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
-          commit_message: "deploy: HTML público Más Café"
+          commit_message: "deploy: sitio Más Café (HTML + imágenes)"
+
+      - name: Verificar URL
+        run: |
+          URL="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/"
+          CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || true)
+          echo "$URL → HTTP $CODE"
+          if [ "$CODE" = "404" ]; then
+            echo "::warning::Si ves 404, activa GitHub Pages: Settings → Pages → gh-pages → / (root)"
+          fi

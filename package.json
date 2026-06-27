@@ -7,6 +7,7 @@
     "build": "next build",
     "build:html": "node scripts/build-html.mjs",
     "build:publico": "node scripts/build-publico.mjs",
+    "build:github-pages": "node scripts/build-github-pages.mjs",
     "build:mas-cafe": "node scripts/build-mas-cafe.mjs",
     "build:firebase": "node scripts/build-mas-cafe.mjs",
     "deploy:firebase": "npm run build:mas-cafe && npx firebase deploy --only hosting --project mas-cafe-c8413",

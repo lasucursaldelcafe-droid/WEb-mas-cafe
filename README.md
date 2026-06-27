@@ -2,52 +2,36 @@
 
 Sitio web oficial de **Más Café**, café de especialidad y hospitalidad consciente en Cali, Colombia.
 
-Diseño editorial orgánico con identidad visual propia de Más Café.
-
-## Publicación (Firebase)
-
-**URL:** https://mas-cafe-c8413.web.app
-
-Proyecto Firebase: `mas-cafe-c8413`. HTML estático en `mas-cafe/`.
-
-### Sin instalar nada en tu PC (recomendado)
-
-Guía paso a paso con **Google Cloud Shell** (terminal en el navegador):
-
-**[docs/GUIA-PUBLICAR-SIN-INSTALAR.md](docs/GUIA-PUBLICAR-SIN-INSTALAR.md)**
-
-### Desde Windows con Node instalado
-
-**[docs/GUIA-INSTALAR-WINDOWS.md](docs/GUIA-INSTALAR-WINDOWS.md)**
-
-```bash
-npx firebase login    # primera vez
-npm run deploy:firebase
-```
-
-**Guía Firebase:** [docs/URL-PUBLICA.md](docs/URL-PUBLICA.md)
-
----
-
-## Publicación alternativa (GitHub Pages)
+## Ver el sitio (GitHub Pages)
 
 **URL:** https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/
 
-| Qué | Dónde |
-|-----|-------|
-| Código fuente | Rama `main` en GitHub |
-| HTML publicado | Rama `gh-pages` (automático) |
-| Dominio | GoDaddy → DNS a GitHub (opcional) |
+HTML + imágenes incluidas. Funciona en celular, tablet y PC.
 
 ### Activar (una sola vez)
 
-GitHub → **Settings** → **Pages** → Source: **Deploy from branch** → `gh-pages` → `/ (root)`
+Settings → **Pages** → Branch **`gh-pages`** → **`/ (root)`** → Save
 
-### Actualizar el sitio
+**Guía:** [docs/ACTIVAR-GITHUB-PAGES.md](docs/ACTIVAR-GITHUB-PAGES.md)
 
-Edita `content/site.json` → push a `main` → GitHub publica solo en ~2 min.
+### Actualizar
 
-**Guía:** [docs/COMO-ACTUALIZAR.md](docs/COMO-ACTUALIZAR.md)
+Edita `content/site.json` → push a `main` → publicación automática.
+
+---
+
+## Publicación alternativa (Firebase)
+
+**URL:** https://mas-cafe-c8413.web.app
+
+```bash
+npx firebase login
+npm run deploy:firebase
+```
+
+**Guía:** [docs/GUIA-PUBLICAR-SIN-INSTALAR.md](docs/GUIA-PUBLICAR-SIN-INSTALAR.md)
+
+---
 
 ## Desarrollo local
 
@@ -71,10 +55,10 @@ Sitio: [http://localhost:3000](http://localhost:3000)
 ## Estructura
 
 ```
-content/site.json     # Contenido del sitio (editar aquí)
-src/app/(site)/       # Páginas públicas
-public/images/        # Logos, gráficas e ilustraciones
-.github/workflows/    # Deploy automático a GitHub Pages
+content/site.json           # Contenido del sitio (editar aquí)
+scripts/build-github-pages.mjs  # Genera HTML + imágenes para GitHub
+public/images/              # Logos, gráficas e ilustraciones
+.github/workflows/          # Deploy automático a GitHub Pages
 ```
 
 ## Marca

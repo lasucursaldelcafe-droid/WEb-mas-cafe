@@ -18,6 +18,7 @@
 # production
 /build
 /deploy
+/gh-pages-site/
 /firebase-public/
 /.firebase/
 firebase-debug.log*
