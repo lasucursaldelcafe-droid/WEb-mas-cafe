@@ -24,7 +24,7 @@ Abre cada enlace, inicia sesión con la cuenta de **Más Café** (o la que vayan
 | `ADMIN_PUBLISH_KEY` | Publicar desde admin vía API | String aleatorio que definan ustedes |
 | `GODADDY_API_KEY` | Automatizar DNS mascafé.com | https://developer.godaddy.com/keys |
 | `GODADDY_API_SECRET` | Automatizar DNS | Mismo panel API |
-| `GITHUB_PAT` | Workflow dominio (si el token por defecto no alcanza) | https://github.com/settings/tokens |
+| `GH_PAGES_PAT` | Workflow dominio (PAT con permisos repo + admin) | https://github.com/settings/tokens |
 
 ---
 
