@@ -227,6 +227,7 @@ export function menuBookScript() {
       var page=0;
       var busy=false;
       var touchX=0;
+      var suppressClick=false;
       var preloaded={};
       var inView=true;
       var pageAlways=root.getAttribute('data-autostart')==='always';
@@ -392,16 +393,36 @@ export function menuBookScript() {
         updateButtons();
       }
 
-      function finishMobileFlip(cb){
-        if(mobileFlipper)mobileFlipper.className='menu-book-mobile-flipper';
-        if(mobileEl)mobileEl.classList.remove('menu-book-mobile-animating');
-        busy=false;
-        if(cb)cb();
+      function resetMobileFlipper(){
+        if(!mobileFlipper)return;
+        mobileFlipper.style.transition='none';
+        mobileFlipper.className='menu-book-mobile-flipper';
+        void mobileFlipper.offsetHeight;
+        mobileFlipper.style.removeProperty('transition');
       }
 
-      function animateMobileFlip(dir,cb){
+      function resetDesktopFlipper(){
+        if(!flipper)return;
+        flipper.style.transition='none';
+        flipper.className='menu-book-flipper';
+        void flipper.offsetHeight;
+        flipper.style.removeProperty('transition');
+      }
+
+      function finishMobileFlip(dir){
+        page=dir>0?page+1:page-1;
+        renderMobile();
+        if(mobileEl)mobileEl.classList.remove('menu-book-mobile-animating');
+        resetMobileFlipper();
+        busy=false;
+        preloadPage(page+(dir>0?1:-1));
+      }
+
+      function animateMobileFlip(dir){
         if(!mobileFlipper||!mobileCurrentImg||reduced){
-          cb();
+          page=dir>0?page+1:page-1;
+          renderMobile();
+          preloadPage(page+(dir>0?1:-1));
           return;
         }
         var target=dir>0?page+1:page-1;
@@ -413,15 +434,15 @@ export function menuBookScript() {
           setImg(mobileFlipFront,page);
           setImg(mobileFlipBack,target);
           mobileFlipper.className='menu-book-mobile-flipper flipping-forward';
-          window.setTimeout(function(){finishMobileFlip(cb);},580);
+          window.setTimeout(function(){finishMobileFlip(1);},580);
         }else{
           setImg(mobileUnderImg,target);
           setImg(mobileFlipFront,target);
           setImg(mobileFlipBack,page);
           mobileFlipper.className='menu-book-mobile-flipper flipping-back-from';
-          mobileFlipper.offsetHeight;
+          void mobileFlipper.offsetHeight;
           mobileFlipper.className='menu-book-mobile-flipper flipping-back-from flipping-back-to';
-          window.setTimeout(function(){finishMobileFlip(cb);},580);
+          window.setTimeout(function(){finishMobileFlip(-1);},580);
         }
       }
 
@@ -433,7 +454,7 @@ export function menuBookScript() {
 
       function animateFlip(dir,cb){
         if(!flipper||reduced||mobile){
-          cb();
+          if(cb)cb();
           return;
         }
         var s=spreadPages(spread);
@@ -450,9 +471,9 @@ export function menuBookScript() {
         }
         busy=true;
         setTimeout(function(){
-          flipper.className='menu-book-flipper';
+          if(cb)cb();
+          resetDesktopFlipper();
           busy=false;
-          cb();
         }, reduced?0:650);
       }
 
@@ -461,11 +482,7 @@ export function menuBookScript() {
         if(!fromAutoplay)userTookControl();
         if(mobile){
           if(page>=pages.length-1)return;
-          animateMobileFlip(1,function(){
-            page+=1;
-            renderMobile();
-            preloadPage(page+1);
-          });
+          animateMobileFlip(1);
           return;
         }
         if(spread>=spreadsCount()-1)return;
@@ -480,11 +497,7 @@ export function menuBookScript() {
         if(!fromAutoplay)userTookControl();
         if(mobile){
           if(page<=0)return;
-          animateMobileFlip(-1,function(){
-            page-=1;
-            renderMobile();
-            preloadPage(page-1);
-          });
+          animateMobileFlip(-1);
           return;
         }
         if(spread<=0)return;
@@ -493,10 +506,16 @@ export function menuBookScript() {
       }
 
       navNext.forEach(function(el){
-        el.addEventListener('click',function(){goNext(false);});
+        el.addEventListener('click',function(){
+          if(suppressClick)return;
+          goNext(false);
+        });
       });
       navPrev.forEach(function(el){
-        el.addEventListener('click',function(){goPrev(false);});
+        el.addEventListener('click',function(){
+          if(suppressClick)return;
+          goPrev(false);
+        });
       });
 
       root.addEventListener('keydown',function(e){
@@ -506,12 +525,15 @@ export function menuBookScript() {
 
       root.addEventListener('touchstart',function(e){
         touchX=e.changedTouches[0].clientX;
-        userTookControl();
+        suppressClick=false;
       },{passive:true});
 
       root.addEventListener('touchend',function(e){
         var dx=e.changedTouches[0].clientX-touchX;
         if(Math.abs(dx)<40)return;
+        suppressClick=true;
+        window.setTimeout(function(){suppressClick=false;},450);
+        userTookControl();
         if(dx<0)goNext(false);
         else goPrev(false);
       },{passive:true});
