@@ -89,6 +89,27 @@ export async function configureGithubPagesDomain({
   });
 }
 
+/** Quita custom domain hasta que DNS apunte a GitHub (evita 404 en github.io). */
+export async function clearGithubPagesCustomDomain({ dryRun = false } = {}) {
+  const existing = dryRun ? null : await getPagesConfig();
+  if (!existing) return { action: "skip", reason: "no pages config" };
+
+  const payload = {
+    build_type: existing.build_type ?? "workflow",
+    cname: null,
+  };
+  if (existing.source) payload.source = existing.source;
+
+  if (dryRun) {
+    return { action: "PUT", path: `/repos/${owner}/${repo}/pages`, payload };
+  }
+
+  return githubApi(`/repos/${owner}/${repo}/pages`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function testGithubCredentials() {
   await githubApi(`/repos/${owner}/${repo}`);
   return true;
