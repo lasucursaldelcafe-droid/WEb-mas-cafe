@@ -16,5 +16,12 @@
     "googleSiteVerification": "",
     "bingSiteVerification": "",
     "twitterHandle": ""
+  },
+  "email": {
+    "provider": "zoho",
+    "adminMailbox": "administracion@mascafé.com",
+    "publicMailbox": "hola@mascafé.com",
+    "zohoAdminUrl": "https://mailadmin.zoho.com/",
+    "webmailUrl": "https://mail.zoho.com/"
   }
 }

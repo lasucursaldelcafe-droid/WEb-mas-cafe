@@ -45,6 +45,10 @@ Abre cada enlace, inicia sesión con la cuenta de **Más Café** (o la que vayan
 | Mis productos / dominios | https://dcc.godaddy.com/control/portfolio |
 | DNS de **mascafé.com** | https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com |
 | Correo profesional (opcional) | https://email.godaddy.com/ |
+| **Correo institucional (guía)** | [CORREO-INSTITUCIONAL.md](../entregables/CORREO-INSTITUCIONAL.md) |
+| Zoho Mail gratis (recomendado) | https://www.zoho.com/mail/ |
+| Zoho Admin (crear buzones) | https://mailadmin.zoho.com/ |
+| Activar MX automático | `npm run email:configure -- --provider zoho` |
 | Forwarding / reenvío (desactivar parking) | https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com → **Reenvío** → Eliminar |
 | Activar HTTPS automático | `npm run domain:enable-https` (tras quitar forwarding) |
 

@@ -30,7 +30,9 @@ Formato sugerido por línea:
 - [ ] Cuenta Vercel / Render creada | https://... | |
 
 ### Correo
-- [ ] hola@mascafé.com activo | | |
+- [ ] hola@mascafé.com activo | Zoho Mail | |
+- [ ] administracion@mascafé.com activo | Zoho Mail | |
+- [ ] DNS MX configurado | `npm run email:configure` | |
 
 ### Otros
 - [ ] Google Drive marca | https://drive.google.com/... | |
