@@ -84,31 +84,34 @@ export function generateAdminPage() {
   </div>
 
   <div id="app" class="app hidden">
-    <aside class="sidebar">
-      <div class="brand">
-        <strong>Más Café</strong>
-        <span id="user-name">Admin</span>
-      </div>
-      <nav id="sidebar-nav"></nav>
-      <div class="sidebar-footer">
-        <p id="publish-status-bar" class="status-bar" style="font-size:.75rem;margin:0"></p>
-        <button type="button" class="nav-btn" id="logout-btn" style="margin-top:.5rem">Salir</button>
-      </div>
-    </aside>
-    <div class="main">
-      <div class="topbar">
-        <div>
-          <h2 id="panel-title">Panel</h2>
-          <span id="dirty-badge" class="chip hidden" style="margin-top:.35rem">Cambios sin guardar</span>
+    <header class="app-header">
+      <div class="app-header-row">
+        <div class="app-brand">
+          <strong>Más Café</strong>
+          <span id="user-name">Admin</span>
         </div>
-        <div class="topbar-actions">
+        <div class="app-nav">
+          <label for="panel-select" class="visually-hidden">Sección del panel</label>
+          <select id="panel-select" class="panel-select" aria-label="Sección del panel"></select>
+        </div>
+        <div class="app-actions">
           <button type="button" class="btn btn-ghost" id="preview-btn">Ver sitio</button>
           <button type="button" class="btn btn-ghost" id="informe-btn">Informe</button>
           <button type="button" class="btn btn-blue" id="publish-top">Guardar y publicar</button>
+          <button type="button" class="btn btn-ghost btn-logout" id="logout-btn">Salir</button>
+        </div>
+      </div>
+      <p id="publish-status-bar" class="status-bar app-status"></p>
+    </header>
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h2 id="panel-title">Panel</h2>
+          <span id="dirty-badge" class="chip hidden">Cambios sin guardar</span>
         </div>
       </div>
       <div id="panel-root"></div>
-    </div>
+    </main>
   </div>
 
   <script>

@@ -1,6 +1,6 @@
 # Panel de administración — Más Café
 
-Edita todo el contenido del sitio desde el navegador: textos, colores, imágenes, menú, blog, secciones y más.
+Edita todo el contenido del sitio desde el navegador: textos, colores, imágenes, menú, blog, secciones y más. Las secciones del panel se eligen desde la **lista desplegable** en la barra superior.
 
 ## Acceso
 
