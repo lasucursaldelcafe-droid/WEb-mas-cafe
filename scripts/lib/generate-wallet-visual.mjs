@@ -86,11 +86,11 @@ function appleWalletPass(brand, member) {
         <div class="pass pass-apple">
           <div class="pass-strip" role="img" aria-label="Franja decorativa Más Café">
             <div class="pass-strip-pattern"></div>
-            <img class="pass-strip-logo" src="${img("/images/brand/favs.png")}" alt="" width="48" height="48"/>
+            <img class="pass-strip-logo" src="${img("/images/brand/horizontal-crema.png")}" alt="" width="120" height="36" style="height:2rem;width:auto"/>
           </div>
           <div class="pass-body">
             <div class="pass-org">
-              <img src="${img("/images/brand/favs.png")}" alt="" width="28" height="28" class="pass-org-icon"/>
+              <img src="${img("/images/brand/horizontal-crema.png")}" alt="" class="pass-org-icon" style="height:1.25rem;width:auto"/>
               <span>${escapeHtml(brand.name)}</span>
             </div>
             <p class="pass-label">Puntos disponibles</p>
