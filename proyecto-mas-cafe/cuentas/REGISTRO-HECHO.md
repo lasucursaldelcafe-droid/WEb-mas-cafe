@@ -83,7 +83,9 @@ Formato sugerido por línea:
 - [x] Guía SEGURIDAD.md (secrets + ejecución autónoma) | proyecto-mas-cafe/cuentas/SEGURIDAD.md | 2026-06-30 |
 - [x] Checklist wallet gratis paso a paso | proyecto-mas-cafe/entregables/WALLET-CHECKLIST-GRATIS.md | 2026-06-30 |
 - [x] SEO + favicon + sitemap + JSON-LD | proyecto-mas-cafe/entregables/SEO-CHECKLIST.md | 2026-06-30 |
-- [ ] Google Search Console verificado | https://search.google.com/search-console | |
+- [x] Google Search Console verificado | DNS TXT + meta tag | 2026-06-30 |
+- [x] Sitemap ping automático | npm run post:publish | 2026-06-30 |
+- [x] Mantenimiento HTTPS programado | .github/workflows/maintain-domain.yml | 2026-06-30 |
 - [ ] Google Business Profile (Maps) | https://business.google.com | |
 
 ---

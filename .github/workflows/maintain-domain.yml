@@ -1,0 +1,67 @@
+name: Mantenimiento dominio y HTTPS
+
+# Reintenta HTTPS y sincroniza Google SEO hasta que el certificado esté listo.
+
+on:
+  schedule:
+    # Cada 6 horas
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      wait_for_https:
+        description: "Esperar hasta 30 min por certificado SSL"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  pages: write
+
+jobs:
+  maintain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Validar credenciales
+        env:
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
+        run: node scripts/validate-credentials.mjs
+
+      - name: Optimizar GoDaddy DNS
+        env:
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
+        run: node scripts/godaddy-optimize.mjs || true
+
+      - name: Sincronizar Google Search Console
+        env:
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+        run: node scripts/sync-google-seo.mjs || true
+
+      - name: Post-publicación (HTTPS + sitemap)
+        env:
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.wait_for_https }}" = "true" ]; then ARGS="--wait --max-wait=30"; fi
+          node scripts/post-publish.mjs $ARGS || true
+
+      - name: Verificar dominio
+        run: node scripts/verify-domain.mjs || true

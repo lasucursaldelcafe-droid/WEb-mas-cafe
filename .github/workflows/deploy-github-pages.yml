@@ -34,6 +34,12 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      - name: Sincronizar Google Search Console (DNS → settings)
+        env:
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+        run: node scripts/sync-google-seo.mjs --no-ping || true
+
       - name: Generar sitio multipágina
         env:
           ADMIN_PUBLISH_KEY: ${{ secrets.ADMIN_PUBLISH_KEY }}
@@ -55,6 +61,13 @@ jobs:
       - name: Publicar en línea
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Post-publicación (HTTPS + sitemap Google)
+        env:
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
+        run: node scripts/post-publish.mjs || true
 
       - name: Verificar sitio
         run: |
