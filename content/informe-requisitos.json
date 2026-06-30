@@ -17,7 +17,9 @@
     "credencialesLocal": "proyecto-mas-cafe/cuentas/CREDENCIALES.md (no subir a Git — copiar desde CREDENCIALES.template.md)",
     "seguridadYSecrets": "proyecto-mas-cafe/cuentas/SEGURIDAD.md",
     "walletChecklistGratis": "proyecto-mas-cafe/entregables/WALLET-CHECKLIST-GRATIS.md",
-    "seoChecklist": "proyecto-mas-cafe/entregables/SEO-CHECKLIST.md"
+    "seoChecklist": "proyecto-mas-cafe/entregables/SEO-CHECKLIST.md",
+    "informeVersion": "1.5.0",
+    "ultimaActualizacionInforme": "2026-06-30"
   },
   "independencia": {
     "intro": "La web pasará a propiedad de Más Café, independiente de La Sucursal del Café. Seguiremos actualizando con Cursor, pero cuentas y dominio deben quedar a nombre de la marca.",
@@ -46,12 +48,37 @@
       "dominio": "mascafé.com",
       "dominioPunycode": "xn--mascaf-gva.com",
       "panelDnsGodaddy": "https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com",
-      "wwwDestino": "",
-      "apexDestino": "",
+      "wwwDestino": "lasucursaldelcafe-droid.github.io",
+      "apexDestino": "185.199.108.153 (GitHub Pages)",
       "sslConfirmado": false,
       "fechaCorteGitHubPages": "",
-      "notas": ""
+      "notas": "Dominio responde en HTTP. HTTPS pendiente: npm run domain:enable-https"
     }
+  },
+  "panelWeb": {
+    "intro": "Panel en /admin/ para editar el sitio sin código. Navegación por lista desplegable en la barra superior.",
+    "items": [
+      { "funcion": "Lista desplegable de secciones", "estado": "listo", "notas": "Más espacio horizontal para edición y vista previa" },
+      { "funcion": "Colores y tipografías (solo fuentes Drive)", "estado": "listo", "notas": "theme.typography en site.json — content/drive-assets.json" },
+      { "funcion": "Imágenes: subir local o elegir desde Drive", "estado": "listo", "notas": "Experiencias, productos, blog, nosotros" },
+      { "funcion": "Informe constitucional embebido", "estado": "listo", "notas": "Sección Informe + botón en barra superior" },
+      { "funcion": "Análisis: clics, pageviews, GA4", "estado": "listo", "notas": "Sincronizar navegador + ID G-XXXXXXXX" },
+      { "funcion": "Publicación automática a GitHub", "estado": "listo", "notas": "Requiere ADMIN_PUBLISH_KEY en Secrets" },
+      { "funcion": "Login en HTTP y HTTPS", "estado": "listo", "notas": "Hash SHA-256 con fallback para HTTP" },
+      { "funcion": "Gestión de secciones (activar/crear)", "estado": "listo", "notas": "Rutas dinámicas en site.json" }
+    ]
+  },
+  "seo": {
+    "intro": "Posicionamiento y medición. El informe y el admin reflejan el estado actual.",
+    "items": [
+      { "item": "Google Search Console", "estado": "listo", "valor": "sc-domain:xn--mascaf-gva.com", "notas": "Verificado por DNS TXT 2026-06-30" },
+      { "item": "Sitemap", "estado": "listo", "valor": "/sitemap.xml", "notas": "Enviado en Search Console" },
+      { "item": "robots.txt + noindex admin/informe", "estado": "listo", "valor": "/robots.txt", "notas": "" },
+      { "item": "JSON-LD LocalBusiness", "estado": "listo", "valor": "En cada página", "notas": "" },
+      { "item": "Google Analytics 4", "estado": "en_proceso", "valor": "", "notas": "Pegar ID en admin → Análisis y publicar" },
+      { "item": "HTTPS forzado", "estado": "pendiente", "valor": "", "notas": "npm run domain:enable-https cuando certificado listo" },
+      { "item": "Google Business Profile", "estado": "pendiente", "valor": "", "notas": "Misma NAP que el sitio" }
+    ]
   },
   "wallet": {
     "intro": "Programa de fidelización con wallet digital, control de puntos y canje en mostrador. No puede vivir en HTML estático: requiere base de datos, login de clientes y reglas server-side.",
@@ -129,7 +156,7 @@
     { "id": "staff-caja", "categoria": "Wallet", "item": "Quién operará la caja/tablet para sumar y validar puntos", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
     { "id": "terminos-wallet", "categoria": "Wallet", "item": "Términos y política de privacidad del programa de fidelización", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
     { "id": "otp-proveedor", "categoria": "Wallet", "item": "Decisión: login por teléfono OTP, email o Google", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
-    { "id": "drive-sync", "categoria": "Marca", "item": "Nuevos assets en Drive → avisar para sincronizar", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
+    { "id": "drive-sync", "categoria": "Marca", "item": "Completar driveId de imágenes en drive-assets.json", "estado": "en_proceso", "responsable": "", "fechaLimite": "", "notas": "Logo listo; faltan pausa, carta, horno, mood, productos — copiar ID desde URL de Drive" },
     { "id": "aprobacion-campanas", "categoria": "Marca", "item": "Aprobación de cambios vía informe antes de campañas pagadas", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" }
   ],
   "camposLibres": [

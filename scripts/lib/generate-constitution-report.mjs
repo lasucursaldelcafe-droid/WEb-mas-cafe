@@ -7,6 +7,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { collectImagePaths } from "./generate-site-pages.mjs";
 import { loadSite } from "./site-html/shared.mjs";
+import { loadDriveAssets, resolveTypography } from "./drive-assets.mjs";
 import { generateWalletVisualEmbed } from "./generate-wallet-visual.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -17,13 +18,21 @@ const REPO_URL = "https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe";
 const DRIVE_FOLDER_ID = "153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC";
 const DRIVE_URL = `https://drive.google.com/drive/folders/${DRIVE_FOLDER_ID}`;
 
-const DOMAIN = "mascafé.com";
-const DOMAIN_WWW = "www.mascafé.com";
-const DOMAIN_URL = `https://${DOMAIN_WWW}`;
-const DOMAIN_PUNYCODE = "xn--mascaf-gva.com";
+const SETTINGS_PATH = path.join(root, "content/settings.json");
+const settings = existsSync(SETTINGS_PATH)
+  ? JSON.parse(readFileSync(SETTINGS_PATH, "utf8"))
+  : {};
+
+const DOMAIN = settings.customDomain || "mascafé.com";
+const DOMAIN_WWW = settings.customDomainWww || "www.mascafé.com";
+const DOMAIN_URL = settings.seo?.siteUrl?.startsWith("https")
+  ? settings.seo.siteUrl.replace(/\/$/, "")
+  : `https://${DOMAIN_WWW}`;
+const DOMAIN_LIVE = settings.seo?.siteUrl || `http://${settings.customDomainPunycode || "xn--mascaf-gva.com"}`;
+const DOMAIN_PUNYCODE = settings.customDomainPunycode || "xn--mascaf-gva.com";
 const GODADDY_DNS_URL = `https://dcc.godaddy.com/control/dnsmanagement?domainName=${DOMAIN_PUNYCODE}`;
 
-const REPORT_VERSION = "1.3.1";
+const REPORT_VERSION = "1.5.0";
 const REQUISITOS_PATH = path.join(root, "content/informe-requisitos.json");
 
 function escapeHtml(s) {
@@ -92,6 +101,8 @@ function loadInformeRequisitos() {
       independencia: { intro: "", items: [] },
       migracion: { intro: "", fases: [], dns: {} },
       wallet: { intro: "", mvp: [], reglasNegocio: {}, pantallasCliente: [], modulosAdmin: [], operacionCaja: [], modeloDatos: [], integracionesFuturas: [] },
+      panelWeb: { intro: "", items: [] },
+      seo: { intro: "", items: [] },
       necesitamosDeUstedes: [],
       camposLibres: [],
     };
@@ -172,6 +183,8 @@ function folderPurpose(folder) {
     hero: "Fotografías de fachada y hero — base visual para futuras versiones.",
     products: "Fotografía de empaque y producto.",
     uploads: "Carpeta para imágenes subidas desde el panel admin.",
+    drive: "Imágenes descargadas desde Google Drive al publicar.",
+    fonts: "Tipografías de marca sincronizadas desde Drive.",
   };
   return purposes[folder] || "Recursos gráficos de la carpeta Drive sincronizada.";
 }
@@ -179,7 +192,12 @@ function folderPurpose(folder) {
 export function generateConstitutionReport() {
   const site = loadSite();
   const req = loadInformeRequisitos();
-  const { brand, theme, routes, pages } = site;
+  const { brand, theme } = site;
+  const driveAssets = loadDriveAssets();
+  const typography = resolveTypography(site);
+  const analytics = site.analytics || {};
+  const seoSettings = settings.seo || {};
+  const httpsReady = seoSettings.httpsReady === true;
   const generatedAt = new Date().toISOString();
   const { used, map } = imageUsageMap();
   const allImages = walkImages(path.join(root, "public/images"), "");
@@ -212,12 +230,16 @@ export function generateConstitutionReport() {
 
   const linkRows = [
     ["Sitio público (GitHub Pages)", `${LIVE_BASE}/`, "Hosting principal. Se actualiza con cada push a main."],
-    ["Panel admin", `${LIVE_BASE}/admin/`, "Edición de contenido sin tocar código. Publicación automática."],
+    ["Panel admin", `${LIVE_BASE}/admin/`, "Edición visual: textos, colores, tipografías Drive, imágenes Drive, secciones, blog, menú. Publicación automática."],
+    ["Admin (dominio)", `${DOMAIN_LIVE}/admin/`, "Mismo panel en mascafé.com cuando el dominio está activo."],
+    ["Documentación admin", `${REPO_URL}/blob/main/docs/ADMIN.md`, "Guía de uso del panel para la marca."],
+    ["Manifiesto Drive", `${REPO_URL}/blob/main/content/drive-assets.json`, "Catálogo de fuentes e imágenes sincronizables desde Drive."],
     ["Este informe", `${LIVE_BASE}/informe/`, "Documento constitucional para la marca. No aparece en el menú del sitio."],
     ["Mockup Wallet (Apple + Google)", `${LIVE_BASE}/informe/wallet/`, "Vista previa visual de la tarjeta de fidelización en iPhone y Android."],
     ["Repositorio GitHub", REPO_URL, "Código fuente, historial de cambios y colaboración."],
     ["Carpeta Drive (marca)", DRIVE_URL, "Fuente original de logotipos, ilustraciones y aplicaciones."],
-    ["Dominio mascafé.com", `${DOMAIN_URL}/`, `Destino final (punycode: ${DOMAIN_PUNYCODE}). DNS GoDaddy → hosting con backend cuando haya wallet.`],
+    ["Dominio mascafé.com", `${DOMAIN_LIVE}/`, `Sitio en dominio propio (HTTP${httpsReady ? " + HTTPS" : ""}). Punycode: ${DOMAIN_PUNYCODE}.`],
+    ["Google Search Console", "https://search.google.com/search-console?resource_id=sc-domain%3Axn--mascaf-gva.com", "Dominio verificado por DNS TXT — sitemap enviado."],
     ["Firebase Hosting (respaldo)", "https://mas-cafe-c8413.web.app/", "Plataforma alternativa configurada en el repo. Mismo build HTML."],
     ["Instagram", brand.social.instagram, "Red social principal — tráfico y comunidad."],
     ["Facebook", brand.social.facebook, "Segunda red — eventos y alcance local."],
@@ -231,8 +253,13 @@ export function generateConstitutionReport() {
     .join("");
 
   const changelog = [
+    { date: "2026-06-30", note: "Informe v1.5 — panel admin documentado (nav desplegable, tipografías/imágenes Drive, analytics, informe embebido)." },
+    { date: "2026-06-30", note: "Admin: lista desplegable de secciones — más espacio horizontal en el dashboard." },
+    { date: "2026-06-30", note: "Admin: tipografías por rol e imágenes desde Drive (content/drive-assets.json + npm run drive:sync-assets)." },
+    { date: "2026-06-30", note: "Analytics: clics locales, pageviews y soporte Google Analytics 4 en panel Análisis." },
+    { date: "2026-06-30", note: "Admin: login en HTTP, publicación vía PAT, acceso al informe constitucional desde el panel." },
     { date: "2026-06-30", note: "Seguridad y credenciales (SEGURIDAD.md) + checklist wallet gratis paso a paso." },
-    { date: "2026-06-30", note: "Fix dominio — custom domain solo si DNS público propagado; sitio github.io estable." },
+    { date: "2026-06-30", note: "DNS GoDaddy + dominio mascafé.com en HTTP — HTTPS pendiente de certificado." },
     { date: "2026-06-27", note: "Informe v1.3 — mockup visual Apple Wallet + Google Wallet en /informe/wallet/." },
     { date: "2026-06-27", note: "Automatización DNS dominio mascafé.com (npm run domain:configure)." },
     { date: "2026-06-27", note: "Carpeta proyecto-mas-cafe/ — entrega, enlaces de cuentas, REGISTRO-HECHO y plantilla CREDENCIALES." },
@@ -315,6 +342,43 @@ export function generateConstitutionReport() {
     .join("");
 
   const meta = req.meta || {};
+
+  const driveImagesWithId = (driveAssets.images || []).filter((i) => i.driveId);
+  const driveManifestRows = (driveAssets.images || [])
+    .map(
+      (img) => `<tr>
+        <td>${escapeHtml(img.label || img.id)}</td>
+        <td>${img.driveId ? `<code>${escapeHtml(img.driveId.slice(0, 12))}…</code>` : '<span class="field-empty">Falta driveId</span>'}</td>
+        <td><code>${escapeHtml(img.localPath || "—")}</code></td>
+        <td>${escapeHtml((img.categories || []).join(", "))}</td>
+        <td>${img.driveId ? '<span class="badge ok">Selector admin</span>' : '<span class="badge ref">Solo local</span>'}</td>
+      </tr>`
+    )
+    .join("");
+
+  const fontManifestRows = (driveAssets.fonts || [])
+    .map(
+      (f) => `<tr>
+        <td><strong>${escapeHtml(f.family)}</strong></td>
+        <td>${escapeHtml(f.label || "")}</td>
+        <td>${escapeHtml((f.roles || []).join(", "))}</td>
+        <td>${typography.display === f.family || typography.body === f.family || typography.accent === f.family ? '<span class="badge ok">En uso</span>' : '<span class="badge ref">Disponible</span>'}</td>
+      </tr>`
+    )
+    .join("");
+
+  const panelWebRows = renderChecklistTable(req.panelWeb?.items, [
+    { label: "Función", render: (i) => `<strong>${escapeHtml(i.funcion)}</strong>` },
+    { label: "Estado", render: (i) => statusBadge(i.estado) },
+    { label: "Notas", render: (i) => fieldValue(i.notas, "—") },
+  ]);
+
+  const seoRows = renderChecklistTable(req.seo?.items, [
+    { label: "Ítem SEO / analítica", render: (i) => `<strong>${escapeHtml(i.item)}</strong>` },
+    { label: "Estado", render: (i) => statusBadge(i.estado) },
+    { label: "Valor / enlace", render: (i) => fieldValue(i.valor, "—") },
+    { label: "Notas", render: (i) => fieldValue(i.notas, "—") },
+  ]);
 
   return `<!DOCTYPE html>
 <html lang="es">
@@ -415,6 +479,8 @@ export function generateConstitutionReport() {
       <a href="#estado">Estado</a>
       <a href="#constitucion">Constitución</a>
       <a href="#tecnica">Técnica</a>
+      <a href="#panel-admin">Panel admin</a>
+      <a href="#seo-panel">SEO</a>
       <a href="#paginas">Páginas</a>
       <a href="#marca">Marca</a>
       <a href="#activos">Activos Drive</a>
@@ -441,16 +507,21 @@ export function generateConstitutionReport() {
         <div class="card stat"><strong>${used.size}</strong><span>Imágenes en producción</span></div>
         <div class="card stat"><strong>${allImages.length}</strong><span>Activos en repositorio</span></div>
         <div class="card stat"><strong>HTTP 200</strong><span>Todas las rutas verificadas</span></div>
+        <div class="card stat"><strong>${driveAssets.fonts?.length || 0}</strong><span>Fuentes Drive en catálogo</span></div>
+        <div class="card stat"><strong>${driveImagesWithId.length}</strong><span>Imágenes Drive con ID</span></div>
       </div>
-      <div class="callout"><strong>Hosting principal:</strong> GitHub Pages vía GitHub Actions (<code>deploy-github-pages.yml</code>). Cada push a <code>main</code> reconstruye y publica en ~1 minuto.</div>
+      <div class="callout"><strong>Hosting principal:</strong> GitHub Pages vía GitHub Actions (<code>deploy-github-pages.yml</code>). Cada push a <code>main</code> reconstruye sitio + informe en ~1 minuto.</div>
+      <div class="callout"><strong>Dominio:</strong> <a href="${escapeHtml(DOMAIN_LIVE)}">${escapeHtml(DOMAIN_LIVE)}</a> (${escapeHtml(DOMAIN)}) — DNS configurado ${settings.dnsConfiguredAt ? escapeHtml(settings.dnsConfiguredAt.slice(0, 10)) : "pendiente"}. HTTPS: ${httpsReady ? '<span class="badge ok">Activo</span>' : '<span class="badge ref">Pendiente — npm run domain:enable-https</span>'}.</div>
       <div class="callout warn"><strong>Plataforma de respaldo:</strong> Firebase Hosting (<code>mas-cafe-c8413</code>) está configurada en el repositorio como alternativa (mismo HTML estático). No se encontró configuración de «VertiZone» en el código — si es un servicio externo futuro, documentar credenciales en <code>content/settings.json</code>.</div>
       <h3>Verificación realizada</h3>
       <ul>
         <li>Build <code>npm run build:github-pages</code> — OK (${pagesLive.length} páginas + admin + informe)</li>
         <li>Health check <code>npm run health-check</code> — OK</li>
-        <li>URLs en línea: inicio, café, menú, nosotros, tienda, blog, contacto, admin — HTTP 200</li>
-        <li>Contenido editable en <code>content/site.json</code> — válido</li>
-        <li>Dominio futuro: <strong>${escapeHtml(DOMAIN)}</strong> (<code>${escapeHtml(DOMAIN_PUNYCODE)}</code>) — DNS GoDaddy pendiente</li>
+        <li>URLs en línea (github.io + <strong>${escapeHtml(DOMAIN)}</strong>): inicio, café, menú, nosotros, tienda, blog, contacto, admin, informe — HTTP 200</li>
+        <li>Panel admin: lista desplegable, tipografías Drive, imágenes Drive, informe embebido, analytics</li>
+        <li>Google Search Console verificado — ${seoSettings.googleSearchConsoleVerifiedAt ? escapeHtml(seoSettings.googleSearchConsoleVerifiedAt.slice(0, 10)) : "fecha en settings"}</li>
+        <li>Google Analytics 4: ${analytics.googleAnalyticsId ? `<code>${escapeHtml(analytics.googleAnalyticsId)}</code> configurado` : "pendiente ID en admin → Análisis"}</li>
+        <li>Contenido editable en <code>content/site.json</code> — válido (incluye <code>theme.typography</code>)</li>
       </ul>
     </section>
 
@@ -480,14 +551,63 @@ export function generateConstitutionReport() {
       <table>
         <thead><tr><th>Capa</th><th>Qué es</th><th>Para qué</th></tr></thead>
         <tbody>
-          <tr><td><code>content/site.json</code></td><td>Base de datos en JSON</td><td>Textos, precios, menú, blog, rutas, colores. Editable desde admin.</td></tr>
+          <tr><td><code>content/site.json</code></td><td>Base de datos en JSON</td><td>Textos, precios, menú, blog, rutas, colores, <code>theme.typography</code>, analytics. Editable desde admin.</td></tr>
+          <tr><td><code>content/drive-assets.json</code></td><td>Manifiesto Drive</td><td>Fuentes e imágenes con ID de Drive — catálogo del selector admin.</td></tr>
+          <tr><td><code>content/settings.json</code></td><td>Configuración técnica</td><td>Dominio, SEO, logo Drive, correo Zoho.</td></tr>
           <tr><td><code>scripts/lib/site-html/</code></td><td>Generador HTML</td><td>Convierte JSON en 7 páginas estáticas con la paleta crema actual.</td></tr>
-          <tr><td><code>public/images/</code></td><td>Activos sincronizados desde Drive</td><td>Imágenes que el build copia a producción.</td></tr>
+          <tr><td><code>scripts/lib/drive-assets.mjs</code></td><td>Sincronización Drive</td><td>Descarga imágenes en build; <code>npm run drive:sync-assets</code>.</td></tr>
+          <tr><td><code>public/images/</code> + <code>public/fonts/</code></td><td>Activos locales</td><td>Imágenes y tipografías copiadas a producción.</td></tr>
           <tr><td><code>.github/workflows/</code></td><td>CI/CD</td><td>Deploy automático a GitHub Pages.</td></tr>
-          <tr><td><code>/admin/</code></td><td>Panel privado</td><td>Edición visual + publicación sin código.</td></tr>
+          <tr><td><code>/admin/</code></td><td>Panel privado</td><td>Lista desplegable de secciones, vista previa, publicación sin código.</td></tr>
+          <tr><td><code>/informe/</code></td><td>Este documento</td><td>Constitución web regenerada en cada build.</td></tr>
           <tr><td>Firebase (opcional)</td><td>Hosting espejo</td><td>Respaldo o pruebas en <code>mas-cafe-c8413.web.app</code>.</td></tr>
         </tbody>
       </table>
+    </section>
+
+    <section id="panel-admin">
+      <h2>3.1 Panel de administración (<code>/admin/</code>)</h2>
+      <p>Interfaz para la marca: editar el sitio sin tocar código. Acceso: usuario <code>admin</code> (contraseña en <code>content/users.json</code>, hash SHA-256 en el cliente).</p>
+      <div class="callout"><strong>Navegación:</strong> lista desplegable en la barra superior (más espacio para formularios y vista previa). Acciones fijas: Ver sitio, Informe, Guardar y publicar.</div>
+      <h3>Funciones disponibles hoy</h3>
+      ${panelWebRows}
+      <h3>Secciones del panel</h3>
+      <table>
+        <thead><tr><th>Sección</th><th>Qué edita</th></tr></thead>
+        <tbody>
+          <tr><td>Resumen / Cómo funciona</td><td>Estado general y guía rápida</td></tr>
+          <tr><td>Informe</td><td>Vista embebida de este documento + enlace mockup Wallet</td></tr>
+          <tr><td>Análisis</td><td>Clics (WhatsApp, tienda…), pageviews locales, ingresos, ID Google Analytics 4</td></tr>
+          <tr><td>Marca e inicio</td><td>Nombre, titulares, tagline, textos del hero</td></tr>
+          <tr><td>Colores y fuentes</td><td>Paleta + tipografías por rol (solo fuentes del manifiesto Drive)</td></tr>
+          <tr><td>Secciones</td><td>Activar/desactivar páginas, crear subcarpetas nuevas</td></tr>
+          <tr><td>Experiencias / Café / Menú / Blog / Nosotros / Contacto</td><td>Contenido por página + imágenes (subir o elegir desde Drive)</td></tr>
+          <tr><td>Publicar</td><td>Sube <code>site.json</code> e imágenes a GitHub — deploy en ~1 min</td></tr>
+        </tbody>
+      </table>
+      <h3>Tipografías activas (desde <code>site.json</code>)</h3>
+      <table>
+        <thead><tr><th>Rol</th><th>Fuente</th></tr></thead>
+        <tbody>
+          <tr><td>Títulos grandes</td><td><strong>${escapeHtml(typography.display)}</strong></td></tr>
+          <tr><td>Texto general</td><td><strong>${escapeHtml(typography.body)}</strong></td></tr>
+          <tr><td>Acento manuscrito</td><td><strong>${escapeHtml(typography.accent)}</strong></td></tr>
+        </tbody>
+      </table>
+      <h3>Analítica</h3>
+      <ul>
+        <li><strong>Clics locales:</strong> WhatsApp ${analytics.clicks?.whatsapp ?? 0}, tienda ${analytics.clicks?.tienda ?? 0}, contacto ${analytics.clicks?.contacto ?? 0} (sincronizar en Análisis → publicar)</li>
+        <li><strong>Google Analytics 4:</strong> ${analytics.googleAnalyticsId ? `<code>${escapeHtml(analytics.googleAnalyticsId)}</code>` : '<span class="field-empty">Pendiente — pegar ID G-XXXXXXXX en admin</span>'}</li>
+        <li><strong>Search Console:</strong> dominio verificado — ver sección SEO abajo</li>
+      </ul>
+      <div class="source-hint">Guía de uso: <code>docs/ADMIN.md</code> · Publicación requiere secret <code>ADMIN_PUBLISH_KEY</code> en GitHub Actions</div>
+    </section>
+
+    <section id="seo-panel">
+      <h2>3.2 SEO y analítica</h2>
+      <p>${escapeHtml(req.seo?.intro || "Posicionamiento y medición del sitio público.")}</p>
+      ${seoRows}
+      <div class="source-hint">Editar estados: <code>content/informe-requisitos.json</code> → <code>seo.items</code> · Config técnica: <code>content/settings.json</code> → <code>seo</code></div>
     </section>
 
     <section id="paginas">
@@ -514,7 +634,7 @@ export function generateConstitutionReport() {
         <div class="swatch"><i style="background:${theme.brown}"></i>Caramelo<br/>${theme.brown}</div>
       </div>
       <ul>
-        <li><strong>Tipografías:</strong> Playfair Display (títulos), Satoshi (cuerpo), Marydale (acento/taglines).</li>
+        <li><strong>Tipografías (editables en admin):</strong> títulos → <strong>${escapeHtml(typography.display)}</strong>, cuerpo → <strong>${escapeHtml(typography.body)}</strong>, acento → <strong>${escapeHtml(typography.accent)}</strong>. Solo fuentes listadas en <code>content/drive-assets.json</code>.</li>
         <li><strong>Tagline de marca:</strong> «${escapeHtml(brand.tagline)}» — solo en hero de inicio.</li>
         <li><strong>Descriptor:</strong> «${escapeHtml(brand.descriptor)}» — solo en hero de inicio.</li>
         <li><strong>CTA visita:</strong> «${escapeHtml(brand.visitLine || "San Fernando Nuevo")}» — banda final de cada página.</li>
@@ -523,7 +643,17 @@ export function generateConstitutionReport() {
 
     <section id="activos">
       <h2>6. Inventario Drive → repositorio → sitio</h2>
-      <p>Carpeta Google Drive de marca: <a href="${DRIVE_URL}" target="_blank" rel="noopener">Abrir en Drive</a> (ID: <code>${DRIVE_FOLDER_ID}</code>).</p>
+      <p>Carpeta Google Drive de marca: <a href="${DRIVE_URL}" target="_blank" rel="noopener">Abrir en Drive</a> (ID: <code>${DRIVE_FOLDER_ID}</code>). Manifiesto local: <code>content/drive-assets.json</code> · sincronizar con <code>npm run drive:sync-assets</code> y <code>npm run brand:sync-logo</code>.</p>
+      <h3>Fuentes en catálogo Drive (${driveAssets.fonts?.length || 0})</h3>
+      <table>
+        <thead><tr><th>Familia</th><th>Etiqueta</th><th>Roles</th><th>Estado</th></tr></thead>
+        <tbody>${fontManifestRows}</tbody>
+      </table>
+      <h3>Imágenes en manifiesto Drive (${driveAssets.images?.length || 0} · ${driveImagesWithId.length} con ID para selector admin)</h3>
+      <table>
+        <thead><tr><th>Nombre</th><th>Drive ID</th><th>Ruta local</th><th>Categorías</th><th>Admin</th></tr></thead>
+        <tbody>${driveManifestRows}</tbody>
+      </table>
       <table>
         <thead><tr><th>Carpeta Drive / repo</th><th>Contenido</th><th>En sitio público</th></tr></thead>
         <tbody>
@@ -654,7 +784,7 @@ export function generateConstitutionReport() {
         <li>Ledger inmutable: cada suma/resta queda registrada con motivo y autor.</li>
         <li>HTTPS obligatorio en producción.</li>
         <li>Staff con PIN o login limitado para cargar puntos en caja.</li>
-        <li>Contraseñas admin hasheadas (mejora pendiente en el panel actual).</li>
+        <li>Contraseñas admin con hash SHA-256 en el navegador (sin texto plano en el HTML generado).</li>
       </ul>
       <div class="source-hint">Editar reglas y estados: <code>content/informe-requisitos.json</code> → <code>wallet</code><br/>
       Checklist gratis paso a paso: <code>proyecto-mas-cafe/entregables/WALLET-CHECKLIST-GRATIS.md</code></div>
@@ -721,6 +851,8 @@ export function generateConstitutionReport() {
         <li><strong>Una frase por pantalla.</strong> Evitar repetir tagline y descriptor en cada sección; reservarlos para momentos clave.</li>
         <li><strong>Fotos reales del local.</strong> Sustituir mood genérico por sesión propia (barra, tazas, clientes, equipo).</li>
         <li><strong>Foto por producto.</strong> Hoy todos usan el empaque caja-cafe.png — ideal una imagen por SKU.</li>
+        <li><strong>Tipografías y colores.</strong> Ajustar en admin → Colores y fuentes; solo usar fuentes del catálogo Drive.</li>
+        <li><strong>Imágenes desde Drive.</strong> Subir nuevos assets a la carpeta Drive y añadir <code>driveId</code> al manifiesto, o pegar enlace en el selector del admin.</li>
         <li><strong>Menú al día.</strong> Revisar precios y platos de temporada desde el admin cada mes.</li>
         <li><strong>Blog mensual.</strong> Un artículo largo ayuda SEO local («café especialidad Cali»).</li>
         <li><strong>Instagram activo.</strong> El sitio envía tráfico a @mascafecol315 — el feed debe estar vivo.</li>
