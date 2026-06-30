@@ -16,7 +16,7 @@ const REPO_URL = "https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe";
 const DRIVE_FOLDER_ID = "153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC";
 const DRIVE_URL = `https://drive.google.com/drive/folders/${DRIVE_FOLDER_ID}`;
 
-const REPORT_VERSION = "1.1.0";
+const REPORT_VERSION = "1.2.0";
 const REQUISITOS_PATH = path.join(root, "content/informe-requisitos.json");
 
 function escapeHtml(s) {
@@ -223,6 +223,7 @@ export function generateConstitutionReport() {
     .join("");
 
   const changelog = [
+    { date: "2026-06-27", note: "Carpeta proyecto-mas-cafe/ — entrega, enlaces de cuentas, REGISTRO-HECHO y plantilla CREDENCIALES." },
     { date: "2026-06-27", note: "Informe v1.1 — wallet de fidelización, migración mascafe.com, checklist editable en content/informe-requisitos.json." },
     { date: "2026-06-27", note: "Informe constitucional v1.0 — paleta crema, textos sin repetición, auditoría de activos Drive." },
     { date: "2026-06-27", note: "Favicon del logo en todas las páginas." },
@@ -626,6 +627,10 @@ export function generateConstitutionReport() {
       <p>Esta tabla se actualiza editando un solo archivo en el repositorio. Los campos vacíos aparecen como <span class="field-empty">Por completar</span>.</p>
       <div class="callout"><strong>Archivo para completar:</strong> <code>content/informe-requisitos.json</code><br/>
       Tras editarlo: push a <code>main</code> → el informe se regenera automáticamente en el deploy.</div>
+      <div class="callout warn"><strong>Carpeta de entrega y cuentas:</strong> <code>proyecto-mas-cafe/</code><br/>
+      • Enlaces para configurar: <code>proyecto-mas-cafe/cuentas/ENLACES-CONFIGURACION.md</code><br/>
+      • Pegar lo ya hecho: <code>proyecto-mas-cafe/cuentas/REGISTRO-HECHO.md</code><br/>
+      • Credenciales locales (no Git): copiar <code>CREDENCIALES.template.md</code> → <code>CREDENCIALES.md</code></div>
       <table>
         <thead><tr><th>Categoría</th><th>Qué necesitamos</th><th>Estado</th><th>Responsable</th><th>Fecha límite</th><th>Notas</th></tr></thead>
         <tbody>${necesitamosRows}</tbody>
