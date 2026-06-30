@@ -48,9 +48,9 @@ Formato sugerido por línea:
 - [ ] Repo transferido a org Más Café | | |
 
 ### GoDaddy
-- [ ] Acceso a cuenta GoDaddy de mascafé.com | | |
-- [ ] DNS configurado (A + CNAME) | | |
-- [ ] Dominio verificado en GitHub Pages (check verde) | | |
+- [x] API GoDaddy Production (key + secret en GitHub Secrets) | https://developer.godaddy.com/keys | 2026-06-30 | configurado
+- [x] DNS A @ + CNAME www vía API | npm run domain:configure | 2026-06-30 | aplicado — propagando
+- [ ] Dominio verificado en GitHub Pages (check verde) | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/pages | |
 - [ ] HTTPS forzado en GitHub Pages | | |
 
 ### Firebase

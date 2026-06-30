@@ -1,0 +1,101 @@
+name: Setup autónomo (build + dominio)
+
+# Lanzamiento sin intervención:
+# - Tras cada deploy a main (solo reconfigura dominio si credenciales OK)
+# - Manual: Actions → Setup autónomo
+# - API: gh api repos/.../dispatches -f event_type=autonomous-setup
+#
+# Secrets requeridos:
+#   GODADDY_API_KEY, GODADDY_API_SECRET (pareja Production en GoDaddy)
+#   GH_PAGES_PAT (token con repo + administration)
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Simular sin aplicar DNS ni custom domain"
+        type: boolean
+        default: false
+      skip_godaddy:
+        description: "Solo GitHub Pages (omitir GoDaddy)"
+        type: boolean
+        default: false
+      skip_build:
+        description: "Omitir build y verify:links"
+        type: boolean
+        default: false
+  repository_dispatch:
+    types: [autonomous-setup]
+  workflow_run:
+    workflows: ["Publicar HTML en GitHub Pages"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  administration: write
+
+concurrency:
+  group: autonomous-setup
+  cancel-in-progress: false
+
+jobs:
+  setup:
+    if: |
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    env:
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == true && '1' || '0' }}
+      SKIP_GODADDY_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.skip_godaddy == true && '1' || '0' }}
+      SKIP_BUILD: ${{ (github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && inputs.skip_build == true)) && '1' || '0' }}
+      POST_DEPLOY_ONLY: ${{ github.event_name == 'workflow_run' && '1' || '0' }}
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Validar credenciales GoDaddy
+        if: env.SKIP_GODADDY_INPUT != '1' && env.DRY_RUN != '1'
+        env:
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
+        run: |
+          node scripts/validate-credentials.mjs || {
+            echo "::warning::GoDaddy inválido — omitiendo DNS. Actualiza GODADDY_API_KEY + GODADDY_API_SECRET (secret emparejado)."
+            echo "SKIP_GODADDY=1" >> "$GITHUB_ENV"
+          }
+
+      - name: Build y verificar enlaces
+        if: env.SKIP_BUILD != '1'
+        env:
+          ADMIN_PUBLISH_KEY: ${{ secrets.ADMIN_PUBLISH_KEY }}
+        run: |
+          node scripts/build-github-pages.mjs
+          npm run verify:links
+
+      - name: Configurar dominio
+        env:
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
+        run: |
+          ARGS=""
+          if [ "$DRY_RUN" = "1" ]; then ARGS="$ARGS --dry-run"; fi
+          if [ "$SKIP_GODADDY_INPUT" = "1" ] || [ "${SKIP_GODADDY:-}" = "1" ]; then ARGS="$ARGS --skip-godaddy"; fi
+          if [ "$POST_DEPLOY_ONLY" = "1" ]; then ARGS="$ARGS --skip-github"; fi
+          node scripts/configure-domain.mjs $ARGS
+
+      - name: Verificar dominio
+        if: env.DRY_RUN != '1'
+        run: node scripts/verify-domain.mjs || true

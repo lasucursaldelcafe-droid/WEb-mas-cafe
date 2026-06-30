@@ -39,6 +39,7 @@ import {
   testGithubCredentials,
 } from "./lib/github-pages-api.mjs";
 import { execSync } from "child_process";
+import { loadEnvLocal } from "./lib/load-env-local.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
@@ -69,6 +70,7 @@ async function appendRegistro(nota) {
 }
 
 async function main() {
+  loadEnvLocal();
   const opts = parseArgs();
   const settings = loadSettings();
 
