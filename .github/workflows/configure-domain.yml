@@ -1,0 +1,50 @@
+name: Configurar dominio mascafé.com
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Simular sin aplicar cambios"
+        type: boolean
+        default: true
+      skip_godaddy:
+        description: "Omitir GoDaddy DNS"
+        type: boolean
+        default: false
+      skip_github:
+        description: "Omitir GitHub Pages custom domain"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  pages: write
+  administration: write
+
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Configurar dominio automáticamente
+        env:
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_PAT || github.token }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          if [ "${{ inputs.skip_godaddy }}" = "true" ]; then ARGS="$ARGS --skip-godaddy"; fi
+          if [ "${{ inputs.skip_github }}" = "true" ]; then ARGS="$ARGS --skip-github"; fi
+          node scripts/configure-domain.mjs $ARGS
+
+      - name: Verificar dominio
+        if: inputs.dry_run == false
+        run: node scripts/verify-domain.mjs || true

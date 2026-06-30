@@ -18,7 +18,10 @@
     "start": "next start",
     "lint": "eslint .",
     "health-check": "node scripts/health-check.mjs",
-    "godaddy:prep": "node scripts/godaddy-prep.mjs"
+    "godaddy:prep": "node scripts/godaddy-prep.mjs",
+    "domain:configure": "node scripts/configure-domain.mjs",
+    "domain:configure:dry": "node scripts/configure-domain.mjs --dry-run",
+    "domain:verify": "node scripts/verify-domain.mjs"
   },
   "dependencies": {
     "next": "^15.5.0",

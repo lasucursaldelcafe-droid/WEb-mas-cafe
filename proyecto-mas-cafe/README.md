@@ -15,12 +15,24 @@ Punto central para **todo lo hecho**, **migración a www.mascafé.com**, **cuent
 | [cuentas/REGISTRO-HECHO.md](./cuentas/REGISTRO-HECHO.md) | **Bloc de notas** — pega aquí los links de lo que ya hiciste |
 | [cuentas/CREDENCIALES.template.md](./cuentas/CREDENCIALES.template.md) | Plantilla para anotar usuarios, tokens y claves (copiar a `CREDENCIALES.md`) |
 | [TRABAJO-MUTUO.md](./TRABAJO-MUTUO.md) | Cómo seguimos paso a paso la migración |
-| [migracion/CHECKLIST.md](./migracion/CHECKLIST.md) | Checklist de migración dominio + puesta en línea |
+| [migracion/AUTOMATIZAR-DOMINIO.md](./migracion/AUTOMATIZAR-DOMINIO.md) | **Automático:** `npm run domain:configure` |
+| [migracion/CHECKLIST.md](./migracion/CHECKLIST.md) | Checklist manual si la API falla |
 | [entregables/README.md](./entregables/README.md) | Resumen de todo lo construido en los repositorios |
 
 ---
 
-## URLs en línea hoy
+## Configurar dominio en un comando
+
+```bash
+cp .env.example .env.local   # GODADDY_API_KEY + GITHUB_TOKEN
+npm run domain:configure:dry # simular
+npm run domain:configure     # aplicar
+npm run domain:verify        # comprobar
+```
+
+Guía completa: [migracion/AUTOMATIZAR-DOMINIO.md](./migracion/AUTOMATIZAR-DOMINIO.md)
+
+---
 
 | Qué | URL |
 |-----|-----|

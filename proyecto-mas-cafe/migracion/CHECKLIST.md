@@ -1,5 +1,7 @@
 # Checklist migración — www.mascafé.com
 
+> **Automático:** `npm run domain:configure` — [AUTOMATIZAR-DOMINIO.md](../AUTOMATIZAR-DOMINIO.md)
+
 ## Estado actual
 
 | Item | Estado |
