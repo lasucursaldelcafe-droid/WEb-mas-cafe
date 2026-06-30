@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ProductDetailCard } from "@/components/site/ProductRiver";
 import { SubscriptionBand } from "@/components/site/CTABands";
+import { BrandTitle } from "@/lib/brand-title";
 import { assetPath } from "@/lib/paths";
 import { getContent } from "@/lib/store";
 import type { Metadata } from "next";
@@ -27,7 +28,7 @@ export default async function CafePage() {
         <div className="relative mx-auto max-w-[1400px] px-6 pb-24 md:px-12">
           <p className="font-accent text-4xl text-sage">Café fresco</p>
           <h1 className="mt-4 max-w-3xl font-display text-5xl leading-tight md:text-7xl">
-            Calidad extraordinaria y trazabilidad al origen
+            <BrandTitle>Calidad extraordinaria y trazabilidad al origen</BrandTitle>
           </h1>
         </div>
       </section>
@@ -44,7 +45,7 @@ export default async function CafePage() {
           </div>
           <div className="flex-1 space-y-6">
             <h2 className="font-display text-4xl text-blue-deep">
-              Prepáralo en casa, a tu manera
+              <BrandTitle>Prepáralo en casa, a tu manera</BrandTitle>
             </h2>
             <ol className="space-y-5 text-charcoal/75">
               {[

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandTitle } from "@/lib/brand-title";
 import type { Brand } from "@/lib/types";
 import { getMapsUrl } from "@/lib/maps";
 
@@ -13,7 +14,7 @@ export function SubscriptionBand({ brand }: { brand: Brand }) {
               Café en casa
             </p>
             <h2 className="mt-4 font-display text-4xl md:text-5xl">
-              Suscripción mensual
+              <BrandTitle>Suscripción mensual</BrandTitle>
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-cream/75">
               Recibe café fresco tostado cada mes con guías de preparación.
@@ -50,7 +51,7 @@ export function VisitBand({ brand }: { brand: Brand }) {
           Te esperamos
         </p>
         <h2 className="mt-6 font-display text-5xl transition-[transform,letter-spacing] duration-400 ease-out hover:-translate-y-0.5 hover:tracking-wide md:text-6xl">
-          Visítanos en Cali
+          <BrandTitle>Visítanos en Cali</BrandTitle>
         </h2>
         <a
           href={getMapsUrl(brand)}

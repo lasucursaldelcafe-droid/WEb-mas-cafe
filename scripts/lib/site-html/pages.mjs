@@ -9,6 +9,7 @@ import {
 import { brandAssetPath } from "../brand-logo.mjs";
 import { getEnabledRoutes } from "./routes.mjs";
 import { renderMenuBook, getMenuBookPagePaths } from "./menu-book.mjs";
+import { brandTitleHtml } from "./brand-title.mjs";
 
 function marqueeHtml(items) {
   const doubled = [...items, ...items];
@@ -27,7 +28,7 @@ function visitBand(href, brand) {
     <div class="wrap">
       <div class="cta">
         <p class="cta-tagline">${ctaLine}</p>
-        <h2>Te esperamos en Cali</h2>
+        <h2>${brandTitleHtml("Te esperamos en Cali")}</h2>
         <p>${addressLinkHtml(brand, { className: "address-link address-link--on-dark" })}</p>
         <p style="font-size:.88rem;margin-top:.5rem;opacity:.8">${brand.hours}</p>
         <div class="cta actions">
@@ -43,7 +44,7 @@ function visitBand(href, brand) {
 function sectionHead(label, title, intro = "") {
   return `<header class="section-head">
     ${label ? `<p class="label">${label}</p>` : ""}
-    <h2 class="section-title">${title}</h2>
+    <h2 class="section-title">${brandTitleHtml(title)}</h2>
     ${intro ? `<p class="section-intro">${intro}</p>` : ""}
   </header>`;
 }
@@ -54,7 +55,7 @@ function experienceRow(e, img, reverse) {
     <div class="exp-media"><img src="${img(e.image)}" alt="${e.title}" loading="lazy"/></div>
     <div class="exp-copy">
       <p class="label">${e.subtitle}</p>
-      <h3>${e.title}</h3>
+      <h3>${brandTitleHtml(e.title)}</h3>
       <p style="margin-top:.85rem;opacity:.78;line-height:1.7">${e.description}</p>
     </div>
   </div>`;
@@ -65,7 +66,7 @@ function productCard(p, img) {
   <article class="product">
     ${p.image ? `<div class="product-img"><img src="${img(p.image)}" alt="${p.name}" loading="lazy"/></div>` : ""}
     <p class="label" style="color:var(--sage)">${p.variety} · ${p.region}</p>
-    <h3>${p.name}</h3>
+    <h3>${brandTitleHtml(p.name)}</h3>
     ${p.farm ? `<p class="meta">${p.farm}${p.altitude ? ` · ${p.altitude}` : ""}</p>` : ""}
     <p class="meta" style="margin-top:.4rem">${p.notes.join(" · ")}</p>
     <p class="price">${price(p.price)}${p.weight ? ` <span style="font-size:.8rem;font-weight:400;opacity:.7">/ ${p.weight}</span>` : ""}</p>
@@ -91,7 +92,7 @@ export function pageHome() {
     <div class="wrap hero-content-wrap">
       <div class="hero-content">
         <p class="tagline">${brand.tagline}</p>
-        <h1>${brand.headline}</h1>
+        <h1>${brandTitleHtml(brand.headline)}</h1>
         <p class="subhead">${brand.subheadline}</p>
         <p class="descriptor">${brand.descriptor}</p>
         <div class="actions">
@@ -130,7 +131,7 @@ export function pageHome() {
         <article class="card card-post">
           <div class="card-body">
             <p class="label">${post.category} · ${post.date}</p>
-            <h3 class="post-title">${post.title}</h3>
+            <h3 class="post-title">${brandTitleHtml(post.title)}</h3>
             <p class="post-excerpt">${post.excerpt}</p>
           </div>
           <img src="${img(post.image)}" alt="${post.title}" loading="lazy" class="card-post-media"/>
@@ -163,7 +164,7 @@ export function pageCafe() {
   <section class="page-hero" style="--hero-art:url('${img("/images/grafica/2.png")}')">
     <div class="wrap inner">
       <p class="tagline">${pc.tagline}</p>
-      <h1>${pc.headline}</h1>
+      <h1>${brandTitleHtml(pc.headline)}</h1>
     </div>
   </section>
   <section>
@@ -173,7 +174,7 @@ export function pageCafe() {
           <img src="${img("/images/products/caja-cafe.png")}" alt="Empaque Más Café"/>
         </div>
         <div>
-          <h2>${pc.brewTitle}</h2>
+          <h2>${brandTitleHtml(pc.brewTitle)}</h2>
           <ol class="steps" style="margin-top:1.5rem">${brewGuide.map((s, i) => `<li><span class="num">${String(i + 1).padStart(2, "0")}</span><span>${s}</span></li>`).join("")}</ol>
         </div>
       </div>
@@ -206,7 +207,7 @@ function renderTextMenuFallback(menu) {
       ${menu.map((cat) => `
       <div class="menu-cat">
         <div class="menu-cat-head">
-          <h3>${cat.name}</h3>
+          <h3>${brandTitleHtml(cat.name)}</h3>
           ${MENU_CAT_NOTES[cat.id] ? `<p class="cat-note">${MENU_CAT_NOTES[cat.id]}</p>` : ""}
         </div>
         ${cat.items.map((item) => `
@@ -239,7 +240,7 @@ export function pageMenu() {
     <div class="menu-hero">
       <div class="wrap">
         <p class="soul">${pm.tagline}</p>
-        <h1>${pm.headline}</h1>
+        <h1>${brandTitleHtml(pm.headline)}</h1>
         <p class="intro">${pm.intro || brand.purpose}</p>
       </div>
     </div>
@@ -269,7 +270,7 @@ export function pageNosotros() {
   <section class="page-hero" style="--hero-art:url('${img("/images/grafica/3.png")}')">
     <div class="wrap inner">
       <p class="tagline">${pn.tagline}</p>
-      <h1>${pn.headline}</h1>
+      <h1>${brandTitleHtml(pn.headline)}</h1>
     </div>
   </section>
   <section>
@@ -286,7 +287,7 @@ export function pageNosotros() {
       ${sectionHead(pn.valuesLabel, pn.valuesTitle)}
       <div class="values">${brand.values.map((v) => `
       <div class="value">
-        <h3>${v.title}</h3>
+        <h3>${brandTitleHtml(v.title)}</h3>
         <p style="margin-top:.5rem;opacity:.75;line-height:1.65">${v.text}</p>
       </div>`).join("")}</div>
     </div>
@@ -318,7 +319,7 @@ export function pageTienda() {
   <section class="page-hero">
     <div class="wrap inner">
       <p class="tagline">${pt.tagline}</p>
-      <h1>${pt.headline}</h1>
+      <h1>${brandTitleHtml(pt.headline)}</h1>
     </div>
   </section>
   <section>
@@ -350,7 +351,7 @@ export function pageBlog() {
   <section class="page-hero light">
     <div class="wrap inner">
       <p class="tagline">${pb.tagline}</p>
-      <h1>${pb.headline}</h1>
+      <h1>${brandTitleHtml(pb.headline)}</h1>
     </div>
   </section>
   <section>
@@ -360,7 +361,7 @@ export function pageBlog() {
         <img src="${img(post.image)}" alt="${post.title}" loading="lazy"/>
         <div>
           <p class="label">${post.category} · ${post.date}</p>
-          <h2 style="margin-top:.5rem">${post.title}</h2>
+          <h2 style="margin-top:.5rem">${brandTitleHtml(post.title)}</h2>
           <p style="margin-top:1rem;opacity:.75;font-size:1.05rem;line-height:1.7">${post.excerpt}</p>
         </div>
       </article>`).join("")}
@@ -388,15 +389,15 @@ export function pageContacto() {
   <section class="page-hero">
     <div class="wrap inner">
       <p class="tagline">${pc.tagline}</p>
-      <h1>${pc.headline}</h1>
+      <h1>${brandTitleHtml(pc.headline)}</h1>
     </div>
   </section>
   <section>
     <div class="wrap grid-2">
       <div class="contact-info">
-        <h2>${pc.visitTitle}</h2>
+        <h2>${brandTitleHtml(pc.visitTitle)}</h2>
         <p style="margin-top:1rem;line-height:1.8">${addressLinkHtml(brand)}<br/><span style="font-size:.9rem;opacity:.7">${brand.hours}</span></p>
-        <h2 style="margin-top:2rem">${pc.writeTitle}</h2>
+        <h2 style="margin-top:2rem">${brandTitleHtml(pc.writeTitle)}</h2>
         <p style="margin-top:1rem;line-height:2.2">
           <a href="tel:${brand.phone.replace(/\s/g, "")}">${brand.phone}</a><br/>
           <a href="mailto:${brand.email}">${brand.email}</a><br/>
@@ -408,7 +409,7 @@ export function pageContacto() {
         </div>
       </div>
       <form class="contact-form" action="https://wa.me/${brand.whatsapp}" method="get" target="_blank" rel="noopener noreferrer">
-        <h2>${pc.formTitle}</h2>
+        <h2>${brandTitleHtml(pc.formTitle)}</h2>
         <label>Nombre<input type="text" name="text" placeholder="Tu nombre" required/></label>
         <label>Email<input type="email" placeholder="tu@email.com"/></label>
         <label>Mensaje<textarea placeholder="¿En qué podemos ayudarte?"></textarea></label>
@@ -438,7 +439,7 @@ export function pageCustom(route) {
   <section class="page-hero light">
     <div class="wrap inner">
       <p class="tagline">${pg.tagline || route.label}</p>
-      <h1>${pg.headline || route.label}</h1>
+      <h1>${brandTitleHtml(pg.headline || route.label)}</h1>
     </div>
   </section>
   <section>

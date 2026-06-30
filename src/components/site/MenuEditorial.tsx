@@ -1,3 +1,4 @@
+import { BrandTitle } from "@/lib/brand-title";
 import { formatPrice } from "@/lib/format";
 import type { MenuCategory } from "@/lib/types";
 
@@ -11,7 +12,7 @@ export function MenuEditorial({ menu }: { menu: MenuCategory[] }) {
               {String(catIndex + 1).padStart(2, "0")}
             </span>
             <h2 className="font-display text-4xl text-blue-deep md:text-5xl">
-              {category.name}
+              <BrandTitle>{category.name}</BrandTitle>
             </h2>
           </div>
 

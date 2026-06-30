@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { OrganicDecor } from "@/components/ui/OrganicDecor";
 import { assetPath } from "@/lib/paths";
+import { BrandTitle } from "@/lib/brand-title";
 import type { Brand } from "@/lib/types";
 
 export function EditorialHero({ brand }: { brand: Brand }) {
@@ -38,7 +39,7 @@ export function EditorialHero({ brand }: { brand: Brand }) {
             {brand.tagline}
           </p>
           <h1 className="mt-6 text-balance font-display text-[clamp(2.8rem,7vw,5.5rem)] leading-[0.95] tracking-tight">
-            {brand.headline}
+            <BrandTitle>{brand.headline}</BrandTitle>
           </h1>
           <p className="mt-8 max-w-xl text-lg leading-relaxed text-cream/75 md:text-xl">
             {brand.subheadline}

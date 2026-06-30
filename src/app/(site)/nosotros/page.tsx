@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { StorySection, ValuesBand } from "@/components/site/StorySection";
+import { BrandTitle } from "@/lib/brand-title";
 import { assetPath } from "@/lib/paths";
 import { getContent } from "@/lib/store";
 import type { Metadata } from "next";
@@ -20,7 +21,7 @@ export default async function NosotrosPage() {
         <div className="relative mx-auto max-w-[1400px] px-6 pb-20 md:px-12">
           <p className="font-accent text-4xl text-sage">{brand.descriptor}</p>
           <h1 className="mt-4 max-w-4xl font-display text-5xl md:text-7xl">
-            Un espacio para pausar con intención
+            <BrandTitle>Un espacio para pausar con intención</BrandTitle>
           </h1>
         </div>
       </section>

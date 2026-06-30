@@ -333,6 +333,17 @@ export function siteStyles() {
       font-weight:500;
     }
     h3{font-family:var(--font-display);color:var(--blue);font-size:1.45rem;font-weight:500}
+    .title-amp{
+      font-family:var(--font-accent);
+      font-weight:400;
+      font-style:normal;
+      letter-spacing:0;
+      display:inline-block;
+      margin:0 .08em;
+      line-height:.85;
+      vertical-align:baseline;
+      transform:none!important;
+    }
     .label{
       font-size:.68rem;text-transform:uppercase;letter-spacing:.22em;
       color:var(--brown);margin-bottom:.55rem;font-weight:600;

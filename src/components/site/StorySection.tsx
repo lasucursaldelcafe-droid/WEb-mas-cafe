@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { OrganicDecor } from "@/components/ui/OrganicDecor";
+import { BrandTitle } from "@/lib/brand-title";
 import { assetPath } from "@/lib/paths";
 import type { Brand } from "@/lib/types";
 
@@ -41,7 +42,7 @@ export function StorySection({ brand }: { brand: Brand }) {
                 Nuestro propósito
               </p>
               <h2 className="mt-4 font-display text-[clamp(2rem,4vw,3.2rem)] leading-tight text-blue-deep">
-                Hospitalidad que va más allá del café
+                <BrandTitle>Hospitalidad que va más allá del café</BrandTitle>
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-charcoal/80">
                 {brand.purpose}
@@ -68,7 +69,7 @@ export function ValuesBand({ brand }: { brand: Brand }) {
     <section className="bg-sage/35 py-24">
       <div className="mx-auto max-w-[1400px] px-6 md:px-12">
         <h2 className="mb-16 text-center font-display text-4xl text-blue-deep md:text-5xl">
-          Lo que nos guía
+          <BrandTitle>Lo que nos guía</BrandTitle>
         </h2>
         <div className="flex flex-col gap-px overflow-hidden rounded-[2rem] bg-blue-deep/10">
           {brand.values.map((value, i) => (
@@ -83,7 +84,7 @@ export function ValuesBand({ brand }: { brand: Brand }) {
               </span>
               <div>
                 <h3 className="font-display text-2xl text-blue-deep md:text-3xl">
-                  {value.title}
+                  <BrandTitle>{value.title}</BrandTitle>
                 </h3>
                 <p className="mt-3 max-w-2xl leading-relaxed text-charcoal/70">
                   {value.text}

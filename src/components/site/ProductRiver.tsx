@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { BrandTitle } from "@/lib/brand-title";
 import { formatPrice } from "@/lib/format";
 import type { Product } from "@/lib/types";
 
@@ -18,7 +19,7 @@ export function ProductRiver({ products }: { products: Product[] }) {
               Café fresco
             </p>
             <h2 className="mt-3 font-display text-[clamp(2rem,4vw,3.5rem)] leading-tight">
-              Calidad extraordinaria, trazabilidad al origen
+              <BrandTitle>Calidad extraordinaria, trazabilidad al origen</BrandTitle>
             </h2>
           </div>
           <Link
@@ -56,7 +57,9 @@ export function ProductRiver({ products }: { products: Product[] }) {
               <p className="text-xs uppercase tracking-wider text-sage/80">
                 {product.variety} · {product.region}
               </p>
-              <h3 className="font-display text-3xl">{product.name}</h3>
+              <h3 className="font-display text-3xl">
+                <BrandTitle>{product.name}</BrandTitle>
+              </h3>
               {product.farm && (
                 <p className="text-sm text-cream/60">
                   {product.farm} · {product.altitude}
@@ -99,7 +102,7 @@ export function ProductDetailCard({ product }: { product: Product }) {
           {product.variety} · {product.region}
         </p>
         <h3 className="mt-2 font-display text-3xl text-blue-deep">
-          {product.name}
+          <BrandTitle>{product.name}</BrandTitle>
         </h3>
         <p className="mt-4 text-2xl font-bold text-blue-deep">
           {formatPrice(product.price)}

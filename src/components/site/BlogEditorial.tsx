@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { BrandTitle } from "@/lib/brand-title";
 import type { BlogPost } from "@/lib/types";
 
 export function BlogEditorial({ posts }: { posts: BlogPost[] }) {
@@ -17,7 +18,7 @@ export function BlogEditorial({ posts }: { posts: BlogPost[] }) {
               Blog
             </p>
             <h2 className="mt-3 font-display text-4xl text-blue-deep md:text-5xl">
-              Historias & origen
+              <BrandTitle>Historias & origen</BrandTitle>
             </h2>
           </div>
           <Link
@@ -47,7 +48,7 @@ export function BlogEditorial({ posts }: { posts: BlogPost[] }) {
                 {featured.category} · {featured.date}
               </p>
               <h3 className="mt-2 font-display text-3xl text-blue-deep group-hover:text-green md:text-4xl">
-                {featured.title}
+                <BrandTitle>{featured.title}</BrandTitle>
               </h3>
               <p className="mt-3 text-charcoal/70">{featured.excerpt}</p>
             </div>
@@ -73,7 +74,7 @@ export function BlogEditorial({ posts }: { posts: BlogPost[] }) {
                     {post.category} · {post.date}
                   </p>
                   <h3 className="mt-1 font-display text-xl text-blue-deep group-hover:text-green">
-                    {post.title}
+                    <BrandTitle>{post.title}</BrandTitle>
                   </h3>
                 </div>
               </Link>

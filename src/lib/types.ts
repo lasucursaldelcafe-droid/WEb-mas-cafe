@@ -83,6 +83,11 @@ export type SiteContent = {
   menu: MenuCategory[];
   blog: BlogPost[];
   marquee: string[];
+  pages?: {
+    menu?: {
+      headline?: string;
+    };
+  };
 };
 
 export type AnalyticsEvent = {

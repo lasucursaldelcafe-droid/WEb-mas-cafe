@@ -1,5 +1,6 @@
 import { ProductDetailCard } from "@/components/site/ProductRiver";
 import { SubscriptionBand } from "@/components/site/CTABands";
+import { BrandTitle } from "@/lib/brand-title";
 import { getContent } from "@/lib/store";
 import type { Metadata } from "next";
 
@@ -16,7 +17,7 @@ export default async function TiendaPage() {
         <div className="mx-auto max-w-[1400px] px-6 md:px-12">
           <p className="font-accent text-4xl text-sage">Tienda</p>
           <h1 className="mt-4 font-display text-5xl md:text-6xl">
-            Café fresco, directo del origen
+            <BrandTitle>Café fresco, directo del origen</BrandTitle>
           </h1>
         </div>
       </section>

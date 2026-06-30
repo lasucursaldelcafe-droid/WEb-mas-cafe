@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { BrandTitle } from "@/lib/brand-title";
 import { getContent } from "@/lib/store";
 import type { Metadata } from "next";
 
@@ -16,7 +17,7 @@ export default async function BlogPage() {
         <div className="mx-auto max-w-[1400px] px-6 md:px-12">
           <p className="font-accent text-4xl text-blue-deep">Blog</p>
           <h1 className="mt-2 font-display text-5xl md:text-6xl">
-            Historias & origen
+            <BrandTitle>Historias & origen</BrandTitle>
           </h1>
         </div>
       </section>
@@ -37,7 +38,7 @@ export default async function BlogPage() {
                 {post.category} · {post.date}
               </p>
               <h2 className="mt-3 font-display text-4xl text-blue-deep">
-                {post.title}
+                <BrandTitle>{post.title}</BrandTitle>
               </h2>
               <p className="mt-4 text-lg leading-relaxed text-charcoal/70">
                 {post.excerpt}

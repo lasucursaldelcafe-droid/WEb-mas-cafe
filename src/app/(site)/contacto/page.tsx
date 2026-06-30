@@ -1,4 +1,5 @@
 import { VisitBand } from "@/components/site/CTABands";
+import { BrandTitle } from "@/lib/brand-title";
 import { getContent } from "@/lib/store";
 import { getMapsUrl } from "@/lib/maps";
 import type { Metadata } from "next";
@@ -15,7 +16,9 @@ export default async function ContactoPage() {
       <section className="bg-blue-deep pt-32 pb-16 text-cream">
         <div className="mx-auto max-w-[1400px] px-6 md:px-12">
           <p className="font-accent text-4xl text-sage">Contacto</p>
-          <h1 className="mt-2 font-display text-5xl md:text-6xl">Hablemos</h1>
+          <h1 className="mt-2 font-display text-5xl md:text-6xl">
+            <BrandTitle>Hablemos</BrandTitle>
+          </h1>
         </div>
       </section>
 
@@ -24,7 +27,7 @@ export default async function ContactoPage() {
           <div className="space-y-10 lg:w-1/2">
             <div>
               <h2 className="font-display text-2xl text-blue-deep transition-[transform,letter-spacing] duration-400 ease-out hover:-translate-y-0.5 hover:tracking-wide">
-                Visítanos
+                <BrandTitle>Visítanos</BrandTitle>
               </h2>
               <address className="mt-4 space-y-1 not-italic text-charcoal/75">
                 <a
@@ -41,7 +44,7 @@ export default async function ContactoPage() {
             </div>
             <div>
               <h2 className="font-display text-2xl text-blue-deep transition-[transform,letter-spacing] duration-400 ease-out hover:-translate-y-0.5 hover:tracking-wide">
-                Escríbenos
+                <BrandTitle>Escríbenos</BrandTitle>
               </h2>
               <ul className="mt-4 space-y-2 text-charcoal/75">
                 <li>
@@ -65,7 +68,7 @@ export default async function ContactoPage() {
 
           <form className="flex-1 space-y-5 rounded-[2rem_4rem_2rem_4rem] bg-white p-10 organic-shadow">
             <h2 className="font-display text-2xl text-blue-deep">
-              Envíanos un mensaje
+              <BrandTitle>Envíanos un mensaje</BrandTitle>
             </h2>
             {["Nombre", "Email", "Mensaje"].map((label, i) =>
               i < 2 ? (

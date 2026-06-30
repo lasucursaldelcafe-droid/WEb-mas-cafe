@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { WaveDivider } from "@/components/ui/OrganicDecor";
+import { BrandTitle } from "@/lib/brand-title";
 import type { Experience } from "@/lib/types";
 
 export function ExperienceFlow({
@@ -16,7 +17,7 @@ export function ExperienceFlow({
             La experiencia
           </p>
           <h2 className="mt-4 font-display text-[clamp(2.2rem,5vw,4rem)] leading-tight text-blue-deep">
-            Una experiencia que se vive sin prisa
+            <BrandTitle>Una experiencia que se vive sin prisa</BrandTitle>
           </h2>
         </div>
 
@@ -66,7 +67,7 @@ export function ExperienceFlow({
                     {exp.subtitle}
                   </p>
                   <h3 className="mt-3 font-display text-5xl text-blue-deep md:text-6xl">
-                    {exp.title}
+                    <BrandTitle>{exp.title}</BrandTitle>
                   </h3>
                   <p className="mt-6 max-w-md text-lg leading-relaxed text-charcoal/70">
                     {exp.description}
