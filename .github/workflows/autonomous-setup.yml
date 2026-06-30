@@ -34,7 +34,6 @@ on:
 permissions:
   contents: read
   pages: write
-  administration: write
 
 concurrency:
   group: autonomous-setup
