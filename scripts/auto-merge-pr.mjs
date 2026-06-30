@@ -24,10 +24,7 @@ function ghJson(cmd) {
 function validateBuild() {
   console.log("\n▸ Validando build antes de fusionar…\n");
   run("npm ci", { inherit: true });
-  run("npm run brand:sync-logo", { inherit: true });
-  run("npm run build:github-pages", { inherit: true });
-  run("npm run verify:links", { inherit: true });
-  run("npm run verify:seo", { inherit: true });
+  run("CI_SKIP_INFORME_SOURCE=1 npm run ci:validate", { inherit: true });
   console.log("\n✅ Validación OK\n");
 }
 
