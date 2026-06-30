@@ -12,7 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const FIREBASE_PROJECT = process.env.FIREBASE_PROJECT || "mas-cafe-c8413";
 
-const REQUIRED_APIS = [
+export const REQUIRED_APIS = [
   "firebase.googleapis.com",
   "identitytoolkit.googleapis.com",
   "firestore.googleapis.com",

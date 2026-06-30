@@ -32,7 +32,10 @@ on:
       - "firestore.indexes.json"
       - "content/wallet-program.json"
       - "scripts/setup-firebase-wallet.mjs"
+      - "scripts/wallet-diagnose.mjs"
       - "scripts/lib/firebase-setup-api.mjs"
+      - "scripts/lib/firebase-permissions.mjs"
+      - "scripts/lib/google-console-links.mjs"
       - ".github/workflows/setup-firebase-wallet.yml"
   workflow_run:
     workflows: ["Publicar HTML en GitHub Pages"]
@@ -93,7 +96,12 @@ jobs:
           if [ -z "$FIREBASE_SERVICE_ACCOUNT" ] && [ -z "$FIREBASE_TOKEN" ] && [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
             echo "::warning::Sin FIREBASE_SERVICE_ACCOUNT ni FIREBASE_TOKEN. Configura el secret en GitHub."
             echo "La app /wallet/ está publicada pero el backend no se puede activar solo."
+            echo "https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/secrets/actions"
             exit 0
+          fi
+
+          if [ -n "$FIREBASE_SERVICE_ACCOUNT" ] || [ -n "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
+            node scripts/wallet-diagnose.mjs --fix || true
           fi
 
           node scripts/setup-firebase-wallet.mjs $ARGS

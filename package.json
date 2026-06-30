@@ -19,6 +19,7 @@
     "wallet:sync-program": "node scripts/wallet/sync-program.mjs",
     "wallet:setup": "node scripts/setup-firebase-wallet.mjs",
     "wallet:setup:dry": "node scripts/setup-firebase-wallet.mjs --dry-run",
+    "wallet:diagnose": "node scripts/wallet-diagnose.mjs",
     "validate:firebase": "node scripts/validate-firebase-credentials.mjs",
     "deploy:firebase": "npm run wallet:setup",
     "start": "next start",

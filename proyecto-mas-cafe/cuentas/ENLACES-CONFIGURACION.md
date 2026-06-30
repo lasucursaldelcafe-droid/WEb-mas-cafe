@@ -20,7 +20,8 @@ Abre cada enlace, inicia sesión con la cuenta de **Más Café** (o la que vayan
 
 | Secret | Para qué | Cómo obtenerlo |
 |--------|----------|----------------|
-| `FIREBASE_TOKEN` | Deploy automático Firebase | En PC: `npx firebase login:ci` |
+| **`FIREBASE_SERVICE_ACCOUNT`** | **Setup wallet completo** (Auth, Firestore, APIs, permisos IAM) | Firebase → Configuración → Cuentas de servicio → Generar clave JSON |
+| `FIREBASE_TOKEN` | Deploy parcial (sin configurar Auth/Firestore por API) | En PC: `npx firebase login:ci` |
 | `ADMIN_PUBLISH_KEY` | Publicar desde admin vía API | String aleatorio que definan ustedes |
 | `GODADDY_API_KEY` | Automatizar DNS mascafé.com | https://developer.godaddy.com/keys |
 | `GODADDY_API_SECRET` | Automatizar DNS | Mismo panel API |
@@ -79,7 +80,29 @@ Proyecto actual: **mas-cafe-c8413**
 | Firestore Database (wallet — futuro) | https://console.firebase.google.com/project/mas-cafe-c8413/firestore |
 | Configuración general | https://console.firebase.google.com/project/mas-cafe-c8413/settings/general |
 | Cuentas de servicio (CI/CD) | https://console.firebase.google.com/project/mas-cafe-c8413/settings/serviceaccounts/adminsdk |
-| Uso y facturación (OTP teléfono) | https://console.firebase.google.com/project/mas-cafe-c8413/usage |
+| Uso y facturación (plan **Blaze** — obligatorio para Functions) | https://console.firebase.google.com/project/mas-cafe-c8413/usage/details |
+| **Google Cloud — IAM / permisos** | https://console.cloud.google.com/iam-admin/grantaccess?project=mas-cafe-c8413 |
+| **OAuth consent (login con Google)** | https://console.cloud.google.com/apis/credentials/consent?project=mas-cafe-c8413 |
+| **APIs habilitadas** | https://console.cloud.google.com/apis/dashboard?project=mas-cafe-c8413 |
+| Auth providers (email + Google) | https://console.firebase.google.com/project/mas-cafe-c8413/authentication/providers |
+| Workflow setup automático | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/actions/workflows/setup-firebase-wallet.yml |
+
+**Comandos locales (permisos + backend):**
+
+| Comando | Qué hace |
+|---------|----------|
+| `npm run wallet:diagnose` | Muestra qué bloquea el setup y enlaces directos |
+| `npm run wallet:diagnose -- --fix` | Intenta asignar roles IAM y activar APIs automáticamente |
+| `npm run wallet:setup` | Diagnóstico + Auth + Firestore + deploy + seed |
+
+**Por qué a veces “no deja hacer cosas”:**
+
+| Bloqueo | Causa | Solución |
+|---------|-------|----------|
+| Cloud Functions | Sin plan Blaze | Activar facturación en el enlace de usage arriba |
+| APIs / Auth vía script | Cuenta de servicio sin roles | `wallet:diagnose --fix` o IAM manual |
+| Solo `FIREBASE_TOKEN` | No puede configurar Google Console | Usar `FIREBASE_SERVICE_ACCOUNT` (JSON completo) |
+| Login con Google | OAuth consent sin configurar | Enlace OAuth consent arriba |
 
 **Sitio en vivo Firebase:**
 
