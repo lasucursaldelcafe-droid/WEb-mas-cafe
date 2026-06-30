@@ -13,7 +13,13 @@ export function menuBookStyles() {
       max-width:920px;
       width:100%;
       margin:0 auto;
-      padding:0 clamp(1.25rem,4vw,1.5rem);
+      padding:0;
+    }
+    .menu-book-ui,
+    .menu-book-hint,
+    .menu-book-footer{
+      padding-left:clamp(1.15rem,4vw,1.5rem);
+      padding-right:clamp(1.15rem,4vw,1.5rem);
     }
     .menu-book-hint{
       text-align:center;font-size:.84rem;color:rgba(43,43,43,.55);
@@ -84,8 +90,8 @@ export function menuBookStyles() {
       background:linear-gradient(135deg,#f0ebe3,#e7e0d5);
     }
     .menu-book-page-slot img{
-      width:100%;height:100%;object-fit:contain;object-position:center;
-      display:block;background:#fff;
+      position:absolute;inset:0;width:100%;height:100%;
+      display:block;object-fit:cover;object-position:center;
     }
     .menu-book-flipper{
       position:absolute;top:0;right:0;width:50%;height:100%;
@@ -101,7 +107,8 @@ export function menuBookStyles() {
       box-shadow:-8px 0 24px rgba(7,57,84,.12);
     }
     .menu-book-flip-face img{
-      width:100%;height:100%;object-fit:contain;object-position:center;background:#fff;
+      position:absolute;inset:0;width:100%;height:100%;
+      display:block;object-fit:cover;object-position:center;
     }
     .menu-book-flip-face.back{transform:rotateY(180deg)}
     .menu-book-hotzones{
@@ -138,8 +145,8 @@ export function menuBookStyles() {
     .menu-book-mobile-current{z-index:2}
     .menu-book-mobile-under img,
     .menu-book-mobile-current img{
-      width:100%;height:100%;object-fit:contain;object-position:center;
-      display:block;background:#fff;
+      position:absolute;inset:0;width:100%;height:100%;
+      display:block;object-fit:cover;object-position:center;
     }
     .menu-book-mobile-flipper{
       position:absolute;inset:0;transform-style:preserve-3d;
@@ -162,8 +169,8 @@ export function menuBookStyles() {
     }
     .menu-book-mobile-face.back{transform:rotateY(180deg)}
     .menu-book-mobile-face img{
-      width:100%;height:100%;object-fit:contain;object-position:center;
-      display:block;background:#fff;
+      position:absolute;inset:0;width:100%;height:100%;
+      display:block;object-fit:cover;object-position:center;
     }
     .menu-book-mobile.menu-book-mobile-animating .menu-book-mobile-current{
       visibility:hidden;
