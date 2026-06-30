@@ -114,3 +114,55 @@ export async function testGithubCredentials() {
   await githubApi(`/repos/${owner}/${repo}`);
   return true;
 }
+
+/** Health check async — primera llamada puede devolver 202 */
+export async function getPagesHealth({ retries = 8, delayMs = 4000 } = {}) {
+  for (let i = 0; i < retries; i++) {
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/pages/health`, {
+      headers: {
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+        Authorization: `Bearer ${githubToken()}`,
+      },
+    });
+    if (res.status === 200) return res.json();
+    if (res.status !== 202) {
+      const text = await res.text();
+      throw new Error(`GitHub Pages health ${res.status}: ${text}`);
+    }
+    await new Promise((r) => setTimeout(r, delayMs));
+  }
+  throw new Error("GitHub Pages health check timeout");
+}
+
+const HTTPS_READY_CERT_STATES = new Set([
+  "issued",
+  "approved",
+  "uploaded",
+  "authorized",
+]);
+
+export function isCertificateReady(pagesConfig) {
+  const state = pagesConfig?.https_certificate?.state;
+  return state ? HTTPS_READY_CERT_STATES.has(state) : false;
+}
+
+/** Activa Enforce HTTPS cuando GitHub lo permite */
+export async function enableGithubPagesHttps({ dryRun = false } = {}) {
+  const existing = dryRun ? null : await getPagesConfig();
+  if (!existing) throw new Error("GitHub Pages no configurado");
+
+  const payload = {
+    build_type: existing.build_type ?? "workflow",
+    cname: existing.cname,
+    https_enforced: true,
+  };
+  if (existing.source) payload.source = existing.source;
+
+  if (dryRun) return { action: "PUT", payload };
+
+  return githubApi(`/repos/${owner}/${repo}/pages`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+}

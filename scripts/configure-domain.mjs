@@ -40,6 +40,10 @@ import {
   testGithubCredentials,
 } from "./lib/github-pages-api.mjs";
 import { isDnsReadyForGitHubPages } from "./lib/dns-check.mjs";
+import {
+  checkAuthoritativeApex,
+  formatParkingWarning,
+} from "./lib/dns-authoritative.mjs";
 import { execSync } from "child_process";
 import { loadEnvLocal } from "./lib/load-env-local.mjs";
 
@@ -104,6 +108,14 @@ async function main() {
       } else {
         console.log(`  ✅ A records @ actualizados (${result.apex.updated} IPs GitHub)`);
         console.log(`  ✅ CNAME www → ${result.www.target}`);
+      }
+
+      if (!opts.dryRun) {
+        const auth = checkAuthoritativeApex();
+        if (auth.anyParking || !auth.allGithub) {
+          console.error(formatParkingWarning());
+          console.log("  Continuando sin activar HTTPS hasta corregir parking…");
+        }
       }
     } catch (err) {
       console.error(`  ❌ GoDaddy: ${err.message}`);

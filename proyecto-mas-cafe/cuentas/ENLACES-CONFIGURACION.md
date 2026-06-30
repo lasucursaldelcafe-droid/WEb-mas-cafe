@@ -45,7 +45,8 @@ Abre cada enlace, inicia sesión con la cuenta de **Más Café** (o la que vayan
 | Mis productos / dominios | https://dcc.godaddy.com/control/portfolio |
 | DNS de **mascafé.com** | https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com |
 | Correo profesional (opcional) | https://email.godaddy.com/ |
-| Forwarding / reenvío (desactivar parking) | Dentro de DNS del dominio |
+| Forwarding / reenvío (desactivar parking) | https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com → **Reenvío** → Eliminar |
+| Activar HTTPS automático | `npm run domain:enable-https` (tras quitar forwarding) |
 
 **DNS para GitHub Pages (fase actual — sitio estático):**
 

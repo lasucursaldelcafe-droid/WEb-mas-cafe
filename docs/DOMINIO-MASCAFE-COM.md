@@ -32,9 +32,11 @@ Debe mostrar las IPs de GitHub Pages:
 Panel: https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com
 
 1. GoDaddy → **mascafé.com** → **DNS**
-2. Desactiva reenvío / parking / “Coming soon”
-3. **Elimina** registros A incorrectos (IPs de GoDaddy)
-4. **Agrega** 4 registros **A** en `@`:
+2. **Elimina reenvío / forwarding** (bloquea los A records):
+   - https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com → pestaña **Reenvío** → **Eliminar**
+3. **Desconecta** «Websites + Marketing» / página «Próximamente» si está activa en el dominio
+4. **Elimina** registros A incorrectos (IPs de GoDaddy parking)
+5. **Agrega** 4 registros **A** en `@`:
 
 | Valor |
 |-------|
@@ -56,7 +58,16 @@ Panel: https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.c
 1. https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/pages
 2. Custom domain: **`mascafé.com`** (GitHub puede guardarlo como `xn--mascaf-gva.com`)
 3. Espera el check DNS verde (10 min – 48 h)
-4. Activa **Enforce HTTPS**
+4. Activa **Enforce HTTPS** (o ejecuta `npm run domain:enable-https` cuando el DNS esté verde)
+
+### Conexión no segura en el navegador
+
+Si ves «No es seguro» o la página de GoDaddy:
+
+1. Los nameservers de GoDaddy siguen sirviendo **parking** aunque la API muestre IPs de GitHub.
+2. Elimina **Reenvío / Forwarding** en el panel DNS (paso 2 arriba).
+3. Ejecuta: `npm run domain:enable-https`
+4. Espera el certificado SSL de GitHub (15 min – 48 h).
 
 ---
 

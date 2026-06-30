@@ -52,10 +52,9 @@ Formato sugerido por línea:
 - [x] API GoDaddy Production (key + secret en GitHub Secrets) | https://developer.godaddy.com/keys | 2026-06-30 | configurado
 - [x] DNS A @ + CNAME www vía API | npm run domain:configure | 2026-06-30 | aplicado — propagado
 - [x] DNS público (8.8.8.8) apunta a GitHub Pages | dig A @ → 185.199.x.x | 2026-06-30 |
-- [x] Custom domain activado en GitHub Pages | xn--mascaf-gva.com | 2026-06-30 | npm run domain:configure
-- [x] Sitio responde HTTP en mascafé.com | http://www.mascafé.com → 200 | 2026-06-30 |
-- [ ] HTTPS certificado GitHub (check verde) | Settings → Pages → Enforce HTTPS | pendiente ~24–48 h |
-- [ ] HTTPS forzado en GitHub Pages | | |
+- [x] Custom domain activado en GitHub Pages | xn--mascaf-gva.com | 2026-06-30 |
+- [ ] **Quitar reenvío/parking GoDaddy** (requerido para HTTPS) | DNS → Reenvío → Eliminar | **PENDIENTE — bloquea SSL** |
+- [ ] HTTPS certificado + Enforce HTTPS | `npm run domain:enable-https` | tras quitar parking |
 
 ### Firebase
 - [ ] Acceso consola mas-cafe-c8413 | https://console.firebase.google.com/project/mas-cafe-c8413 | |

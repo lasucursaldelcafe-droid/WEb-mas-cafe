@@ -46,6 +46,7 @@ export function parseArgs(argv = process.argv.slice(2)) {
     skipGodaddy: argv.includes("--skip-godaddy"),
     skipGithub: argv.includes("--skip-github"),
     verifyOnly: argv.includes("--verify-only"),
-    wait: !argv.includes("--no-wait"),
+    wait: argv.includes("--wait"),
+    noWait: argv.includes("--no-wait"),
   };
 }
