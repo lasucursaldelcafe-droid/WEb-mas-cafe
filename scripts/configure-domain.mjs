@@ -35,9 +35,11 @@ import {
 } from "./lib/godaddy-api.mjs";
 import {
   configureGithubPagesDomain,
+  clearGithubPagesCustomDomain,
   getPagesConfig,
   testGithubCredentials,
 } from "./lib/github-pages-api.mjs";
+import { isDnsReadyForGitHubPages } from "./lib/dns-check.mjs";
 import { execSync } from "child_process";
 import { loadEnvLocal } from "./lib/load-env-local.mjs";
 
@@ -125,13 +127,24 @@ async function main() {
         console.log(`  Custom domain actual: ${pagesBefore.cname || "(ninguno)"}`);
       }
 
-      const result = await configureGithubPagesDomain({ cname, dryRun: opts.dryRun });
-      if (opts.dryRun) {
-        console.log("  Simulación:", JSON.stringify(result.payload, null, 2));
+      const dnsReady = !opts.dryRun && isDnsReadyForGitHubPages();
+
+      if (!opts.dryRun && !dnsReady) {
+        console.log("  ⏳ DNS aún no apunta a GitHub Pages — custom domain NO activado");
+        console.log("     (github.io sigue funcionando hasta que propague el DNS)");
+        if (pagesBefore?.cname) {
+          await clearGithubPagesCustomDomain({ dryRun: opts.dryRun });
+          console.log("  ✅ Custom domain quitado temporalmente (evita 404 en /informe/)");
+        }
       } else {
-        console.log(`  ✅ Custom domain configurado: ${cname}`);
-        console.log(`  Panel: ${GITHUB_PAGES_SETTINGS}`);
-        console.log("  Activa «Enforce HTTPS» cuando el check DNS esté verde.");
+        const result = await configureGithubPagesDomain({ cname, dryRun: opts.dryRun });
+        if (opts.dryRun) {
+          console.log("  Simulación:", JSON.stringify(result.payload, null, 2));
+        } else {
+          console.log(`  ✅ Custom domain configurado: ${cname}`);
+          console.log(`  Panel: ${GITHUB_PAGES_SETTINGS}`);
+          console.log("  Activa «Enforce HTTPS» cuando el check DNS esté verde.");
+        }
       }
     } catch (err) {
       console.error(`  ❌ GitHub: ${err.message}`);
