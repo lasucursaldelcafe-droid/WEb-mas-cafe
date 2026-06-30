@@ -1,0 +1,435 @@
+/**
+ * Genera mockup HTML de tarjeta de fidelización en Apple Wallet y Google Wallet.
+ * Se publica en /informe/wallet/ (vista aparte enlazada desde el informe).
+ */
+import path from "path";
+import { fileURLToPath } from "url";
+import { loadSite } from "./site-html/shared.mjs";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const LIVE_BASE = "https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe";
+const VISUAL_VERSION = "1.0.0";
+
+/** Datos de ejemplo para el mockup — no son datos reales de clientes. */
+const MOCK_MEMBER = {
+  name: "María Fernanda López",
+  memberId: "MC-004821",
+  points: 247,
+  tier: "Amante del café",
+  nextReward: "Café filtro gratis",
+  pointsToNext: 53,
+  since: "Mar 2025",
+};
+
+function escapeHtml(s) {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+/** SVG QR decorativo (no escaneable — solo visual del mockup). */
+function qrSvg() {
+  const cells = [
+    "111001110110011100",
+    "101010101010101010",
+    "101110111011101110",
+    "101010101010101010",
+    "111001110110011100",
+    "000101000101010001",
+    "110101110101011101",
+    "101000101110100010",
+    "011101010001011110",
+    "101010111010101010",
+    "110001011101001101",
+    "000101000101010001",
+    "111001110110011100",
+    "101010101010101010",
+    "101110111011101110",
+    "101010101010101010",
+    "111001110110011100",
+  ];
+  const size = 17;
+  const rects = [];
+  for (let y = 0; y < cells.length; y++) {
+    for (let x = 0; x < cells[y].length; x++) {
+      if (cells[y][x] === "1") {
+        rects.push(`<rect x="${x}" y="${y}" width="1" height="1" fill="currentColor"/>`);
+      }
+    }
+  }
+  return `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${rects.join("")}</svg>`;
+}
+
+function appleWalletPass(brand, member) {
+  const progress = Math.round(((member.points % 100) / 100) * 100);
+  return `
+    <article class="phone phone-ios" aria-label="Vista previa Apple Wallet">
+      <div class="phone-status">
+        <span>9:41</span>
+        <span class="phone-status-icons" aria-hidden="true">
+          <i class="sig"></i><i class="wifi"></i><i class="bat"></i>
+        </span>
+      </div>
+      <div class="phone-screen wallet-ios-screen">
+        <header class="wallet-ios-header">
+          <span class="wallet-back" aria-hidden="true">‹ Wallet</span>
+          <h2 class="wallet-ios-title">Tarjetas</h2>
+        </header>
+        <div class="pass pass-apple">
+          <div class="pass-strip" role="img" aria-label="Franja decorativa Más Café">
+            <div class="pass-strip-pattern"></div>
+            <img class="pass-strip-logo" src="../images/brand/favs.png" alt="" width="48" height="48"/>
+          </div>
+          <div class="pass-body">
+            <div class="pass-org">
+              <img src="../images/brand/favs.png" alt="" width="28" height="28" class="pass-org-icon"/>
+              <span>${escapeHtml(brand.name)}</span>
+            </div>
+            <p class="pass-label">Puntos disponibles</p>
+            <p class="pass-primary">${member.points} <small>pts</small></p>
+            <div class="pass-fields">
+              <div class="pass-field">
+                <span class="pass-field-label">Miembro</span>
+                <span class="pass-field-value">${escapeHtml(member.name)}</span>
+              </div>
+              <div class="pass-field">
+                <span class="pass-field-label">ID</span>
+                <span class="pass-field-value">${escapeHtml(member.memberId)}</span>
+              </div>
+              <div class="pass-field">
+                <span class="pass-field-label">Nivel</span>
+                <span class="pass-field-value">${escapeHtml(member.tier)}</span>
+              </div>
+              <div class="pass-field">
+                <span class="pass-field-label">Cliente desde</span>
+                <span class="pass-field-value">${escapeHtml(member.since)}</span>
+              </div>
+            </div>
+            <div class="pass-progress">
+              <div class="pass-progress-labels">
+                <span>Próximo: ${escapeHtml(member.nextReward)}</span>
+                <span>${member.pointsToNext} pts</span>
+              </div>
+              <div class="pass-progress-bar"><i style="width:${progress}%"></i></div>
+            </div>
+            <div class="pass-qr" aria-label="Código QR de identificación (mockup)">
+              ${qrSvg()}
+            </div>
+            <p class="pass-foot">${escapeHtml(brand.tagline)} · ${escapeHtml(brand.city.split(",")[0])}</p>
+          </div>
+        </div>
+        <p class="wallet-hint-ios">Desliza para ver código en mostrador</p>
+      </div>
+      <div class="phone-home-indicator" aria-hidden="true"></div>
+    </article>`;
+}
+
+function googleWalletPass(brand, member) {
+  const progress = Math.round(((member.points % 100) / 100) * 100);
+  return `
+    <article class="phone phone-android" aria-label="Vista previa Google Wallet">
+      <div class="phone-status android-status">
+        <span>9:41</span>
+        <span class="phone-status-icons android-icons" aria-hidden="true">
+          <i class="sig"></i><i class="wifi"></i><i class="bat"></i>
+        </span>
+      </div>
+      <div class="phone-screen wallet-android-screen">
+        <header class="wallet-g-header">
+          <button type="button" class="wallet-g-back" aria-hidden="true">←</button>
+          <h2>Google Wallet</h2>
+          <span class="wallet-g-menu" aria-hidden="true">⋮</span>
+        </header>
+        <div class="pass pass-google">
+          <div class="pass-g-hero">
+            <div class="pass-g-hero-bg"></div>
+            <div class="pass-g-hero-content">
+              <img src="../images/brand/horizontal-crema.png" alt="${escapeHtml(brand.name)}" class="pass-g-logo"/>
+              <span class="pass-g-badge">Fidelización</span>
+            </div>
+          </div>
+          <div class="pass-g-body">
+            <p class="pass-g-points-label">Tus puntos</p>
+            <p class="pass-g-points">${member.points}</p>
+            <div class="pass-g-chip-row">
+              <span class="pass-g-chip">${escapeHtml(member.tier)}</span>
+              <span class="pass-g-chip outline">ID ${escapeHtml(member.memberId)}</span>
+            </div>
+            <div class="pass-g-member">
+              <span class="pass-g-avatar" aria-hidden="true">${escapeHtml(member.name.charAt(0))}</span>
+              <div>
+                <strong>${escapeHtml(member.name)}</strong>
+                <span>Cliente desde ${escapeHtml(member.since)}</span>
+              </div>
+            </div>
+            <div class="pass-g-reward">
+              <div class="pass-g-reward-text">
+                <strong>${escapeHtml(member.nextReward)}</strong>
+                <span>Faltan ${member.pointsToNext} puntos</span>
+              </div>
+              <div class="pass-g-progress"><i style="width:${progress}%"></i></div>
+            </div>
+            <div class="pass-g-qr-row">
+              <div class="pass-g-qr">${qrSvg()}</div>
+              <div class="pass-g-qr-info">
+                <strong>Mostrar en caja</strong>
+                <span>El barista escanea para sumar o canjear puntos</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="wallet-g-actions">
+          <button type="button" class="wallet-g-btn primary">Usar en tienda</button>
+          <button type="button" class="wallet-g-btn">Historial</button>
+        </div>
+      </div>
+      <div class="phone-nav-android" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+    </article>`;
+}
+
+/** Fragmento embebible en el informe (vista reducida + enlace). */
+export function generateWalletVisualEmbed() {
+  const site = loadSite();
+  const brand = site.brand;
+  const member = MOCK_MEMBER;
+  return `
+    <div class="wallet-embed-preview">
+      <div class="wallet-embed-phones">
+        <div class="wallet-embed-mini wallet-embed-ios" aria-hidden="true">
+          <div class="mini-pass mini-apple">
+            <div class="mini-strip"></div>
+            <div class="mini-body">
+              <span class="mini-pts">${member.points} pts</span>
+              <span class="mini-name">${escapeHtml(member.name.split(" ")[0])}</span>
+            </div>
+          </div>
+        </div>
+        <div class="wallet-embed-mini wallet-embed-android" aria-hidden="true">
+          <div class="mini-pass mini-google">
+            <div class="mini-g-hero"></div>
+            <span class="mini-pts">${member.points}</span>
+          </div>
+        </div>
+      </div>
+      <div class="wallet-embed-cta">
+        <p><strong>Vista previa interactiva</strong> — mockup de cómo se verá la tarjeta de fidelización en el bolsillo del cliente (datos de ejemplo, no producción).</p>
+        <a class="wallet-embed-link" href="wallet/" target="_blank" rel="noopener">Abrir mockup Apple Wallet + Google Wallet →</a>
+      </div>
+    </div>`;
+}
+
+export function generateWalletVisualPage() {
+  const site = loadSite();
+  const brand = site.brand;
+  const member = MOCK_MEMBER;
+  const generatedAt = new Date().toISOString();
+
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="robots" content="noindex, nofollow"/>
+  <title>Wallet — Vista previa · ${escapeHtml(brand.name)}</title>
+  <style>
+    :root{
+      --cream:#f6f5ef;--cream-dark:#ebe8df;--blue:#073954;--blue-mid:#0a4d6e;
+      --sage:#d8daa8;--green:#1bb175;--brown:#b07a3a;--charcoal:#2b2b2b;
+      --font-display:Georgia,"Playfair Display",serif;
+      --font-body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+      --ios-bg:#000;--android-bg:#f8f9fa;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font-body);background:var(--cream);color:var(--charcoal);line-height:1.6;min-height:100vh}
+    .hero{background:linear-gradient(145deg,var(--blue),var(--blue-mid));color:var(--cream);padding:2.5rem 1.5rem 2rem}
+    .wrap{max-width:1100px;margin:0 auto;padding:0 1.5rem}
+    .hero h1{font-family:var(--font-display);font-size:clamp(1.6rem,3.5vw,2.35rem);font-weight:500;line-height:1.15}
+    .hero p{margin-top:.75rem;max-width:40rem;opacity:.9;font-size:.95rem}
+    .hero .meta{margin-top:1rem;font-size:.8rem;opacity:.8;display:flex;flex-wrap:wrap;gap:.75rem}
+    .hero .meta span{background:rgba(255,255,255,.1);padding:.3rem .65rem;border-radius:999px}
+    .hero a{color:var(--sage);font-weight:600}
+    .disclaimer{background:rgba(176,122,58,.15);border:1px solid rgba(176,122,58,.35);color:var(--brown);padding:.85rem 1rem;border-radius:.75rem;margin:1.5rem 0;font-size:.85rem}
+    .phones-grid{display:grid;gap:2.5rem;margin:2rem 0 3rem}
+    @media(min-width:900px){.phones-grid{grid-template-columns:1fr 1fr;align-items:start}}
+    .phone-label{text-align:center;margin-bottom:1rem}
+    .phone-label h2{font-family:var(--font-display);color:var(--blue);font-size:1.15rem;font-weight:500}
+    .phone-label p{font-size:.8rem;color:var(--charcoal);opacity:.7;margin-top:.25rem}
+    .phone{width:min(100%,320px);margin:0 auto;border-radius:2.5rem;padding:.55rem;background:#1a1a1a;box-shadow:0 24px 48px rgba(7,57,84,.18),0 0 0 1px rgba(255,255,255,.08) inset}
+    .phone-android{background:#2d2d2d}
+    .phone-status{display:flex;justify-content:space-between;align-items:center;padding:.35rem 1.25rem .15rem;font-size:.7rem;font-weight:600;color:#fff}
+    .phone-status-icons{display:flex;gap:.35rem;align-items:center}
+    .phone-status-icons i{display:block;background:#fff;border-radius:1px}
+    .sig{width:14px;height:8px;clip-path:polygon(0 100%,25% 40%,50% 70%,75% 20%,100% 50%,100% 100%)}
+    .wifi{width:12px;height:8px;border-radius:0}
+    .bat{width:18px;height:8px;border:1px solid #fff;background:linear-gradient(90deg,#fff 75%,transparent 75%)}
+    .phone-screen{border-radius:2rem;overflow:hidden;min-height:520px}
+    .wallet-ios-screen{background:linear-gradient(180deg,#1c1c1e 0%,#000 100%);padding:0 .65rem 1rem}
+    .wallet-android-screen{background:var(--android-bg);padding:0 .5rem 1rem}
+    .wallet-ios-header{padding:.5rem 0 .75rem;color:#fff;text-align:center;position:relative}
+    .wallet-back{position:absolute;left:0;top:.55rem;font-size:.75rem;opacity:.7}
+    .wallet-ios-title{font-size:.95rem;font-weight:600}
+    .pass-apple{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+    .pass-strip{position:relative;height:88px;background:linear-gradient(135deg,var(--blue) 0%,var(--blue-mid) 45%,var(--green) 100%);display:flex;align-items:center;justify-content:center}
+    .pass-strip-pattern{position:absolute;inset:0;opacity:.25;background:radial-gradient(circle at 20% 80%,var(--sage) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(255,255,255,.3) 0%,transparent 40%)}
+    .pass-strip-logo{position:relative;z-index:1;filter:drop-shadow(0 2px 8px rgba(0,0,0,.25))}
+    .pass-body{padding:1rem 1.1rem 1.15rem}
+    .pass-org{display:flex;align-items:center;gap:.5rem;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--blue);margin-bottom:.35rem}
+    .pass-org-icon{border-radius:6px}
+    .pass-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:#666;margin-top:.15rem}
+    .pass-primary{font-size:2.1rem;font-weight:700;color:var(--blue);line-height:1.1;font-variant-numeric:tabular-nums}
+    .pass-primary small{font-size:1rem;font-weight:600;opacity:.65}
+    .pass-fields{display:grid;grid-template-columns:1fr 1fr;gap:.65rem .75rem;margin-top:1rem;padding-top:.85rem;border-top:1px solid #eee}
+    .pass-field-label{display:block;font-size:.62rem;text-transform:uppercase;letter-spacing:.05em;color:#888}
+    .pass-field-value{display:block;font-size:.78rem;font-weight:600;color:var(--charcoal);margin-top:.1rem}
+    .pass-progress{margin-top:1rem}
+    .pass-progress-labels{display:flex;justify-content:space-between;font-size:.68rem;color:#666;margin-bottom:.35rem}
+    .pass-progress-bar{height:5px;background:#e8e8e8;border-radius:999px;overflow:hidden}
+    .pass-progress-bar i,.pass-g-progress i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--sage));border-radius:999px}
+    .pass-qr{margin:1rem auto 0;width:88px;height:88px;padding:.5rem;color:var(--blue);background:#fafafa;border-radius:8px;border:1px solid #eee}
+    .pass-qr svg{width:100%;height:100%}
+    .pass-foot{text-align:center;font-size:.62rem;color:#999;margin-top:.65rem}
+    .wallet-hint-ios{text-align:center;font-size:.68rem;color:rgba(255,255,255,.45);margin-top:1rem}
+    .phone-home-indicator{width:36%;height:4px;background:rgba(255,255,255,.35);border-radius:999px;margin:.45rem auto .15rem}
+    .wallet-g-header{display:flex;align-items:center;justify-content:space-between;padding:.65rem .25rem .5rem;font-size:.95rem;font-weight:500;color:var(--charcoal)}
+    .wallet-g-back,.wallet-g-menu{background:none;border:none;font-size:1.1rem;color:var(--charcoal);width:2rem}
+    .pass-google{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(7,57,84,.12),0 0 0 1px rgba(7,57,84,.06)}
+    .pass-g-hero{position:relative;height:72px}
+    .pass-g-hero-bg{position:absolute;inset:0;background:linear-gradient(120deg,var(--blue),var(--green))}
+    .pass-g-hero-content{position:relative;z-index:1;padding:.85rem 1rem;display:flex;align-items:center;justify-content:space-between}
+    .pass-g-logo{height:1.65rem;width:auto}
+    .pass-g-badge{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:rgba(255,255,255,.2);color:#fff;padding:.25rem .55rem;border-radius:999px}
+    .pass-g-body{padding:1rem}
+    .pass-g-points-label{font-size:.75rem;color:#666}
+    .pass-g-points{font-size:2.5rem;font-weight:700;color:var(--blue);line-height:1;font-variant-numeric:tabular-nums}
+    .pass-g-chip-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.65rem}
+    .pass-g-chip{font-size:.68rem;font-weight:600;background:rgba(27,177,117,.12);color:var(--green);padding:.25rem .55rem;border-radius:999px}
+    .pass-g-chip.outline{background:transparent;border:1px solid #ddd;color:#666}
+    .pass-g-member{display:flex;align-items:center;gap:.65rem;margin-top:1rem;padding-top:.85rem;border-top:1px solid #eee}
+    .pass-g-avatar{width:2.25rem;height:2.25rem;border-radius:50%;background:var(--sage);color:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem}
+    .pass-g-member strong{display:block;font-size:.85rem}
+    .pass-g-member span{font-size:.72rem;color:#666}
+    .pass-g-reward{margin-top:1rem;padding:.75rem;background:var(--cream);border-radius:.75rem}
+    .pass-g-reward-text{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.4rem}
+    .pass-g-reward-text strong{font-size:.82rem;color:var(--blue)}
+    .pass-g-reward-text span{font-size:.68rem;color:#666}
+    .pass-g-progress{height:6px;background:#e0e0e0;border-radius:999px;overflow:hidden}
+    .pass-g-qr-row{display:flex;gap:.75rem;align-items:center;margin-top:1rem;padding-top:.85rem;border-top:1px solid #eee}
+    .pass-g-qr{width:64px;height:64px;padding:.4rem;color:var(--blue);flex-shrink:0}
+    .pass-g-qr svg{width:100%;height:100%}
+    .pass-g-qr-info strong{display:block;font-size:.78rem;color:var(--charcoal)}
+    .pass-g-qr-info span{font-size:.68rem;color:#666;line-height:1.4}
+    .wallet-g-actions{display:flex;gap:.5rem;margin-top:1rem;padding:0 .15rem}
+    .wallet-g-btn{flex:1;padding:.65rem;border-radius:999px;border:1px solid #ddd;background:#fff;font-size:.78rem;font-weight:600;color:var(--charcoal)}
+    .wallet-g-btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+    .phone-nav-android{display:flex;justify-content:center;gap:2.5rem;padding:.5rem 0 .2rem}
+    .phone-nav-android span{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent}
+    .phone-nav-android span:nth-child(1){border-bottom:7px solid rgba(255,255,255,.5)}
+    .phone-nav-android span:nth-child(2){width:14px;height:14px;border:2px solid rgba(255,255,255,.5);border-radius:50%}
+    .phone-nav-android span:nth-child(3){width:10px;height:10px;border:2px solid rgba(255,255,255,.5)}
+    .specs{margin:2rem 0 3rem}
+    .specs h2{font-family:var(--font-display);color:var(--blue);font-size:1.35rem;margin-bottom:1rem}
+    .specs-grid{display:grid;gap:1rem}
+    @media(min-width:700px){.specs-grid{grid-template-columns:1fr 1fr}}
+    .spec-card{background:var(--cream-dark);border:1px solid rgba(7,57,84,.08);border-radius:1rem;padding:1.15rem 1.25rem}
+    .spec-card h3{font-size:.95rem;color:var(--blue-mid);margin-bottom:.5rem}
+    .spec-card ul{font-size:.85rem;padding-left:1.1rem}
+    .spec-card li+li{margin-top:.35rem}
+    footer{background:var(--blue);color:var(--cream);padding:1.75rem 0;font-size:.82rem;margin-top:2rem}
+    footer a{color:var(--sage)}
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p style="font-size:.72rem;text-transform:uppercase;letter-spacing:.18em;opacity:.7;margin-bottom:.4rem">Mockup visual · No indexar</p>
+      <h1>Wallet de fidelización — ${escapeHtml(brand.name)}</h1>
+      <p>Cómo verá el cliente su tarjeta de puntos en <strong>Apple Wallet</strong> (iPhone) y <strong>Google Wallet</strong> (Android). Datos de ejemplo — no es la app en producción.</p>
+      <div class="meta">
+        <span>Versión mockup ${VISUAL_VERSION}</span>
+        <span>Generado: ${escapeHtml(generatedAt.slice(0, 16).replace("T", " "))} UTC</span>
+        <span><a href="../">← Volver al informe constitucional</a></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="disclaimer">
+      <strong>Solo referencia de diseño.</strong> Los puntos, nombres y QR son ficticios. La implementación real requiere backend (PassKit de Apple, Google Wallet API) y reglas de negocio acordadas en el informe.
+    </div>
+
+    <div class="phones-grid">
+      <div>
+        <div class="phone-label">
+          <h2>Apple Wallet</h2>
+          <p>iPhone · PassKit · tarjeta tipo Store Card</p>
+        </div>
+        ${appleWalletPass(brand, member)}
+      </div>
+      <div>
+        <div class="phone-label">
+          <h2>Google Wallet</h2>
+          <p>Android · Google Wallet API · Loyalty pass</p>
+        </div>
+        ${googleWalletPass(brand, member)}
+      </div>
+    </div>
+
+    <section class="specs" aria-labelledby="specs-title">
+      <h2 id="specs-title">Qué incluye cada tarjeta (MVP)</h2>
+      <div class="specs-grid">
+        <div class="spec-card">
+          <h3>Campos visibles</h3>
+          <ul>
+            <li>Puntos disponibles (campo principal)</li>
+            <li>Nombre del miembro e ID único</li>
+            <li>Nivel / categoría de fidelización</li>
+            <li>Progreso hacia el próximo premio</li>
+            <li>QR para escanear en mostrador</li>
+            <li>Marca: logo, colores y tagline «${escapeHtml(brand.tagline)}»</li>
+          </ul>
+        </div>
+        <div class="spec-card">
+          <h3>Flujo en tienda</h3>
+          <ul>
+            <li>Cliente abre Wallet y muestra QR</li>
+            <li>Caja escanea → identifica cuenta</li>
+            <li>Suma puntos según compra o canjea premio</li>
+            <li>Actualización en tiempo real en la tarjeta</li>
+            <li>Notificación push al ganar puntos (fase 2)</li>
+          </ul>
+        </div>
+        <div class="spec-card">
+          <h3>Apple Wallet (técnico)</h3>
+          <ul>
+            <li>Archivo <code>.pkpass</code> firmado con certificado Apple</li>
+            <li>Strip image + logo + campos primary/secondary</li>
+            <li>Actualización vía web service URL</li>
+            <li>Geolocalización opcional al llegar al local</li>
+          </ul>
+        </div>
+        <div class="spec-card">
+          <h3>Google Wallet (técnico)</h3>
+          <ul>
+            <li>Clase y objeto <code>LoyaltyObject</code> en Google Wallet API</li>
+            <li>«Añadir a Google Wallet» desde web o app</li>
+            <li>Sincronización de puntos vía REST</li>
+            <li>Compatible con Wear OS (reloj)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>${escapeHtml(brand.name)} · Mockup wallet v${VISUAL_VERSION} · <a href="../">Informe constitucional</a> · <a href="${LIVE_BASE}/">Sitio público</a></p>
+    </div>
+  </footer>
+</body>
+</html>`;
+}

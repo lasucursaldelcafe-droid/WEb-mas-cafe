@@ -7,6 +7,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { collectImagePaths } from "./generate-site-pages.mjs";
 import { loadSite } from "./site-html/shared.mjs";
+import { generateWalletVisualEmbed } from "./generate-wallet-visual.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "../..");
@@ -22,7 +23,7 @@ const DOMAIN_URL = `https://${DOMAIN_WWW}`;
 const DOMAIN_PUNYCODE = "xn--mascaf-gva.com";
 const GODADDY_DNS_URL = `https://dcc.godaddy.com/control/dnsmanagement?domainName=${DOMAIN_PUNYCODE}`;
 
-const REPORT_VERSION = "1.2.1";
+const REPORT_VERSION = "1.3.0";
 const REQUISITOS_PATH = path.join(root, "content/informe-requisitos.json");
 
 function escapeHtml(s) {
@@ -213,6 +214,7 @@ export function generateConstitutionReport() {
     ["Sitio público (GitHub Pages)", `${LIVE_BASE}/`, "Hosting principal. Se actualiza con cada push a main."],
     ["Panel admin", `${LIVE_BASE}/admin/`, "Edición de contenido sin tocar código. Publicación automática."],
     ["Este informe", `${LIVE_BASE}/informe/`, "Documento constitucional para la marca. No aparece en el menú del sitio."],
+    ["Mockup Wallet (Apple + Google)", `${LIVE_BASE}/informe/wallet/`, "Vista previa visual de la tarjeta de fidelización en iPhone y Android."],
     ["Repositorio GitHub", REPO_URL, "Código fuente, historial de cambios y colaboración."],
     ["Carpeta Drive (marca)", DRIVE_URL, "Fuente original de logotipos, ilustraciones y aplicaciones."],
     ["Dominio mascafé.com", `${DOMAIN_URL}/`, `Destino final (punycode: ${DOMAIN_PUNYCODE}). DNS GoDaddy → hosting con backend cuando haya wallet.`],
@@ -229,7 +231,8 @@ export function generateConstitutionReport() {
     .join("");
 
   const changelog = [
-    { date: "2026-06-27", note: "Dominio oficial corregido a mascafé.com (punycode xn--mascaf-gva.com) en docs e informe." },
+    { date: "2026-06-27", note: "Informe v1.3 — mockup visual Apple Wallet + Google Wallet en /informe/wallet/." },
+    { date: "2026-06-27", note: "Automatización DNS dominio mascafé.com (npm run domain:configure)." },
     { date: "2026-06-27", note: "Carpeta proyecto-mas-cafe/ — entrega, enlaces de cuentas, REGISTRO-HECHO y plantilla CREDENCIALES." },
     { date: "2026-06-27", note: "Informe v1.1 — wallet de fidelización, migración mascafé.com, checklist editable en content/informe-requisitos.json." },
     { date: "2026-06-27", note: "Informe constitucional v1.0 — paleta crema, textos sin repetición, auditoría de activos Drive." },
@@ -373,6 +376,22 @@ export function generateConstitutionReport() {
     footer{background:var(--blue);color:var(--cream);padding:2rem 0;font-size:.85rem}
     footer a{color:var(--sage)}
     time{font-weight:600;color:var(--blue)}
+    .wallet-embed-preview{display:grid;gap:1.25rem;margin:1.25rem 0 1.5rem;padding:1.25rem;background:linear-gradient(135deg,rgba(7,57,84,.04),rgba(27,177,117,.06));border:1px solid rgba(7,57,84,.1);border-radius:1rem}
+    @media(min-width:640px){.wallet-embed-preview{grid-template-columns:auto 1fr;align-items:center}}
+    .wallet-embed-phones{display:flex;gap:1rem;justify-content:center}
+    .wallet-embed-mini{width:72px}
+    .mini-pass{border-radius:10px;overflow:hidden;box-shadow:0 6px 16px rgba(7,57,84,.15)}
+    .mini-apple{background:#fff}
+    .mini-strip{height:28px;background:linear-gradient(135deg,var(--blue),var(--green))}
+    .mini-body{padding:.45rem .5rem;font-size:.62rem}
+    .mini-pts{display:block;font-weight:700;color:var(--blue);font-size:.75rem}
+    .mini-name{color:#666}
+    .mini-google{background:#fff}
+    .mini-g-hero{height:24px;background:linear-gradient(120deg,var(--blue),var(--green))}
+    .mini-google .mini-pts{display:block;padding:.4rem .5rem;font-weight:700;color:var(--blue);font-size:.85rem}
+    .wallet-embed-cta p{font-size:.88rem;margin-bottom:.65rem}
+    .wallet-embed-link{display:inline-block;background:var(--blue);color:var(--cream)!important;padding:.55rem 1rem;border-radius:999px;font-size:.82rem;font-weight:700;text-decoration:none}
+    .wallet-embed-link:hover{background:var(--blue-mid)}
   </style>
 </head>
 <body>
@@ -402,6 +421,7 @@ export function generateConstitutionReport() {
       <a href="#independencia">Independencia</a>
       <a href="#migracion">Migración</a>
       <a href="#wallet">Wallet</a>
+      <a href="#wallet-visual">Mockup Wallet</a>
       <a href="#requisitos">Requisitos</a>
       <a href="#enlaces">Enlaces</a>
       <a href="#dueños">Dueños</a>
@@ -599,6 +619,10 @@ export function generateConstitutionReport() {
 
       <h3>MVP mínimo (v1 obligatoria)</h3>
       <ul>${walletMvp}</ul>
+
+      <h3 id="wallet-visual">Vista previa — Apple Wallet y Google Wallet</h3>
+      <p>Mockup de cómo se verá la tarjeta de puntos en el teléfono del cliente. Los datos son de ejemplo; la implementación real requiere backend y certificados de cada plataforma.</p>
+      ${generateWalletVisualEmbed()}
 
       <h3>Reglas de negocio — completar con dueños</h3>
       ${renderReglasNegocio(req.wallet?.reglasNegocio || {})}

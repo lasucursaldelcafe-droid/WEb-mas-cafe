@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import { collectImagePaths, generateSitePages } from "./lib/generate-site-pages.mjs";
 import { generateAdminPage } from "./lib/site-html/admin.mjs";
 import { generateConstitutionReport } from "./lib/generate-constitution-report.mjs";
+import { generateWalletVisualPage } from "./lib/generate-wallet-visual.mjs";
 import { FAVICON_FILES, generateFavicons } from "./lib/generate-favicons-lib.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -45,6 +46,15 @@ const informeSource = path.join(root, "informes/constitucion-web.html");
 mkdirSync(path.dirname(informeSource), { recursive: true });
 writeFileSync(informeSource, constitutionHtml, "utf8");
 console.log("  • informe/index.html (constitución web)");
+
+const walletVisualHtml = generateWalletVisualPage();
+const walletDest = path.join(outDir, "informe/wallet/index.html");
+const walletSource = path.join(root, "informes/wallet-visual.html");
+mkdirSync(path.dirname(walletDest), { recursive: true });
+writeFileSync(walletDest, walletVisualHtml, "utf8");
+mkdirSync(path.dirname(walletSource), { recursive: true });
+writeFileSync(walletSource, walletVisualHtml, "utf8");
+console.log("  • informe/wallet/index.html (mockup Apple + Google Wallet)");
 
 writeFileSync(
   path.join(outDir, "404.html"),
@@ -95,4 +105,5 @@ if (existsSync(fontsDir)) {
 console.log(`\n✅ ${pages.length + 1} páginas · ${copied} imágenes\n`);
 console.log("Local:    npm run preview");
 console.log("Público:  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/");
-console.log("Informe:  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/\n");
+console.log("Informe:  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/");
+console.log("Wallet:   https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/wallet/\n");
