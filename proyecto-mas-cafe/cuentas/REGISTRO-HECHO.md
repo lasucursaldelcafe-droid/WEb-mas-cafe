@@ -44,11 +44,14 @@ Formato sugerido por línea:
 - [x] GitHub Pages en línea | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/ | 2026-06 |
 - [x] Workflows CI corregidos (Pages verde) | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/actions | 2026-06-27 |
 - [x] Informe constitución + wallet | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/ | 2026-06-27 |
+- [x] Secrets Actions: GODADDY_API_KEY, GODADDY_API_SECRET, GH_PAGES_PAT | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/secrets/actions | 2026-06-30 | configurado (no pegar valores aquí)
+- [x] Custom domain GitHub Pages: mascafé.com | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/pages | 2026-06-30 | API OK — falta DNS GoDaddy
 - [ ] Organización GitHub a nombre Más Café | | |
 - [ ] Repo transferido a org Más Café | | |
 
 ### GoDaddy
 - [ ] Acceso a cuenta GoDaddy de mascafé.com | | |
+- [ ] API GoDaddy válida (Production) | https://developer.godaddy.com/keys | 2026-06-30 | Error 401 — regenerar key/secret
 - [ ] DNS configurado (A + CNAME) | | |
 - [ ] Dominio verificado en GitHub Pages (check verde) | | |
 - [ ] HTTPS forzado en GitHub Pages | | |
