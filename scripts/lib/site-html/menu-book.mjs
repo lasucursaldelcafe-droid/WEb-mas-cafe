@@ -14,7 +14,9 @@ export function menuBookStyles() {
     .menu-book-hint{
       text-align:center;font-size:.82rem;color:rgba(43,43,43,.5);
       margin-top:1rem;font-style:italic;
+      transition:transform .4s cubic-bezier(.22,1,.36,1),color .25s ease;
     }
+    .menu-book-hint:hover{transform:translateY(-1px);color:rgba(43,43,43,.68)}
     .menu-book-ui{
       display:flex;align-items:center;justify-content:center;gap:1rem;
       margin-top:1.35rem;flex-wrap:wrap;
@@ -35,6 +37,21 @@ export function menuBookStyles() {
       position:relative;margin:0 auto;
       perspective:2200px;
       touch-action:pan-y;
+    }
+    .menu-book-viewport.menu-book-loading .menu-book-spread,
+    .menu-book-viewport.menu-book-loading .menu-book-mobile{
+      opacity:.92;
+    }
+    .menu-book-viewport.menu-book-loading .menu-book-page-slot.right:not(.blank)::after,
+    .menu-book-viewport.menu-book-loading .menu-book-mobile::after{
+      content:"";position:absolute;inset:0;z-index:5;pointer-events:none;
+      background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);
+      background-size:220% 100%;
+      animation:menu-book-shimmer 1.35s ease-in-out infinite;
+    }
+    @keyframes menu-book-shimmer{
+      0%{background-position:120% 0}
+      100%{background-position:-120% 0}
     }
     .menu-book-spread{
       position:relative;display:grid;grid-template-columns:1fr 1fr;
@@ -114,6 +131,8 @@ export function menuBookStyles() {
     @media(prefers-reduced-motion:reduce){
       .menu-book-flipper{transition:none}
       .menu-book-mobile img{transition:none}
+      .menu-book-viewport.menu-book-loading .menu-book-page-slot.right::after,
+      .menu-book-viewport.menu-book-loading .menu-book-mobile::after{animation:none;display:none}
     }
   `;
 }
@@ -144,6 +163,32 @@ export function menuBookScript() {
       var page=0;
       var busy=false;
       var touchX=0;
+      var preloaded={};
+
+      function markReady(){
+        root.classList.remove('menu-book-loading');
+      }
+
+      function preloadPage(idx){
+        if(idx<0||idx>=pages.length||preloaded[idx])return;
+        preloaded[idx]=true;
+        var img=new Image();
+        img.decoding='async';
+        img.src=pages[idx];
+      }
+
+      function watchImageLoad(imgEl,onReady){
+        if(!imgEl||!imgEl.src){
+          if(onReady)onReady();
+          return;
+        }
+        if(imgEl.complete&&imgEl.naturalWidth>0){
+          if(onReady)onReady();
+          return;
+        }
+        imgEl.addEventListener('load',function(){if(onReady)onReady();},{once:true});
+        imgEl.addEventListener('error',function(){if(onReady)onReady();},{once:true});
+      }
 
       function spreadsCount(){
         return Math.ceil((pages.length+1)/2);
@@ -299,7 +344,22 @@ export function menuBookScript() {
         if(wasMobile!==mobile)render();
       });
 
+      root.classList.add('menu-book-loading');
+      preloadPage(0);
+      preloadPage(1);
+      preloadPage(2);
       render();
+      var firstVisible=mobile?mobileImg:(rightSlot&&rightSlot.querySelector('img'));
+      watchImageLoad(firstVisible,function(){
+        markReady();
+        if(mobile){
+          preloadPage(page+1);
+          preloadPage(page+2);
+        }else{
+          var s=spreadPages(spread);
+          if(s.right>=0){preloadPage(s.right+1);preloadPage(s.right+2);}
+        }
+      });
     })();
   `;
 }
@@ -321,10 +381,10 @@ export function renderMenuBook({ img, pages, disclaimer }) {
   <div class="menu-book-section">
     <style>${menuBookStyles()}</style>
     <div class="menu-book-stage">
-      <div class="menu-book-viewport" id="menu-book" data-pages='${dataPages}' tabindex="0" aria-label="Menú digital interactivo">
+      <div class="menu-book-viewport menu-book-loading" id="menu-book" data-pages='${dataPages}' tabindex="0" aria-label="Menú digital interactivo">
         <div class="menu-book-spread" aria-hidden="false">
-          <div class="menu-book-page-slot left blank"><img alt="" loading="lazy"/></div>
-          <div class="menu-book-page-slot right"><img alt="" loading="eager"/></div>
+          <div class="menu-book-page-slot left blank"><img alt="" loading="lazy" decoding="async"/></div>
+          <div class="menu-book-page-slot right"><img src="${pageUrls[0]}" alt="Página 1 del menú" loading="eager" fetchpriority="high" decoding="async"/></div>
           <div class="menu-book-flipper" aria-hidden="true">
             <div class="menu-book-flip-face front"><img alt=""/></div>
             <div class="menu-book-flip-face back"><img alt=""/></div>
@@ -335,7 +395,7 @@ export function renderMenuBook({ img, pages, disclaimer }) {
           </div>
         </div>
         <div class="menu-book-mobile">
-          <img src="${pageUrls[0]}" alt="Página 1 del menú" loading="eager"/>
+          <img src="${pageUrls[0]}" alt="Página 1 del menú" loading="eager" fetchpriority="high" decoding="async"/>
           <div class="menu-book-hotzones">
             <button type="button" data-book-prev aria-label="Página anterior"></button>
             <button type="button" data-book-next aria-label="Página siguiente"></button>

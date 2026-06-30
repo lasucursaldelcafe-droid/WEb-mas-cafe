@@ -227,6 +227,12 @@ export function pageMenu() {
   const pm = pages.menu;
   const { href, img } = createPathHelpers(1);
   const bookPages = getMenuBookPagePaths();
+  const extraHead = bookPages.length
+    ? bookPages
+        .slice(0, 3)
+        .map((p) => `<link rel="preload" as="image" href="${img(p)}"/>`)
+        .join("")
+    : "";
 
   const body = `
   <section class="menu-page">
@@ -248,6 +254,7 @@ export function pageMenu() {
       "Menú digital Más Café en Cali: pasa las páginas como un libro. Café de especialidad, brunch y repostería.",
     depth: 1,
     pageId: "menu",
+    extraHead,
     body,
   });
 }

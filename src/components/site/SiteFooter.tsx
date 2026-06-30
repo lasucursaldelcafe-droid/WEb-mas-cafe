@@ -33,22 +33,22 @@ export function SiteFooter({ brand }: { brand: Brand }) {
               </p>
               <ul className="space-y-2 text-cream/75">
                 <li>
-                  <Link href="/cafe" className="hover:text-sage">
+                  <Link href="/cafe" className="hover-text-lift hover:text-sage">
                     Café
                   </Link>
                 </li>
                 <li>
-                  <Link href="/menu" className="hover:text-sage">
+                  <Link href="/menu" className="hover-text-lift hover:text-sage">
                     Menú
                   </Link>
                 </li>
                 <li>
-                  <Link href="/tienda" className="hover:text-sage">
+                  <Link href="/tienda" className="hover-text-lift hover:text-sage">
                     Tienda
                   </Link>
                 </li>
                 <li>
-                  <Link href="/blog" className="hover:text-sage">
+                  <Link href="/blog" className="hover-text-lift hover:text-sage">
                     Blog
                   </Link>
                 </li>
@@ -63,7 +63,7 @@ export function SiteFooter({ brand }: { brand: Brand }) {
                   href={getMapsUrl(brand)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block transition-colors hover:text-sage hover:underline hover:underline-offset-4"
+                  className="hover-text-lift block hover:text-sage hover:underline hover:underline-offset-4"
                 >
                   <span className="block">{brand.address}</span>
                   <span className="block">{brand.city}</span>

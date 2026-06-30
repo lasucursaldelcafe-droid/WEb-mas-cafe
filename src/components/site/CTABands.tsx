@@ -46,13 +46,17 @@ export function VisitBand({ brand }: { brand: Brand }) {
   return (
     <section className="relative overflow-hidden bg-blue-deep py-28 text-cream">
       <div className="mx-auto max-w-[1400px] px-6 text-center md:px-12">
-        <p className="font-accent text-4xl text-sage md:text-5xl">Te esperamos</p>
-        <h2 className="mt-6 font-display text-5xl md:text-6xl">Visítanos en Cali</h2>
+        <p className="font-accent text-4xl text-sage transition-transform duration-400 ease-out hover:-translate-y-0.5 md:text-5xl">
+          Te esperamos
+        </p>
+        <h2 className="mt-6 font-display text-5xl transition-[transform,letter-spacing] duration-400 ease-out hover:-translate-y-0.5 hover:tracking-wide md:text-6xl">
+          Visítanos en Cali
+        </h2>
         <a
           href={getMapsUrl(brand)}
           target="_blank"
           rel="noopener noreferrer"
-          className="mx-auto mt-6 block max-w-lg text-cream/70 transition-colors hover:text-sage hover:underline hover:underline-offset-4"
+          className="hover-text-lift mx-auto mt-6 block max-w-lg text-cream/70 hover:text-sage hover:underline hover:underline-offset-4"
         >
           {brand.address}
           <br />

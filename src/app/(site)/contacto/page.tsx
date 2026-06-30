@@ -23,13 +23,15 @@ export default async function ContactoPage() {
         <div className="flex flex-col gap-16 lg:flex-row">
           <div className="space-y-10 lg:w-1/2">
             <div>
-              <h2 className="font-display text-2xl text-blue-deep">Visítanos</h2>
+              <h2 className="font-display text-2xl text-blue-deep transition-[transform,letter-spacing] duration-400 ease-out hover:-translate-y-0.5 hover:tracking-wide">
+                Visítanos
+              </h2>
               <address className="mt-4 space-y-1 not-italic text-charcoal/75">
                 <a
                   href={getMapsUrl(brand)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block transition-colors hover:text-blue-deep hover:underline hover:underline-offset-4"
+                  className="hover-text-lift block hover:text-blue-deep hover:underline hover:underline-offset-4"
                 >
                   <span className="block">{brand.address}</span>
                   <span className="block">{brand.city}</span>
@@ -38,7 +40,9 @@ export default async function ContactoPage() {
               </address>
             </div>
             <div>
-              <h2 className="font-display text-2xl text-blue-deep">Escríbenos</h2>
+              <h2 className="font-display text-2xl text-blue-deep transition-[transform,letter-spacing] duration-400 ease-out hover:-translate-y-0.5 hover:tracking-wide">
+                Escríbenos
+              </h2>
               <ul className="mt-4 space-y-2 text-charcoal/75">
                 <li>
                   <a href={`tel:${brand.phone}`}>{brand.phone}</a>

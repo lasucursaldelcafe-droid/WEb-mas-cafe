@@ -84,6 +84,10 @@ export function siteStyles() {
       --green-dark:#159a63;--shadow:var(--organic-shadow);
       --radius:1.5rem;--ease:cubic-bezier(.4,0,.2,1);
       --sage-rgb:216,218,168;--brown-rgb:176,122,58;
+      --text-hover-duration:.4s;
+      --text-hover-ease:cubic-bezier(.22,1,.36,1);
+      --page-ease:cubic-bezier(.22,1,.36,1);
+      --page-duration:.42s;
     }
     html{scroll-behavior:smooth}
     body{
@@ -92,6 +96,37 @@ export function siteStyles() {
       min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;
     }
     main{flex:1}
+    #main.page-content{
+      animation:page-enter var(--page-duration) var(--page-ease) both;
+    }
+    html.vt-nav #main.page-content{animation:none}
+    body.page-leaving{
+      opacity:0;
+      pointer-events:none;
+      transition:opacity calc(var(--page-duration) * .75) var(--page-ease);
+    }
+    body.page-leaving #main.page-content{
+      transform:translateY(10px);
+      opacity:0;
+      transition:
+        opacity calc(var(--page-duration) * .75) var(--page-ease),
+        transform calc(var(--page-duration) * .75) var(--page-ease);
+    }
+    @keyframes page-enter{
+      from{opacity:0;transform:translateY(14px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+    @view-transition{navigation:auto}
+    ::view-transition-old(root){
+      animation:page-exit calc(var(--page-duration) * .7) var(--page-ease) both;
+    }
+    ::view-transition-new(root){
+      animation:page-enter var(--page-duration) var(--page-ease) both;
+    }
+    @keyframes page-exit{
+      from{opacity:1;transform:translateY(0)}
+      to{opacity:0;transform:translateY(-8px)}
+    }
     img{max-width:100%;height:auto;display:block}
     a{color:inherit;text-decoration:none}
     ::selection{background:var(--sage);color:var(--blue)}
@@ -139,14 +174,15 @@ export function siteStyles() {
     nav.site-nav{display:flex;align-items:center;gap:clamp(1rem,2.5vw,2rem)}
     nav.site-nav a{
       font-size:.82rem;font-weight:500;letter-spacing:.02em;
-      padding:0;position:relative;transition:color .3s;
+      padding:0;position:relative;display:inline-block;
+      transition:color .3s,transform var(--text-hover-duration) var(--text-hover-ease),letter-spacing var(--text-hover-duration) var(--text-hover-ease);
     }
     header:not(.scrolled):not(.inner-page) nav.site-nav a:not(.nav-cta){color:rgba(246,245,239,.88)}
-    header:not(.scrolled):not(.inner-page) nav.site-nav a:not(.nav-cta):hover{color:var(--sage)}
+    header:not(.scrolled):not(.inner-page) nav.site-nav a:not(.nav-cta):hover{color:var(--sage);transform:translateY(-2px)}
     header.scrolled nav.site-nav a:not(.nav-cta),header.inner-page.scrolled nav.site-nav a:not(.nav-cta){color:rgba(43,43,43,.8)}
-    header.scrolled nav.site-nav a:not(.nav-cta):hover,header.inner-page.scrolled nav.site-nav a:not(.nav-cta):hover{color:var(--blue)}
+    header.scrolled nav.site-nav a:not(.nav-cta):hover,header.inner-page.scrolled nav.site-nav a:not(.nav-cta):hover{color:var(--blue);transform:translateY(-2px)}
     header.inner-page:not(.scrolled) nav.site-nav a:not(.nav-cta){color:rgba(246,245,239,.85)}
-    header.inner-page:not(.scrolled) nav.site-nav a:not(.nav-cta):hover{color:var(--sage)}
+    header.inner-page:not(.scrolled) nav.site-nav a:not(.nav-cta):hover{color:var(--sage);transform:translateY(-2px)}
     nav.site-nav a.active{font-weight:600}
     header.scrolled nav.site-nav a.active,header.inner-page nav.site-nav a.active{color:var(--blue)}
     header:not(.scrolled):not(.inner-page) nav.site-nav a.active{color:var(--cream)}
@@ -466,15 +502,35 @@ export function siteStyles() {
     }
     .contact-form textarea{min-height:120px;resize:vertical}
     .contact-info h2{font-size:1.5rem;margin-bottom:.75rem}
-    .contact-info a{color:var(--blue);font-weight:500;text-decoration:underline;text-underline-offset:3px}
-    .contact-info a:hover{color:var(--blue-mid)}
+    .contact-info a{color:var(--blue);font-weight:500;text-decoration:underline;text-underline-offset:3px;display:inline-block;transition:transform var(--text-hover-duration) var(--text-hover-ease),color .25s var(--ease)}
+    .contact-info a:hover{color:var(--blue-mid);transform:translateY(-2px)}
     .social-links{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem}
     .social-links a{
       display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;
       border:1px solid rgba(7,57,84,.12);border-radius:999px;font-size:.85rem;
-      transition:background .2s,border-color .2s;
+      transition:background .2s,border-color .2s,transform var(--text-hover-duration) var(--text-hover-ease);
     }
-    .social-links a:hover{background:rgba(var(--sage-rgb),.2);border-color:var(--sage);color:var(--blue)}
+    .social-links a:hover{background:rgba(var(--sage-rgb),.2);border-color:var(--sage);color:var(--blue);transform:translateY(-2px)}
+
+    .address-link{
+      display:inline-block;text-decoration:none;color:inherit;
+      transition:
+        color .25s var(--ease),
+        transform var(--text-hover-duration) var(--text-hover-ease),
+        letter-spacing var(--text-hover-duration) var(--text-hover-ease);
+    }
+    .address-link:hover{
+      text-decoration:underline;text-underline-offset:.2em;
+      transform:translateY(-2px);
+    }
+    .address-link--on-dark{color:rgba(246,245,239,.88)}
+    .address-link--on-dark:hover{color:var(--sage)}
+    footer .address-link{color:rgba(246,245,239,.85)}
+    footer .address-link:hover{color:var(--sage)}
+    .cta .address-link{color:rgba(246,245,239,.9)}
+    .cta .address-link:hover{color:var(--sage)}
+    .contact-info .address-link{color:var(--blue);font-weight:500}
+    .contact-info .address-link:hover{color:var(--blue-mid)}
 
     .address-link{
       display:inline-block;text-decoration:none;color:inherit;
@@ -500,6 +556,11 @@ export function siteStyles() {
       font-size:1.75rem;color:var(--sage);margin-top:.75rem;
     }
     .footer-nav{display:flex;flex-direction:column;gap:.45rem;font-size:.9rem}
+    .footer-nav a{
+      display:inline-block;
+      transition:transform var(--text-hover-duration) var(--text-hover-ease),color .25s var(--ease);
+    }
+    .footer-nav a:hover{transform:translateY(-2px)}
     .footer-bottom{
       grid-column:1/-1;margin-top:1.5rem;padding-top:1.5rem;
       border-top:1px solid rgba(246,245,239,.1);font-size:.78rem;opacity:.55;
@@ -508,8 +569,8 @@ export function siteStyles() {
     .footer-bottom a.admin-link{opacity:.7;font-size:.72rem}
     .footer-bottom a.admin-link:hover{opacity:1;color:var(--sage)}
     .section-actions{margin-top:1.75rem}
-    .text-link{color:var(--blue);font-weight:600;text-decoration:underline;text-underline-offset:4px}
-    .text-link:hover{color:var(--blue-mid)}
+    .text-link{color:var(--blue);font-weight:600;text-decoration:underline;text-underline-offset:4px;display:inline-block}
+    .text-link:hover{color:var(--blue-mid);transform:translateY(-2px)}
     .note{text-align:center;font-size:.85rem;opacity:.6;margin-top:2rem}
 
     /* ── WhatsApp float ── */
@@ -551,9 +612,10 @@ export function siteStyles() {
       font-family:var(--font-body);font-size:.9rem;font-weight:500;
       color:var(--blue);padding:.72rem 0;
       border-bottom:1px solid rgba(7,57,84,.07);
+      transition:transform var(--text-hover-duration) var(--text-hover-ease),color .25s var(--ease);
     }
     .nav-overlay a::after{content:"→";opacity:.35;font-size:.75rem;font-weight:400}
-    .nav-overlay a:hover{color:var(--blue-mid)}
+    .nav-overlay a:hover{color:var(--blue-mid);transform:translateX(4px)}
     .nav-overlay .nav-cta-overlay{
       display:inline-flex;margin-top:.65rem;padding:.6rem 1.15rem;
       border-radius:999px;background:var(--sage);color:var(--blue);
@@ -675,6 +737,62 @@ export function siteStyles() {
       .cta{padding:1.75rem 1.15rem;text-align:left}
     }
 
+    /* ── Hover suave en títulos y texto editorial ── */
+    main h1, main h2, main h3,
+    main .section-title,
+    main .post-title,
+    main .tagline,
+    main .soul,
+    main .label,
+    main .menu-item-name,
+    main .quote-block p,
+    main .cta h2,
+    main .cta-tagline,
+    .editorial-hero .tagline,
+    .editorial-hero h1,
+    .page-hero .tagline,
+    .page-hero h1,
+    .menu-hero .soul,
+    .menu-hero h1,
+    .exp-copy h3,
+    .menu-cat-head h3{
+      transition:
+        transform var(--text-hover-duration) var(--text-hover-ease),
+        letter-spacing var(--text-hover-duration) var(--text-hover-ease),
+        color .25s var(--ease);
+    }
+    main h1:hover, main h2:hover, main h3:hover,
+    main .section-title:hover,
+    main .post-title:hover,
+    main .tagline:hover,
+    main .soul:hover,
+    main .label:hover,
+    main .menu-item-name:hover,
+    main .quote-block p:hover,
+    main .cta h2:hover,
+    main .cta-tagline:hover,
+    .editorial-hero .tagline:hover,
+    .editorial-hero h1:hover,
+    .page-hero .tagline:hover,
+    .page-hero h1:hover,
+    .menu-hero .soul:hover,
+    .menu-hero h1:hover,
+    .exp-copy h3:hover,
+    .menu-cat-head h3:hover{
+      transform:translateY(-2px);
+    }
+    main h1:hover, main h2:hover, main h3:hover,
+    main .section-title:hover,
+    main .post-title:hover,
+    .editorial-hero h1:hover,
+    .page-hero h1:hover,
+    .menu-hero h1:hover,
+    main .cta h2:hover,
+    .exp-copy h3:hover,
+    .menu-cat-head h3:hover{
+      letter-spacing:.025em;
+    }
+
     /* ── Escritorio (≥768px) ── */
     @media(min-width:768px){
       .editorial-hero .hero-content-wrap{text-align:left}
@@ -685,7 +803,71 @@ export function siteStyles() {
     @media(prefers-reduced-motion:reduce){
       .marquee-track,.float-soft{animation:none}
       .card,.product,.btn,.wa-float{transition:none}
+      main h1, main h2, main h3,
+      main .section-title, main .post-title, main .tagline, main .soul,
+      main .label, main .menu-item-name, main .quote-block p,
+      main .cta h2, main .cta-tagline,
+      .editorial-hero .tagline, .editorial-hero h1,
+      .page-hero .tagline, .page-hero h1,
+      .menu-hero .soul, .menu-hero h1,
+      .exp-copy h3, .menu-cat-head h3,
+      nav.site-nav a, .nav-overlay a, .footer-nav a,
+      .text-link, .address-link{transition:none}
+      #main.page-content{animation:none}
+      body.page-leaving, body.page-leaving #main.page-content{transition:none;transform:none;opacity:1}
+      ::view-transition-old(root),::view-transition-new(root){animation:none}
+      main h1:hover, main h2:hover, main h3:hover,
+      main .section-title:hover, main .post-title:hover,
+      main .tagline:hover, main .soul:hover, main .label:hover,
+      main .menu-item-name:hover, main .quote-block p:hover,
+      main .cta h2:hover, main .cta-tagline:hover,
+      .editorial-hero .tagline:hover, .editorial-hero h1:hover,
+      .page-hero .tagline:hover, .page-hero h1:hover,
+      .menu-hero .soul:hover, .menu-hero h1:hover,
+      .exp-copy h3:hover, .menu-cat-head h3:hover,
+      nav.site-nav a:hover, .nav-overlay a:hover,
+      .footer-nav a:hover, .text-link:hover, .address-link:hover{
+        transform:none;letter-spacing:inherit;
+      }
     }
+  `;
+}
+
+function pageTransitionScript() {
+  return `
+      var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var crossDocVT=typeof window.PageRevealEvent!=='undefined';
+      var exitMs=reduced?0:320;
+      if(crossDocVT)document.documentElement.classList.add('vt-nav');
+
+      function isInternalLink(a){
+        if(!a||a.target==='_blank'||a.hasAttribute('download'))return false;
+        var href=a.getAttribute('href');
+        if(!href||href.charAt(0)==='#'||href.indexOf('mailto:')===0||href.indexOf('tel:')===0||href.indexOf('javascript:')===0)return false;
+        try{
+          var next=new URL(a.href,location.href);
+          if(next.origin!==location.origin)return false;
+          if(next.pathname===location.pathname&&next.search===location.search)return false;
+          return true;
+        }catch(e){return false;}
+      }
+
+      function leaveAndGo(url){
+        if(reduced||exitMs===0){location.href=url;return;}
+        document.body.classList.add('page-leaving');
+        window.setTimeout(function(){location.href=url;},exitMs);
+      }
+
+      if(!crossDocVT&&!reduced){
+        document.addEventListener('click',function(e){
+          if(e.defaultPrevented)return;
+          if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button!==0)return;
+          var a=e.target.closest('a');
+          if(!isInternalLink(a))return;
+          e.preventDefault();
+          leaveAndGo(a.href);
+        },false);
+      }
   `;
 }
 
@@ -724,6 +906,7 @@ function siteScripts(isHome, pageId, analyticsEnabled) {
         });
       }
 
+      ${pageTransitionScript()}
       ${siteAnalyticsScript({ pageId: pageId || (isHome ? "home" : "page"), enabled: analyticsEnabled !== false })}
     })();
   `;
@@ -737,7 +920,17 @@ function whatsappFloat(whatsapp) {
   </a>`;
 }
 
-export function shell({ title, description, depth, pageId, slug, heroArt, body, year = new Date().getFullYear() }) {
+export function shell({
+  title,
+  description,
+  depth,
+  pageId,
+  slug,
+  heroArt,
+  body,
+  extraHead = "",
+  year = new Date().getFullYear(),
+}) {
   const site = loadSite();
   const { brand } = site;
   const analytics = normalizeAnalytics(site.analytics);
@@ -765,12 +958,13 @@ export function shell({ title, description, depth, pageId, slug, heroArt, body, 
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#073954"/>
+  <meta name="view-transition" content="same-origin"/>
   <title>${pageTitle}</title>
   <meta name="description" content="${escapeMeta(description)}"/>${faviconHead(depth)}${seoHead({ brand, title, description, depth, slug: pageSlug, isHome, ogImagePath: brandAssetPath("og") })}${googleAnalyticsHead(gaId)}
   <style>${fontFaces(depth, site)}</style>
   <style>${brandThemeCss(site)}</style>
   <style>${siteStyles()}</style>
-  <style>:root{${heroVar}}</style>
+  <style>:root{${heroVar}}</style>${extraHead}
 </head>
 <body>
   <a class="skip-link" href="#main">Saltar al contenido</a>
@@ -792,7 +986,7 @@ export function shell({ title, description, depth, pageId, slug, heroArt, body, 
     ${overlayLinks}
     <a href="${href("/tienda")}" class="nav-cta-overlay" data-track="tienda">Comprar café</a>
   </div>
-  <main id="main">${body}</main>
+  <main id="main" class="page-content">${body}</main>
   <footer>
     <div class="wrap">
       <div class="footer-brand">

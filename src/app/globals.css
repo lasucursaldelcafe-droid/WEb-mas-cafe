@@ -74,6 +74,23 @@
     font-family: var(--font-display);
   }
 
+  @media (prefers-reduced-motion: no-preference) {
+    main h1,
+    main h2,
+    main h3 {
+      transition:
+        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        letter-spacing 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    main h1:hover,
+    main h2:hover,
+    main h3:hover {
+      transform: translateY(-2px);
+      letter-spacing: 0.025em;
+    }
+  }
+
   ::selection {
     @apply bg-sage text-blue-deep;
   }
@@ -119,6 +136,28 @@
 
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
+  }
+
+  .hover-text-lift {
+    display: inline-block;
+    transition:
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      color 0.25s ease,
+      letter-spacing 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .hover-text-lift:hover {
+    transform: translateY(-2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hover-text-lift {
+      transition: color 0.25s ease;
+    }
+
+    .hover-text-lift:hover {
+      transform: none;
+    }
   }
 }
 
