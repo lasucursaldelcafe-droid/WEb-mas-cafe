@@ -82,6 +82,7 @@ function main() {
   for (const htmlFile of walkHtml(siteDir)) {
     const content = readFileSync(path.join(siteDir, htmlFile), "utf8");
     for (const ref of extractRefs(content)) {
+      if (ref.includes("${") || ref.includes("}")) continue;
       const resolved = resolveRef(htmlFile, ref);
       if (!resolved) continue;
       if (!targetExists(resolved)) {

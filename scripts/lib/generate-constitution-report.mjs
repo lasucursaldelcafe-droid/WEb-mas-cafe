@@ -23,7 +23,7 @@ const DOMAIN_URL = `https://${DOMAIN_WWW}`;
 const DOMAIN_PUNYCODE = "xn--mascaf-gva.com";
 const GODADDY_DNS_URL = `https://dcc.godaddy.com/control/dnsmanagement?domainName=${DOMAIN_PUNYCODE}`;
 
-const REPORT_VERSION = "1.3.0";
+const REPORT_VERSION = "1.3.1";
 const REQUISITOS_PATH = path.join(root, "content/informe-requisitos.json");
 
 function escapeHtml(s) {
@@ -231,6 +231,7 @@ export function generateConstitutionReport() {
     .join("");
 
   const changelog = [
+    { date: "2026-06-30", note: "Fix mockup wallet — rutas de imágenes ../../images/ y verificación de enlaces (npm run verify:links)." },
     { date: "2026-06-27", note: "Informe v1.3 — mockup visual Apple Wallet + Google Wallet en /informe/wallet/." },
     { date: "2026-06-27", note: "Automatización DNS dominio mascafé.com (npm run domain:configure)." },
     { date: "2026-06-27", note: "Carpeta proyecto-mas-cafe/ — entrega, enlaces de cuentas, REGISTRO-HECHO y plantilla CREDENCIALES." },
