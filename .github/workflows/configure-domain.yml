@@ -1,12 +1,15 @@
 name: Configurar dominio mascafé.com
 
+# Solo manual (workflow_dispatch). Los fallos «push» históricos fueron por YAML inválido ya corregido.
+# Para automatización completa usa: Setup autónomo (build + dominio)
+
 on:
   workflow_dispatch:
     inputs:
       dry_run:
         description: "Simular sin aplicar cambios"
         type: boolean
-        default: true
+        default: false
       skip_godaddy:
         description: "Omitir GoDaddy DNS"
         type: boolean
@@ -31,6 +34,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Validar credenciales
+        if: inputs.skip_godaddy != true && inputs.dry_run != true
+        env:
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
+        run: node scripts/validate-credentials.mjs
 
       - name: Configurar dominio automáticamente
         env:
@@ -45,5 +60,5 @@ jobs:
           node scripts/configure-domain.mjs $ARGS
 
       - name: Verificar dominio
-        if: inputs.dry_run == false
+        if: inputs.dry_run != true
         run: node scripts/verify-domain.mjs || true
