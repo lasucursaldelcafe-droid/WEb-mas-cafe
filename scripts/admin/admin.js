@@ -686,17 +686,23 @@
   }
 
   function buildNav() {
-    const nav = $("#sidebar-nav");
-    nav.innerHTML = PANELS.map(
-      (p) => `<button type="button" class="nav-btn${p.id === currentPanel ? " active" : ""}" data-panel="${p.id}">${p.icon} ${p.label}</button>`
+    const sel = $("#panel-select");
+    if (!sel) return;
+    sel.innerHTML = PANELS.map(
+      (p) => `<option value="${p.id}"${p.id === currentPanel ? " selected" : ""}>${p.icon} ${p.label}</option>`
     ).join("");
-    nav.onclick = (e) => {
-      const btn = e.target.closest("[data-panel]");
-      if (!btn) return;
-      currentPanel = btn.dataset.panel;
-      $$(".nav-btn", nav).forEach((b) => b.classList.toggle("active", b.dataset.panel === currentPanel));
-      renderPanel(currentPanel);
-    };
+    if (!sel.dataset.bound) {
+      sel.dataset.bound = "1";
+      sel.addEventListener("change", () => {
+        currentPanel = sel.value;
+        renderPanel(currentPanel);
+      });
+    }
+  }
+
+  function syncNavSelect() {
+    const sel = $("#panel-select");
+    if (sel && sel.value !== currentPanel) sel.value = currentPanel;
   }
 
   function field(label, id, value, type = "text", hint = "") {
@@ -798,6 +804,7 @@
       config: () => finishPanel("config", main, renderConfig(), bindConfigEvents),
     };
     (handlers[id] || handlers.overview)();
+    syncNavSelect();
   }
 
   function mergePendingFromStorage(storageKey, targetKey) {
@@ -955,7 +962,7 @@
       </div>
     </div>
     <div class="card"><h3>Secciones</h3>
-      <p style="opacity:.75;margin-bottom:1rem">Cada sección corresponde a una página del sitio público.</p>
+      <p style="opacity:.75;margin-bottom:1rem">Usa la lista desplegable arriba o estos accesos directos.</p>
       <div class="row" style="display:flex;flex-wrap:wrap;gap:.5rem">${PANELS.filter((p) => !["overview", "help", "config", "informe"].includes(p.id)).map((p) => `<button type="button" class="btn btn-ghost" data-goto="${p.id}">${p.label}</button>`).join("")}</div>
     </div>`;
   }
@@ -964,7 +971,7 @@
     return `
     <div class="card"><h3>Guía rápida</h3>
       <ol class="help-steps">
-        <li><strong>Edita</strong> el contenido en las secciones del menú lateral. Cada sección muestra a la derecha una vista previa de lo que estás cambiando.</li>
+        <li><strong>Edita</strong> el contenido eligiendo la sección en la lista desplegable superior. Cada sección muestra a la derecha una vista previa de lo que estás cambiando.</li>
         <li><strong>Gestiona secciones</strong> — activa, desactiva o crea subcarpetas nuevas en «Secciones».</li>
         <li><strong>Revisa imágenes</strong> — cada campo muestra la imagen actual y las medidas recomendadas.</li>
         <li><strong>Publica</strong> con el botón azul «Guardar y publicar». El sitio se actualiza en ~1 minuto.</li>
