@@ -60,7 +60,7 @@ jobs:
           echo "URL publicada: $URL"
           FAILED=0
           for path in "" "cafe/" "menu/" "nosotros/" "tienda/" "blog/" "contacto/" "admin/" "informe/" "informe/wallet/"; do
-            CODE=$(curl -s -o /dev/null -w "%{http_code}" "${URL}${path}")
+            CODE=$(curl -sL -o /dev/null -w "%{http_code}" "${URL}${path}")
             echo "${URL}${path} → HTTP $CODE"
             if [ "$CODE" != "200" ]; then FAILED=1; fi
           done
