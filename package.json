@@ -34,6 +34,7 @@
     "email:verify": "node scripts/verify-email.mjs",
     "verify:links": "node scripts/verify-links.mjs",
     "verify:seo": "node scripts/verify-seo.mjs",
+    "verify:admin": "node scripts/verify-admin.mjs",
     "pr:auto-merge": "node scripts/auto-merge-pr.mjs",
     "validate:credentials": "node scripts/validate-credentials.mjs",
     "setup:autonomous": "node scripts/autonomous-setup.mjs",

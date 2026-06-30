@@ -459,8 +459,12 @@
   }
 
   async function sha256(text) {
-    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-    return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    if (globalThis.crypto?.subtle) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    if (typeof sha256Pure === "function") return sha256Pure(text);
+    throw new Error("Tu navegador no puede verificar la contraseña en HTTP. Usa https://mascafé.com/admin/ o localhost.");
   }
 
   async function login(e) {
@@ -1239,8 +1243,10 @@
     if (status) status.textContent = "Sincronizando con el servidor...";
 
     if (!PUBLISH_SECRET) {
-      if (status) status.textContent = "Publica desde el sitio en línea (/admin/).";
-      toast("La publicación automática solo funciona en el panel publicado", "error");
+      const msg =
+        "Falta configurar ADMIN_PUBLISH_KEY en GitHub (PAT con permiso contents:write en el repositorio).";
+      if (status) status.textContent = msg;
+      toast(msg, "error");
       return;
     }
 

@@ -46,7 +46,11 @@ jobs:
       - name: Generar sitio multipágina
         env:
           ADMIN_PUBLISH_KEY: ${{ secrets.ADMIN_PUBLISH_KEY }}
+          GH_PAGES_PAT: ${{ secrets.GH_PAGES_PAT }}
         run: node scripts/build-github-pages.mjs
+
+      - name: Verificar panel admin
+        run: npm run verify:admin
 
       - name: Verificar enlaces internos
         run: |

@@ -79,9 +79,11 @@ jobs:
         if: env.SKIP_BUILD != '1'
         env:
           ADMIN_PUBLISH_KEY: ${{ secrets.ADMIN_PUBLISH_KEY }}
+          GH_PAGES_PAT: ${{ secrets.GH_PAGES_PAT }}
         run: |
           node scripts/build-github-pages.mjs
           npm run verify:links
+          npm run verify:admin
 
       - name: Configurar dominio
         env:
