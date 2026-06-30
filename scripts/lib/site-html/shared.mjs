@@ -338,9 +338,9 @@ export function siteStyles() {
       font-weight:400;
       font-style:normal;
       letter-spacing:0;
-      display:inline-block;
+      display:inline;
       margin:0 .08em;
-      line-height:.85;
+      line-height:inherit;
       vertical-align:baseline;
       transform:none!important;
     }
@@ -396,7 +396,7 @@ export function siteStyles() {
       background:var(--green);color:#fff;padding:.25rem .75rem;border-radius:999px;margin-top:.5rem;
     }
 
-    /* ── Menu page ── */
+    /* ── Menu page (tipografía editorial Pergamino) ── */
     .menu-page{background:var(--cream)}
     .menu-hero{
       text-align:center;padding:clamp(5rem,9vw,6rem) 0 clamp(1.5rem,4vw,2rem);
@@ -404,15 +404,17 @@ export function siteStyles() {
     }
     .menu-hero .soul{
       font-family:var(--font-accent);
-      font-size:clamp(1.45rem,3.2vw,1.95rem);color:var(--brown);margin-bottom:.5rem;
+      font-size:clamp(1.2rem,2.8vw,1.65rem);color:var(--brown);margin-bottom:.35rem;
+      line-height:1.15;
     }
     .menu-hero h1{
       font-family:var(--font-display);font-weight:500;
-      font-size:clamp(1.55rem,3.5vw,2.15rem);line-height:1.15;color:var(--blue);
+      font-size:clamp(1.85rem,4vw,2.65rem);line-height:1.08;color:var(--blue);
+      letter-spacing:.015em;
     }
     .menu-hero .intro{
-      max-width:32rem;margin:1.25rem auto 0;font-size:.95rem;line-height:1.75;
-      color:rgba(43,43,43,.65);font-weight:400;
+      max-width:34rem;margin:1rem auto 0;font-size:.92rem;line-height:1.7;
+      color:rgba(43,43,43,.72);font-weight:400;
     }
     .menu-sheet{max-width:34rem;margin:0 auto;padding:0 1.5rem clamp(4rem,8vw,5rem)}
     .menu-cat{margin-bottom:clamp(3rem,6vw,4.5rem)}
@@ -423,11 +425,12 @@ export function siteStyles() {
     }
     .menu-cat-head h3{
       font-family:var(--font-display);font-weight:500;
-      font-size:clamp(1.4rem,3vw,1.75rem);color:var(--blue);letter-spacing:.02em;
+      font-size:clamp(1.85rem,4.2vw,2.65rem);color:var(--blue);letter-spacing:.015em;
+      line-height:1.06;
     }
     .menu-cat-head .cat-note{
-      font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
-      color:var(--brown);opacity:.55;margin-top:.35rem;
+      font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;
+      color:var(--brown);opacity:.55;margin-top:.35rem;font-weight:600;
     }
     .menu-item{
       display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:baseline;
@@ -435,12 +438,13 @@ export function siteStyles() {
     }
     .menu-item:last-child{border-bottom:none}
     .menu-item-name{
-      font-family:var(--font-display);font-size:1.08rem;
+      font-family:var(--font-display);font-size:clamp(1.15rem,2.2vw,1.32rem);
       color:var(--blue);font-weight:500;line-height:1.35;
     }
     .menu-item small{
-      display:block;font-family:var(--font-body);font-size:.8rem;
+      display:block;font-family:var(--font-body);font-size:.84rem;
       font-style:italic;color:rgba(43,43,43,.5);margin-top:.3rem;font-weight:400;
+      line-height:1.65;
     }
     .menu-item-price{
       font-size:.88rem;color:var(--brown);font-weight:400;
@@ -721,15 +725,17 @@ export function siteStyles() {
 
       .menu-hero{padding:4.35rem 0 1rem;text-align:left}
       .menu-hero .wrap{text-align:left}
-      .menu-hero .soul{font-size:1.15rem}
-      .menu-hero h1{font-size:clamp(1.85rem,7.5vw,2.2rem);line-height:1.05}
-      .menu-hero .intro{font-size:.84rem;margin-top:.65rem;padding:0;text-align:left}
+      .menu-hero .soul{font-size:1.05rem;line-height:1.15;margin-bottom:.15rem}
+      .menu-hero h1{font-size:clamp(1.95rem,8vw,2.35rem);line-height:1.05;margin-top:.25rem}
+      .menu-hero .intro{font-size:.84rem;margin-top:.65rem;padding:0;text-align:left;line-height:1.65;opacity:.78}
       .menu-sheet{padding:0 0 2rem;max-width:none}
       .menu-cat{margin-bottom:1.65rem}
       .menu-cat-head{text-align:left;margin-bottom:.85rem;padding-bottom:.6rem}
-      .menu-cat-head h3{font-size:clamp(1.35rem,5vw,1.55rem);text-align:left}
+      .menu-cat-head h3{font-size:clamp(1.35rem,5vw,1.55rem);text-align:left;line-height:1.12}
+      .menu-cat-head .cat-note{font-size:.62rem;letter-spacing:.24em}
       .menu-item{padding:.7rem 0}
       .menu-item-name{font-size:1.02rem}
+      .menu-item small{font-size:.82rem}
 
       .quote-block h2,.cta h2{font-size:clamp(1.75rem,7vw,2rem)}
       .values{gap:1rem}
@@ -809,6 +815,9 @@ export function siteStyles() {
       .editorial-hero .hero-content-wrap{text-align:left}
       .editorial-hero .hero-content{margin:0}
       .menu-sheet{padding-left:1.5rem;padding-right:1.5rem}
+      .menu-hero{text-align:left}
+      .menu-hero .wrap{text-align:left}
+      .menu-hero .intro{margin-left:0}
     }
 
     @media(prefers-reduced-motion:reduce){
