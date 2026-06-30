@@ -230,7 +230,7 @@ export function pageMenu() {
   const bookPages = getMenuBookPagePaths();
   const extraHead = bookPages.length
     ? bookPages
-        .slice(0, 3)
+        .slice(0, 8)
         .map((p) => `<link rel="preload" as="image" href="${img(p)}"/>`)
         .join("")
     : "";
