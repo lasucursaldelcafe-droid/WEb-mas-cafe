@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
  * Setup autónomo de Firebase para la wallet:
+ * - Diagnóstico y permisos Google Cloud (IAM, APIs, OAuth)
  * - Habilita APIs
  * - Configura Auth (email + Google + dominios)
  * - Crea Firestore si falta
@@ -14,6 +15,7 @@
  *   npm run wallet:setup
  *   npm run wallet:setup -- --dry-run
  *   npm run wallet:setup -- --skip-deploy
+ *   npm run wallet:diagnose
  */
 import { execSync } from "child_process";
 import path from "path";
@@ -22,14 +24,19 @@ import { loadEnvLocal } from "./lib/load-env-local.mjs";
 import {
   FIREBASE_PROJECT,
   authorizedDomains,
-  configureAuthProviders,
   enableApis,
+  configureAuthProviders,
   ensureFirestoreDatabase,
   resolveServiceAccountJson,
   seedProgramInFirestore,
   writeTempServiceAccount,
   getAccessToken,
 } from "./lib/firebase-setup-api.mjs";
+import {
+  autoFixPermissions,
+  runWalletDiagnostics,
+} from "./lib/firebase-permissions.mjs";
+import { LINKS } from "./lib/google-console-links.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
@@ -49,6 +56,21 @@ function run(cmd, label) {
   execSync(cmd, { cwd: root, stdio: "inherit" });
 }
 
+function printBlockers(report) {
+  console.error("\n✗ Setup bloqueado — corrige estos puntos:\n");
+  for (const b of report.blockers) {
+    console.error(`  · ${b.message}`);
+    if (b.fix?.link) console.error(`    ${b.fix.link}`);
+    if (b.fix?.steps) {
+      for (const s of b.fix.steps) console.error(`    → ${s}`);
+    }
+  }
+  console.error("\n  Diagnóstico completo: npm run wallet:diagnose");
+  console.error(`  Facturación Blaze: ${LINKS.billingBlaze}`);
+  console.error(`  Permisos IAM:      ${LINKS.iamGrant}`);
+  console.error(`  OAuth Google:      ${LINKS.oauthConsent}\n`);
+}
+
 console.log("\n═══════════════════════════════════════════════════");
 console.log("  Setup autónomo — Wallet Firebase");
 console.log(`  Proyecto: ${FIREBASE_PROJECT}`);
@@ -64,24 +86,70 @@ if (!sa && !firebaseToken && !dryRun) {
   console.error(
     "✗ Falta FIREBASE_SERVICE_ACCOUNT (JSON) o FIREBASE_TOKEN.\n" +
       "  Recomendado: cuenta de servicio con roles Firebase Admin + Service Usage Admin.\n" +
-      "  GitHub Secret: FIREBASE_SERVICE_ACCOUNT\n"
+      `  GitHub Secret: ${LINKS.githubSecrets}\n` +
+      `  Generar clave: ${LINKS.serviceAccounts}\n`
   );
   process.exit(1);
 }
 
 if (!sa && !firebaseToken && dryRun) {
-  log("1-3", "APIs + Auth + Firestore — simulación");
+  log("0-3", "Permisos + APIs + Auth + Firestore — simulación");
   console.log(`      Dominios previstos: ${authorizedDomains().join(", ")}`);
   log("4-6", "Deploy + seed — omitido (dry-run)");
   console.log("\n═══════════════════════════════════════════════════");
   console.log("  Dry-run OK — configura FIREBASE_SERVICE_ACCOUNT para activar backend");
+  console.log(`  Diagnóstico: npm run wallet:diagnose`);
   console.log("═══════════════════════════════════════════════════\n");
   process.exit(0);
 }
 
-if (sa && !dryRun) {
-  run("npm ci --prefix functions", "Dependencias Cloud Functions (Admin SDK)");
+if (sa) {
+  if (!dryRun) {
+    run("npm ci --prefix functions", "Dependencias Cloud Functions (Admin SDK)");
+  }
   writeTempServiceAccount(sa);
+
+  log("0/6", dryRun ? "Diagnóstico de permisos (solo lectura)…" : "Permisos Google Cloud + auto-reparación…");
+
+  if (!dryRun) {
+    const fix = await autoFixPermissions(sa);
+    if (!fix.billing.enabled) {
+      console.log(`      ✗ Facturación inactiva — activa Blaze manualmente`);
+      console.log(`        ${LINKS.billingBlaze}`);
+    } else {
+      console.log(`      ✓ Facturación activa`);
+    }
+    if (fix.iam.ok) {
+      console.log(
+        fix.iam.alreadyHadAll
+          ? "      ✓ Roles IAM completos"
+          : `      ✓ Roles IAM asignados: ${(fix.iam.granted || []).join(", ")}`
+      );
+    } else {
+      console.log(`      ✗ IAM: ${fix.iam.error || fix.iam.missing?.join(", ")}`);
+      console.log(`        ${LINKS.iamGrant}`);
+    }
+    const apisOk = fix.apis.filter((a) => a.ok).length;
+    console.log(`      ${apisOk === fix.apis.length ? "✓" : "⚠"} APIs ${apisOk}/${fix.apis.length}`);
+    console.log(`      ${fix.oauth.ok ? "✓" : "⚠"} OAuth consent`);
+  }
+
+  const report = await runWalletDiagnostics(sa, { checkOnly: dryRun });
+  if (!dryRun && !report.canAutoSetup) {
+    printBlockers(report);
+    process.exit(1);
+  }
+  if (dryRun) {
+    console.log(`      Dominios previstos: ${authorizedDomains().join(", ")}`);
+    log("1-6", "APIs + Auth + Firestore + deploy — omitido (dry-run)");
+  }
+} else {
+  console.log("\n⚠ Solo FIREBASE_TOKEN: se omite configuración Auth/Firestore vía API.\n");
+  console.log(`  Para automatizar permisos Google Console usa FIREBASE_SERVICE_ACCOUNT`);
+  console.log(`  ${LINKS.githubSecrets}\n`);
+}
+
+if (sa && !dryRun) {
   const token = await getAccessToken(sa);
 
   log("1/6", "Habilitando APIs de Google Cloud…");
@@ -97,11 +165,6 @@ if (sa && !dryRun) {
   log("3/6", "Verificando Firestore…");
   const fs = await ensureFirestoreDatabase(token);
   console.log(`      ${fs.created ? "Base creada" : "Base existente"} · ${fs.location}`);
-} else if (sa && dryRun) {
-  log("1-3", "APIs + Auth + Firestore — omitido (dry-run)");
-  console.log(`      Dominios previstos: ${authorizedDomains().join(", ")}`);
-} else {
-  console.log("\n⚠ Solo FIREBASE_TOKEN: se omite configuración Auth/Firestore vía API.\n");
 }
 
 if (!skipDeploy && !dryRun) {
@@ -121,7 +184,8 @@ if (!skipDeploy && !dryRun) {
   } catch (err) {
     console.error(
       "\n✗ Deploy falló. Si el error menciona billing, activa plan Blaze en Firebase Console.\n" +
-        "  https://console.firebase.google.com/project/mas-cafe-c8413/usage/details\n"
+        `  ${LINKS.billingBlaze}\n` +
+        "  Diagnóstico: npm run wallet:diagnose\n"
     );
     throw err;
   }
@@ -146,8 +210,10 @@ if (!skipDeploy && !dryRun) {
       console.log(`      ${url} → no verificado (${e.message})`);
     }
   }
-} else {
-  log("4-6", "Deploy + seed — omitido (dry-run o --skip-deploy)");
+} else if (!dryRun) {
+  log("4-6", "Deploy + seed — omitido (--skip-deploy)");
+} else if (dryRun && sa) {
+  /* ya logueado arriba */
 }
 
 console.log("\n═══════════════════════════════════════════════════");
@@ -155,4 +221,5 @@ console.log("  Wallet lista para operar");
 console.log("  Cliente:  /wallet/");
 console.log("  Caja:     /caja/  (PIN inicial 123456)");
 console.log("  Comando:  npm run wallet:setup");
+console.log("  Diagnóstico permisos: npm run wallet:diagnose");
 console.log("═══════════════════════════════════════════════════\n");

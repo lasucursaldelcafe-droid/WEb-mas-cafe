@@ -1055,6 +1055,20 @@
       </ul>
     </div>
     <div class="card">
+      <h3>Permisos Google Cloud (si algo no te deja)</h3>
+      <p style="line-height:1.65;font-size:.92rem;margin-bottom:.75rem">
+        El setup automático pide y asigna permisos vía API. Si falla, suele ser por <strong>plan Blaze</strong> sin activar o la cuenta de servicio sin roles IAM.
+      </p>
+      <ul style="line-height:1.7;font-size:.88rem;margin-left:1.1rem;margin-bottom:.75rem">
+        <li>Diagnóstico: <code>npm run wallet:diagnose</code></li>
+        <li>Auto-reparar: <code>npm run wallet:diagnose -- --fix</code></li>
+        <li>Facturación Blaze: <a href="https://console.firebase.google.com/project/mas-cafe-c8413/usage/details" target="_blank" rel="noopener">Firebase usage</a></li>
+        <li>Permisos IAM: <a href="https://console.cloud.google.com/iam-admin/grantaccess?project=mas-cafe-c8413" target="_blank" rel="noopener">Google Cloud IAM</a></li>
+        <li>OAuth / Google login: <a href="https://console.cloud.google.com/apis/credentials/consent?project=mas-cafe-c8413" target="_blank" rel="noopener">OAuth consent screen</a></li>
+        <li>APIs: <a href="https://console.cloud.google.com/apis/dashboard?project=mas-cafe-c8413" target="_blank" rel="noopener">APIs dashboard</a></li>
+      </ul>
+    </div>
+    <div class="card">
       <h3>Activación automática del backend</h3>
       <p style="line-height:1.65;font-size:.92rem;margin-bottom:.75rem">
         El pipeline <strong>Setup autónomo — Wallet Firebase</strong> activa Auth, Firestore, Functions y despliega todo sin consola manual.
