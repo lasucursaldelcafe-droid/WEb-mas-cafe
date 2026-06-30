@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import { brandThemeCss, fontFaces } from "./brand.mjs";
 import { getNavRoutes } from "./routes.mjs";
 import { formatPageTitle, seoHead, escapeMeta } from "../seo.mjs";
+import { brandAssetPath } from "../brand-logo.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "../../..");
@@ -743,7 +744,7 @@ export function shell({ title, description, depth, pageId, slug, heroArt, body, 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#073954"/>
   <title>${pageTitle}</title>
-  <meta name="description" content="${escapeMeta(description)}"/>${faviconHead(depth)}${seoHead({ brand, title, description, depth, slug: pageSlug, isHome, ogImagePath: heroArt || "/images/brand/horizontal-azul.png" })}
+  <meta name="description" content="${escapeMeta(description)}"/>${faviconHead(depth)}${seoHead({ brand, title, description, depth, slug: pageSlug, isHome, ogImagePath: brandAssetPath("og") })}
   <style>${fontFaces(depth)}</style>
   <style>${brandThemeCss(site)}</style>
   <style>${siteStyles()}</style>

@@ -4,6 +4,7 @@ import {
   price,
   shell,
 } from "./shared.mjs";
+import { brandAssetPath } from "../brand-logo.mjs";
 import { getEnabledRoutes } from "./routes.mjs";
 
 function marqueeHtml(items) {
@@ -95,7 +96,7 @@ export function pageHome() {
           <a class="btn btn-outline" href="${href("/nosotros")}">Conócenos</a>
         </div>
         <div class="brand-note">
-          <img src="${img("/images/brand/favs.png")}" alt=""/>
+          <img src="${img(brandAssetPath("favicon"))}" alt=""/>
           <p>San Fernando Nuevo · Cali</p>
         </div>
       </div>

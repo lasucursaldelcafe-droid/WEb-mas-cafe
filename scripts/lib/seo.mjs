@@ -5,6 +5,7 @@ import { readFileSync, existsSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { DOMAIN_URL } from "./domain-config.mjs";
+import { brandAssetPath } from "./brand-logo.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "../..");
@@ -32,7 +33,7 @@ export function loadSeoSettings() {
   return {
     siteUrl: base.replace(/\/$/, ""),
     siteName: seo.siteName || "Más Café",
-    defaultOgImage: seo.ogImagePath || "/images/brand/horizontal-azul.png",
+    defaultOgImage: seo.ogImagePath || brandAssetPath("og"),
     googleSiteVerification: seo.googleSiteVerification || "",
     bingSiteVerification: seo.bingSiteVerification || "",
     locale: seo.locale || "es_CO",
@@ -133,7 +134,7 @@ export function seoHead({
   });
   const canonical = pageUrl(siteUrl, slug);
   const ogImage = assetUrl(siteUrl, ogImagePath || seo.defaultOgImage, depth);
-  const logoUrl = assetUrl(siteUrl, "/images/brand/favs.png", depth);
+  const logoUrl = assetUrl(siteUrl, brandAssetPath("primary"), depth);
   const jsonLd = jsonLdLocalBusiness({
     brand,
     siteUrl,

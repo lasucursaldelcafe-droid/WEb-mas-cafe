@@ -34,6 +34,9 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      - name: Sincronizar logo principal (Google Drive)
+        run: npm run brand:sync-logo || true
+
       - name: Sincronizar Google Search Console (DNS → settings)
         env:
           GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}

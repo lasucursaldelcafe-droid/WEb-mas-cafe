@@ -4,6 +4,7 @@
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { brandAssetPath, resolveBrandFile, BRAND_ASSETS } from "./brand-logo.mjs";
 import sharp from "sharp";
 import toIco from "to-ico";
 
@@ -29,16 +30,24 @@ const FAVICON_FILES = [
 ];
 
 export async function generateFavicons(outDir = path.join(root, "public")) {
-  const src = path.join(root, "public/images/brand/favs.png");
-  if (!existsSync(src)) {
-    throw new Error(`No se encontró el logo: ${src}`);
+  const candidates = [
+    resolveBrandFile(BRAND_ASSETS.favicon),
+    resolveBrandFile(BRAND_ASSETS.primary),
+    path.join(root, "public/images/brand/favs.png"),
+  ];
+  const src = candidates.find((p) => existsSync(p));
+  if (!src) {
+    throw new Error(`No se encontró logo de marca. Ejecuta: npm run brand:sync-logo`);
   }
   mkdirSync(outDir, { recursive: true });
 
   const pngBuffers = [];
   for (const { name, size } of SIZES) {
     const buffer = await sharp(src)
-      .resize(size, size, { fit: "cover", position: "centre" })
+      .resize(size, size, {
+        fit: "contain",
+        background: { r: 246, g: 245, b: 239, alpha: 1 },
+      })
       .png()
       .toBuffer();
     writeFileSync(path.join(outDir, name), buffer);
