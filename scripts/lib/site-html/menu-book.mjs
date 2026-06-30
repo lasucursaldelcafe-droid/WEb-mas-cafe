@@ -6,7 +6,7 @@ const MENU_PAGE_RATIO = "792 / 1224";
 export function menuBookStyles() {
   return `
     .menu-book-section{
-      padding:0 0 clamp(3rem,7vw,5rem);
+      padding:0 0 clamp(3.5rem,8vw,5.5rem);
       background:linear-gradient(180deg,var(--cream) 0%,var(--cream-dark) 100%);
     }
     .menu-book-stage{
@@ -177,10 +177,18 @@ export function menuBookStyles() {
     }
     .menu-book-mobile .menu-book-hotzones{grid-template-columns:1fr 1fr}
     .menu-book-footer{
-      text-align:center;padding-top:2rem;margin-top:.5rem;
+      text-align:center;
+      padding:clamp(2rem,4vw,2.5rem) clamp(1.15rem,4vw,1.5rem) clamp(2.75rem,7vw,4rem);
+      margin-top:.75rem;
     }
     .menu-book-footer p{
-      font-size:.78rem;letter-spacing:.06em;color:rgba(43,43,43,.45);font-style:italic;
+      font-size:clamp(.82rem,1.05vw,.92rem);letter-spacing:.05em;
+      color:rgba(43,43,43,.45);font-style:italic;line-height:1.65;
+    }
+    @media(min-width:768px){
+      .menu-book-ui{margin-top:1.5rem}
+      .menu-book-hint{font-size:.92rem;margin-top:1.25rem;line-height:1.7}
+      .menu-book-counter{font-size:.95rem}
     }
     @media(max-width:767px){
       .menu-book-spread{display:none}

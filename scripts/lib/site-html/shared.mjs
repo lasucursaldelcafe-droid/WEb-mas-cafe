@@ -399,7 +399,7 @@ export function siteStyles() {
     /* ── Menu page (tipografía editorial Pergamino) ── */
     .menu-page{background:var(--cream)}
     .menu-hero{
-      text-align:center;padding:clamp(5rem,9vw,6rem) 0 clamp(1.5rem,4vw,2rem);
+      text-align:center;padding:clamp(5rem,9vw,6rem) 0 clamp(1.75rem,3.5vw,2.5rem);
       background:var(--cream);color:var(--blue);
     }
     .menu-hero .soul{
@@ -413,7 +413,7 @@ export function siteStyles() {
       letter-spacing:.015em;
     }
     .menu-hero .intro{
-      max-width:34rem;margin:1rem auto 0;font-size:.92rem;line-height:1.7;
+      max-width:34rem;margin:1rem auto 0;font-size:.95rem;line-height:1.7;
       color:rgba(43,43,43,.72);font-weight:400;
     }
     .menu-sheet{max-width:34rem;margin:0 auto;padding:0 1.5rem clamp(4rem,8vw,5rem)}
@@ -562,7 +562,7 @@ export function siteStyles() {
     .contact-info .address-link:hover{color:var(--blue-mid)}
 
     /* ── Footer ── */
-    footer{background:var(--blue);color:var(--cream);padding:3.5rem 0 2rem;margin-top:auto}
+    footer{background:var(--blue);color:var(--cream);padding:3.5rem 0 clamp(2.75rem,5vw,3.5rem);margin-top:auto}
     footer .wrap{display:grid;gap:2.5rem}
     @media(min-width:768px){footer .wrap{grid-template-columns:1.2fr 1fr 1fr}}
     footer a:hover{color:var(--sage)}
@@ -741,7 +741,11 @@ export function siteStyles() {
       .values{gap:1rem}
       .value h3{font-size:1.2rem}
 
-      footer .wrap{grid-template-columns:1fr;gap:1.35rem;padding:2rem 0}
+      footer .wrap{
+        grid-template-columns:1fr;gap:1.35rem;
+        padding:2rem 0 clamp(2.5rem,7vw,3.25rem);
+        padding-bottom:max(2.75rem,env(safe-area-inset-bottom,0px));
+      }
       .footer-brand img{height:2rem!important}
       .footer-bottom{flex-direction:column;gap:.35rem;text-align:center}
 
@@ -815,9 +819,31 @@ export function siteStyles() {
       .editorial-hero .hero-content-wrap{text-align:left}
       .editorial-hero .hero-content{margin:0}
       .menu-sheet{padding-left:1.5rem;padding-right:1.5rem}
-      .menu-hero{text-align:left}
+      .menu-hero{
+        text-align:left;
+        padding:clamp(5.25rem,8vw,6rem) 0 clamp(2.5rem,3.5vw,3.25rem);
+      }
       .menu-hero .wrap{text-align:left}
-      .menu-hero .intro{margin-left:0}
+      .menu-hero .soul{
+        font-size:clamp(1.65rem,2.35vw,2.1rem);
+        margin-bottom:.55rem;
+        line-height:1.18;
+      }
+      .menu-hero h1{
+        font-size:clamp(2.9rem,4.6vw,3.55rem);
+        line-height:1.04;
+        letter-spacing:.018em;
+      }
+      .menu-hero .intro{
+        margin-left:0;
+        margin-right:auto;
+        margin-top:1.35rem;
+        max-width:40rem;
+        font-size:clamp(1.05rem,1.45vw,1.18rem);
+        line-height:1.72;
+        color:rgba(43,43,43,.78);
+      }
+      footer .wrap{padding-bottom:clamp(2.5rem,4vw,3rem)}
     }
 
     @media(prefers-reduced-motion:reduce){
