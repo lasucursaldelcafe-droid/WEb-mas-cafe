@@ -15,6 +15,7 @@ const SIZES = [
   { name: "favicon-32x32.png", size: 32 },
   { name: "apple-touch-icon.png", size: 180 },
   { name: "icon-192.png", size: 192 },
+  { name: "icon-512.png", size: 512 },
 ];
 
 const FAVICON_FILES = [
@@ -23,6 +24,7 @@ const FAVICON_FILES = [
   "favicon-32x32.png",
   "apple-touch-icon.png",
   "icon-192.png",
+  "icon-512.png",
   "site.webmanifest",
 ];
 
@@ -52,8 +54,12 @@ export async function generateFavicons(outDir = path.join(root, "public")) {
       {
         name: "Más Café",
         short_name: "Más Café",
+        description: "Café de especialidad en Cali, Colombia",
+        lang: "es-CO",
+        start_url: "/",
         icons: [
-          { src: "icon-192.png", sizes: "192x192", type: "image/png" },
+          { src: "icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+          { src: "icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
           { src: "apple-touch-icon.png", sizes: "180x180", type: "image/png" },
         ],
         theme_color: "#073954",

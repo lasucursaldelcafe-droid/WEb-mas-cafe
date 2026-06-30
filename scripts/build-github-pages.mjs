@@ -10,6 +10,7 @@ import { generateAdminPage } from "./lib/site-html/admin.mjs";
 import { generateConstitutionReport } from "./lib/generate-constitution-report.mjs";
 import { generateWalletVisualPage } from "./lib/generate-wallet-visual.mjs";
 import { FAVICON_FILES, generateFavicons } from "./lib/generate-favicons-lib.mjs";
+import { generateRobotsTxt, generateSitemapXml } from "./lib/seo.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
@@ -63,6 +64,10 @@ writeFileSync(
 );
 
 writeFileSync(path.join(outDir, ".nojekyll"), "");
+
+writeFileSync(path.join(outDir, "sitemap.xml"), generateSitemapXml(), "utf8");
+writeFileSync(path.join(outDir, "robots.txt"), generateRobotsTxt(), "utf8");
+console.log("  • sitemap.xml + robots.txt (SEO)");
 
 let copied = 0;
 for (const fav of FAVICON_FILES) {

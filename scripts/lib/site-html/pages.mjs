@@ -139,7 +139,8 @@ export function pageHome() {
 
   return shell({
     title: "Café de especialidad colombiano",
-    description: "Tostadores de café de especialidad en Cali, Colombia.",
+    description:
+      "Más Café — tostadores de café de especialidad en Cali, Colombia. Menú, tienda online y hospitalidad en San Fernando Nuevo.",
     depth: 0,
     pageId: "home",
     heroArt: "/images/grafica/3.png",
@@ -181,7 +182,8 @@ export function pageCafe() {
 
   return shell({
     title: "Café de especialidad",
-    description: "Microlotes colombianos con trazabilidad al origen.",
+    description:
+      "Café de especialidad colombiano en Cali. Microlotes con trazabilidad, métodos de preparación y tienda Más Café.",
     depth: 1,
     pageId: "cafe",
     body,
@@ -234,7 +236,8 @@ export function pageMenu() {
 
   return shell({
     title: "Menú",
-    description: "Carta de café de especialidad, desayuno y repostería.",
+    description:
+      "Menú Más Café en Cali: café de especialidad, desayunos, brunch y repostería. Precios en COP.",
     depth: 1,
     pageId: "menu",
     body,
@@ -282,7 +285,8 @@ export function pageNosotros() {
 
   return shell({
     title: "Nosotros",
-    description: brand.purpose,
+    description:
+      "Conoce Más Café: historia, valores y equipo. Café de especialidad y hospitalidad en Cali, Colombia.",
     depth: 1,
     pageId: "nosotros",
     body,
@@ -312,7 +316,8 @@ export function pageTienda() {
 
   return shell({
     title: "Tienda online",
-    description: "Compra café de especialidad colombiano.",
+    description:
+      "Compra café de especialidad colombiano en la tienda Más Café. Grano y molido, envíos y retiro en Cali.",
     depth: 1,
     pageId: "tienda",
     body,
@@ -350,7 +355,8 @@ export function pageBlog() {
 
   return shell({
     title: "Blog",
-    description: "Historias sobre café, origen y hospitalidad.",
+    description:
+      "Blog Más Café: origen del café, recetas, cultura cafetera y novedades de nuestro local en Cali.",
     depth: 1,
     pageId: "blog",
     body,
@@ -399,7 +405,8 @@ export function pageContacto() {
 
   return shell({
     title: "Contacto",
-    description: "Visítanos en Cali o escríbenos.",
+    description:
+      "Contacto Más Café — Calle 5B #2-38-09, San Fernando Nuevo, Cali. Horarios, WhatsApp y cómo llegar.",
     depth: 1,
     pageId: "contacto",
     body,

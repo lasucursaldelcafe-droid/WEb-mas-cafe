@@ -7,5 +7,14 @@
   "customDomainWww": "www.mascafé.com",
   "googleDriveFolderId": "153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC",
   "dnsConfiguredAt": "2026-06-30T18:08:39.088Z",
-  "dnsConfiguredBy": "npm run domain:configure"
+  "dnsConfiguredBy": "npm run domain:configure",
+  "seo": {
+    "siteUrl": "https://www.mascafé.com",
+    "siteName": "Más Café",
+    "ogImagePath": "/images/brand/horizontal-azul.png",
+    "locale": "es_CO",
+    "googleSiteVerification": "",
+    "bingSiteVerification": "",
+    "twitterHandle": ""
+  }
 }

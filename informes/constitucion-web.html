@@ -86,7 +86,7 @@
       <p style="margin-top:.85rem;max-width:42rem;opacity:.9">Modelo oficial del sitio, inventario Drive → web, arquitectura, migración a <strong>https://www.mascafé.com</strong>, wallet de fidelización y checklist editable para la marca.</p>
       <div class="meta">
         <span>Versión 1.3.1</span>
-        <span>Generado: 2026-06-30 17:24 UTC</span>
+        <span>Generado: 2026-06-30 18:21 UTC</span>
         <span class="badge live">Sitio en línea OK</span>
       </div>
     </div>
@@ -106,6 +106,7 @@
       <a href="#migracion">Migración</a>
       <a href="#wallet">Wallet</a>
       <a href="#wallet-visual">Mockup Wallet</a>
+      <a href="#seguridad">Seguridad</a>
       <a href="#requisitos">Requisitos</a>
       <a href="#enlaces">Enlaces</a>
       <a href="#dueños">Dueños</a>
@@ -1385,16 +1386,42 @@
         <li>Staff con PIN o login limitado para cargar puntos en caja.</li>
         <li>Contraseñas admin hasheadas (mejora pendiente en el panel actual).</li>
       </ul>
-      <div class="source-hint">Editar reglas y estados: <code>content/informe-requisitos.json</code> → <code>wallet</code></div>
+      <div class="source-hint">Editar reglas y estados: <code>content/informe-requisitos.json</code> → <code>wallet</code><br/>
+      Checklist gratis paso a paso: <code>proyecto-mas-cafe/entregables/WALLET-CHECKLIST-GRATIS.md</code></div>
+    </section>
+
+    <section id="seguridad">
+      <h2>12. Seguridad, credenciales y ejecución autónoma</h2>
+      <p>Para que Cursor y GitHub Actions desplieguen dominio y sitio <strong>sin pedir contraseñas en cada chat</strong>, los secretos viven en GitHub Secrets y en archivos locales que <em>no</em> se suben a Git.</p>
+      <div class="callout"><strong>Guía completa:</strong> <code>proyecto-mas-cafe/cuentas/SEGURIDAD.md</code></div>
+      <h3>Dónde guardar cada credencial</h3>
+      <table>
+        <thead><tr><th>Tipo</th><th>Dónde</th><th>Para qué</th></tr></thead>
+        <tbody>
+          <tr><td>DNS GoDaddy</td><td>GitHub Secrets <code>GODADDY_API_KEY</code> + <code>GODADDY_API_SECRET</code></td><td><code>npm run domain:configure</code></td></tr>
+          <tr><td>GitHub Pages API</td><td>Secret <code>GH_PAGES_PAT</code></td><td>Custom domain automático</td></tr>
+          <tr><td>Deploy admin</td><td>Secret <code>ADMIN_PUBLISH_KEY</code></td><td>Publicar desde <code>/admin/</code></td></tr>
+          <tr><td>Firebase CI</td><td>Secret <code>FIREBASE_TOKEN</code></td><td>Deploy hosting respaldo</td></tr>
+          <tr><td>Desarrollo local</td><td><code>.env.local</code> (gitignored)</td><td>Scripts en tu PC</td></tr>
+          <tr><td>Entrega al dueño</td><td><code>CREDENCIALES.md</code> (gitignored)</td><td>Bloc privado — copiar desde plantilla</td></tr>
+        </tbody>
+      </table>
+      <h3>Panel de secrets</h3>
+      <p><a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/secrets/actions" target="_blank" rel="noopener">github.com/.../settings/secrets/actions</a></p>
+      <div class="callout warn"><strong>Nunca</strong> pegues tokens en el chat ni en commits. Di «configurado» y actualiza Secrets o <code>REGISTRO-HECHO.md</code>.</div>
+      <h3>Migración a GitHub solo Más Café</h3>
+      <p>Cuando exista la organización/repo de Más Café: transferir repositorio, <strong>recrear todos los Secrets</strong>, reconectar Cursor y volver a ejecutar <code>domain:configure</code>. Ver checklist en <code>proyecto-mas-cafe/migracion/CHECKLIST.md</code>.</p>
     </section>
 
     <section id="requisitos">
-      <h2>12. Lo que necesitamos de ustedes — checklist editable</h2>
+      <h2>13. Lo que necesitamos de ustedes — checklist editable</h2>
       <p>Esta tabla se actualiza editando un solo archivo en el repositorio. Los campos vacíos aparecen como <span class="field-empty">Por completar</span>.</p>
       <div class="callout"><strong>Archivo para completar:</strong> <code>content/informe-requisitos.json</code><br/>
       Tras editarlo: push a <code>main</code> → el informe se regenera automáticamente en el deploy.</div>
       <div class="callout warn"><strong>Carpeta de entrega y cuentas:</strong> <code>proyecto-mas-cafe/</code><br/>
       • Enlaces para configurar: <code>proyecto-mas-cafe/cuentas/ENLACES-CONFIGURACION.md</code><br/>
+      • Seguridad y secrets: <code>proyecto-mas-cafe/cuentas/SEGURIDAD.md</code><br/>
+      • Wallet gratis paso a paso: <code>proyecto-mas-cafe/entregables/WALLET-CHECKLIST-GRATIS.md</code><br/>
       • Pegar lo ya hecho: <code>proyecto-mas-cafe/cuentas/REGISTRO-HECHO.md</code><br/>
       • Credenciales locales (no Git): copiar <code>CREDENCIALES.template.md</code> → <code>CREDENCIALES.md</code></div>
       <table>
@@ -1517,7 +1544,7 @@
     </section>
 
     <section id="enlaces">
-      <h2>13. Enlaces del ecosistema y por qué existen</h2>
+      <h2>14. Enlaces del ecosistema y por qué existen</h2>
       <table>
         <thead><tr><th>Enlace</th><th>URL</th><th>Motivo</th></tr></thead>
         <tbody><tr><td>Sitio público (GitHub Pages)</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/</a></td><td>Hosting principal. Se actualiza con cada push a main.</td></tr><tr><td>Panel admin</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/</a></td><td>Edición de contenido sin tocar código. Publicación automática.</td></tr><tr><td>Este informe</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/</a></td><td>Documento constitucional para la marca. No aparece en el menú del sitio.</td></tr><tr><td>Mockup Wallet (Apple + Google)</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/wallet/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/wallet/</a></td><td>Vista previa visual de la tarjeta de fidelización en iPhone y Android.</td></tr><tr><td>Repositorio GitHub</td><td><a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe" target="_blank" rel="noopener">https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe</a></td><td>Código fuente, historial de cambios y colaboración.</td></tr><tr><td>Carpeta Drive (marca)</td><td><a href="https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC" target="_blank" rel="noopener">https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC</a></td><td>Fuente original de logotipos, ilustraciones y aplicaciones.</td></tr><tr><td>Dominio mascafé.com</td><td><a href="https://www.mascafé.com/" target="_blank" rel="noopener">https://www.mascafé.com/</a></td><td>Destino final (punycode: xn--mascaf-gva.com). DNS GoDaddy → hosting con backend cuando haya wallet.</td></tr><tr><td>Firebase Hosting (respaldo)</td><td><a href="https://mas-cafe-c8413.web.app/" target="_blank" rel="noopener">https://mas-cafe-c8413.web.app/</a></td><td>Plataforma alternativa configurada en el repo. Mismo build HTML.</td></tr><tr><td>Instagram</td><td><a href="https://www.instagram.com/mascafecol315" target="_blank" rel="noopener">https://www.instagram.com/mascafecol315</a></td><td>Red social principal — tráfico y comunidad.</td></tr><tr><td>Facebook</td><td><a href="https://www.facebook.com/mascafecol" target="_blank" rel="noopener">https://www.facebook.com/mascafecol</a></td><td>Segunda red — eventos y alcance local.</td></tr><tr><td>WhatsApp</td><td><a href="https://wa.me/573156573897" target="_blank" rel="noopener">https://wa.me/573156573897</a></td><td>Canal de conversión directa (pedidos, reservas, consultas).</td></tr><tr><td>Google Maps</td><td><a href="https://maps.google.com/?q=Calle%205B%20%232-38-09%2C%20Barrio%20San%20Fernando%20Nuevo%2C%20Cali%2C%20Valle%20del%20Cauca%2C%20Colombia" target="_blank" rel="noopener">https://maps.google.com/?q=Calle%205B%20%232-38-09%2C%20Barrio%20San%20Fernando%20Nuevo%2C%20Cali%2C%20Valle%20del%20Cauca%2C%20Colombia</a></td><td>Navegación al local físico.</td></tr></tbody>
@@ -1525,7 +1552,7 @@
     </section>
 
     <section id="dueños">
-      <h2>14. Recomendaciones para dueños de Más Café</h2>
+      <h2>15. Recomendaciones para dueños de Más Café</h2>
       <h3>Consejos para dueños de Más Café</h3>
       <ul>
         <li><strong>Una frase por pantalla.</strong> Evitar repetir tagline y descriptor en cada sección; reservarlos para momentos clave.</li>
@@ -1543,8 +1570,8 @@
     </section>
 
     <section id="changelog">
-      <h2>15. Historial de entregas (se actualiza con cada cambio)</h2>
-      <ul><li><time>2026-06-30</time> — Fix mockup wallet — rutas de imágenes ../../images/ y verificación de enlaces (npm run verify:links).</li><li><time>2026-06-27</time> — Informe v1.3 — mockup visual Apple Wallet + Google Wallet en /informe/wallet/.</li><li><time>2026-06-27</time> — Automatización DNS dominio mascafé.com (npm run domain:configure).</li><li><time>2026-06-27</time> — Carpeta proyecto-mas-cafe/ — entrega, enlaces de cuentas, REGISTRO-HECHO y plantilla CREDENCIALES.</li><li><time>2026-06-27</time> — Informe v1.1 — wallet de fidelización, migración mascafé.com, checklist editable en content/informe-requisitos.json.</li><li><time>2026-06-27</time> — Informe constitucional v1.0 — paleta crema, textos sin repetición, auditoría de activos Drive.</li><li><time>2026-06-27</time> — Favicon del logo en todas las páginas.</li><li><time>2026-06-27</time> — Rediseño móvil editorial y vista previa admin en todos los paneles.</li><li><time>2026-06-26</time> — Sitio multipágina HTML estático + panel admin + GitHub Actions.</li></ul>
+      <h2>16. Historial de entregas (se actualiza con cada cambio)</h2>
+      <ul><li><time>2026-06-30</time> — Seguridad y credenciales (SEGURIDAD.md) + checklist wallet gratis paso a paso.</li><li><time>2026-06-30</time> — Fix dominio — custom domain solo si DNS público propagado; sitio github.io estable.</li><li><time>2026-06-27</time> — Informe v1.3 — mockup visual Apple Wallet + Google Wallet en /informe/wallet/.</li><li><time>2026-06-27</time> — Automatización DNS dominio mascafé.com (npm run domain:configure).</li><li><time>2026-06-27</time> — Carpeta proyecto-mas-cafe/ — entrega, enlaces de cuentas, REGISTRO-HECHO y plantilla CREDENCIALES.</li><li><time>2026-06-27</time> — Informe v1.1 — wallet de fidelización, migración mascafé.com, checklist editable en content/informe-requisitos.json.</li><li><time>2026-06-27</time> — Informe constitucional v1.0 — paleta crema, textos sin repetición, auditoría de activos Drive.</li><li><time>2026-06-27</time> — Favicon del logo en todas las páginas.</li><li><time>2026-06-27</time> — Rediseño móvil editorial y vista previa admin en todos los paneles.</li><li><time>2026-06-26</time> — Sitio multipágina HTML estático + panel admin + GitHub Actions.</li></ul>
       <p class="muted" style="margin-top:1rem">Próxima actualización automática al ejecutar <code>npm run build:github-pages</code> tras cambios en el repositorio.</p>
     </section>
 
