@@ -220,11 +220,12 @@ export function menuBookScript() {
       var touchX=0;
       var preloaded={};
       var inView=true;
+      var pageAlways=root.getAttribute('data-autostart')==='always';
       var autoplayTimer=null;
       var autoplayPaused=false;
       var autoplayResumeTimer=null;
       var AUTOPLAY_MS=parseInt(root.getAttribute('data-autoplay-ms')||'4200',10)||4200;
-      var AUTOPLAY_START_MS=parseInt(root.getAttribute('data-autoplay-start-ms')||'1600',10)||1600;
+      var AUTOPLAY_START_MS=parseInt(root.getAttribute('data-autoplay-start-ms')||'350',10)||350;
       var AUTOPLAY_RESUME_MS=12000;
 
       function clearAutoplay(){
@@ -241,8 +242,9 @@ export function menuBookScript() {
       }
 
       function canAutoplay(){
-        if(reduced||autoplayPaused||busy||document.hidden||!inView)return false;
-        return true;
+        if(reduced||autoplayPaused||busy||document.hidden)return false;
+        if(pageAlways)return true;
+        return inView;
       }
 
       function scheduleAutoplay(delay){
@@ -505,18 +507,18 @@ export function menuBookScript() {
         else goPrev(false);
       },{passive:true});
 
-      if('IntersectionObserver' in window){
+      if('IntersectionObserver' in window&&!pageAlways){
         var observer=new IntersectionObserver(function(entries){
           inView=!!(entries[0]&&entries[0].isIntersecting);
           if(inView&&!autoplayPaused&&!reduced)scheduleAutoplay(AUTOPLAY_MS);
           else clearAutoplay();
-        },{threshold:0.3});
+        },{threshold:0.15});
         observer.observe(root);
       }
 
       document.addEventListener('visibilitychange',function(){
         if(document.hidden)clearAutoplay();
-        else if(!autoplayPaused&&!reduced)scheduleAutoplay(AUTOPLAY_MS);
+        else if(!autoplayPaused&&!reduced)scheduleAutoplay(pageAlways?AUTOPLAY_START_MS:AUTOPLAY_MS);
       });
 
       window.addEventListener('resize',function(){
@@ -530,8 +532,7 @@ export function menuBookScript() {
       preloadPage(1);
       preloadPage(2);
       render();
-      var firstVisible=mobile?mobileCurrentImg:(rightSlot&&rightSlot.querySelector('img'));
-      watchImageLoad(firstVisible,function(){
+      function bootBook(){
         markReady();
         if(mobile){
           preloadPage(page+1);
@@ -541,12 +542,10 @@ export function menuBookScript() {
           if(s.right>=0){preloadPage(s.right+1);preloadPage(s.right+2);}
         }
         startAutoplay();
-        window.setTimeout(function(){
-          try{
-            root.scrollIntoView({behavior:reduced?'auto':'smooth',block:'center'});
-          }catch(e){}
-        },reduced?0:280);
-      });
+      }
+      var firstVisible=mobile?mobileCurrentImg:(rightSlot&&rightSlot.querySelector('img'));
+      if(firstVisible&&(firstVisible.complete&&firstVisible.naturalWidth>0))bootBook();
+      else watchImageLoad(firstVisible,bootBook);
     })();
   `;
 }
@@ -568,7 +567,7 @@ export function renderMenuBook({ img, pages, disclaimer }) {
   <div class="menu-book-section">
     <style>${menuBookStyles()}</style>
     <div class="menu-book-stage">
-      <div class="menu-book-viewport menu-book-loading" id="menu-book" data-pages='${dataPages}' data-autoplay-ms="4200" data-autoplay-start-ms="1600" tabindex="0" aria-label="Menú digital interactivo">
+      <div class="menu-book-viewport menu-book-loading" id="menu-book" data-pages='${dataPages}' data-autostart="always" data-autoplay-ms="4200" data-autoplay-start-ms="350" tabindex="0" aria-label="Menú digital interactivo">
         <div class="menu-book-spread" aria-hidden="false">
           <div class="menu-book-page-slot left blank"><img alt="" loading="lazy" decoding="async"/></div>
           <div class="menu-book-page-slot right"><img src="${pageUrls[0]}" alt="Página 1 del menú" loading="eager" fetchpriority="high" decoding="async"/></div>
@@ -603,7 +602,7 @@ export function renderMenuBook({ img, pages, disclaimer }) {
         <span class="menu-book-counter">1 / ${pages.length}</span>
         <button type="button" class="menu-book-btn" data-book-next aria-label="Página siguiente">›</button>
       </div>
-      <p class="menu-book-hint">El menú avanza solo al abrir. Desliza o toca los lados para pasar página como un libro</p>
+      <p class="menu-book-hint">El menú se muestra al entrar y avanza solo. Desliza o toca los lados para pasar página</p>
       ${disclaimer ? `<div class="menu-book-footer"><p>${disclaimer}</p></div>` : ""}
     </div>
   </div>

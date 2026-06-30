@@ -237,14 +237,14 @@ export function pageMenu() {
 
   const body = `
   <section class="menu-page">
-    <div class="menu-hero">
+    ${renderMenuBook({ img, pages: bookPages, disclaimer: pm.disclaimer })}
+    <div class="menu-hero menu-hero-below">
       <div class="wrap">
         <p class="soul">${pm.tagline}</p>
         <h1>${brandTitleHtml(pm.headline)}</h1>
         <p class="intro">${pm.intro || brand.purpose}</p>
       </div>
     </div>
-    ${renderMenuBook({ img, pages: bookPages, disclaimer: pm.disclaimer })}
     ${bookPages.length ? "" : `${renderTextMenuFallback(menu)}<div class="menu-footer wrap"><p>${pm.disclaimer}</p></div>`}
   </section>
   ${visitBand(href, brand)}`;

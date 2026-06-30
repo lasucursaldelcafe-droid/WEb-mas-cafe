@@ -398,9 +398,26 @@ export function siteStyles() {
 
     /* ── Menu page (tipografía editorial Pergamino) ── */
     .menu-page{background:var(--cream)}
+    .menu-page .menu-book-section{
+      padding:clamp(4.75rem,9vw,5.5rem) 0 clamp(1.25rem,3vw,2rem);
+    }
     .menu-hero{
       text-align:center;padding:clamp(5rem,9vw,6rem) 0 clamp(1.5rem,4vw,2rem);
       background:var(--cream);color:var(--blue);
+    }
+    .menu-page .menu-hero-below{
+      padding:0 0 clamp(2rem,4vw,2.75rem);
+      text-align:center;
+    }
+    .menu-page .menu-hero-below .soul{
+      font-size:clamp(1rem,2.4vw,1.25rem);margin-bottom:.25rem;
+    }
+    .menu-page .menu-hero-below h1{
+      font-size:clamp(1.35rem,3.5vw,1.85rem);line-height:1.12;
+    }
+    .menu-page .menu-hero-below .intro{
+      max-width:32rem;margin:.75rem auto 0;font-size:.88rem;line-height:1.65;
+      opacity:.72;
     }
     .menu-hero .soul{
       font-family:var(--font-accent);
@@ -728,6 +745,16 @@ export function siteStyles() {
       .menu-hero .soul{font-size:1.05rem;line-height:1.15;margin-bottom:.15rem}
       .menu-hero h1{font-size:clamp(1.95rem,8vw,2.35rem);line-height:1.05;margin-top:.25rem}
       .menu-hero .intro{font-size:.84rem;margin-top:.65rem;padding:0;text-align:left;line-height:1.65;opacity:.78}
+      .menu-page .menu-book-section{padding:4.35rem 0 .75rem}
+      .menu-page .menu-hero-below{
+        padding:0 0 1.75rem;text-align:left;
+      }
+      .menu-page .menu-hero-below .wrap{text-align:left}
+      .menu-page .menu-hero-below .soul{font-size:.95rem}
+      .menu-page .menu-hero-below h1{font-size:clamp(1.25rem,5.5vw,1.55rem);line-height:1.08}
+      .menu-page .menu-hero-below .intro{
+        font-size:.82rem;margin-top:.55rem;text-align:left;max-width:none;
+      }
       .menu-sheet{padding:0 0 2rem;max-width:none}
       .menu-cat{margin-bottom:1.65rem}
       .menu-cat-head{text-align:left;margin-bottom:.85rem;padding-bottom:.6rem}
