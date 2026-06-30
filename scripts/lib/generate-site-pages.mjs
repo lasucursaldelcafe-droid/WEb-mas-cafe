@@ -1,5 +1,6 @@
 import { loadSite } from "./site-html/shared.mjs";
 import { buildSitePages, pageHome } from "./site-html/pages.mjs";
+import { resolveMenuBookPages, loadDriveAssets } from "./drive-assets.mjs";
 
 /** Compatibilidad: devuelve solo la home */
 export function generatePublicHtml() {
@@ -33,5 +34,8 @@ export function collectImagePaths() {
   for (const p of site.products) paths.add(p.image);
   for (const b of site.blog ?? []) paths.add(b.image);
   if (site.brand?.nosotrosImage) paths.add(site.brand.nosotrosImage);
+  for (const p of resolveMenuBookPages(loadDriveAssets())) paths.add(p);
+  const menuPdf = loadDriveAssets().menuBook?.pdfLocalPath;
+  if (menuPdf) paths.add(menuPdf);
   return [...paths];
 }

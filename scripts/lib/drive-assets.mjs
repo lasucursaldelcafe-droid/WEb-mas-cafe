@@ -1,6 +1,8 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import sharp from "sharp";
+import { pdf } from "pdf-to-img";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "../..");
@@ -88,7 +90,62 @@ export async function syncAllDriveAssets(manifest = loadDriveAssets()) {
       console.warn(`  ⚠ ${img.id}: ${err.message}`);
     }
   }
+
+  try {
+    const menuPages = await syncMenuBook(manifest);
+    if (menuPages > 0) {
+      synced += menuPages;
+      console.log(`  ✅ Menú digital → ${menuPages} página(s)`);
+    }
+  } catch (err) {
+    console.warn(`  ⚠ menuBook: ${err.message}`);
+  }
+
   return synced;
+}
+
+export function resolveMenuBookPages(manifest = loadDriveAssets()) {
+  const book = manifest.menuBook;
+  if (!book?.pagesDir) return [];
+
+  const dir = resolvePublicPath(book.pagesDir);
+  if (!existsSync(dir)) return [];
+
+  return readdirSync(dir)
+    .filter((file) => /^page-\d+\.webp$/i.test(file))
+    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+    .map((file) => `${book.pagesDir}/${file}`);
+}
+
+export async function syncMenuBook(manifest = loadDriveAssets()) {
+  const book = manifest.menuBook;
+  if (!book?.pdfDriveId) return 0;
+
+  const pdfDest = resolvePublicPath(book.pdfLocalPath || "/menu/menu-digital.pdf");
+  const pagesDir = resolvePublicPath(book.pagesDir || "/images/menu/pages");
+  mkdirSync(path.dirname(pdfDest), { recursive: true });
+  mkdirSync(pagesDir, { recursive: true });
+
+  const pdfBuffer = await downloadFromDrive(book.pdfDriveId);
+  writeFileSync(pdfDest, pdfBuffer);
+
+  const scale = book.scale || 2;
+  const document = await pdf(pdfDest, { scale });
+  let pageNum = 0;
+
+  for await (const pageBuffer of document) {
+    pageNum += 1;
+    const filename = `page-${String(pageNum).padStart(2, "0")}.webp`;
+    const dest = path.join(pagesDir, filename);
+    await sharp(pageBuffer).webp({ quality: 86 }).toFile(dest);
+  }
+
+  if (pageNum > 0) {
+    book.pageCount = pageNum;
+    saveDriveAssets(manifest);
+  }
+
+  return pageNum;
 }
 
 export function buildFontFacesCss(depth, site, manifest = loadDriveAssets()) {
