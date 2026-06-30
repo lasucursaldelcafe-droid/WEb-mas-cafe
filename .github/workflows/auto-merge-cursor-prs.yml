@@ -43,17 +43,25 @@ jobs:
           cache: npm
 
       - name: Validar build y SEO
+        env:
+          ADMIN_PUBLISH_KEY: ${{ secrets.ADMIN_PUBLISH_KEY }}
+          GH_PAGES_PAT: ${{ secrets.GH_PAGES_PAT }}
         run: |
           npm ci
           npm run brand:sync-logo || true
           npm run build:github-pages
           npm run verify:links
           npm run verify:seo
+          npm run verify:admin
 
       - name: Fusionar PR automáticamente
         env:
           GH_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
         run: |
+          # El build regenera informes/*.html; limpiar antes de que gh merge haga checkout
+          git reset --hard HEAD
+          git clean -fd
+
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.pr_number }}" ]; then
             PR="${{ inputs.pr_number }}"
           else

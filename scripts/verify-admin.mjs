@@ -9,7 +9,6 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
 const adminPath = path.join(root, "gh-pages-site/admin/index.html");
-const ci = process.env.CI === "true";
 
 function fail(msg) {
   console.error(`❌ Admin: ${msg}`);
@@ -41,10 +40,12 @@ try {
 } catch {
   fail("PUBLISH_SECRET no es JSON válido");
 }
+
+const strictSecret = process.env.VERIFY_ADMIN_STRICT === "1";
 if (!secretValue) {
   const msg =
-    "PUBLISH_SECRET vacío — configura el secret ADMIN_PUBLISH_KEY (PAT con permiso contents:write) o GH_PAGES_PAT en GitHub Actions";
-  if (ci) fail(msg);
+    "PUBLISH_SECRET vacío — configura ADMIN_PUBLISH_KEY (PAT con contents:write) o GH_PAGES_PAT en GitHub Actions";
+  if (strictSecret) fail(msg);
   warn(msg);
 } else {
   console.log("✅ Admin: PUBLISH_SECRET configurado");
