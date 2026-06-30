@@ -6,7 +6,7 @@ import { readFileSync, writeFileSync, existsSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { getDnsRecords } from "./godaddy-api.mjs";
-import { loadSeoSettings, GITHUB_PAGES_FALLBACK } from "./seo.mjs";
+import { loadSeoSettings, GITHUB_PAGES_FALLBACK, resolvePublicSiteUrl } from "./seo.mjs";
 import { DOMAIN_PUNYCODE } from "./domain-config.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -96,7 +96,7 @@ export async function pingSitemap(siteUrl) {
 
 export async function runGoogleSeoSync({ dryRun = false, ping = true } = {}) {
   const seo = loadSeoSettings();
-  const siteUrl = seo.siteUrl || GITHUB_PAGES_FALLBACK.replace(/\/$/, "");
+  const siteUrl = resolvePublicSiteUrl() || GITHUB_PAGES_FALLBACK.replace(/\/$/, "");
 
   const sync = await syncGoogleVerificationToSettings({ dryRun });
   let pings = [];

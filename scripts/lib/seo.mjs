@@ -1,14 +1,16 @@
 /**
  * SEO y reconocimiento de marca — meta tags, Open Graph, JSON-LD, sitemap.
  */
-import { readFileSync, existsSync } from "fs";
+import { readFileSync, existsSync, writeFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { DOMAIN_URL } from "./domain-config.mjs";
+import { domainToASCII } from "node:url";
+import { DOMAIN_PUNYCODE } from "./domain-config.mjs";
 import { brandAssetPath } from "./brand-logo.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "../..");
+const settingsPath = path.join(root, "content/settings.json");
 
 const GITHUB_PAGES_FALLBACK = "https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe";
 
@@ -20,25 +22,57 @@ export function escapeMeta(s) {
     .replace(/>/g, "&gt;");
 }
 
-export function loadSeoSettings() {
-  const settingsPath = path.join(root, "content/settings.json");
-  const settings = existsSync(settingsPath)
-    ? JSON.parse(readFileSync(settingsPath, "utf8"))
-    : {};
+export function loadSettingsFile() {
+  if (!existsSync(settingsPath)) return {};
+  return JSON.parse(readFileSync(settingsPath, "utf8"));
+}
+
+/** Hostname ASCII (punycode) — requerido en sitemaps para dominios con tilde */
+export function toAsciiHostname(host) {
+  const raw = String(host ?? "").trim();
+  if (!raw) return DOMAIN_PUNYCODE;
+  try {
+    return domainToASCII(raw) || raw;
+  } catch {
+    return raw;
+  }
+}
+
+/**
+ * URL pública real del sitio (apex, punycode, protocolo accesible hoy).
+ * GitHub Pages sirve en http://mascafé.com; www redirige al apex.
+ */
+export function resolvePublicSiteUrl(settings = loadSettingsFile()) {
   const seo = settings.seo ?? {};
-  const base =
-    seo.siteUrl ||
-    (settings.customDomainWww ? `https://${settings.customDomainWww}` : null) ||
-    DOMAIN_URL;
+  const host = toAsciiHostname(settings.customDomainPunycode || DOMAIN_PUNYCODE);
+  const scheme = seo.httpsReady === true ? "https" : "http";
+  return `${scheme}://${host}`.replace(/\/$/, "");
+}
+
+export function loadSeoSettings() {
+  const settings = loadSettingsFile();
+  const seo = settings.seo ?? {};
+  const siteUrl =
+    resolvePublicSiteUrl(settings) ||
+    GITHUB_PAGES_FALLBACK.replace(/\/$/, "");
   return {
-    siteUrl: base.replace(/\/$/, ""),
+    siteUrl,
     siteName: seo.siteName || "Más Café",
     defaultOgImage: seo.ogImagePath || brandAssetPath("og"),
     googleSiteVerification: seo.googleSiteVerification || "",
     bingSiteVerification: seo.bingSiteVerification || "",
     locale: seo.locale || "es_CO",
     twitterHandle: seo.twitterHandle || "",
+    httpsReady: seo.httpsReady === true,
   };
+}
+
+export function saveSeoSiteUrl(siteUrl, { httpsReady = true } = {}) {
+  const settings = loadSettingsFile();
+  settings.seo = settings.seo ?? {};
+  settings.seo.siteUrl = siteUrl.replace(/\/$/, "");
+  settings.seo.httpsReady = httpsReady;
+  writeFileSync(settingsPath, `${JSON.stringify(settings, null, 2)}\n`);
 }
 
 /** URL absoluta de una ruta del sitio (slug vacío = home) */
@@ -134,7 +168,7 @@ export function seoHead({
   });
   const canonical = pageUrl(siteUrl, slug);
   const ogImage = assetUrl(siteUrl, ogImagePath || seo.defaultOgImage, depth);
-  const logoUrl = assetUrl(siteUrl, brandAssetPath("primary"), depth);
+  const logoUrl = assetUrl(siteUrl, brandAssetPath("horizontalCrema"), depth);
   const jsonLd = jsonLdLocalBusiness({
     brand,
     siteUrl,
@@ -189,10 +223,11 @@ const PUBLIC_SLUGS = [
   "contacto",
 ];
 
-export function generateSitemapXml(siteUrl = loadSeoSettings().siteUrl) {
+export function generateSitemapXml(siteUrl = resolvePublicSiteUrl()) {
+  const base = siteUrl.replace(/\/$/, "");
   const lastmod = new Date().toISOString().slice(0, 10);
   const urls = PUBLIC_SLUGS.map((slug) => {
-    const loc = pageUrl(siteUrl, slug);
+    const loc = pageUrl(base, slug);
     const priority = slug === "" ? "1.0" : "0.8";
     const changefreq = slug === "blog" ? "weekly" : "monthly";
     return `  <url>
@@ -209,14 +244,15 @@ ${urls.join("\n")}
 `;
 }
 
-export function generateRobotsTxt(siteUrl = loadSeoSettings().siteUrl) {
+export function generateRobotsTxt(siteUrl = resolvePublicSiteUrl()) {
+  const base = siteUrl.replace(/\/$/, "");
   return `User-agent: *
 Allow: /
 
 Disallow: /admin/
 Disallow: /informe/
 
-Sitemap: ${siteUrl}/sitemap.xml
+Sitemap: ${base}/sitemap.xml
 `;
 }
 

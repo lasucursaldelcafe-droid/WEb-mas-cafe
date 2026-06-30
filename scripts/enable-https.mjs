@@ -27,6 +27,7 @@ import {
   isCertificateReady,
   configureGithubPagesDomain,
 } from "./lib/github-pages-api.mjs";
+import { saveSeoSiteUrl } from "./lib/seo.mjs";
 
 loadEnvLocal();
 
@@ -134,7 +135,9 @@ async function main() {
     ).trim();
     console.log(`\n  HTTPS https://${DOMAIN_DISPLAY}/ → HTTP ${code}`);
     if (code === "200") {
-      console.log("\n✅ Conexión segura lista.\n");
+      saveSeoSiteUrl(`https://${DOMAIN_PUNYCODE}`, { httpsReady: true });
+      console.log("  ✅ settings.json → httpsReady + siteUrl HTTPS");
+      console.log("\n✅ Conexión segura lista. Ejecuta: npm run build:github-pages\n");
       process.exit(0);
     }
   } catch {
