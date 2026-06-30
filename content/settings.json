@@ -8,10 +8,16 @@
   "googleDriveFolderId": "153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC",
   "dnsConfiguredAt": "2026-06-30T18:08:39.088Z",
   "dnsConfiguredBy": "npm run domain:configure",
+  "brand": {
+    "primaryLogoDriveId": "1ujaXixhIBH7nMdV-xg3sjtkkKXDT9wmo",
+    "primaryLogoDriveUrl": "https://drive.google.com/file/d/1ujaXixhIBH7nMdV-xg3sjtkkKXDT9wmo/view?usp=drive_link",
+    "primaryLogoPath": "/images/brand/logo-principal.png",
+    "faviconSource": "/images/brand/logo-principal.png"
+  },
   "seo": {
     "siteUrl": "https://www.mascafé.com",
     "siteName": "Más Café",
-    "ogImagePath": "/images/brand/horizontal-azul.png",
+    "ogImagePath": "/images/brand/logo-og.png",
     "locale": "es_CO",
     "googleSiteVerification": "gBnzp-QC0O5reOcPcPNRt9JspObDalVMAJZ_h1qGq0Y",
     "googleSearchConsoleVerifiedAt": "2026-06-30T18:35:00.000Z",

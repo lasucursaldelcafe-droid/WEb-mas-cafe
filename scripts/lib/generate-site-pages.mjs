@@ -16,6 +16,8 @@ export function generateSitePages() {
 export function collectImagePaths() {
   const site = loadSite();
   const paths = new Set([
+    "/images/brand/logo-principal.png",
+    "/images/brand/logo-og.png",
     "/images/brand/horizontal-crema.png",
     "/images/brand/horizontal-azul.png",
     "/images/brand/favs.png",
