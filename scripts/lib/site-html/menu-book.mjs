@@ -12,8 +12,8 @@ export function menuBookStyles() {
       padding:0 1rem;
     }
     .menu-book-hint{
-      text-align:center;font-size:.82rem;color:rgba(43,43,43,.5);
-      margin-top:1rem;font-style:italic;
+      text-align:center;font-size:.84rem;color:rgba(43,43,43,.55);
+      margin-top:1rem;font-style:italic;line-height:1.65;
       transition:transform .4s cubic-bezier(.22,1,.36,1),color .25s ease;
     }
     .menu-book-hint:hover{transform:translateY(-1px);color:rgba(43,43,43,.68)}
@@ -30,8 +30,8 @@ export function menuBookStyles() {
     .menu-book-btn:hover:not(:disabled){transform:translateY(-2px);background:#fff}
     .menu-book-btn:disabled{opacity:.35;cursor:not-allowed}
     .menu-book-counter{
-      min-width:5.5rem;text-align:center;font-size:.9rem;color:var(--blue);
-      font-variant-numeric:tabular-nums;letter-spacing:.04em;
+      min-width:5.5rem;text-align:center;font-size:.88rem;color:var(--blue);
+      font-variant-numeric:tabular-nums;letter-spacing:.04em;font-weight:500;
     }
     .menu-book-viewport{
       position:relative;margin:0 auto;
@@ -127,6 +127,8 @@ export function menuBookStyles() {
       .menu-book-spread{display:none}
       .menu-book-mobile{display:block}
       .menu-book-flipper{display:none}
+      .menu-book-hint{font-size:.82rem}
+      .menu-book-counter{font-size:.82rem}
     }
     @media(prefers-reduced-motion:reduce){
       .menu-book-flipper{transition:none}
