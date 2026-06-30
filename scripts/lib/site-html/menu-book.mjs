@@ -26,6 +26,7 @@ export function menuBookStyles() {
       background:var(--cream);color:var(--blue);font-size:1.5rem;line-height:1;
       cursor:pointer;transition:transform .15s,background .15s,box-shadow .15s;
       box-shadow:0 4px 18px rgba(7,57,84,.08);
+      -webkit-tap-highlight-color:transparent;
     }
     .menu-book-btn:hover:not(:disabled){transform:translateY(-2px);background:#fff}
     .menu-book-btn:disabled{opacity:.35;cursor:not-allowed}
@@ -102,7 +103,11 @@ export function menuBookStyles() {
     }
     .menu-book-hotzones button{
       appearance:none;border:0;background:transparent;cursor:pointer;
+      -webkit-tap-highlight-color:transparent;
+      -webkit-touch-callout:none;
+      user-select:none;
     }
+    .menu-book-hotzones button:active{background:transparent!important}
     .menu-book-hotzones button:focus-visible{
       outline:2px solid var(--sage);outline-offset:-4px;
     }
@@ -111,10 +116,48 @@ export function menuBookStyles() {
       min-height:clamp(320px,120vw,520px);
       box-shadow:0 24px 60px rgba(7,57,84,.18);
       background:#fff;
+      perspective:1600px;
+      -webkit-tap-highlight-color:transparent;
     }
-    .menu-book-mobile img{
-      width:100%;height:100%;object-fit:contain;display:block;
-      transition:opacity .25s ease;
+    .menu-book-mobile-stack{
+      position:relative;min-height:clamp(320px,120vw,520px);
+      transform-style:preserve-3d;
+    }
+    .menu-book-mobile-under,
+    .menu-book-mobile-current{
+      position:absolute;inset:0;background:#fff;
+    }
+    .menu-book-mobile-under{z-index:1}
+    .menu-book-mobile-current{z-index:2}
+    .menu-book-mobile-under img,
+    .menu-book-mobile-current img{
+      width:100%;height:100%;object-fit:contain;display:block;background:#fff;
+    }
+    .menu-book-mobile-flipper{
+      position:absolute;inset:0;transform-style:preserve-3d;
+      transform-origin:left center;z-index:3;pointer-events:none;
+      transition:transform .58s cubic-bezier(.42,.02,.25,1);
+      transform:rotateY(0deg);
+    }
+    .menu-book-mobile-flipper.flipping-forward{transform:rotateY(-180deg)}
+    .menu-book-mobile-flipper.flipping-back-from{
+      transform-origin:right center;transform:rotateY(180deg);
+    }
+    .menu-book-mobile-flipper.flipping-back-from:not(.flipping-back-to){transition:none}
+    .menu-book-mobile-flipper.flipping-back-from.flipping-back-to{
+      transform:rotateY(0deg);
+    }
+    .menu-book-mobile-face{
+      position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;
+      background:#fff;border-radius:1rem;
+      box-shadow:-8px 0 28px rgba(7,57,84,.14);
+    }
+    .menu-book-mobile-face.back{transform:rotateY(180deg)}
+    .menu-book-mobile-face img{
+      width:100%;height:100%;object-fit:contain;display:block;background:#fff;
+    }
+    .menu-book-mobile.menu-book-mobile-animating .menu-book-mobile-current{
+      visibility:hidden;
     }
     .menu-book-mobile .menu-book-hotzones{grid-template-columns:1fr 1fr}
     .menu-book-footer{
@@ -129,10 +172,15 @@ export function menuBookStyles() {
       .menu-book-flipper{display:none}
       .menu-book-hint{font-size:.82rem}
       .menu-book-counter{font-size:.82rem}
+      .menu-book-btn:active:not(:disabled){
+        transform:none;
+        box-shadow:0 4px 18px rgba(7,57,84,.08);
+        background:var(--cream);
+      }
     }
     @media(prefers-reduced-motion:reduce){
       .menu-book-flipper{transition:none}
-      .menu-book-mobile img{transition:none}
+      .menu-book-mobile-flipper{transition:none}
       .menu-book-viewport.menu-book-loading .menu-book-page-slot.right::after,
       .menu-book-viewport.menu-book-loading .menu-book-mobile::after{animation:none;display:none}
     }
@@ -150,7 +198,11 @@ export function menuBookScript() {
 
       var spreadEl=root.querySelector('.menu-book-spread');
       var mobileEl=root.querySelector('.menu-book-mobile');
-      var mobileImg=mobileEl?mobileEl.querySelector('img'):null;
+      var mobileCurrentImg=mobileEl?mobileEl.querySelector('.menu-book-mobile-current img'):null;
+      var mobileUnderImg=mobileEl?mobileEl.querySelector('.menu-book-mobile-under img'):null;
+      var mobileFlipper=mobileEl?mobileEl.querySelector('.menu-book-mobile-flipper'):null;
+      var mobileFlipFront=mobileFlipper?mobileFlipper.querySelector('.menu-book-mobile-face.front img'):null;
+      var mobileFlipBack=mobileFlipper?mobileFlipper.querySelector('.menu-book-mobile-face.back img'):null;
       var leftSlot=root.querySelector('.menu-book-page-slot.left');
       var rightSlot=root.querySelector('.menu-book-page-slot.right');
       var flipper=root.querySelector('.menu-book-flipper');
@@ -319,11 +371,47 @@ export function menuBookScript() {
       }
 
       function renderMobile(){
-        if(!mobileImg)return;
-        mobileImg.src=pages[page];
-        mobileImg.alt='Página '+(page+1)+' del menú';
+        if(!mobileCurrentImg)return;
+        setImg(mobileCurrentImg,page);
+        if(mobileUnderImg){
+          mobileUnderImg.removeAttribute('src');
+          mobileUnderImg.alt='';
+        }
         updateCounter();
         updateButtons();
+      }
+
+      function finishMobileFlip(cb){
+        if(mobileFlipper)mobileFlipper.className='menu-book-mobile-flipper';
+        if(mobileEl)mobileEl.classList.remove('menu-book-mobile-animating');
+        busy=false;
+        if(cb)cb();
+      }
+
+      function animateMobileFlip(dir,cb){
+        if(!mobileFlipper||!mobileCurrentImg||reduced){
+          cb();
+          return;
+        }
+        var target=dir>0?page+1:page-1;
+        if(target<0||target>=pages.length)return;
+        busy=true;
+        mobileEl.classList.add('menu-book-mobile-animating');
+        if(dir>0){
+          setImg(mobileUnderImg,target);
+          setImg(mobileFlipFront,page);
+          setImg(mobileFlipBack,target);
+          mobileFlipper.className='menu-book-mobile-flipper flipping-forward';
+          window.setTimeout(function(){finishMobileFlip(cb);},580);
+        }else{
+          setImg(mobileUnderImg,target);
+          setImg(mobileFlipFront,target);
+          setImg(mobileFlipBack,page);
+          mobileFlipper.className='menu-book-mobile-flipper flipping-back-from';
+          mobileFlipper.offsetHeight;
+          mobileFlipper.className='menu-book-mobile-flipper flipping-back-from flipping-back-to';
+          window.setTimeout(function(){finishMobileFlip(cb);},580);
+        }
       }
 
       function render(){
@@ -362,8 +450,11 @@ export function menuBookScript() {
         if(!fromAutoplay)userTookControl();
         if(mobile){
           if(page>=pages.length-1)return;
-          page+=1;
-          renderMobile();
+          animateMobileFlip(1,function(){
+            page+=1;
+            renderMobile();
+            preloadPage(page+1);
+          });
           return;
         }
         if(spread>=spreadsCount()-1)return;
@@ -378,8 +469,11 @@ export function menuBookScript() {
         if(!fromAutoplay)userTookControl();
         if(mobile){
           if(page<=0)return;
-          page-=1;
-          renderMobile();
+          animateMobileFlip(-1,function(){
+            page-=1;
+            renderMobile();
+            preloadPage(page-1);
+          });
           return;
         }
         if(spread<=0)return;
@@ -436,7 +530,7 @@ export function menuBookScript() {
       preloadPage(1);
       preloadPage(2);
       render();
-      var firstVisible=mobile?mobileImg:(rightSlot&&rightSlot.querySelector('img'));
+      var firstVisible=mobile?mobileCurrentImg:(rightSlot&&rightSlot.querySelector('img'));
       watchImageLoad(firstVisible,function(){
         markReady();
         if(mobile){
@@ -488,7 +582,16 @@ export function renderMenuBook({ img, pages, disclaimer }) {
           </div>
         </div>
         <div class="menu-book-mobile">
-          <img src="${pageUrls[0]}" alt="Página 1 del menú" loading="eager" fetchpriority="high" decoding="async"/>
+          <div class="menu-book-mobile-stack">
+            <div class="menu-book-mobile-under" aria-hidden="true"><img alt="" decoding="async"/></div>
+            <div class="menu-book-mobile-current">
+              <img src="${pageUrls[0]}" alt="Página 1 del menú" loading="eager" fetchpriority="high" decoding="async"/>
+            </div>
+            <div class="menu-book-mobile-flipper" aria-hidden="true">
+              <div class="menu-book-mobile-face front"><img alt="" decoding="async"/></div>
+              <div class="menu-book-mobile-face back"><img alt="" decoding="async"/></div>
+            </div>
+          </div>
           <div class="menu-book-hotzones">
             <button type="button" data-book-prev aria-label="Página anterior"></button>
             <button type="button" data-book-next aria-label="Página siguiente"></button>
@@ -500,7 +603,7 @@ export function renderMenuBook({ img, pages, disclaimer }) {
         <span class="menu-book-counter">1 / ${pages.length}</span>
         <button type="button" class="menu-book-btn" data-book-next aria-label="Página siguiente">›</button>
       </div>
-      <p class="menu-book-hint">El menú avanza solo al abrir. Toca, desliza o usa las flechas para tomar el control</p>
+      <p class="menu-book-hint">El menú avanza solo al abrir. Desliza o toca los lados para pasar página como un libro</p>
       ${disclaimer ? `<div class="menu-book-footer"><p>${disclaimer}</p></div>` : ""}
     </div>
   </div>
