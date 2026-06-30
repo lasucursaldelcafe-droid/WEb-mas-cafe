@@ -22,7 +22,10 @@
     "domain:configure": "node scripts/configure-domain.mjs",
     "domain:configure:dry": "node scripts/configure-domain.mjs --dry-run",
     "domain:verify": "node scripts/verify-domain.mjs",
-    "verify:links": "node scripts/verify-links.mjs"
+    "verify:links": "node scripts/verify-links.mjs",
+    "validate:credentials": "node scripts/validate-credentials.mjs",
+    "setup:autonomous": "node scripts/autonomous-setup.mjs",
+    "setup:autonomous:dry": "node scripts/autonomous-setup.mjs --dry-run"
   },
   "dependencies": {
     "next": "^15.5.0",

@@ -37,7 +37,7 @@ jobs:
         env:
           GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
           GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_PAT || github.token }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
         run: |
           ARGS=""
           if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi

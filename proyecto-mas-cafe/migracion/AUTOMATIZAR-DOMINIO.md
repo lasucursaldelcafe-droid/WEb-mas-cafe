@@ -58,10 +58,12 @@ npm run domain:verify
    - `GITHUB_TOKEN` (PAT con permisos admin si el token por defecto no alcanza)
 
 2. Ejecuta el workflow manual:
-   - https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/actions/workflows/configure-domain.yml
-   - **Run workflow**
+   - https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/actions/workflows/autonomous-setup.yml
+   - O el workflow específico: https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/actions/workflows/configure-domain.yml
    - Primera vez: `dry_run: true` para ver qué haría
    - Segunda vez: `dry_run: false` para aplicar
+
+Guía completa sin intervención: `proyecto-mas-cafe/migracion/AUTOMATIZACION-AUTONOMA.md`
 
 ---
 

@@ -16,6 +16,7 @@ Punto central para **todo lo hecho**, **migración a www.mascafé.com**, **cuent
 | [cuentas/CREDENCIALES.template.md](./cuentas/CREDENCIALES.template.md) | Plantilla para anotar usuarios, tokens y claves (copiar a `CREDENCIALES.md`) |
 | [TRABAJO-MUTUO.md](./TRABAJO-MUTUO.md) | Cómo seguimos paso a paso la migración |
 | [migracion/AUTOMATIZAR-DOMINIO.md](./migracion/AUTOMATIZAR-DOMINIO.md) | **Automático:** `npm run domain:configure` |
+| [migracion/AUTOMATIZACION-AUTONOMA.md](./migracion/AUTOMATIZACION-AUTONOMA.md) | **Sin intervención:** workflows + `npm run setup:autonomous` |
 | [migracion/CHECKLIST.md](./migracion/CHECKLIST.md) | Checklist manual si la API falla |
 | [entregables/README.md](./entregables/README.md) | Resumen de todo lo construido en los repositorios |
 
