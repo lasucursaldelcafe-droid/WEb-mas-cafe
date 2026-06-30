@@ -11,14 +11,16 @@ async function main() {
   console.log(`  Carpeta: ${manifest.folderUrl || manifest.folderId || "—"}\n`);
 
   const withId = (manifest.images || []).filter((i) => i.driveId);
-  if (!withId.length) {
-    console.log("  ○ No hay imágenes con driveId en content/drive-assets.json");
-    console.log("    Añade el ID de cada archivo de Drive al manifiesto.\n");
+  const hasMenuBook = !!manifest.menuBook?.pdfDriveId;
+
+  if (!withId.length && !hasMenuBook) {
+    console.log("  ○ No hay assets con driveId en content/drive-assets.json");
+    console.log("    Añade IDs de Drive al manifiesto o configura menuBook.pdfDriveId.\n");
     return;
   }
 
   const synced = await syncAllDriveAssets(manifest);
-  console.log(`\n✅ ${synced} imagen(es) sincronizada(s)\n`);
+  console.log(`\n✅ ${synced} asset(s) sincronizado(s)\n`);
 }
 
 main().catch((err) => {

@@ -6,6 +6,7 @@ import {
 } from "./shared.mjs";
 import { brandAssetPath } from "../brand-logo.mjs";
 import { getEnabledRoutes } from "./routes.mjs";
+import { renderMenuBook, getMenuBookPagePaths } from "./menu-book.mjs";
 
 function marqueeHtml(items) {
   const doubled = [...items, ...items];
@@ -197,21 +198,8 @@ const MENU_CAT_NOTES = {
   reposteria: "Para cerrar con dulce",
 };
 
-export function pageMenu() {
-  const site = loadSite();
-  const { brand, menu, pages } = site;
-  const pm = pages.menu;
-  const { href } = createPathHelpers(1);
-
-  const body = `
-  <section class="menu-page">
-    <div class="menu-hero">
-      <div class="wrap">
-        <p class="soul">${pm.tagline}</p>
-        <h1>${pm.headline}</h1>
-        <p class="intro">${pm.intro || brand.purpose}</p>
-      </div>
-    </div>
+function renderTextMenuFallback(menu) {
+  return `
     <div class="menu-sheet">
       ${menu.map((cat) => `
       <div class="menu-cat">
@@ -228,17 +216,34 @@ export function pageMenu() {
           <span class="menu-item-price">${price(item.price)}</span>
         </div>`).join("")}
       </div>`).join("")}
-      <div class="menu-footer">
-        <p>${pm.disclaimer}</p>
+    </div>`;
+}
+
+export function pageMenu() {
+  const site = loadSite();
+  const { brand, menu, pages } = site;
+  const pm = pages.menu;
+  const { href, img } = createPathHelpers(1);
+  const bookPages = getMenuBookPagePaths();
+
+  const body = `
+  <section class="menu-page">
+    <div class="menu-hero">
+      <div class="wrap">
+        <p class="soul">${pm.tagline}</p>
+        <h1>${pm.headline}</h1>
+        <p class="intro">${pm.intro || brand.purpose}</p>
       </div>
     </div>
+    ${renderMenuBook({ img, pages: bookPages, disclaimer: pm.disclaimer })}
+    ${bookPages.length ? "" : `${renderTextMenuFallback(menu)}<div class="menu-footer wrap"><p>${pm.disclaimer}</p></div>`}
   </section>
   ${visitBand(href, brand)}`;
 
   return shell({
     title: "Menú",
     description:
-      "Menú Más Café en Cali: café de especialidad, desayunos, brunch y repostería. Precios en COP.",
+      "Menú digital Más Café en Cali: pasa las páginas como un libro. Café de especialidad, brunch y repostería.",
     depth: 1,
     pageId: "menu",
     body,
