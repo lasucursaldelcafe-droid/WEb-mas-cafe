@@ -73,6 +73,14 @@ if (!skipInformeSource) {
 }
 console.log("  • informe/wallet/index.html (mockup Apple + Google Wallet)");
 
+const cotizacionSrc = path.join(root, "public/cotizacion-perpetuo/index.html");
+const cotizacionDest = path.join(outDir, "cotizacion-perpetuo/index.html");
+if (existsSync(cotizacionSrc)) {
+  mkdirSync(path.dirname(cotizacionDest), { recursive: true });
+  cpSync(cotizacionSrc, cotizacionDest);
+  console.log("  • cotizacion-perpetuo/index.html (cotización Perpetuo)");
+}
+
 writeFileSync(
   path.join(outDir, "404.html"),
   `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"/><meta http-equiv="refresh" content="0;url=./"/><title>Más Café</title></head><body><p><a href="./">Ir al inicio</a></p></body></html>`,
@@ -127,4 +135,5 @@ console.log(`\n✅ ${pages.length + 1} páginas · ${copied} imágenes\n`);
 console.log("Local:    npm run preview");
 console.log("Público:  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/");
 console.log("Informe:  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/");
-console.log("Wallet:   https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/wallet/\n");
+console.log("Wallet:   https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/wallet/");
+console.log("Cotización: https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/cotizacion-perpetuo/\n");
