@@ -4,311 +4,379 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="robots" content="noindex, nofollow"/>
-  <title>Cotización PER-2026-001 — Pablo Colorado Gómez · Perpetuo</title>
-  <meta name="description" content="Cotización $ 2.500.000 COP — desarrollo web y wallet · Perpetuo"/>
+  <title>Cotización PER-2026-001 — Pablo Colorado Gómez</title>
+  <meta name="description" content="Cotización comercial $ 2.500.000 COP — desarrollo web y wallet digital"/>
   <style>
     :root{
-      --blue:#073954;--cream:#f6f5ef;--sage:#c4d4c0;--ink:#2b2b2b;--muted:#5c5c5c;--warn:#8b4513;
+      --blue:#073954;--cream:#f6f5ef;--ink:#1a1a1a;--muted:#555;--line:#c8d0d6;
     }
     *{box-sizing:border-box;margin:0;padding:0}
+    html{font-size:15px}
     body{
       font-family:Georgia,"Times New Roman",serif;
-      color:var(--ink);background:#fff;line-height:1.55;
+      color:var(--ink);background:#eceae4;line-height:1.6;
     }
-    .sheet{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 3.5rem}
-    .card{
-      background:#fff;border-radius:.75rem;
-      box-shadow:0 8px 40px rgba(7,57,84,.08);
-      padding:2rem 1.75rem 2.5rem;border:1px solid rgba(7,57,84,.06);
+    .toolbar{
+      max-width:210mm;margin:0 auto;padding:.75rem 1rem;
+      font-family:system-ui,sans-serif;font-size:.8rem;color:var(--muted);
+      text-align:center;
     }
-    header{
+    .toolbar button{
+      margin-left:.5rem;padding:.35rem .85rem;border:1px solid var(--blue);
+      background:var(--blue);color:#fff;border-radius:.25rem;cursor:pointer;font-size:.78rem;
+    }
+    .page{
+      width:210mm;min-height:297mm;margin:0 auto 1.5rem;
+      background:#fff;padding:22mm 20mm 24mm;
+      box-shadow:0 2px 24px rgba(0,0,0,.12);
+    }
+    .doc-head{
       display:flex;justify-content:space-between;align-items:flex-start;
-      gap:2rem;padding-bottom:1.75rem;border-bottom:2px solid var(--blue);margin-bottom:2rem;
+      gap:1.5rem;padding-bottom:1.25rem;border-bottom:2px solid var(--blue);margin-bottom:1.5rem;
     }
-    .brand{font-size:1.45rem;font-weight:600;color:var(--blue);line-height:1.25}
-    .brand small{
-      display:block;font-size:.72rem;font-weight:400;color:var(--muted);
-      letter-spacing:.12em;text-transform:uppercase;margin-top:.4rem;font-family:system-ui,sans-serif;
+    .issuer .name{font-size:1.35rem;font-weight:700;color:var(--blue);letter-spacing:.01em}
+    .issuer .role{
+      margin-top:.25rem;font-family:system-ui,sans-serif;font-size:.72rem;
+      color:var(--muted);text-transform:uppercase;letter-spacing:.14em;
     }
-    .meta{text-align:right;font-size:.88rem;color:var(--muted);font-family:system-ui,sans-serif}
-    .meta strong{display:block;color:var(--blue);font-size:1rem;margin-bottom:.25rem}
-    .client-tag{
-      display:inline-block;margin-bottom:1.25rem;padding:.45rem .85rem;
-      background:var(--cream);border-radius:.35rem;font-family:system-ui,sans-serif;
-      font-size:.82rem;color:var(--blue);
+    .doc-meta{
+      text-align:right;font-family:system-ui,sans-serif;font-size:.82rem;color:var(--muted);line-height:1.5;
     }
-    .client-tag strong{font-weight:700}
-    h1{font-size:1.3rem;color:var(--blue);margin-bottom:1rem;font-weight:600}
-    .intro{margin-bottom:1.75rem;font-size:.95rem}
-    .platforms-box,.exclude-box,.addon-box{
-      border-radius:.5rem;padding:1rem 1.15rem;margin-bottom:1.75rem;
-      font-family:system-ui,sans-serif;font-size:.82rem;
+    .doc-meta .label{
+      display:block;font-size:.95rem;font-weight:700;color:var(--blue);
+      letter-spacing:.08em;margin-bottom:.15rem;
     }
-    .platforms-box{background:#f0f6f2;border:1px solid rgba(7,57,84,.08)}
-    .exclude-box{background:#fdf8f3;border:1px solid rgba(139,69,19,.15)}
-    .addon-box{background:#f8fbf9;border:1px solid rgba(7,57,84,.12)}
-    .platforms-box h2,.exclude-box h2,.addon-box h2{
-      font-size:.68rem;text-transform:uppercase;letter-spacing:.16em;
-      margin-bottom:.65rem;font-weight:700;
+    .parties{
+      display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;
+      margin-bottom:1.75rem;font-family:system-ui,sans-serif;font-size:.84rem;
     }
-    .platforms-box h2,.addon-box h2{color:var(--blue)}
-    .exclude-box h2{color:var(--warn)}
-    .exclude-box ul{list-style:none}
-    .exclude-box li{margin-bottom:.35rem}
-    .platforms-grid{
-      display:grid;grid-template-columns:repeat(auto-fill,minmax(10.5rem,1fr));gap:.5rem .65rem;
+    .party-box{border:1px solid var(--line);padding:.85rem 1rem;background:var(--cream)}
+    .party-box .k{
+      font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;
+      color:var(--muted);margin-bottom:.35rem;font-weight:600;
     }
-    .platform-tag{
-      background:#fff;border:1px solid rgba(7,57,84,.1);border-radius:.35rem;
-      padding:.4rem .55rem;font-size:.74rem;line-height:1.35;
+    .party-box .v{font-size:.92rem;color:var(--blue);font-weight:600}
+    .subject{
+      margin-bottom:1.5rem;padding:.85rem 1rem;background:#f7f9fa;
+      border-left:4px solid var(--blue);font-size:.92rem;
     }
-    .platform-tag strong{display:block;color:var(--blue);font-size:.76rem;margin-bottom:.1rem}
-    .total-box{
-      background:var(--blue);color:var(--cream);
-      padding:1.25rem 1.5rem;border-radius:.5rem;
-      margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+    .subject strong{color:var(--blue)}
+    .letter p{margin-bottom:.85rem;font-size:.94rem;text-align:justify}
+    .letter .salutation{margin-bottom:1rem}
+    h2{
+      font-family:system-ui,sans-serif;font-size:.72rem;font-weight:700;
+      text-transform:uppercase;letter-spacing:.14em;color:var(--blue);
+      margin:1.75rem 0 .65rem;padding-bottom:.35rem;border-bottom:1px solid var(--line);
     }
-    .total-box span{font-size:.85rem;opacity:.88}
-    .total-box strong{font-size:1.75rem;letter-spacing:.02em}
-    table{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:1.75rem}
-    th,td{border:1px solid #e0e4e8;padding:.6rem .7rem;text-align:left;vertical-align:top}
-    th{background:var(--cream);color:var(--blue);font-weight:600;font-family:system-ui,sans-serif;font-size:.75rem}
+    .scope-list{margin:0 0 .5rem 1.1rem;font-size:.9rem}
+    .scope-list li{margin-bottom:.45rem;padding-left:.15rem}
+    .scope-list li strong{color:var(--ink)}
+    table{
+      width:100%;border-collapse:collapse;font-size:.82rem;margin:.75rem 0 1.25rem;
+      font-family:system-ui,sans-serif;
+    }
+    th,td{border:1px solid var(--line);padding:.55rem .65rem;text-align:left;vertical-align:top}
+    th{background:var(--cream);color:var(--blue);font-weight:600;font-size:.74rem}
     td.num,.th-num{text-align:right;white-space:nowrap}
-    tr.subtotal td{font-weight:600;background:#fafafa}
-    tr.total td{font-weight:700;background:#f0f4f6;border-top:2px solid var(--blue)}
-    tr.addon td{background:#f8fbf9}
-    tr.addon td:first-child::after{
-      content:"Añadido";display:inline-block;margin-left:.35rem;
-      font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
-      color:var(--blue);font-family:system-ui,sans-serif;
+    tr.sub td{font-weight:600;background:#fafafa}
+    tr.grand td{font-weight:700;background:#eef3f5;border-top:2px solid var(--blue);font-size:.88rem}
+    tr.addon-row td{background:#f9fbfa}
+    .addon-label{
+      display:inline-block;margin-left:.4rem;padding:.1rem .4rem;
+      font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+      color:var(--blue);border:1px solid var(--blue);border-radius:.15rem;vertical-align:middle;
     }
-    h2.section{
-      font-size:.78rem;color:var(--blue);margin:1.5rem 0 .65rem;
-      text-transform:uppercase;letter-spacing:.14em;font-family:system-ui,sans-serif;
+    .total-banner{
+      display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;
+      margin:1.25rem 0 1.5rem;padding:1rem 1.15rem;background:var(--blue);color:#fff;
+      font-family:system-ui,sans-serif;
     }
-    ul.body-list{margin:0 0 1rem 1.2rem;font-size:.88rem}
-    ul.body-list li{margin-bottom:.35rem}
-    .notes{font-size:.78rem;color:var(--muted);margin-top:1.75rem;padding-top:1.25rem;border-top:1px solid #e8e8e8}
-    .notes p{margin-bottom:.55rem}
-    .sign{
-      margin-top:2rem;padding-top:1.5rem;border-top:2px solid var(--blue);
-      display:flex;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;
+    .total-banner span{font-size:.82rem;opacity:.92}
+    .total-banner strong{font-size:1.55rem;letter-spacing:.02em}
+    .conditions{font-size:.86rem}
+    .conditions ol{margin:.5rem 0 0 1.25rem}
+    .conditions li{margin-bottom:.4rem}
+    .conditions ul{margin:.35rem 0 .35rem 1rem;list-style:disc}
+    .integrations{
+      font-size:.86rem;color:var(--ink);padding:.85rem 1rem;
+      border:1px solid var(--line);background:#fff;margin-top:.5rem;
     }
-    .sign p{font-size:.88rem}
-    .sign .name{font-size:1.15rem;font-weight:600;color:var(--blue);margin-top:.35rem}
-    @media(max-width:640px){
-      header{flex-direction:column}
-      .meta{text-align:left}
-      table{font-size:.72rem}
-      th,td{padding:.45rem .5rem}
-      .card{padding:1.25rem 1rem 1.75rem}
+    .integrations p{margin-bottom:.5rem}
+    .integrations .tags{
+      display:flex;flex-wrap:wrap;gap:.35rem .5rem;
+      font-family:system-ui,sans-serif;font-size:.72rem;color:var(--muted);
+    }
+    .integrations .tags span{
+      padding:.2rem .45rem;border:1px solid #dde3e8;border-radius:.2rem;background:var(--cream);
+    }
+    .signatures{
+      margin-top:2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;
+      page-break-inside:avoid;
+    }
+    .sig-block{font-size:.84rem}
+    .sig-block .sig-title{
+      font-family:system-ui,sans-serif;font-size:.65rem;text-transform:uppercase;
+      letter-spacing:.12em;color:var(--muted);margin-bottom:2.5rem;
+    }
+    .sig-line{border-top:1px solid var(--ink);padding-top:.45rem;margin-top:0}
+    .sig-line .sig-name{font-weight:700;color:var(--blue);font-size:.95rem}
+    .sig-line .sig-detail{font-size:.78rem;color:var(--muted);margin-top:.15rem}
+    .footer-note{
+      margin-top:2rem;padding-top:1rem;border-top:1px solid var(--line);
+      font-family:system-ui,sans-serif;font-size:.68rem;color:var(--muted);text-align:center;
+    }
+    @media(max-width:760px){
+      body{background:#fff}
+      .toolbar{display:none}
+      .page{width:100%;min-height:auto;padding:1.25rem 1rem;box-shadow:none}
+      .parties,.signatures{grid-template-columns:1fr}
+      .doc-head{flex-direction:column}
+      .doc-meta{text-align:left}
     }
     @media print{
+      html{font-size:14px}
       body{background:#fff}
-      .sheet{padding:0}
-      .card{box-shadow:none;border:none;padding:0}
+      .toolbar{display:none}
+      .page{width:auto;min-height:auto;margin:0;padding:18mm 16mm;box-shadow:none}
+      h2{page-break-after:avoid}
+      table{page-break-inside:avoid}
+      .signatures{page-break-inside:avoid}
     }
+    @page{size:A4;margin:12mm}
   </style>
 </head>
 <body>
-  <div class="sheet">
-    <div class="card">
-      <header>
-        <div class="brand">
-          Pablo Colorado Gómez
-          <small>Programador web · desarrollo e integración digital</small>
-        </div>
-        <div class="meta">
-          <strong>COTIZACIÓN</strong>
-          No. PER-2026-001<br/>
-          Fecha: 26 de junio de 2026<br/>
-          Validez: 30 días calendario
-        </div>
-      </header>
+  <div class="toolbar">
+    Documento para el cliente · Imprima o guarde como PDF
+    <button type="button" onclick="window.print()">Imprimir / PDF</button>
+  </div>
 
-      <p class="client-tag">Cotización para: <strong>Perpetuo</strong></p>
+  <article class="page">
+    <header class="doc-head">
+      <div class="issuer">
+        <p class="name">Pablo Colorado Gómez</p>
+        <p class="role">Programador web · desarrollo e integración digital</p>
+      </div>
+      <div class="doc-meta">
+        <span class="label">Cotización comercial</span>
+        No. PER-2026-001<br/>
+        Bogotá, 26 de junio de 2026<br/>
+        Vigencia: 30 días calendario
+      </div>
+    </header>
 
-      <h1>Desarrollo web institucional + wallet digital</h1>
-      <p class="intro">
-        Cotización por diseño, programación e integración de presencia digital multipágina,
-        panel de administración, menú interactivo, posicionamiento en buscadores,
-        automatización de despliegue y documentación técnica.
-        El <strong>añadido</strong> de esta propuesta es el módulo de <strong>wallet digital de fidelización</strong>.
-        No incluye compra de dominio ni planes de hosting de pago.
+    <div class="parties">
+      <div class="party-box">
+        <p class="k">Elaborado por</p>
+        <p class="v">Pablo Colorado Gómez</p>
+      </div>
+      <div class="party-box">
+        <p class="k">Dirigido a</p>
+        <p class="v">Perpetuo</p>
+      </div>
+    </div>
+
+    <div class="subject">
+      <strong>Asunto:</strong> Cotización por desarrollo de presencia digital institucional,
+      panel de administración, menú interactivo y programa de fidelización con wallet digital.
+    </div>
+
+    <div class="letter">
+      <p class="salutation">Estimados señores de <strong>Perpetuo</strong>:</p>
+      <p>
+        Por medio del presente documento me permito presentar la cotización correspondiente al
+        trabajo de diseño, programación, integración y puesta en marcha de su presencia digital,
+        incluyendo un sitio web multipágina, herramientas de autogestión de contenidos,
+        menú digital para consulta en móvil y escritorio, visibilidad en buscadores,
+        conexión con sus canales de contacto y redes sociales, así como el módulo adicional
+        de <strong>wallet digital de fidelización</strong> solicitado para su operación.
       </p>
+      <p>
+        El valor aquí consignado corresponde al desarrollo e integración del software.
+        No incluye la compra de dominio, planes de hosting de pago, correo corporativo
+        ni campañas publicitarias, los cuales pueden contratarse de forma independiente
+        por cuenta del cliente.
+      </p>
+    </div>
 
-      <div class="platforms-box">
-        <h2>Medios y plataformas utilizadas en el proyecto</h2>
-        <div class="platforms-grid">
-          <div class="platform-tag"><strong>GitHub</strong>Repositorio, Actions y publicación automatizada</div>
-          <div class="platform-tag"><strong>Google Drive</strong>Assets de marca, tipografías y menú PDF</div>
-          <div class="platform-tag"><strong>Firebase</strong>Backend base y respaldo del sitio</div>
-          <div class="platform-tag"><strong>Google Search Console</strong>Verificación e indexación</div>
-          <div class="platform-tag"><strong>Google Analytics 4</strong>Medición de tráfico</div>
-          <div class="platform-tag"><strong>Google Maps</strong>Ubicación integrada como contacto</div>
-          <div class="platform-tag"><strong>WhatsApp</strong>Canal de contacto directo</div>
-          <div class="platform-tag"><strong>Instagram / Facebook</strong>Redes enlazadas en el sitio</div>
-          <div class="platform-tag"><strong>Apple Wallet</strong>Diseño de pase digital</div>
-          <div class="platform-tag"><strong>Google Wallet</strong>Diseño de pase digital</div>
-          <div class="platform-tag"><strong>Cursor</strong>Entorno de desarrollo asistido</div>
-          <div class="platform-tag"><strong>Node.js / Sharp</strong>Build, optimización de imágenes y menú</div>
-          <div class="platform-tag"><strong>SEO técnico</strong>JSON-LD, sitemap, robots, Open Graph</div>
+    <div class="total-banner">
+      <span>Valor total de la propuesta</span>
+      <strong>$ 2.500.000 COP</strong>
+    </div>
+
+    <h2>1. Alcance del servicio</h2>
+    <ol class="scope-list">
+      <li><strong>Sitio web institucional</strong> — Ocho secciones con identidad visual de marca, diseño adaptable a celular y computador, navegación clara y acabados editoriales.</li>
+      <li><strong>Panel de administración</strong> — Acceso privado para actualizar textos, imágenes y colores, vinculado a archivos en la nube, con publicación automatizada del sitio.</li>
+      <li><strong>Menú digital interactivo</strong> — Visualización tipo libro digital a partir del menú en PDF, optimizado para móvil, con navegación por páginas y carga rápida.</li>
+      <li><strong>Marca y contenidos en la nube</strong> — Sincronización de logo, tipografías, imágenes y menú desde Google Drive; favicon e imagen para compartir en redes.</li>
+      <li><strong>Visibilidad y medición</strong> — Preparación para buscadores, mapa de sitio, indexación en Google, medición de visitas y buenas prácticas de posicionamiento.</li>
+      <li><strong>Publicación automatizada</strong> — Flujo de actualización y despliegue del sitio cada vez que se publiquen cambios, con respaldo en la nube.</li>
+      <li><strong>Documentación de entrega</strong> — Informe de constitución del proyecto, guía operativa y recomendaciones para la autonomía del cliente.</li>
+      <li><strong>Contacto y experiencia de usuario</strong> — Integración de ubicación en mapa, WhatsApp, redes sociales y ajustes finos de presentación en dispositivos móviles.</li>
+    </ol>
+
+    <h2>2. Desglose de valores — trabajo base</h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:2rem">#</th>
+          <th>Concepto</th>
+          <th>Descripción</th>
+          <th class="th-num">Valor (COP)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Sitio web institucional</td>
+          <td>Diseño, maquetación y programación de las ocho secciones con identidad de marca.</td>
+          <td class="num">$ 480.000</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Panel de administración</td>
+          <td>Autogestión de contenidos, imágenes, colores y publicación del sitio.</td>
+          <td class="num">$ 400.000</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Menú digital interactivo</td>
+          <td>Libro digital del menú, navegación móvil y optimización visual.</td>
+          <td class="num">$ 350.000</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Marca y contenidos en la nube</td>
+          <td>Logo, fuentes, imágenes y sincronización desde Google Drive.</td>
+          <td class="num">$ 240.000</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Visibilidad y medición</td>
+          <td>SEO, Google Search Console, preparación de analítica y indexación.</td>
+          <td class="num">$ 220.000</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Publicación automatizada</td>
+          <td>Despliegue continuo del sitio y validación de cambios.</td>
+          <td class="num">$ 180.000</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>Documentación de entrega</td>
+          <td>Informe constitucional, checklist operativo y guía de autonomía.</td>
+          <td class="num">$ 130.000</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>Contacto y experiencia de usuario</td>
+          <td>Mapa, WhatsApp, redes y ajustes de presentación móvil.</td>
+          <td class="num">$ 80.000</td>
+        </tr>
+        <tr class="sub">
+          <td colspan="3" style="text-align:right">Subtotal trabajo base</td>
+          <td class="num">$ 2.080.000</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Añadido — wallet digital de fidelización</h2>
+    <p style="font-size:.9rem;margin-bottom:.65rem">
+      Servicio adicional solicitado: diseño e implementación del programa de puntos con tarjeta
+      digital para Apple Wallet y Google Wallet, reglas de acumulación y redención, pantallas
+      para el cliente final y herramientas de administración en mostrador, con respaldo
+      en Firebase y manual de uso operativo.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:2rem">#</th>
+          <th>Concepto</th>
+          <th>Descripción</th>
+          <th class="th-num">Valor (COP)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="addon-row">
+          <td>9</td>
+          <td>Wallet digital<span class="addon-label">Añadido</span></td>
+          <td>Diseño de pases, arquitectura del programa de fidelización y base técnica lista para operación.</td>
+          <td class="num">$ 420.000</td>
+        </tr>
+        <tr class="grand">
+          <td colspan="3" style="text-align:right">Total general</td>
+          <td class="num">$ 2.500.000</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. Entregables</h2>
+    <ol class="scope-list">
+      <li>Sitio web publicado y listo para uso.</li>
+      <li>Panel de administración configurado y entregado al cliente.</li>
+      <li>Menú digital interactivo integrado al sitio.</li>
+      <li>Proyecto en la nube preparado para el módulo de wallet.</li>
+      <li>Diseños de tarjeta digital para Apple Wallet y Google Wallet.</li>
+      <li>Informe de entrega y documentación para operación autónoma.</li>
+      <li>Código fuente y respaldo del proyecto en repositorio privado.</li>
+    </ol>
+
+    <h2>5. Condiciones comerciales</h2>
+    <div class="conditions">
+      <ol>
+        <li><strong>Forma de pago:</strong> 50 % ($ 1.250.000) a la aceptación de esta cotización; 50 % ($ 1.250.000) contra entrega final y puesta en marcha.</li>
+        <li><strong>Vigencia:</strong> Los valores aquí indicados aplican por 30 días calendario contados desde la fecha del documento.</li>
+        <li><strong>No incluye:</strong> dominio, hosting de pago, correo corporativo, publicidad pagada ni suscripciones de terceros.</li>
+        <li><strong>Wallet:</strong> El añadido incluye diseño, configuración y base técnica; la operación en producción puede requerir servicios en la nube adicionales no incluidos en este valor.</li>
+        <li><strong>Soporte posterior:</strong> Cambios, mantenimiento y nuevas funcionalidades se cotizarán por separado.</li>
+      </ol>
+    </div>
+
+    <h2>6. Herramientas e integraciones empleadas</h2>
+    <div class="integrations">
+      <p>Para la ejecución del proyecto se utilizaron, entre otros, los siguientes medios:</p>
+      <div class="tags">
+        <span>GitHub</span>
+        <span>Google Drive</span>
+        <span>Firebase</span>
+        <span>Google Search Console</span>
+        <span>Google Analytics</span>
+        <span>Google Maps</span>
+        <span>WhatsApp</span>
+        <span>Instagram</span>
+        <span>Facebook</span>
+        <span>Apple Wallet</span>
+        <span>Google Wallet</span>
+      </div>
+    </div>
+
+    <p style="margin-top:1.25rem;font-size:.9rem">
+      Quedo atento a sus comentarios. Agradezco la confianza depositada en mi trabajo.
+    </p>
+    <p style="font-size:.9rem;margin-top:.5rem">Cordialmente,</p>
+
+    <div class="signatures">
+      <div class="sig-block">
+        <p class="sig-title">Aceptación del cliente</p>
+        <div class="sig-line">
+          <p class="sig-name">Perpetuo</p>
+          <p class="sig-detail">Nombre y cargo · Fecha · Firma</p>
         </div>
       </div>
-
-      <div class="exclude-box">
-        <h2>No incluido en esta cotización</h2>
-        <ul>
-          <li>Registro o renovación de dominio</li>
-          <li>Planes de hosting de pago</li>
-          <li>Correo corporativo de pago y campañas publicitarias</li>
-        </ul>
-      </div>
-
-      <div class="total-box">
-        <span>Valor total del desarrollo</span>
-        <strong>$ 2.500.000 COP</strong>
-      </div>
-
-      <h2 class="section">Desglose — trabajo base</h2>
-      <table>
-        <thead>
-          <tr>
-            <th style="width:2rem">#</th>
-            <th>Concepto</th>
-            <th>Alcance</th>
-            <th class="th-num">Valor (COP)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td><strong>Sitio web editorial multipágina</strong></td>
-            <td>8 secciones HTML, identidad visual, tipografías de marca, diseño editorial responsive, transiciones y microinteracciones.</td>
-            <td class="num">$ 480.000</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td><strong>Panel de administración</strong></td>
-            <td>Acceso seguro, edición de contenidos, colores, imágenes desde Drive, gestión de secciones, publicación automatizada e informe embebido.</td>
-            <td class="num">$ 400.000</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td><strong>Menú digital interactivo</strong></td>
-            <td>Libro digital ~20 páginas desde PDF en Drive, volteo en móvil, autoplay, precarga y ajuste visual sin márgenes.</td>
-            <td class="num">$ 350.000</td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td><strong>Marca digital y sincronización Drive</strong></td>
-            <td>Logo, favicons, Open Graph, lockup horizontal, fuentes e imágenes sincronizadas desde la nube.</td>
-            <td class="num">$ 240.000</td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td><strong>SEO, analytics e indexación</strong></td>
-            <td>Sitemap, robots, datos estructurados, Search Console, preparación GA4 y checklist de posicionamiento.</td>
-            <td class="num">$ 220.000</td>
-          </tr>
-          <tr>
-            <td>6</td>
-            <td><strong>Automatización CI/CD</strong></td>
-            <td>Pipeline GitHub Actions: build, validación, despliegue y flujo de integración continua.</td>
-            <td class="num">$ 180.000</td>
-          </tr>
-          <tr>
-            <td>7</td>
-            <td><strong>Informe y documentación técnica</strong></td>
-            <td>Constitución web editable, checklist operativo, roadmap de migración e independencia de cuentas.</td>
-            <td class="num">$ 130.000</td>
-          </tr>
-          <tr>
-            <td>8</td>
-            <td><strong>UX, mapas y contenido</strong></td>
-            <td>Integración Maps, tipografía del menú, márgenes, carga optimizada y ajustes móvil.</td>
-            <td class="num">$ 80.000</td>
-          </tr>
-          <tr class="subtotal">
-            <td colspan="3" style="text-align:right">Subtotal trabajo base</td>
-            <td class="num">$ 2.080.000</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="addon-box">
-        <h2>Añadido — wallet digital de fidelización</h2>
-        <p style="font-size:.84rem;margin-bottom:.75rem">
-          Módulo adicional solicitado: arquitectura del programa de puntos, diseño de pases
-          Apple Wallet y Google Wallet, modelo de datos, pantallas de cliente y administración,
-          base en Firebase y guía operativa para mostrador.
-        </p>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th style="width:2rem">#</th>
-            <th>Concepto</th>
-            <th>Alcance</th>
-            <th class="th-num">Valor (COP)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="addon">
-            <td>9</td>
-            <td><strong>Wallet digital de fidelización</strong></td>
-            <td>MVP documentado, mockups Apple/Google Wallet, reglas de negocio, ledger de puntos, flujos de caja y base técnica en Firebase.</td>
-            <td class="num">$ 420.000</td>
-          </tr>
-          <tr class="total">
-            <td colspan="3" style="text-align:right">TOTAL</td>
-            <td class="num">$ 2.500.000</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h2 class="section">Entregables</h2>
-      <ul class="body-list">
-        <li>Código fuente versionado en GitHub</li>
-        <li>Sitio publicado mediante GitHub Pages</li>
-        <li>Proyecto Firebase configurado como base de wallet</li>
-        <li>Mockups de pases Apple Wallet y Google Wallet</li>
-        <li>Informe constitucional web y documentación operativa</li>
-        <li>Scripts de build, verificación y sincronización con Drive</li>
-      </ul>
-
-      <h2 class="section">Forma de pago (referencia)</h2>
-      <table>
-        <thead>
-          <tr><th>Cuota</th><th>Concepto</th><th class="th-num">Valor (COP)</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>1</td><td>Anticipo a la firma (50 %)</td><td class="num">$ 1.250.000</td></tr>
-          <tr><td>2</td><td>Entrega final (50 %)</td><td class="num">$ 1.250.000</td></tr>
-        </tbody>
-      </table>
-
-      <div class="notes">
-        <p><strong>Notas:</strong></p>
-        <p>1. Esta cotización cubre desarrollo e integración de software. Dominio, hosting de pago y suscripciones de terceros corren por cuenta de Perpetuo.</p>
-        <p>2. El añadido de wallet incluye diseño, arquitectura y base técnica; la operación productiva con backend activo puede requerir hosting adicional no incluido aquí.</p>
-        <p>3. Soporte y nuevas funcionalidades posteriores se cotizan por separado.</p>
-      </div>
-
-      <div class="sign">
-        <div>
-          <p>Cotización para:</p>
-          <p class="name">Perpetuo</p>
-        </div>
-        <div style="text-align:right">
-          <p>Elaborado por:</p>
-          <p class="name">Pablo Colorado Gómez</p>
-          <p>Programador web</p>
-          <p style="margin-top:.5rem">26 / 06 / 2026</p>
+      <div class="sig-block">
+        <p class="sig-title">Elaborado por</p>
+        <div class="sig-line">
+          <p class="sig-name">Pablo Colorado Gómez</p>
+          <p class="sig-detail">Programador web · 26 de junio de 2026</p>
         </div>
       </div>
     </div>
-  </div>
+
+    <p class="footer-note">
+      Cotización PER-2026-001 · Documento confidencial para uso de Perpetuo
+    </p>
+  </article>
 </body>
 </html>
