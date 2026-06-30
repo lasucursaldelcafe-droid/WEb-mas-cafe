@@ -906,7 +906,17 @@ function whatsappFloat(whatsapp) {
   </a>`;
 }
 
-export function shell({ title, description, depth, pageId, slug, heroArt, body, year = new Date().getFullYear() }) {
+export function shell({
+  title,
+  description,
+  depth,
+  pageId,
+  slug,
+  heroArt,
+  body,
+  extraHead = "",
+  year = new Date().getFullYear(),
+}) {
   const site = loadSite();
   const { brand } = site;
   const analytics = normalizeAnalytics(site.analytics);
@@ -940,7 +950,7 @@ export function shell({ title, description, depth, pageId, slug, heroArt, body, 
   <style>${fontFaces(depth, site)}</style>
   <style>${brandThemeCss(site)}</style>
   <style>${siteStyles()}</style>
-  <style>:root{${heroVar}}</style>
+  <style>:root{${heroVar}}</style>${extraHead}
 </head>
 <body>
   <a class="skip-link" href="#main">Saltar al contenido</a>
