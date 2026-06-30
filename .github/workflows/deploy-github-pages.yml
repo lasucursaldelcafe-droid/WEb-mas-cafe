@@ -40,7 +40,9 @@ jobs:
         run: node scripts/build-github-pages.mjs
 
       - name: Verificar enlaces internos
-        run: npm run verify:links
+        run: |
+          npm run verify:links
+          npm run verify:seo
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5

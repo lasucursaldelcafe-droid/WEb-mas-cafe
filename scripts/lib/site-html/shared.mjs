@@ -3,6 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { brandThemeCss, fontFaces } from "./brand.mjs";
 import { getNavRoutes } from "./routes.mjs";
+import { formatPageTitle, seoHead, escapeMeta } from "../seo.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "../../..");
@@ -716,13 +717,15 @@ function whatsappFloat(whatsapp) {
   </a>`;
 }
 
-export function shell({ title, description, depth, pageId, heroArt, body, year = new Date().getFullYear() }) {
+export function shell({ title, description, depth, pageId, slug, heroArt, body, year = new Date().getFullYear() }) {
   const site = loadSite();
   const { brand } = site;
   const nav = getNav(site);
   const { img, href } = createPathHelpers(depth);
   const heroVar = heroArt ? `--hero-art:url('${img(heroArt)}')` : `--hero-art:none`;
   const isHome = pageId === "home";
+  const pageSlug = slug ?? (isHome ? "" : pageId);
+  const pageTitle = formatPageTitle({ brandName: brand.name, title, isHome });
 
   const navLinks = nav
     .map(
@@ -739,8 +742,8 @@ export function shell({ title, description, depth, pageId, heroArt, body, year =
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#073954"/>
-  <title>${title} | ${brand.name}</title>
-  <meta name="description" content="${description}"/>${faviconHead(depth)}
+  <title>${pageTitle}</title>
+  <meta name="description" content="${escapeMeta(description)}"/>${faviconHead(depth)}${seoHead({ brand, title, description, depth, slug: pageSlug, isHome, ogImagePath: heroArt || "/images/brand/horizontal-azul.png" })}
   <style>${fontFaces(depth)}</style>
   <style>${brandThemeCss(site)}</style>
   <style>${siteStyles()}</style>

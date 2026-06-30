@@ -78,6 +78,9 @@ Formato sugerido por línea:
 ### Seguridad y documentación
 - [x] Guía SEGURIDAD.md (secrets + ejecución autónoma) | proyecto-mas-cafe/cuentas/SEGURIDAD.md | 2026-06-30 |
 - [x] Checklist wallet gratis paso a paso | proyecto-mas-cafe/entregables/WALLET-CHECKLIST-GRATIS.md | 2026-06-30 |
+- [x] SEO + favicon + sitemap + JSON-LD | proyecto-mas-cafe/entregables/SEO-CHECKLIST.md | 2026-06-30 |
+- [ ] Google Search Console verificado | https://search.google.com/search-console | |
+- [ ] Google Business Profile (Maps) | https://business.google.com | |
 
 ---
 
