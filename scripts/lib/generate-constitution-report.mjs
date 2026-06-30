@@ -16,7 +16,8 @@ const REPO_URL = "https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe";
 const DRIVE_FOLDER_ID = "153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC";
 const DRIVE_URL = `https://drive.google.com/drive/folders/${DRIVE_FOLDER_ID}`;
 
-const REPORT_VERSION = "1.0.0";
+const REPORT_VERSION = "1.1.0";
+const REQUISITOS_PATH = path.join(root, "content/informe-requisitos.json");
 
 function escapeHtml(s) {
   return String(s ?? "")
@@ -77,6 +78,84 @@ function imageUsageMap() {
   return { used, map };
 }
 
+function loadInformeRequisitos() {
+  if (!existsSync(REQUISITOS_PATH)) {
+    return {
+      meta: {},
+      independencia: { intro: "", items: [] },
+      migracion: { intro: "", fases: [], dns: {} },
+      wallet: { intro: "", mvp: [], reglasNegocio: {}, pantallasCliente: [], modulosAdmin: [], operacionCaja: [], modeloDatos: [], integracionesFuturas: [] },
+      necesitamosDeUstedes: [],
+      camposLibres: [],
+    };
+  }
+  return JSON.parse(readFileSync(REQUISITOS_PATH, "utf8"));
+}
+
+function statusBadge(estado) {
+  const map = {
+    pendiente: ["ref", "Pendiente"],
+    en_proceso: ["warn", "En proceso"],
+    listo: ["ok", "Listo"],
+    bloqueado: ["ref", "Bloqueado"],
+  };
+  const [cls, label] = map[estado] || ["ref", estado || "Pendiente"];
+  return `<span class="badge ${cls === "warn" ? "ref" : cls}">${escapeHtml(label)}</span>`;
+}
+
+function fieldValue(value, placeholder = "Por completar") {
+  const v = String(value ?? "").trim();
+  if (!v) return `<span class="field-empty">${escapeHtml(placeholder)}</span>`;
+  return escapeHtml(v);
+}
+
+function renderChecklistTable(items, columns) {
+  if (!items?.length) return `<p class="muted">Sin ítems definidos.</p>`;
+  const heads = columns.map((c) => `<th>${escapeHtml(c.label)}</th>`).join("");
+  const rows = items
+    .map((item) => {
+      const cells = columns.map((c) => `<td>${c.render(item)}</td>`).join("");
+      return `<tr>${cells}</tr>`;
+    })
+    .join("");
+  return `<table><thead><tr>${heads}</tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function renderReglasNegocio(reglas) {
+  const rows = [
+    ["Puntos por cada $1.000 COP", fieldValue(reglas.puntosPorMilPesos, "Ej: 1")],
+    ["Mínimo de compra para sumar", fieldValue(reglas.minimoCompraParaSumar, "Ej: $15.000 o «No»")],
+    ["Caducidad de puntos (meses)", fieldValue(reglas.caducidadPuntosMeses, "Ej: 12 o «No caducan»")],
+    ["Canje parcial", fieldValue(reglas.canjeParcial, "Ej: 50 pts = $5.000 descuento")],
+    ["Puntos manuales permitidos", fieldValue(reglas.puntosManualesPermitidos, "Ej: cumpleaños, compensación")],
+    ["Límite diario / anti-fraude", fieldValue(reglas.limiteDiarioPuntos || reglas.antiFraude, "Ej: máx. 500 pts/día por cliente")],
+    ["Notas adicionales", fieldValue(reglas.notas, "Acordar con dueños antes de programar")],
+  ];
+  const premios =
+    reglas.premiosCanjeables?.length > 0
+      ? reglas.premiosCanjeables.map((p) => `<li>${escapeHtml(typeof p === "string" ? p : p.nombre || JSON.stringify(p))}</li>`).join("")
+      : `<li class="field-empty">Por completar — ej: «Café filtro = 100 pts»</li>`;
+  return `
+    <table>
+      <thead><tr><th>Regla</th><th>Valor acordado</th></tr></thead>
+      <tbody>${rows.map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join("")}</tbody>
+    </table>
+    <h4 style="margin-top:1.25rem;font-family:var(--font-display);color:var(--blue-mid)">Premios canjeables</h4>
+    <ul>${premios}</ul>`;
+}
+
+function renderCamposLibres(campos) {
+  return (campos || [])
+    .map(
+      (c) => `
+    <div class="card fill-card">
+      <h4>${escapeHtml(c.titulo)}</h4>
+      <div class="fill-area">${fieldValue(c.contenido, "Escribir aquí en content/informe-requisitos.json → camposLibres")}</div>
+    </div>`
+    )
+    .join("");
+}
+
 function folderPurpose(folder) {
   const purposes = {
     brand: "Manual de marca — logotipos, descriptors, ilustraciones de experiencia y mood.",
@@ -92,6 +171,7 @@ function folderPurpose(folder) {
 
 export function generateConstitutionReport() {
   const site = loadSite();
+  const req = loadInformeRequisitos();
   const { brand, theme, routes, pages } = site;
   const generatedAt = new Date().toISOString();
   const { used, map } = imageUsageMap();
@@ -129,7 +209,7 @@ export function generateConstitutionReport() {
     ["Este informe", `${LIVE_BASE}/informe/`, "Documento constitucional para la marca. No aparece en el menú del sitio."],
     ["Repositorio GitHub", REPO_URL, "Código fuente, historial de cambios y colaboración."],
     ["Carpeta Drive (marca)", DRIVE_URL, "Fuente original de logotipos, ilustraciones y aplicaciones."],
-    ["Dominio mascafe.com", "https://mascafe.com/", "Destino final cuando DNS GoDaddy apunte a GitHub Pages."],
+    ["Dominio mascafe.com", "https://www.mascafe.com/", "Destino final cuando DNS GoDaddy apunte al hosting con backend (wallet + sitio)."],
     ["Firebase Hosting (respaldo)", "https://mas-cafe-c8413.web.app/", "Plataforma alternativa configurada en el repo. Mismo build HTML."],
     ["Instagram", brand.social.instagram, "Red social principal — tráfico y comunidad."],
     ["Facebook", brand.social.facebook, "Segunda red — eventos y alcance local."],
@@ -143,6 +223,7 @@ export function generateConstitutionReport() {
     .join("");
 
   const changelog = [
+    { date: "2026-06-27", note: "Informe v1.1 — wallet de fidelización, migración mascafe.com, checklist editable en content/informe-requisitos.json." },
     { date: "2026-06-27", note: "Informe constitucional v1.0 — paleta crema, textos sin repetición, auditoría de activos Drive." },
     { date: "2026-06-27", note: "Favicon del logo en todas las páginas." },
     { date: "2026-06-27", note: "Rediseño móvil editorial y vista previa admin en todos los paneles." },
@@ -150,6 +231,77 @@ export function generateConstitutionReport() {
   ]
     .map((c) => `<li><time>${c.date}</time> — ${escapeHtml(c.note)}</li>`)
     .join("");
+
+  const independenciaRows = (req.independencia?.items || [])
+    .map(
+      (i) => `<tr>
+        <td>${escapeHtml(i.item)}</td>
+        <td>${statusBadge(i.estado)}</td>
+        <td>${fieldValue(i.responsable, "Responsable")}</td>
+        <td>${fieldValue(i.valor, "Dato / cuenta / enlace")}</td>
+        <td class="muted">${fieldValue(i.notas, "—")}</td>
+      </tr>`
+    )
+    .join("");
+
+  const migracionFases = (req.migracion?.fases || [])
+    .map(
+      (f) => `<tr>
+        <td><strong>Fase ${escapeHtml(f.fase)}</strong></td>
+        <td>${escapeHtml(f.nombre)}</td>
+        <td>${escapeHtml(f.descripcion)}</td>
+        <td>${statusBadge(f.estado)}</td>
+        <td>${fieldValue(f.fechaObjetivo, "Fecha")}</td>
+      </tr>`
+    )
+    .join("");
+
+  const dns = req.migracion?.dns || {};
+  const walletMvp = (req.wallet?.mvp || []).map((m) => `<li>${escapeHtml(m)}</li>`).join("");
+  const walletModelo = (req.wallet?.modeloDatos || []).map((m) => `<li><code>${escapeHtml(m.split(" — ")[0])}</code> — ${escapeHtml(m.split(" — ").slice(1).join(" — ") || m)}</li>`).join("");
+
+  const pantallasWallet = renderChecklistTable(req.wallet?.pantallasCliente, [
+    { label: "Pantalla", render: (i) => `<strong>${escapeHtml(i.pantalla)}</strong>` },
+    { label: "Descripción", render: (i) => escapeHtml(i.descripcion) },
+    { label: "Estado", render: (i) => statusBadge(i.estado) },
+  ]);
+
+  const modulosAdminWallet = renderChecklistTable(req.wallet?.modulosAdmin, [
+    { label: "Módulo", render: (i) => `<strong>${escapeHtml(i.modulo)}</strong>` },
+    { label: "Funciones", render: (i) => escapeHtml(i.funciones) },
+    { label: "Estado", render: (i) => statusBadge(i.estado) },
+  ]);
+
+  const cajaWallet = renderChecklistTable(req.wallet?.operacionCaja, [
+    { label: "Operación en mostrador", render: (i) => escapeHtml(i.item) },
+    { label: "Estado", render: (i) => statusBadge(i.estado) },
+    { label: "Notas", render: (i) => fieldValue(i.notas, "—") },
+  ]);
+
+  const integracionesWallet = (req.wallet?.integracionesFuturas || [])
+    .map(
+      (i) => `<tr>
+        <td>${escapeHtml(i.nombre)}</td>
+        <td>${escapeHtml(i.uso)}</td>
+        <td><span class="badge ref">${escapeHtml(i.prioridad)}</span></td>
+      </tr>`
+    )
+    .join("");
+
+  const necesitamosRows = (req.necesitamosDeUstedes || [])
+    .map(
+      (n) => `<tr>
+        <td><span class="badge ok">${escapeHtml(n.categoria)}</span></td>
+        <td>${escapeHtml(n.item)}</td>
+        <td>${statusBadge(n.estado)}</td>
+        <td>${fieldValue(n.responsable, "Responsable")}</td>
+        <td>${fieldValue(n.fechaLimite, "Fecha")}</td>
+        <td class="muted">${fieldValue(n.notas, "—")}</td>
+      </tr>`
+    )
+    .join("");
+
+  const meta = req.meta || {};
 
   return `<!DOCTYPE html>
 <html lang="es">
@@ -204,6 +356,11 @@ export function generateConstitutionReport() {
     .callout{border-left:4px solid var(--sage);padding:1rem 1.25rem;background:var(--cream-dark);border-radius:0 .75rem .75rem 0;margin-top:1rem}
     .callout.warn{border-left-color:var(--brown)}
     .callout strong{color:var(--blue)}
+    .field-empty{display:inline-block;color:var(--brown);font-style:italic;border-bottom:1px dashed rgba(176,122,58,.45);padding:0 .15rem}
+    .fill-card h4{font-family:var(--font-display);color:var(--blue-mid);font-size:1rem;margin-bottom:.5rem}
+    .fill-area{min-height:2.5rem;padding:.75rem;background:rgba(255,255,255,.45);border-radius:.5rem;border:1px dashed rgba(7,57,84,.15);white-space:pre-wrap}
+    .source-hint{font-size:.78rem;background:rgba(7,57,84,.08);padding:.65rem .85rem;border-radius:.5rem;margin-top:1rem}
+    .source-hint code{font-size:.75rem}
     hr.mini{border:none;border-top:1px solid rgba(7,57,84,.08);margin:.5rem 0}
     footer{background:var(--blue);color:var(--cream);padding:2rem 0;font-size:.85rem}
     footer a{color:var(--sage)}
@@ -215,7 +372,7 @@ export function generateConstitutionReport() {
     <div class="wrap">
       <p style="font-size:.75rem;text-transform:uppercase;letter-spacing:.2em;opacity:.7;margin-bottom:.5rem">Documento vivo · No indexar</p>
       <h1>Constitución Web — ${escapeHtml(brand.name)}</h1>
-      <p style="margin-top:.85rem;max-width:40rem;opacity:.9">Modelo oficial del sitio, inventario de marca Drive → web, arquitectura técnica y guía para dueños de la marca. Se actualiza con cada entrega importante.</p>
+      <p style="margin-top:.85rem;max-width:42rem;opacity:.9">Modelo oficial del sitio, inventario Drive → web, arquitectura, migración a <strong>www.mascafe.com</strong>, wallet de fidelización y checklist editable para la marca.</p>
       <div class="meta">
         <span>Versión ${REPORT_VERSION}</span>
         <span>Generado: ${escapeHtml(generatedAt.slice(0, 16).replace("T", " "))} UTC</span>
@@ -234,8 +391,12 @@ export function generateConstitutionReport() {
       <a href="#activos">Activos Drive</a>
       <a href="#experiencia">Experiencia</a>
       <a href="#clientes">Clientes</a>
+      <a href="#independencia">Independencia</a>
+      <a href="#migracion">Migración</a>
+      <a href="#wallet">Wallet</a>
+      <a href="#requisitos">Requisitos</a>
       <a href="#enlaces">Enlaces</a>
-      <a href="#dueños">Dueños de marca</a>
+      <a href="#dueños">Dueños</a>
       <a href="#changelog">Historial</a>
     </div>
   </nav>
@@ -377,8 +538,108 @@ export function generateConstitutionReport() {
       </table>
     </section>
 
+    <section id="independencia">
+      <h2>9. Independencia de Más Café (separación de La Sucursal del Café)</h2>
+      <p>${escapeHtml(req.independencia?.intro || "")}</p>
+      <div class="grid cols-2" style="margin-top:1rem">
+        <div class="card"><strong>Titular de marca</strong><br/>${fieldValue(meta.propietarioLegal, meta.titularMarca || "Más Café")}</div>
+        <div class="card"><strong>Contacto principal</strong><br/>${fieldValue(meta.contactoPrincipalMarca, "Nombre y teléfono")}</div>
+        <div class="card"><strong>Repo futuro</strong><br/>${fieldValue(meta.repositorioFuturo, "Organización GitHub de Más Café")}</div>
+        <div class="card"><strong>Org. GitHub</strong><br/>${fieldValue(meta.organizacionGitHubFutura, "Por definir")}</div>
+      </div>
+      <h3>Checklist de propiedad</h3>
+      <table>
+        <thead><tr><th>Ítem</th><th>Estado</th><th>Responsable</th><th>Valor / cuenta</th><th>Notas</th></tr></thead>
+        <tbody>${independenciaRows}</tbody>
+      </table>
+      <div class="source-hint">Editar en el repositorio: <code>content/informe-requisitos.json</code> → sección <code>independencia.items</code></div>
+    </section>
+
+    <section id="migracion">
+      <h2>10. Migración a www.mascafe.com (GoDaddy)</h2>
+      <p>${escapeHtml(req.migracion?.intro || "")}</p>
+      <div class="callout warn"><strong>Importante:</strong> La wallet de fidelización <em>no puede</em> funcionar solo con GitHub Pages (HTML estático). Al activar puntos, el dominio debe apuntar a un hosting con backend (Firebase, Vercel, Render, etc.).</div>
+      <h3>Fases del plan</h3>
+      <table>
+        <thead><tr><th>Fase</th><th>Nombre</th><th>Descripción</th><th>Estado</th><th>Fecha objetivo</th></tr></thead>
+        <tbody>${migracionFases}</tbody>
+      </table>
+      <h3>DNS GoDaddy</h3>
+      <table>
+        <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
+        <tbody>
+          <tr><td>Registrador</td><td>${fieldValue(dns.registrador, "GoDaddy")}</td></tr>
+          <tr><td>Dominio</td><td>${fieldValue(dns.dominio, "mascafe.com")}</td></tr>
+          <tr><td>www → destino</td><td>${fieldValue(dns.wwwDestino, "Ej: cname.vercel-dns.com")}</td></tr>
+          <tr><td>@ (apex) → destino</td><td>${fieldValue(dns.apexDestino, "Ej: A record del hosting")}</td></tr>
+          <tr><td>SSL confirmado</td><td>${dns.sslConfirmado ? '<span class="badge ok">Sí</span>' : '<span class="badge ref">Pendiente</span>'}</td></tr>
+          <tr><td>Fecha corte GitHub Pages</td><td>${fieldValue(dns.fechaCorteGitHubPages, "Cuando www.mascafe.com esté estable")}</td></tr>
+          <tr><td>Fecha migración objetivo</td><td>${fieldValue(meta.fechaMigracionObjetivo, "Por acordar")}</td></tr>
+          <tr><td>Notas DNS</td><td>${fieldValue(dns.notas, "—")}</td></tr>
+        </tbody>
+      </table>
+      <div class="source-hint">Editar: <code>content/informe-requisitos.json</code> → <code>migracion</code> y <code>meta.fechaMigracionObjetivo</code></div>
+    </section>
+
+    <section id="wallet">
+      <h2>11. Wallet de fidelización — plan completo</h2>
+      <p>${escapeHtml(req.wallet?.intro || "")}</p>
+      <div class="callout"><strong>Backend recomendado:</strong> ${fieldValue(req.wallet?.backendRecomendado, "Firebase Auth + Firestore o Convex")}. El sitio actual no tiene login de clientes ni base de datos de puntos — todo esto es desarrollo nuevo.</div>
+
+      <h3>MVP mínimo (v1 obligatoria)</h3>
+      <ul>${walletMvp}</ul>
+
+      <h3>Reglas de negocio — completar con dueños</h3>
+      ${renderReglasNegocio(req.wallet?.reglasNegocio || {})}
+
+      <h3>Modelo de datos</h3>
+      <ul>${walletModelo}</ul>
+
+      <h3>Pantallas para el cliente</h3>
+      ${pantallasWallet}
+
+      <h3>Módulos admin (dueños + staff)</h3>
+      ${modulosAdminWallet}
+
+      <h3>Operación en mostrador (caja)</h3>
+      ${cajaWallet}
+
+      <h3>Integraciones futuras</h3>
+      <table>
+        <thead><tr><th>Integración</th><th>Uso</th><th>Fase</th></tr></thead>
+        <tbody>${integracionesWallet}</tbody>
+      </table>
+
+      <h3>Seguridad (no negociable)</h3>
+      <ul>
+        <li>Puntos solo se modifican en el servidor — nunca confiar en el frontend.</li>
+        <li>Ledger inmutable: cada suma/resta queda registrada con motivo y autor.</li>
+        <li>HTTPS obligatorio en producción.</li>
+        <li>Staff con PIN o login limitado para cargar puntos en caja.</li>
+        <li>Contraseñas admin hasheadas (mejora pendiente en el panel actual).</li>
+      </ul>
+      <div class="source-hint">Editar reglas y estados: <code>content/informe-requisitos.json</code> → <code>wallet</code></div>
+    </section>
+
+    <section id="requisitos">
+      <h2>12. Lo que necesitamos de ustedes — checklist editable</h2>
+      <p>Esta tabla se actualiza editando un solo archivo en el repositorio. Los campos vacíos aparecen como <span class="field-empty">Por completar</span>.</p>
+      <div class="callout"><strong>Archivo para completar:</strong> <code>content/informe-requisitos.json</code><br/>
+      Tras editarlo: push a <code>main</code> → el informe se regenera automáticamente en el deploy.</div>
+      <table>
+        <thead><tr><th>Categoría</th><th>Qué necesitamos</th><th>Estado</th><th>Responsable</th><th>Fecha límite</th><th>Notas</th></tr></thead>
+        <tbody>${necesitamosRows}</tbody>
+      </table>
+
+      <h3>Campos libres — escriban aquí lo que haga falta</h3>
+      <p class="muted">Espacio para notas de reuniones, contactos, presupuestos o decisiones que no encajan en las tablas anteriores.</p>
+      ${renderCamposLibres(req.camposLibres)}
+
+      <div class="source-hint"><strong>Cómo actualizar desde Cursor:</strong> abrir <code>content/informe-requisitos.json</code>, cambiar <code>estado</code> (<code>pendiente</code> | <code>en_proceso</code> | <code>listo</code>), <code>responsable</code>, <code>valor</code>, <code>notas</code> o <code>contenido</code> en campos libres → commit → push.</div>
+    </section>
+
     <section id="enlaces">
-      <h2>9. Enlaces del ecosistema y por qué existen</h2>
+      <h2>13. Enlaces del ecosistema y por qué existen</h2>
       <table>
         <thead><tr><th>Enlace</th><th>URL</th><th>Motivo</th></tr></thead>
         <tbody>${linkRows}</tbody>
@@ -386,7 +647,7 @@ export function generateConstitutionReport() {
     </section>
 
     <section id="dueños">
-      <h2>10. Recomendaciones y lo que necesitamos de la marca</h2>
+      <h2>14. Recomendaciones para dueños de Más Café</h2>
       <h3>Consejos para dueños de Más Café</h3>
       <ul>
         <li><strong>Una frase por pantalla.</strong> Evitar repetir tagline y descriptor en cada sección; reservarlos para momentos clave.</li>
@@ -397,24 +658,14 @@ export function generateConstitutionReport() {
         <li><strong>Instagram activo.</strong> El sitio envía tráfico a @mascafecol315 — el feed debe estar vivo.</li>
         <li><strong>Google Business Profile.</strong> Misma dirección y horarios que el sitio (NAP consistente).</li>
         <li><strong>Responder WhatsApp en &lt;15 min</strong> en horario comercial — el sitio convierte ahí.</li>
+        <li><strong>Definir reglas de puntos antes de programar la wallet.</strong> Ver sección <a href="#wallet">Wallet</a> y completar <code>content/informe-requisitos.json</code>.</li>
+        <li><strong>Migración a mascafe.com:</strong> apuntar DNS cuando el backend de fidelización esté listo — no antes si quieren wallet funcional.</li>
       </ul>
-      <h3>Qué necesitamos de ustedes (checklist)</h3>
-      <div class="card">
-        <ul>
-          <li>☐ Fotografía profesional del local (mín. 10 fotos horizontal + vertical)</li>
-          <li>☐ Fotografía por producto de tienda (250 g, grano/molido)</li>
-          <li>☐ Confirmación de precios menú y tienda (actualizar en admin)</li>
-          <li>☐ Textos aprobados de historia y valores (panel Nosotros)</li>
-          <li>☐ Acceso DNS GoDaddy para conectar mascafe.com</li>
-          <li>☐ Credenciales si usarán Firebase o plataforma adicional (VertiZone / Vercel)</li>
-          <li>☐ Nuevos assets en Drive → avisar para sincronizar a <code>public/images/</code></li>
-          <li>☐ Aprobación de cambios vía este informe antes de campañas pagadas</li>
-        </ul>
-      </div>
+      <p class="muted" style="margin-top:1rem">El checklist detallado de entregables está en la sección <a href="#requisitos">Requisitos</a>.</p>
     </section>
 
     <section id="changelog">
-      <h2>11. Historial de entregas (se actualiza con cada cambio)</h2>
+      <h2>15. Historial de entregas (se actualiza con cada cambio)</h2>
       <ul>${changelog}</ul>
       <p class="muted" style="margin-top:1rem">Próxima actualización automática al ejecutar <code>npm run build:github-pages</code> tras cambios en el repositorio.</p>
     </section>

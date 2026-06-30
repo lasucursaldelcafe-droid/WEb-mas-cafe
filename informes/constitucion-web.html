@@ -51,6 +51,11 @@
     .callout{border-left:4px solid var(--sage);padding:1rem 1.25rem;background:var(--cream-dark);border-radius:0 .75rem .75rem 0;margin-top:1rem}
     .callout.warn{border-left-color:var(--brown)}
     .callout strong{color:var(--blue)}
+    .field-empty{display:inline-block;color:var(--brown);font-style:italic;border-bottom:1px dashed rgba(176,122,58,.45);padding:0 .15rem}
+    .fill-card h4{font-family:var(--font-display);color:var(--blue-mid);font-size:1rem;margin-bottom:.5rem}
+    .fill-area{min-height:2.5rem;padding:.75rem;background:rgba(255,255,255,.45);border-radius:.5rem;border:1px dashed rgba(7,57,84,.15);white-space:pre-wrap}
+    .source-hint{font-size:.78rem;background:rgba(7,57,84,.08);padding:.65rem .85rem;border-radius:.5rem;margin-top:1rem}
+    .source-hint code{font-size:.75rem}
     hr.mini{border:none;border-top:1px solid rgba(7,57,84,.08);margin:.5rem 0}
     footer{background:var(--blue);color:var(--cream);padding:2rem 0;font-size:.85rem}
     footer a{color:var(--sage)}
@@ -62,10 +67,10 @@
     <div class="wrap">
       <p style="font-size:.75rem;text-transform:uppercase;letter-spacing:.2em;opacity:.7;margin-bottom:.5rem">Documento vivo · No indexar</p>
       <h1>Constitución Web — Más Café</h1>
-      <p style="margin-top:.85rem;max-width:40rem;opacity:.9">Modelo oficial del sitio, inventario de marca Drive → web, arquitectura técnica y guía para dueños de la marca. Se actualiza con cada entrega importante.</p>
+      <p style="margin-top:.85rem;max-width:42rem;opacity:.9">Modelo oficial del sitio, inventario Drive → web, arquitectura, migración a <strong>www.mascafe.com</strong>, wallet de fidelización y checklist editable para la marca.</p>
       <div class="meta">
-        <span>Versión 1.0.0</span>
-        <span>Generado: 2026-06-27 18:33 UTC</span>
+        <span>Versión 1.1.0</span>
+        <span>Generado: 2026-06-30 16:46 UTC</span>
         <span class="badge live">Sitio en línea OK</span>
       </div>
     </div>
@@ -81,8 +86,12 @@
       <a href="#activos">Activos Drive</a>
       <a href="#experiencia">Experiencia</a>
       <a href="#clientes">Clientes</a>
+      <a href="#independencia">Independencia</a>
+      <a href="#migracion">Migración</a>
+      <a href="#wallet">Wallet</a>
+      <a href="#requisitos">Requisitos</a>
       <a href="#enlaces">Enlaces</a>
-      <a href="#dueños">Dueños de marca</a>
+      <a href="#dueños">Dueños</a>
       <a href="#changelog">Historial</a>
     </div>
   </nav>
@@ -1149,16 +1158,323 @@
       </table>
     </section>
 
+    <section id="independencia">
+      <h2>9. Independencia de Más Café (separación de La Sucursal del Café)</h2>
+      <p>La web pasará a propiedad de Más Café, independiente de La Sucursal del Café. Seguiremos actualizando con Cursor, pero cuentas y dominio deben quedar a nombre de la marca.</p>
+      <div class="grid cols-2" style="margin-top:1rem">
+        <div class="card"><strong>Titular de marca</strong><br/><span class="field-empty">Más Café</span></div>
+        <div class="card"><strong>Contacto principal</strong><br/><span class="field-empty">Nombre y teléfono</span></div>
+        <div class="card"><strong>Repo futuro</strong><br/><span class="field-empty">Organización GitHub de Más Café</span></div>
+        <div class="card"><strong>Org. GitHub</strong><br/><span class="field-empty">Por definir</span></div>
+      </div>
+      <h3>Checklist de propiedad</h3>
+      <table>
+        <thead><tr><th>Ítem</th><th>Estado</th><th>Responsable</th><th>Valor / cuenta</th><th>Notas</th></tr></thead>
+        <tbody><tr>
+        <td>Repositorio GitHub a nombre de Más Café</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Dato / cuenta / enlace</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td>Organización GitHub de Más Café con accesos definidos</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Dato / cuenta / enlace</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td>Proyecto Firebase / backend a nombre de Más Café</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Dato / cuenta / enlace</span></td>
+        <td class="muted">Proyecto actual: mas-cafe-c8413</td>
+      </tr><tr>
+        <td>Cuenta de hosting (Vercel/Render) a nombre de Más Café</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Dato / cuenta / enlace</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td>Dominio mascafe.com en GoDaddy a nombre de Más Café</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Dato / cuenta / enlace</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td>Correos corporativos activos (hola@, admin@)</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Dato / cuenta / enlace</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td>Documento de roles: dueño, editor web, caja/puntos</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Dato / cuenta / enlace</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr></tbody>
+      </table>
+      <div class="source-hint">Editar en el repositorio: <code>content/informe-requisitos.json</code> → sección <code>independencia.items</code></div>
+    </section>
+
+    <section id="migracion">
+      <h2>10. Migración a www.mascafe.com (GoDaddy)</h2>
+      <p>Hoy el sitio público vive en GitHub Pages (HTML estático). La wallet de fidelización requiere backend. El dominio www.mascafe.com apuntará al hosting con Node.js/API.</p>
+      <div class="callout warn"><strong>Importante:</strong> La wallet de fidelización <em>no puede</em> funcionar solo con GitHub Pages (HTML estático). Al activar puntos, el dominio debe apuntar a un hosting con backend (Firebase, Vercel, Render, etc.).</div>
+      <h3>Fases del plan</h3>
+      <table>
+        <thead><tr><th>Fase</th><th>Nombre</th><th>Descripción</th><th>Estado</th><th>Fecha objetivo</th></tr></thead>
+        <tbody><tr>
+        <td><strong>Fase A</strong></td>
+        <td>Organización</td>
+        <td>Repo y cuentas a nombre Más Café</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+      </tr><tr>
+        <td><strong>Fase B</strong></td>
+        <td>Backend</td>
+        <td>Firebase Auth + Firestore (o Convex) activado</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+      </tr><tr>
+        <td><strong>Fase C</strong></td>
+        <td>Wallet MVP</td>
+        <td>Login cliente + saldo + sumar/restar + historial</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+      </tr><tr>
+        <td><strong>Fase D</strong></td>
+        <td>Admin fidelización</td>
+        <td>Panel dueños + modo caja en mostrador</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+      </tr><tr>
+        <td><strong>Fase E</strong></td>
+        <td>Dominio</td>
+        <td>www.mascafe.com → hosting con backend</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+      </tr><tr>
+        <td><strong>Fase F</strong></td>
+        <td>Cursor</td>
+        <td>Repo Más Café conectado a Cursor para actualizaciones</td>
+        <td><span class="badge ref">En proceso</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+      </tr></tbody>
+      </table>
+      <h3>DNS GoDaddy</h3>
+      <table>
+        <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
+        <tbody>
+          <tr><td>Registrador</td><td>GoDaddy</td></tr>
+          <tr><td>Dominio</td><td>mascafe.com</td></tr>
+          <tr><td>www → destino</td><td><span class="field-empty">Ej: cname.vercel-dns.com</span></td></tr>
+          <tr><td>@ (apex) → destino</td><td><span class="field-empty">Ej: A record del hosting</span></td></tr>
+          <tr><td>SSL confirmado</td><td><span class="badge ref">Pendiente</span></td></tr>
+          <tr><td>Fecha corte GitHub Pages</td><td><span class="field-empty">Cuando www.mascafe.com esté estable</span></td></tr>
+          <tr><td>Fecha migración objetivo</td><td><span class="field-empty">Por acordar</span></td></tr>
+          <tr><td>Notas DNS</td><td><span class="field-empty">—</span></td></tr>
+        </tbody>
+      </table>
+      <div class="source-hint">Editar: <code>content/informe-requisitos.json</code> → <code>migracion</code> y <code>meta.fechaMigracionObjetivo</code></div>
+    </section>
+
+    <section id="wallet">
+      <h2>11. Wallet de fidelización — plan completo</h2>
+      <p>Programa de fidelización con wallet digital, control de puntos y canje en mostrador. No puede vivir en HTML estático: requiere base de datos, login de clientes y reglas server-side.</p>
+      <div class="callout"><strong>Backend recomendado:</strong> Firebase Auth + Firestore (ya hay código parcial en el repo) o Convex. El sitio actual no tiene login de clientes ni base de datos de puntos — todo esto es desarrollo nuevo.</div>
+
+      <h3>MVP mínimo (v1 obligatoria)</h3>
+      <ul><li>Login cliente (teléfono OTP recomendado en Colombia)</li><li>Wallet con saldo visible</li><li>Historial de movimientos (ledger)</li><li>Admin: buscar cliente + sumar puntos por compra</li><li>Admin: 2–3 premios canjeables</li><li>Canje con código de un solo uso en mostrador</li><li>Deploy en hosting con backend (no GitHub Pages)</li><li>Dominio www.mascafe.com</li></ul>
+
+      <h3>Reglas de negocio — completar con dueños</h3>
+      
+    <table>
+      <thead><tr><th>Regla</th><th>Valor acordado</th></tr></thead>
+      <tbody><tr><td>Puntos por cada $1.000 COP</td><td><span class="field-empty">Ej: 1</span></td></tr><tr><td>Mínimo de compra para sumar</td><td><span class="field-empty">Ej: $15.000 o «No»</span></td></tr><tr><td>Caducidad de puntos (meses)</td><td><span class="field-empty">Ej: 12 o «No caducan»</span></td></tr><tr><td>Canje parcial</td><td><span class="field-empty">Ej: 50 pts = $5.000 descuento</span></td></tr><tr><td>Puntos manuales permitidos</td><td><span class="field-empty">Ej: cumpleaños, compensación</span></td></tr><tr><td>Límite diario / anti-fraude</td><td><span class="field-empty">Ej: máx. 500 pts/día por cliente</span></td></tr><tr><td>Notas adicionales</td><td>Completar con los dueños de Más Café antes de programar.</td></tr></tbody>
+    </table>
+    <h4 style="margin-top:1.25rem;font-family:var(--font-display);color:var(--blue-mid)">Premios canjeables</h4>
+    <ul><li class="field-empty">Por completar — ej: «Café filtro = 100 pts»</li></ul>
+
+      <h3>Modelo de datos</h3>
+      <ul><li><code>Customer</code> — usuario de la wallet</li><li><code>Wallet</code> — saldo actual de puntos</li><li><code>PointsLedger</code> — historial inmutable (suma, resta, quién, cuándo, por qué)</li><li><code>Reward</code> — premios canjeables</li><li><code>Redemption</code> — canje realizado</li><li><code>ProgramSettings</code> — reglas del programa</li><li><code>StaffUser</code> — baristas/caja (opcional v1)</li></ul>
+
+      <h3>Pantallas para el cliente</h3>
+      <table><thead><tr><th>Pantalla</th><th>Descripción</th><th>Estado</th></tr></thead><tbody><tr><td><strong>Registro / login</strong></td><td>Entrar a la wallet</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Mi wallet</strong></td><td>Saldo, QR o código corto para mostrador</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Historial</strong></td><td>Movimientos con fecha y motivo</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Premios</strong></td><td>Catálogo de canjes</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Canjear</strong></td><td>Confirmación + código para validar en caja</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Mi perfil</strong></td><td>Datos y preferencias</td><td><span class="badge ref">Pendiente</span></td></tr></tbody></table>
+
+      <h3>Módulos admin (dueños + staff)</h3>
+      <table><thead><tr><th>Módulo</th><th>Funciones</th><th>Estado</th></tr></thead><tbody><tr><td><strong>Programa de fidelización</strong></td><td>Reglas, premios, activar/desactivar</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Clientes</strong></td><td>Buscar por teléfono, ver saldo</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Ajuste manual de puntos</strong></td><td>Sumar/restar con motivo obligatorio</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Canjes pendientes</strong></td><td>Validar código en mostrador</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Reportes</strong></td><td>Puntos emitidos, canjeados, clientes activos</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Staff / caja</strong></td><td>Usuarios con permiso limitado (solo cargar puntos)</td><td><span class="badge ref">Pendiente</span></td></tr></tbody></table>
+
+      <h3>Operación en mostrador (caja)</h3>
+      <table><thead><tr><th>Operación en mostrador</th><th>Estado</th><th>Notas</th></tr></thead><tbody><tr><td>Tablet o móvil con modo caja</td><td><span class="badge ref">Pendiente</span></td><td><span class="field-empty">—</span></td></tr><tr><td>Buscar cliente por teléfono o QR</td><td><span class="badge ref">Pendiente</span></td><td><span class="field-empty">—</span></td></tr><tr><td>Registrar compra → sumar puntos automáticos</td><td><span class="badge ref">Pendiente</span></td><td><span class="field-empty">—</span></td></tr><tr><td>Validar canje con código de un solo uso</td><td><span class="badge ref">Pendiente</span></td><td><span class="field-empty">—</span></td></tr><tr><td>PIN o login staff (no cualquiera suma puntos)</td><td><span class="badge ref">Pendiente</span></td><td><span class="field-empty">—</span></td></tr></tbody></table>
+
+      <h3>Integraciones futuras</h3>
+      <table>
+        <thead><tr><th>Integración</th><th>Uso</th><th>Fase</th></tr></thead>
+        <tbody><tr>
+        <td>WhatsApp</td>
+        <td>Aviso de puntos ganados / canje listo</td>
+        <td><span class="badge ref">fase 2</span></td>
+      </tr><tr>
+        <td>POS / facturación</td>
+        <td>Acumular puntos automáticamente</td>
+        <td><span class="badge ref">fase 2</span></td>
+      </tr><tr>
+        <td>Email marketing</td>
+        <td>Cumpleaños, promociones</td>
+        <td><span class="badge ref">fase 2</span></td>
+      </tr><tr>
+        <td>App móvil nativa</td>
+        <td>PWA al inicio; app nativa después</td>
+        <td><span class="badge ref">fase 3</span></td>
+      </tr></tbody>
+      </table>
+
+      <h3>Seguridad (no negociable)</h3>
+      <ul>
+        <li>Puntos solo se modifican en el servidor — nunca confiar en el frontend.</li>
+        <li>Ledger inmutable: cada suma/resta queda registrada con motivo y autor.</li>
+        <li>HTTPS obligatorio en producción.</li>
+        <li>Staff con PIN o login limitado para cargar puntos en caja.</li>
+        <li>Contraseñas admin hasheadas (mejora pendiente en el panel actual).</li>
+      </ul>
+      <div class="source-hint">Editar reglas y estados: <code>content/informe-requisitos.json</code> → <code>wallet</code></div>
+    </section>
+
+    <section id="requisitos">
+      <h2>12. Lo que necesitamos de ustedes — checklist editable</h2>
+      <p>Esta tabla se actualiza editando un solo archivo en el repositorio. Los campos vacíos aparecen como <span class="field-empty">Por completar</span>.</p>
+      <div class="callout"><strong>Archivo para completar:</strong> <code>content/informe-requisitos.json</code><br/>
+      Tras editarlo: push a <code>main</code> → el informe se regenera automáticamente en el deploy.</div>
+      <table>
+        <thead><tr><th>Categoría</th><th>Qué necesitamos</th><th>Estado</th><th>Responsable</th><th>Fecha límite</th><th>Notas</th></tr></thead>
+        <tbody><tr>
+        <td><span class="badge ok">Contenido web</span></td>
+        <td>Fotografía profesional del local (mín. 10 fotos)</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td><span class="badge ok">Contenido web</span></td>
+        <td>Foto por producto de tienda (250 g, grano/molido)</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td><span class="badge ok">Contenido web</span></td>
+        <td>Confirmación de precios menú y tienda</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td><span class="badge ok">Contenido web</span></td>
+        <td>Textos aprobados de historia y valores</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td><span class="badge ok">Migración</span></td>
+        <td>Acceso DNS GoDaddy para conectar mascafe.com</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td><span class="badge ok">Independencia</span></td>
+        <td>Cuentas GitHub, Firebase y hosting a nombre de Más Café</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td><span class="badge ok">Wallet</span></td>
+        <td>Reglas de puntos acordadas por escrito (ver sección wallet)</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td><span class="badge ok">Wallet</span></td>
+        <td>Lista de premios canjeables (ej. café gratis = X puntos)</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td><span class="badge ok">Wallet</span></td>
+        <td>Quién operará la caja/tablet para sumar y validar puntos</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td><span class="badge ok">Wallet</span></td>
+        <td>Términos y política de privacidad del programa de fidelización</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td><span class="badge ok">Wallet</span></td>
+        <td>Decisión: login por teléfono OTP, email o Google</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td><span class="badge ok">Marca</span></td>
+        <td>Nuevos assets en Drive → avisar para sincronizar</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr><tr>
+        <td><span class="badge ok">Marca</span></td>
+        <td>Aprobación de cambios vía informe antes de campañas pagadas</td>
+        <td><span class="badge ref">Pendiente</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td><span class="field-empty">Fecha</span></td>
+        <td class="muted"><span class="field-empty">—</span></td>
+      </tr></tbody>
+      </table>
+
+      <h3>Campos libres — escriban aquí lo que haga falta</h3>
+      <p class="muted">Espacio para notas de reuniones, contactos, presupuestos o decisiones que no encajan en las tablas anteriores.</p>
+      
+    <div class="card fill-card">
+      <h4>Notas de los dueños</h4>
+      <div class="fill-area"><span class="field-empty">Escribir aquí en content/informe-requisitos.json → camposLibres</span></div>
+    </div>
+    <div class="card fill-card">
+      <h4>Decisiones pendientes de reunión</h4>
+      <div class="fill-area"><span class="field-empty">Escribir aquí en content/informe-requisitos.json → camposLibres</span></div>
+    </div>
+    <div class="card fill-card">
+      <h4>Contactos clave (nombre, rol, teléfono)</h4>
+      <div class="fill-area"><span class="field-empty">Escribir aquí en content/informe-requisitos.json → camposLibres</span></div>
+    </div>
+    <div class="card fill-card">
+      <h4>Presupuesto o plazos acordados</h4>
+      <div class="fill-area"><span class="field-empty">Escribir aquí en content/informe-requisitos.json → camposLibres</span></div>
+    </div>
+
+      <div class="source-hint"><strong>Cómo actualizar desde Cursor:</strong> abrir <code>content/informe-requisitos.json</code>, cambiar <code>estado</code> (<code>pendiente</code> | <code>en_proceso</code> | <code>listo</code>), <code>responsable</code>, <code>valor</code>, <code>notas</code> o <code>contenido</code> en campos libres → commit → push.</div>
+    </section>
+
     <section id="enlaces">
-      <h2>9. Enlaces del ecosistema y por qué existen</h2>
+      <h2>13. Enlaces del ecosistema y por qué existen</h2>
       <table>
         <thead><tr><th>Enlace</th><th>URL</th><th>Motivo</th></tr></thead>
-        <tbody><tr><td>Sitio público (GitHub Pages)</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/</a></td><td>Hosting principal. Se actualiza con cada push a main.</td></tr><tr><td>Panel admin</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/</a></td><td>Edición de contenido sin tocar código. Publicación automática.</td></tr><tr><td>Este informe</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/</a></td><td>Documento constitucional para la marca. No aparece en el menú del sitio.</td></tr><tr><td>Repositorio GitHub</td><td><a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe" target="_blank" rel="noopener">https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe</a></td><td>Código fuente, historial de cambios y colaboración.</td></tr><tr><td>Carpeta Drive (marca)</td><td><a href="https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC" target="_blank" rel="noopener">https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC</a></td><td>Fuente original de logotipos, ilustraciones y aplicaciones.</td></tr><tr><td>Dominio mascafe.com</td><td><a href="https://mascafe.com/" target="_blank" rel="noopener">https://mascafe.com/</a></td><td>Destino final cuando DNS GoDaddy apunte a GitHub Pages.</td></tr><tr><td>Firebase Hosting (respaldo)</td><td><a href="https://mas-cafe-c8413.web.app/" target="_blank" rel="noopener">https://mas-cafe-c8413.web.app/</a></td><td>Plataforma alternativa configurada en el repo. Mismo build HTML.</td></tr><tr><td>Instagram</td><td><a href="https://www.instagram.com/mascafecol315" target="_blank" rel="noopener">https://www.instagram.com/mascafecol315</a></td><td>Red social principal — tráfico y comunidad.</td></tr><tr><td>Facebook</td><td><a href="https://www.facebook.com/mascafecol" target="_blank" rel="noopener">https://www.facebook.com/mascafecol</a></td><td>Segunda red — eventos y alcance local.</td></tr><tr><td>WhatsApp</td><td><a href="https://wa.me/573156573897" target="_blank" rel="noopener">https://wa.me/573156573897</a></td><td>Canal de conversión directa (pedidos, reservas, consultas).</td></tr><tr><td>Google Maps</td><td><a href="https://maps.google.com/?q=Calle%205B%20%232-38-09%2C%20Barrio%20San%20Fernando%20Nuevo%2C%20Cali%2C%20Valle%20del%20Cauca%2C%20Colombia" target="_blank" rel="noopener">https://maps.google.com/?q=Calle%205B%20%232-38-09%2C%20Barrio%20San%20Fernando%20Nuevo%2C%20Cali%2C%20Valle%20del%20Cauca%2C%20Colombia</a></td><td>Navegación al local físico.</td></tr></tbody>
+        <tbody><tr><td>Sitio público (GitHub Pages)</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/</a></td><td>Hosting principal. Se actualiza con cada push a main.</td></tr><tr><td>Panel admin</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/</a></td><td>Edición de contenido sin tocar código. Publicación automática.</td></tr><tr><td>Este informe</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/</a></td><td>Documento constitucional para la marca. No aparece en el menú del sitio.</td></tr><tr><td>Repositorio GitHub</td><td><a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe" target="_blank" rel="noopener">https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe</a></td><td>Código fuente, historial de cambios y colaboración.</td></tr><tr><td>Carpeta Drive (marca)</td><td><a href="https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC" target="_blank" rel="noopener">https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC</a></td><td>Fuente original de logotipos, ilustraciones y aplicaciones.</td></tr><tr><td>Dominio mascafe.com</td><td><a href="https://www.mascafe.com/" target="_blank" rel="noopener">https://www.mascafe.com/</a></td><td>Destino final cuando DNS GoDaddy apunte al hosting con backend (wallet + sitio).</td></tr><tr><td>Firebase Hosting (respaldo)</td><td><a href="https://mas-cafe-c8413.web.app/" target="_blank" rel="noopener">https://mas-cafe-c8413.web.app/</a></td><td>Plataforma alternativa configurada en el repo. Mismo build HTML.</td></tr><tr><td>Instagram</td><td><a href="https://www.instagram.com/mascafecol315" target="_blank" rel="noopener">https://www.instagram.com/mascafecol315</a></td><td>Red social principal — tráfico y comunidad.</td></tr><tr><td>Facebook</td><td><a href="https://www.facebook.com/mascafecol" target="_blank" rel="noopener">https://www.facebook.com/mascafecol</a></td><td>Segunda red — eventos y alcance local.</td></tr><tr><td>WhatsApp</td><td><a href="https://wa.me/573156573897" target="_blank" rel="noopener">https://wa.me/573156573897</a></td><td>Canal de conversión directa (pedidos, reservas, consultas).</td></tr><tr><td>Google Maps</td><td><a href="https://maps.google.com/?q=Calle%205B%20%232-38-09%2C%20Barrio%20San%20Fernando%20Nuevo%2C%20Cali%2C%20Valle%20del%20Cauca%2C%20Colombia" target="_blank" rel="noopener">https://maps.google.com/?q=Calle%205B%20%232-38-09%2C%20Barrio%20San%20Fernando%20Nuevo%2C%20Cali%2C%20Valle%20del%20Cauca%2C%20Colombia</a></td><td>Navegación al local físico.</td></tr></tbody>
       </table>
     </section>
 
     <section id="dueños">
-      <h2>10. Recomendaciones y lo que necesitamos de la marca</h2>
+      <h2>14. Recomendaciones para dueños de Más Café</h2>
       <h3>Consejos para dueños de Más Café</h3>
       <ul>
         <li><strong>Una frase por pantalla.</strong> Evitar repetir tagline y descriptor en cada sección; reservarlos para momentos clave.</li>
@@ -1169,25 +1485,15 @@
         <li><strong>Instagram activo.</strong> El sitio envía tráfico a @mascafecol315 — el feed debe estar vivo.</li>
         <li><strong>Google Business Profile.</strong> Misma dirección y horarios que el sitio (NAP consistente).</li>
         <li><strong>Responder WhatsApp en &lt;15 min</strong> en horario comercial — el sitio convierte ahí.</li>
+        <li><strong>Definir reglas de puntos antes de programar la wallet.</strong> Ver sección <a href="#wallet">Wallet</a> y completar <code>content/informe-requisitos.json</code>.</li>
+        <li><strong>Migración a mascafe.com:</strong> apuntar DNS cuando el backend de fidelización esté listo — no antes si quieren wallet funcional.</li>
       </ul>
-      <h3>Qué necesitamos de ustedes (checklist)</h3>
-      <div class="card">
-        <ul>
-          <li>☐ Fotografía profesional del local (mín. 10 fotos horizontal + vertical)</li>
-          <li>☐ Fotografía por producto de tienda (250 g, grano/molido)</li>
-          <li>☐ Confirmación de precios menú y tienda (actualizar en admin)</li>
-          <li>☐ Textos aprobados de historia y valores (panel Nosotros)</li>
-          <li>☐ Acceso DNS GoDaddy para conectar mascafe.com</li>
-          <li>☐ Credenciales si usarán Firebase o plataforma adicional (VertiZone / Vercel)</li>
-          <li>☐ Nuevos assets en Drive → avisar para sincronizar a <code>public/images/</code></li>
-          <li>☐ Aprobación de cambios vía este informe antes de campañas pagadas</li>
-        </ul>
-      </div>
+      <p class="muted" style="margin-top:1rem">El checklist detallado de entregables está en la sección <a href="#requisitos">Requisitos</a>.</p>
     </section>
 
     <section id="changelog">
-      <h2>11. Historial de entregas (se actualiza con cada cambio)</h2>
-      <ul><li><time>2026-06-27</time> — Informe constitucional v1.0 — paleta crema, textos sin repetición, auditoría de activos Drive.</li><li><time>2026-06-27</time> — Favicon del logo en todas las páginas.</li><li><time>2026-06-27</time> — Rediseño móvil editorial y vista previa admin en todos los paneles.</li><li><time>2026-06-26</time> — Sitio multipágina HTML estático + panel admin + GitHub Actions.</li></ul>
+      <h2>15. Historial de entregas (se actualiza con cada cambio)</h2>
+      <ul><li><time>2026-06-27</time> — Informe v1.1 — wallet de fidelización, migración mascafe.com, checklist editable en content/informe-requisitos.json.</li><li><time>2026-06-27</time> — Informe constitucional v1.0 — paleta crema, textos sin repetición, auditoría de activos Drive.</li><li><time>2026-06-27</time> — Favicon del logo en todas las páginas.</li><li><time>2026-06-27</time> — Rediseño móvil editorial y vista previa admin en todos los paneles.</li><li><time>2026-06-26</time> — Sitio multipágina HTML estático + panel admin + GitHub Actions.</li></ul>
       <p class="muted" style="margin-top:1rem">Próxima actualización automática al ejecutar <code>npm run build:github-pages</code> tras cambios en el repositorio.</p>
     </section>
 
@@ -1195,7 +1501,7 @@
 
   <footer>
     <div class="wrap">
-      <p><strong>Más Café</strong> — Constitución Web v1.0.0</p>
+      <p><strong>Más Café</strong> — Constitución Web v1.1.0</p>
       <p style="margin-top:.5rem;opacity:.8">Repositorio: <a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe">https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe</a> · Sitio: <a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/</a></p>
       <p style="margin-top:.35rem;opacity:.6;font-size:.78rem">Documento para la marca. No enlazado desde el menú público.</p>
     </div>

@@ -1,0 +1,131 @@
+{
+  "meta": {
+    "titularMarca": "Más Café",
+    "dominioObjetivo": "https://www.mascafe.com",
+    "repositorioActual": "https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe",
+    "repositorioFuturo": "",
+    "organizacionGitHubFutura": "",
+    "propietarioLegal": "",
+    "contactoPrincipalMarca": "",
+    "emailCorporativo": "hola@mascafe.com",
+    "fechaMigracionObjetivo": "",
+    "notasGenerales": ""
+  },
+  "independencia": {
+    "intro": "La web pasará a propiedad de Más Café, independiente de La Sucursal del Café. Seguiremos actualizando con Cursor, pero cuentas y dominio deben quedar a nombre de la marca.",
+    "items": [
+      { "id": "repo-propio", "item": "Repositorio GitHub a nombre de Más Café", "estado": "pendiente", "responsable": "", "valor": "", "notas": "" },
+      { "id": "org-github", "item": "Organización GitHub de Más Café con accesos definidos", "estado": "pendiente", "responsable": "", "valor": "", "notas": "" },
+      { "id": "firebase-cuenta", "item": "Proyecto Firebase / backend a nombre de Más Café", "estado": "pendiente", "responsable": "", "valor": "", "notas": "Proyecto actual: mas-cafe-c8413" },
+      { "id": "hosting-cuenta", "item": "Cuenta de hosting (Vercel/Render) a nombre de Más Café", "estado": "pendiente", "responsable": "", "valor": "", "notas": "" },
+      { "id": "dominio-godaddy", "item": "Dominio mascafe.com en GoDaddy a nombre de Más Café", "estado": "pendiente", "responsable": "", "valor": "", "notas": "" },
+      { "id": "emails-corporativos", "item": "Correos corporativos activos (hola@, admin@)", "estado": "pendiente", "responsable": "", "valor": "", "notas": "" },
+      { "id": "roles-internos", "item": "Documento de roles: dueño, editor web, caja/puntos", "estado": "pendiente", "responsable": "", "valor": "", "notas": "" }
+    ]
+  },
+  "migracion": {
+    "intro": "Hoy el sitio público vive en GitHub Pages (HTML estático). La wallet de fidelización requiere backend. El dominio www.mascafe.com apuntará al hosting con Node.js/API.",
+    "fases": [
+      { "fase": "A", "nombre": "Organización", "descripcion": "Repo y cuentas a nombre Más Café", "estado": "pendiente", "fechaObjetivo": "" },
+      { "fase": "B", "nombre": "Backend", "descripcion": "Firebase Auth + Firestore (o Convex) activado", "estado": "pendiente", "fechaObjetivo": "" },
+      { "fase": "C", "nombre": "Wallet MVP", "descripcion": "Login cliente + saldo + sumar/restar + historial", "estado": "pendiente", "fechaObjetivo": "" },
+      { "fase": "D", "nombre": "Admin fidelización", "descripcion": "Panel dueños + modo caja en mostrador", "estado": "pendiente", "fechaObjetivo": "" },
+      { "fase": "E", "nombre": "Dominio", "descripcion": "www.mascafe.com → hosting con backend", "estado": "pendiente", "fechaObjetivo": "" },
+      { "fase": "F", "nombre": "Cursor", "descripcion": "Repo Más Café conectado a Cursor para actualizaciones", "estado": "en_proceso", "fechaObjetivo": "" }
+    ],
+    "dns": {
+      "registrador": "GoDaddy",
+      "dominio": "mascafe.com",
+      "wwwDestino": "",
+      "apexDestino": "",
+      "sslConfirmado": false,
+      "fechaCorteGitHubPages": "",
+      "notas": ""
+    }
+  },
+  "wallet": {
+    "intro": "Programa de fidelización con wallet digital, control de puntos y canje en mostrador. No puede vivir en HTML estático: requiere base de datos, login de clientes y reglas server-side.",
+    "backendRecomendado": "Firebase Auth + Firestore (ya hay código parcial en el repo) o Convex",
+    "mvp": [
+      "Login cliente (teléfono OTP recomendado en Colombia)",
+      "Wallet con saldo visible",
+      "Historial de movimientos (ledger)",
+      "Admin: buscar cliente + sumar puntos por compra",
+      "Admin: 2–3 premios canjeables",
+      "Canje con código de un solo uso en mostrador",
+      "Deploy en hosting con backend (no GitHub Pages)",
+      "Dominio www.mascafe.com"
+    ],
+    "reglasNegocio": {
+      "puntosPorMilPesos": "",
+      "ejemplo": "1 punto cada $1.000 COP",
+      "minimoCompraParaSumar": "",
+      "caducidadPuntosMeses": "",
+      "premiosCanjeables": [],
+      "canjeParcial": "",
+      "puntosManualesPermitidos": "",
+      "limiteDiarioPuntos": "",
+      "antiFraude": "",
+      "notas": "Completar con los dueños de Más Café antes de programar."
+    },
+    "pantallasCliente": [
+      { "pantalla": "Registro / login", "descripcion": "Entrar a la wallet", "estado": "pendiente" },
+      { "pantalla": "Mi wallet", "descripcion": "Saldo, QR o código corto para mostrador", "estado": "pendiente" },
+      { "pantalla": "Historial", "descripcion": "Movimientos con fecha y motivo", "estado": "pendiente" },
+      { "pantalla": "Premios", "descripcion": "Catálogo de canjes", "estado": "pendiente" },
+      { "pantalla": "Canjear", "descripcion": "Confirmación + código para validar en caja", "estado": "pendiente" },
+      { "pantalla": "Mi perfil", "descripcion": "Datos y preferencias", "estado": "pendiente" }
+    ],
+    "modulosAdmin": [
+      { "modulo": "Programa de fidelización", "funciones": "Reglas, premios, activar/desactivar", "estado": "pendiente" },
+      { "modulo": "Clientes", "funciones": "Buscar por teléfono, ver saldo", "estado": "pendiente" },
+      { "modulo": "Ajuste manual de puntos", "funciones": "Sumar/restar con motivo obligatorio", "estado": "pendiente" },
+      { "modulo": "Canjes pendientes", "funciones": "Validar código en mostrador", "estado": "pendiente" },
+      { "modulo": "Reportes", "funciones": "Puntos emitidos, canjeados, clientes activos", "estado": "pendiente" },
+      { "modulo": "Staff / caja", "funciones": "Usuarios con permiso limitado (solo cargar puntos)", "estado": "pendiente" }
+    ],
+    "operacionCaja": [
+      { "item": "Tablet o móvil con modo caja", "estado": "pendiente", "notas": "" },
+      { "item": "Buscar cliente por teléfono o QR", "estado": "pendiente", "notas": "" },
+      { "item": "Registrar compra → sumar puntos automáticos", "estado": "pendiente", "notas": "" },
+      { "item": "Validar canje con código de un solo uso", "estado": "pendiente", "notas": "" },
+      { "item": "PIN o login staff (no cualquiera suma puntos)", "estado": "pendiente", "notas": "" }
+    ],
+    "modeloDatos": [
+      "Customer — usuario de la wallet",
+      "Wallet — saldo actual de puntos",
+      "PointsLedger — historial inmutable (suma, resta, quién, cuándo, por qué)",
+      "Reward — premios canjeables",
+      "Redemption — canje realizado",
+      "ProgramSettings — reglas del programa",
+      "StaffUser — baristas/caja (opcional v1)"
+    ],
+    "integracionesFuturas": [
+      { "nombre": "WhatsApp", "uso": "Aviso de puntos ganados / canje listo", "prioridad": "fase 2" },
+      { "nombre": "POS / facturación", "uso": "Acumular puntos automáticamente", "prioridad": "fase 2" },
+      { "nombre": "Email marketing", "uso": "Cumpleaños, promociones", "prioridad": "fase 2" },
+      { "nombre": "App móvil nativa", "uso": "PWA al inicio; app nativa después", "prioridad": "fase 3" }
+    ]
+  },
+  "necesitamosDeUstedes": [
+    { "id": "fotos-local", "categoria": "Contenido web", "item": "Fotografía profesional del local (mín. 10 fotos)", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
+    { "id": "fotos-producto", "categoria": "Contenido web", "item": "Foto por producto de tienda (250 g, grano/molido)", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
+    { "id": "precios-menu", "categoria": "Contenido web", "item": "Confirmación de precios menú y tienda", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
+    { "id": "textos-nosotros", "categoria": "Contenido web", "item": "Textos aprobados de historia y valores", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
+    { "id": "dns-godaddy", "categoria": "Migración", "item": "Acceso DNS GoDaddy para conectar mascafe.com", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
+    { "id": "cuentas-marca", "categoria": "Independencia", "item": "Cuentas GitHub, Firebase y hosting a nombre de Más Café", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
+    { "id": "reglas-puntos", "categoria": "Wallet", "item": "Reglas de puntos acordadas por escrito (ver sección wallet)", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
+    { "id": "premios-wallet", "categoria": "Wallet", "item": "Lista de premios canjeables (ej. café gratis = X puntos)", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
+    { "id": "staff-caja", "categoria": "Wallet", "item": "Quién operará la caja/tablet para sumar y validar puntos", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
+    { "id": "terminos-wallet", "categoria": "Wallet", "item": "Términos y política de privacidad del programa de fidelización", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
+    { "id": "otp-proveedor", "categoria": "Wallet", "item": "Decisión: login por teléfono OTP, email o Google", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
+    { "id": "drive-sync", "categoria": "Marca", "item": "Nuevos assets en Drive → avisar para sincronizar", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" },
+    { "id": "aprobacion-campanas", "categoria": "Marca", "item": "Aprobación de cambios vía informe antes de campañas pagadas", "estado": "pendiente", "responsable": "", "fechaLimite": "", "notas": "" }
+  ],
+  "camposLibres": [
+    { "titulo": "Notas de los dueños", "contenido": "" },
+    { "titulo": "Decisiones pendientes de reunión", "contenido": "" },
+    { "titulo": "Contactos clave (nombre, rol, teléfono)", "contenido": "" },
+    { "titulo": "Presupuesto o plazos acordados", "contenido": "" }
+  ]
+}
