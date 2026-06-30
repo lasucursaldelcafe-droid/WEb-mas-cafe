@@ -1,0 +1,75 @@
+name: Auto-merge PRs cursor/*
+
+# Valida y fusiona automáticamente PRs de ramas cursor/* hacia main.
+# El deploy a mascafé.com ocurre en deploy-github-pages.yml tras el merge.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "Número de PR a fusionar (vacío = detectar por rama)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: auto-merge-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  validate-and-merge:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.head.ref != '' &&
+       startsWith(github.event.pull_request.head.ref, 'cursor/'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtener código del PR
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
+          fetch-depth: 0
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Validar build y SEO
+        run: |
+          npm ci
+          npm run brand:sync-logo || true
+          npm run build:github-pages
+          npm run verify:links
+          npm run verify:seo
+
+      - name: Fusionar PR automáticamente
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.pr_number }}" ]; then
+            PR="${{ inputs.pr_number }}"
+          else
+            PR="${{ github.event.pull_request.number }}"
+          fi
+
+          if [ -z "$PR" ]; then
+            echo "No hay número de PR"
+            exit 1
+          fi
+
+          echo "Fusionando PR #$PR"
+          gh pr ready "$PR" 2>/dev/null || true
+          gh pr merge "$PR" --squash --delete-branch --subject "$(gh pr view "$PR" --json title --jq .title)"
+
+      - name: Resumen
+        if: success()
+        run: |
+          echo "✅ PR fusionado. El workflow «Publicar HTML en GitHub Pages» desplegará el sitio."
