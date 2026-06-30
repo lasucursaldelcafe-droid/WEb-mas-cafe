@@ -17,10 +17,13 @@ export const GODADDY_PARKING_IPS = [
 ];
 
 export const GODADDY_FORWARDING_URL =
-  "https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com";
+  "https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com#Forwarding";
 
 export const GODADDY_DNS_PANEL =
   "https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com";
+
+export const GODADDY_PORTFOLIO_URL =
+  "https://dcc.godaddy.com/control/portfolio";
 
 function digAt(resolver, query) {
   try {

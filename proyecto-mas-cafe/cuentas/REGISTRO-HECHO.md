@@ -55,8 +55,10 @@ Formato sugerido por línea:
 - [x] DNS A @ + CNAME www vía API | npm run domain:configure | 2026-06-30 | aplicado — propagado
 - [x] DNS público (8.8.8.8) apunta a GitHub Pages | dig A @ → 185.199.x.x | 2026-06-30 |
 - [x] Custom domain activado en GitHub Pages | xn--mascaf-gva.com | 2026-06-30 |
-- [ ] **Quitar reenvío/parking GoDaddy** (requerido para HTTPS) | DNS → Reenvío → Eliminar | **PENDIENTE — bloquea SSL** |
-- [ ] HTTPS certificado + Enforce HTTPS | `npm run domain:enable-https` | tras quitar parking |
+- [x] DNS automático GitHub Pages | npm run godaddy:optimize | 2026-06-30 | Cursor
+- [x] A records + CNAME www correctos en GoDaddy API | 4 IPs GitHub | 2026-06-30 |
+- [x] Parking GoDaddy resuelto | nameservers sirven GitHub | 2026-06-30 |
+- [ ] HTTPS certificado + Enforce HTTPS | `npm run domain:enable-https` | cert en estado «new» |
 
 ### Firebase
 - [ ] Acceso consola mas-cafe-c8413 | https://console.firebase.google.com/project/mas-cafe-c8413 | |

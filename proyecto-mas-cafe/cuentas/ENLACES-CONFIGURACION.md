@@ -50,7 +50,8 @@ Abre cada enlace, inicia sesión con la cuenta de **Más Café** (o la que vayan
 | Zoho Admin (crear buzones) | https://mailadmin.zoho.com/ |
 | Activar MX automático | `npm run email:configure -- --provider zoho` |
 | Forwarding / reenvío (desactivar parking) | https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com → **Reenvío** → Eliminar |
-| Activar HTTPS automático | `npm run domain:enable-https` (tras quitar forwarding) |
+| Optimización completa GoDaddy | `npm run godaddy:optimize` |
+| Activar HTTPS automático | `npm run domain:enable-https` |
 
 **DNS para GitHub Pages (fase actual — sitio estático):**
 
