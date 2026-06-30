@@ -30,7 +30,9 @@ Formato sugerido por línea:
 - [ ] Cuenta Vercel / Render creada | https://... | |
 
 ### Correo
-- [ ] hola@mascafé.com activo | | |
+- [ ] hola@mascafé.com activo | Zoho Mail | |
+- [ ] administracion@mascafé.com activo | Zoho Mail | |
+- [ ] DNS MX configurado | `npm run email:configure` | |
 
 ### Otros
 - [ ] Google Drive marca | https://drive.google.com/... | |
@@ -53,8 +55,10 @@ Formato sugerido por línea:
 - [x] DNS A @ + CNAME www vía API | npm run domain:configure | 2026-06-30 | aplicado — propagado
 - [x] DNS público (8.8.8.8) apunta a GitHub Pages | dig A @ → 185.199.x.x | 2026-06-30 |
 - [x] Custom domain activado en GitHub Pages | xn--mascaf-gva.com | 2026-06-30 |
-- [ ] **Quitar reenvío/parking GoDaddy** (requerido para HTTPS) | DNS → Reenvío → Eliminar | **PENDIENTE — bloquea SSL** |
-- [ ] HTTPS certificado + Enforce HTTPS | `npm run domain:enable-https` | tras quitar parking |
+- [x] DNS automático GitHub Pages | npm run godaddy:optimize | 2026-06-30 | Cursor
+- [x] A records + CNAME www correctos en GoDaddy API | 4 IPs GitHub | 2026-06-30 |
+- [x] Parking GoDaddy resuelto | nameservers sirven GitHub | 2026-06-30 |
+- [ ] HTTPS certificado + Enforce HTTPS | `npm run domain:enable-https` | cert en estado «new» |
 
 ### Firebase
 - [ ] Acceso consola mas-cafe-c8413 | https://console.firebase.google.com/project/mas-cafe-c8413 | |
@@ -79,7 +83,9 @@ Formato sugerido por línea:
 - [x] Guía SEGURIDAD.md (secrets + ejecución autónoma) | proyecto-mas-cafe/cuentas/SEGURIDAD.md | 2026-06-30 |
 - [x] Checklist wallet gratis paso a paso | proyecto-mas-cafe/entregables/WALLET-CHECKLIST-GRATIS.md | 2026-06-30 |
 - [x] SEO + favicon + sitemap + JSON-LD | proyecto-mas-cafe/entregables/SEO-CHECKLIST.md | 2026-06-30 |
-- [ ] Google Search Console verificado | https://search.google.com/search-console | |
+- [x] Google Search Console verificado | DNS TXT + meta tag | 2026-06-30 |
+- [x] Sitemap ping automático | npm run post:publish | 2026-06-30 |
+- [x] Mantenimiento HTTPS programado | .github/workflows/maintain-domain.yml | 2026-06-30 |
 - [ ] Google Business Profile (Maps) | https://business.google.com | |
 
 ---

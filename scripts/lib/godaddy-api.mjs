@@ -97,3 +97,40 @@ export async function testGodaddyCredentials() {
   await api(`/domains/${DOMAIN_PUNYCODE}`);
   return true;
 }
+
+/** Reemplaza todos los registros MX del apex (@). */
+export async function putMxRecords(records, domain = DOMAIN_PUNYCODE, { dryRun = false } = {}) {
+  const payload = records.map((r) => ({
+    data: r.data,
+    priority: r.priority,
+    ttl: r.ttl ?? 600,
+  }));
+
+  if (dryRun) {
+    return { action: "PUT", path: `/domains/${domain}/records/MX/@`, records: payload };
+  }
+
+  await api(`/domains/${domain}/records/MX/@`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+  return { updated: payload.length, type: "MX", name: "@" };
+}
+
+/** Reemplaza registros TXT de un nombre (ej. @, _dmarc, zmail._domainkey). */
+export async function putTxtRecords(name, values, domain = DOMAIN_PUNYCODE, { dryRun = false } = {}) {
+  const payload = values.map((data) => ({
+    data,
+    ttl: 600,
+  }));
+
+  if (dryRun) {
+    return { action: "PUT", path: `/domains/${domain}/records/TXT/${name}`, records: payload };
+  }
+
+  await api(`/domains/${domain}/records/TXT/${encodeURIComponent(name)}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+  return { updated: payload.length, type: "TXT", name };
+}

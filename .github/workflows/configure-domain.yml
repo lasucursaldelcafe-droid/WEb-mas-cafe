@@ -47,6 +47,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
         run: node scripts/validate-credentials.mjs
 
+      - name: Optimizar GoDaddy (DNS + diagnóstico)
+        env:
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          node scripts/godaddy-optimize.mjs $ARGS || true
+
       - name: Configurar dominio
         env:
           GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
