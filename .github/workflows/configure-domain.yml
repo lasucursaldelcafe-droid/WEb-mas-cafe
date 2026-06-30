@@ -47,7 +47,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
         run: node scripts/validate-credentials.mjs
 
-      - name: Configurar dominio automáticamente
+      - name: Configurar dominio
         env:
           GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
           GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
@@ -58,6 +58,14 @@ jobs:
           if [ "${{ inputs.skip_godaddy }}" = "true" ]; then ARGS="$ARGS --skip-godaddy"; fi
           if [ "${{ inputs.skip_github }}" = "true" ]; then ARGS="$ARGS --skip-github"; fi
           node scripts/configure-domain.mjs $ARGS
+
+      - name: Activar HTTPS (si DNS válido)
+        if: inputs.dry_run != true && inputs.skip_github != true
+        env:
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
+        run: node scripts/enable-https.mjs || true
 
       - name: Verificar dominio
         if: inputs.dry_run != true
