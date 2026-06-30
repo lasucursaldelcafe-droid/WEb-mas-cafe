@@ -1,8 +1,6 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import sharp from "sharp";
-import { pdf } from "pdf-to-img";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "../..");
@@ -120,6 +118,11 @@ export function resolveMenuBookPages(manifest = loadDriveAssets()) {
 export async function syncMenuBook(manifest = loadDriveAssets()) {
   const book = manifest.menuBook;
   if (!book?.pdfDriveId) return 0;
+
+  const [{ default: sharp }, { pdf }] = await Promise.all([
+    import("sharp"),
+    import("pdf-to-img"),
+  ]);
 
   const pdfDest = resolvePublicPath(book.pdfLocalPath || "/menu/menu-digital.pdf");
   const pagesDir = resolvePublicPath(book.pagesDir || "/images/menu/pages");
