@@ -86,6 +86,8 @@ export function siteStyles() {
       --sage-rgb:216,218,168;--brown-rgb:176,122,58;
       --text-hover-duration:.4s;
       --text-hover-ease:cubic-bezier(.22,1,.36,1);
+      --page-ease:cubic-bezier(.22,1,.36,1);
+      --page-duration:.42s;
     }
     html{scroll-behavior:smooth}
     body{
@@ -94,6 +96,37 @@ export function siteStyles() {
       min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;
     }
     main{flex:1}
+    #main.page-content{
+      animation:page-enter var(--page-duration) var(--page-ease) both;
+    }
+    html.vt-nav #main.page-content{animation:none}
+    body.page-leaving{
+      opacity:0;
+      pointer-events:none;
+      transition:opacity calc(var(--page-duration) * .75) var(--page-ease);
+    }
+    body.page-leaving #main.page-content{
+      transform:translateY(10px);
+      opacity:0;
+      transition:
+        opacity calc(var(--page-duration) * .75) var(--page-ease),
+        transform calc(var(--page-duration) * .75) var(--page-ease);
+    }
+    @keyframes page-enter{
+      from{opacity:0;transform:translateY(14px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+    @view-transition{navigation:auto}
+    ::view-transition-old(root){
+      animation:page-exit calc(var(--page-duration) * .7) var(--page-ease) both;
+    }
+    ::view-transition-new(root){
+      animation:page-enter var(--page-duration) var(--page-ease) both;
+    }
+    @keyframes page-exit{
+      from{opacity:1;transform:translateY(0)}
+      to{opacity:0;transform:translateY(-8px)}
+    }
     img{max-width:100%;height:auto;display:block}
     a{color:inherit;text-decoration:none}
     ::selection{background:var(--sage);color:var(--blue)}
@@ -766,6 +799,9 @@ export function siteStyles() {
       .exp-copy h3, .menu-cat-head h3,
       nav.site-nav a, .nav-overlay a, .footer-nav a,
       .text-link, .address-link{transition:none}
+      #main.page-content{animation:none}
+      body.page-leaving, body.page-leaving #main.page-content{transition:none;transform:none;opacity:1}
+      ::view-transition-old(root),::view-transition-new(root){animation:none}
       main h1:hover, main h2:hover, main h3:hover,
       main .section-title:hover, main .post-title:hover,
       main .tagline:hover, main .soul:hover, main .label:hover,
@@ -780,6 +816,44 @@ export function siteStyles() {
         transform:none;letter-spacing:inherit;
       }
     }
+  `;
+}
+
+function pageTransitionScript() {
+  return `
+      var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var crossDocVT=typeof window.PageRevealEvent!=='undefined';
+      var exitMs=reduced?0:320;
+      if(crossDocVT)document.documentElement.classList.add('vt-nav');
+
+      function isInternalLink(a){
+        if(!a||a.target==='_blank'||a.hasAttribute('download'))return false;
+        var href=a.getAttribute('href');
+        if(!href||href.charAt(0)==='#'||href.indexOf('mailto:')===0||href.indexOf('tel:')===0||href.indexOf('javascript:')===0)return false;
+        try{
+          var next=new URL(a.href,location.href);
+          if(next.origin!==location.origin)return false;
+          if(next.pathname===location.pathname&&next.search===location.search)return false;
+          return true;
+        }catch(e){return false;}
+      }
+
+      function leaveAndGo(url){
+        if(reduced||exitMs===0){location.href=url;return;}
+        document.body.classList.add('page-leaving');
+        window.setTimeout(function(){location.href=url;},exitMs);
+      }
+
+      if(!crossDocVT&&!reduced){
+        document.addEventListener('click',function(e){
+          if(e.defaultPrevented)return;
+          if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button!==0)return;
+          var a=e.target.closest('a');
+          if(!isInternalLink(a))return;
+          e.preventDefault();
+          leaveAndGo(a.href);
+        },false);
+      }
   `;
 }
 
@@ -818,6 +892,7 @@ function siteScripts(isHome, pageId, analyticsEnabled) {
         });
       }
 
+      ${pageTransitionScript()}
       ${siteAnalyticsScript({ pageId: pageId || (isHome ? "home" : "page"), enabled: analyticsEnabled !== false })}
     })();
   `;
@@ -859,6 +934,7 @@ export function shell({ title, description, depth, pageId, slug, heroArt, body, 
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#073954"/>
+  <meta name="view-transition" content="same-origin"/>
   <title>${pageTitle}</title>
   <meta name="description" content="${escapeMeta(description)}"/>${faviconHead(depth)}${seoHead({ brand, title, description, depth, slug: pageSlug, isHome, ogImagePath: brandAssetPath("og") })}${googleAnalyticsHead(gaId)}
   <style>${fontFaces(depth, site)}</style>
@@ -886,7 +962,7 @@ export function shell({ title, description, depth, pageId, slug, heroArt, body, 
     ${overlayLinks}
     <a href="${href("/tienda")}" class="nav-cta-overlay" data-track="tienda">Comprar café</a>
   </div>
-  <main id="main">${body}</main>
+  <main id="main" class="page-content">${body}</main>
   <footer>
     <div class="wrap">
       <div class="footer-brand">
