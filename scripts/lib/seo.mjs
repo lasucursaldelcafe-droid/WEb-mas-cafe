@@ -168,7 +168,7 @@ export function seoHead({
   });
   const canonical = pageUrl(siteUrl, slug);
   const ogImage = assetUrl(siteUrl, ogImagePath || seo.defaultOgImage, depth);
-  const logoUrl = assetUrl(siteUrl, brandAssetPath("primary"), depth);
+  const logoUrl = assetUrl(siteUrl, brandAssetPath("horizontalCrema"), depth);
   const jsonLd = jsonLdLocalBusiness({
     brand,
     siteUrl,
