@@ -20,7 +20,7 @@ permissions:
 
 concurrency:
   group: auto-merge-${{ github.event.pull_request.number || github.run_id }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   validate-and-merge:
@@ -30,22 +30,45 @@ jobs:
        startsWith(github.event.pull_request.head.ref, 'cursor/'))
     runs-on: ubuntu-latest
     steps:
+      - name: Estado del PR
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "Modo manual — continuar"
+            exit 0
+          fi
+          STATE=$(gh pr view "${{ github.event.pull_request.number }}" --json state --jq .state)
+          echo "Estado PR #${{ github.event.pull_request.number }}: $STATE"
+          if [ "$STATE" = "OPEN" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "✅ Omitiendo — PR ya no está abierto ($STATE). Evita falso fallo tras fusionar."
+          fi
+
       - name: Obtener código del PR
+        if: steps.pr.outputs.should_run == 'true'
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.ref || github.ref }}
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
           fetch-depth: 0
 
       - name: Configurar Node.js
+        if: steps.pr.outputs.should_run == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
 
       - name: Validar build y SEO
+        if: steps.pr.outputs.should_run == 'true'
         env:
           ADMIN_PUBLISH_KEY: ${{ secrets.ADMIN_PUBLISH_KEY }}
           GH_PAGES_PAT: ${{ secrets.GH_PAGES_PAT }}
+          CI_SKIP_INFORME_SOURCE: "1"
         run: |
           npm ci
           npm run brand:sync-logo || true
@@ -55,13 +78,10 @@ jobs:
           npm run verify:admin
 
       - name: Fusionar PR automáticamente
+        if: steps.pr.outputs.should_run == 'true'
         env:
           GH_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
         run: |
-          # El build regenera informes/*.html; limpiar antes de que gh merge haga checkout
-          git reset --hard HEAD
-          git clean -fd
-
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.pr_number }}" ]; then
             PR="${{ inputs.pr_number }}"
           else
@@ -73,11 +93,21 @@ jobs:
             exit 1
           fi
 
+          STATE=$(gh pr view "$PR" --json state --jq .state)
+          if [ "$STATE" = "MERGED" ]; then
+            echo "✅ PR #$PR ya fusionado"
+            exit 0
+          fi
+          if [ "$STATE" != "OPEN" ]; then
+            echo "PR #$PR no está abierto ($STATE)"
+            exit 0
+          fi
+
           echo "Fusionando PR #$PR"
           gh pr ready "$PR" 2>/dev/null || true
           gh pr merge "$PR" --squash --delete-branch --subject "$(gh pr view "$PR" --json title --jq .title)"
 
       - name: Resumen
-        if: success()
+        if: success() && steps.pr.outputs.should_run == 'true'
         run: |
           echo "✅ PR fusionado. El workflow «Publicar HTML en GitHub Pages» desplegará el sitio."
