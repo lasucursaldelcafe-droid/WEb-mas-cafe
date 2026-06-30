@@ -99,6 +99,16 @@ export async function syncAllDriveAssets(manifest = loadDriveAssets()) {
     console.warn(`  ⚠ menuBook: ${err.message}`);
   }
 
+  try {
+    const optimized = await optimizeMenuPageImages(manifest);
+    if (optimized > 0) {
+      synced += optimized;
+      console.log(`  ✅ Menú zoom → ${optimized} página(s) recortadas`);
+    }
+  } catch (err) {
+    console.warn(`  ⚠ menuBook zoom: ${err.message}`);
+  }
+
   return synced;
 }
 
@@ -115,14 +125,55 @@ export function resolveMenuBookPages(manifest = loadDriveAssets()) {
     .map((file) => `${book.pagesDir}/${file}`);
 }
 
+async function loadSharp() {
+  const { default: sharp } = await import("sharp");
+  return sharp;
+}
+
+/** Recorta márgenes blancos del PDF y rellena el marco con zoom (cover). */
+export async function processMenuPageBuffer(pageBuffer, book = {}) {
+  const sharp = await loadSharp();
+  const width = book.pageWidth ?? 792;
+  const height = book.pageHeight ?? 1224;
+  const threshold = book.trimThreshold ?? 18;
+  const quality = book.webpQuality ?? 86;
+
+  return sharp(pageBuffer)
+    .trim({ threshold })
+    .resize(width, height, { fit: "cover", position: "centre" })
+    .webp({ quality })
+    .toBuffer();
+}
+
+export async function optimizeMenuPageImages(manifest = loadDriveAssets()) {
+  const book = manifest.menuBook;
+  if (!book?.pagesDir) return 0;
+
+  const dir = resolvePublicPath(book.pagesDir);
+  if (!existsSync(dir)) return 0;
+
+  const files = readdirSync(dir)
+    .filter((file) => /^page-\d+\.webp$/i.test(file))
+    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+  if (!files.length) return 0;
+
+  let count = 0;
+  for (const file of files) {
+    const dest = path.join(dir, file);
+    const processed = await processMenuPageBuffer(readFileSync(dest), book);
+    writeFileSync(dest, processed);
+    count += 1;
+  }
+
+  return count;
+}
+
 export async function syncMenuBook(manifest = loadDriveAssets()) {
   const book = manifest.menuBook;
   if (!book?.pdfDriveId) return 0;
 
-  const [{ default: sharp }, { pdf }] = await Promise.all([
-    import("sharp"),
-    import("pdf-to-img"),
-  ]);
+  const { pdf } = await import("pdf-to-img");
 
   const pdfDest = resolvePublicPath(book.pdfLocalPath || "/menu/menu-digital.pdf");
   const pagesDir = resolvePublicPath(book.pagesDir || "/images/menu/pages");
@@ -140,7 +191,8 @@ export async function syncMenuBook(manifest = loadDriveAssets()) {
     pageNum += 1;
     const filename = `page-${String(pageNum).padStart(2, "0")}.webp`;
     const dest = path.join(pagesDir, filename);
-    await sharp(pageBuffer).webp({ quality: 86 }).toFile(dest);
+    const processed = await processMenuPageBuffer(pageBuffer, book);
+    writeFileSync(dest, processed);
   }
 
   if (pageNum > 0) {

@@ -1,9 +1,9 @@
 import { loadDriveAssets, resolveMenuBookPages } from "../drive-assets.mjs";
 
-/** Proporción real de las páginas del menú (792×1224 px) */
+/** Proporción del marco del menú (792×1224 px) */
 const MENU_PAGE_RATIO = "792 / 1224";
 
-export function menuBookStyles() {
+export function menuBookStyles(pageZoom = 1.06) {
   return `
     .menu-book-section{
       padding:0 0 clamp(3rem,7vw,5rem);
@@ -13,7 +13,13 @@ export function menuBookStyles() {
       max-width:920px;
       width:100%;
       margin:0 auto;
-      padding:0 clamp(1.25rem,4vw,1.5rem);
+      padding:0;
+    }
+    .menu-book-ui,
+    .menu-book-hint,
+    .menu-book-footer{
+      padding-left:clamp(1.15rem,4vw,1.5rem);
+      padding-right:clamp(1.15rem,4vw,1.5rem);
     }
     .menu-book-hint{
       text-align:center;font-size:.84rem;color:rgba(43,43,43,.55);
@@ -40,6 +46,7 @@ export function menuBookStyles() {
     }
     .menu-book-viewport{
       position:relative;margin:0 auto;
+      --menu-page-zoom:${pageZoom};
       perspective:2200px;
       touch-action:pan-y;
     }
@@ -83,9 +90,16 @@ export function menuBookStyles() {
     .menu-book-page-slot.blank{
       background:linear-gradient(135deg,#f0ebe3,#e7e0d5);
     }
-    .menu-book-page-slot img{
-      width:100%;height:100%;object-fit:contain;object-position:center;
-      display:block;background:#fff;
+    .menu-book-page-slot img,
+    .menu-book-flip-face img,
+    .menu-book-mobile-under img,
+    .menu-book-mobile-current img,
+    .menu-book-mobile-face img{
+      position:absolute;left:50%;top:50%;
+      width:100%;height:100%;max-width:none;
+      transform:translate(-50%,-50%) scale(var(--menu-page-zoom));
+      object-fit:cover;object-position:center;
+      display:block;
     }
     .menu-book-flipper{
       position:absolute;top:0;right:0;width:50%;height:100%;
@@ -99,9 +113,6 @@ export function menuBookStyles() {
       position:absolute;inset:0;backface-visibility:hidden;
       overflow:hidden;border-radius:0 1rem 1rem 0;
       box-shadow:-8px 0 24px rgba(7,57,84,.12);
-    }
-    .menu-book-flip-face img{
-      width:100%;height:100%;object-fit:contain;object-position:center;background:#fff;
     }
     .menu-book-flip-face.back{transform:rotateY(180deg)}
     .menu-book-hotzones{
@@ -136,11 +147,6 @@ export function menuBookStyles() {
     }
     .menu-book-mobile-under{z-index:1}
     .menu-book-mobile-current{z-index:2}
-    .menu-book-mobile-under img,
-    .menu-book-mobile-current img{
-      width:100%;height:100%;object-fit:contain;object-position:center;
-      display:block;background:#fff;
-    }
     .menu-book-mobile-flipper{
       position:absolute;inset:0;transform-style:preserve-3d;
       transform-origin:left center;z-index:3;pointer-events:none;
@@ -161,10 +167,6 @@ export function menuBookStyles() {
       box-shadow:-8px 0 28px rgba(7,57,84,.14);
     }
     .menu-book-mobile-face.back{transform:rotateY(180deg)}
-    .menu-book-mobile-face img{
-      width:100%;height:100%;object-fit:contain;object-position:center;
-      display:block;background:#fff;
-    }
     .menu-book-mobile.menu-book-mobile-animating .menu-book-mobile-current{
       visibility:hidden;
     }
@@ -634,12 +636,14 @@ export function renderMenuBook({ img, pages, disclaimer }) {
 
   const pageUrls = pages.map((p) => img(p));
   const dataPages = JSON.stringify(pageUrls).replace(/</g, "\\u003c");
+  const manifest = loadDriveAssets();
+  const pageZoom = manifest.menuBook?.pageZoom ?? 1.06;
 
   return `
   <div class="menu-book-section">
-    <style>${menuBookStyles()}</style>
+    <style>${menuBookStyles(pageZoom)}</style>
     <div class="menu-book-stage">
-      <div class="menu-book-viewport menu-book-loading" id="menu-book" data-pages='${dataPages}' data-autoplay-ms="4200" data-autoplay-start-ms="1600" tabindex="0" aria-label="Menú digital interactivo">
+      <div class="menu-book-viewport menu-book-loading" id="menu-book" data-pages='${dataPages}' data-page-zoom="${pageZoom}" data-autoplay-ms="4200" data-autoplay-start-ms="1600" tabindex="0" aria-label="Menú digital interactivo">
         <div class="menu-book-spread" aria-hidden="false">
           <div class="menu-book-page-slot left blank"><img alt="" loading="eager" decoding="async"/></div>
           <div class="menu-book-page-slot right"><img src="${pageUrls[0]}" alt="Página 1 del menú" loading="eager" fetchpriority="high" decoding="async"/></div>

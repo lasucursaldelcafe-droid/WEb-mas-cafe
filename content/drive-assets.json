@@ -158,6 +158,10 @@
     "pdfLocalPath": "/menu/menu-digital.pdf",
     "pagesDir": "/images/menu/pages",
     "scale": 2,
+    "pageWidth": 792,
+    "pageHeight": 1224,
+    "trimThreshold": 18,
+    "pageZoom": 1.06,
     "pageCount": 20
   }
 }
