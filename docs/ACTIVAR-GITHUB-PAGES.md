@@ -31,7 +31,7 @@ npm run preview
 
 ## Dominio personalizado (solo cuando DNS esté listo)
 
-No configures `mascafe.com` en GitHub hasta que el DNS apunte a GitHub.
+No configures `mascafé.com` en GitHub hasta que el DNS apunte a GitHub.
 
 Guía DNS: [DOMINIO-MASCAFE-COM.md](./DOMINIO-MASCAFE-COM.md)
 

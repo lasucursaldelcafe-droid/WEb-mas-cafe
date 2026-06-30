@@ -67,10 +67,10 @@
     <div class="wrap">
       <p style="font-size:.75rem;text-transform:uppercase;letter-spacing:.2em;opacity:.7;margin-bottom:.5rem">Documento vivo · No indexar</p>
       <h1>Constitución Web — Más Café</h1>
-      <p style="margin-top:.85rem;max-width:42rem;opacity:.9">Modelo oficial del sitio, inventario Drive → web, arquitectura, migración a <strong>www.mascafe.com</strong>, wallet de fidelización y checklist editable para la marca.</p>
+      <p style="margin-top:.85rem;max-width:42rem;opacity:.9">Modelo oficial del sitio, inventario Drive → web, arquitectura, migración a <strong>https://www.mascafé.com</strong>, wallet de fidelización y checklist editable para la marca.</p>
       <div class="meta">
-        <span>Versión 1.2.0</span>
-        <span>Generado: 2026-06-30 16:51 UTC</span>
+        <span>Versión 1.2.1</span>
+        <span>Generado: 2026-06-30 16:59 UTC</span>
         <span class="badge live">Sitio en línea OK</span>
       </div>
     </div>
@@ -114,7 +114,7 @@
         <li>Health check <code>npm run health-check</code> — OK</li>
         <li>URLs en línea: inicio, café, menú, nosotros, tienda, blog, contacto, admin — HTTP 200</li>
         <li>Contenido editable en <code>content/site.json</code> — válido</li>
-        <li>Dominio futuro: <strong>mascafe.com</strong> (DNS GoDaddy pendiente de apuntar a GitHub Pages)</li>
+        <li>Dominio futuro: <strong>mascafé.com</strong> (<code>xn--mascaf-gva.com</code>) — DNS GoDaddy pendiente</li>
       </ul>
     </section>
 
@@ -1195,11 +1195,11 @@
         <td><span class="field-empty">Dato / cuenta / enlace</span></td>
         <td class="muted"><span class="field-empty">—</span></td>
       </tr><tr>
-        <td>Dominio mascafe.com en GoDaddy a nombre de Más Café</td>
+        <td>Dominio mascafé.com en GoDaddy a nombre de Más Café</td>
         <td><span class="badge ref">Pendiente</span></td>
         <td><span class="field-empty">Responsable</span></td>
-        <td><span class="field-empty">Dato / cuenta / enlace</span></td>
-        <td class="muted"><span class="field-empty">—</span></td>
+        <td>xn--mascaf-gva.com</td>
+        <td class="muted">Mismo dominio; punycode para DNS/GitHub</td>
       </tr><tr>
         <td>Correos corporativos activos (hola@, admin@)</td>
         <td><span class="badge ref">Pendiente</span></td>
@@ -1218,8 +1218,9 @@
     </section>
 
     <section id="migracion">
-      <h2>10. Migración a www.mascafe.com (GoDaddy)</h2>
-      <p>Hoy el sitio público vive en GitHub Pages (HTML estático). La wallet de fidelización requiere backend. El dominio www.mascafe.com apuntará al hosting con Node.js/API.</p>
+      <h2>10. Migración a https://www.mascafé.com (GoDaddy)</h2>
+      <p>Hoy el sitio público vive en GitHub Pages (HTML estático). La wallet de fidelización requiere backend. El dominio www.mascafé.com apuntará al hosting con Node.js/API.</p>
+      <div class="callout"><strong>Dominio con tilde:</strong> <strong>mascafé.com</strong> — en GitHub/DNS puede verse como <code>xn--mascaf-gva.com</code> (mismo dominio).</div>
       <div class="callout warn"><strong>Importante:</strong> La wallet de fidelización <em>no puede</em> funcionar solo con GitHub Pages (HTML estático). Al activar puntos, el dominio debe apuntar a un hosting con backend (Firebase, Vercel, Render, etc.).</div>
       <h3>Fases del plan</h3>
       <table>
@@ -1251,7 +1252,7 @@
       </tr><tr>
         <td><strong>Fase E</strong></td>
         <td>Dominio</td>
-        <td>www.mascafe.com → hosting con backend</td>
+        <td>www.mascafé.com → hosting con backend</td>
         <td><span class="badge ref">Pendiente</span></td>
         <td><span class="field-empty">Fecha</span></td>
       </tr><tr>
@@ -1267,11 +1268,13 @@
         <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
         <tbody>
           <tr><td>Registrador</td><td>GoDaddy</td></tr>
-          <tr><td>Dominio</td><td>mascafe.com</td></tr>
+          <tr><td>Dominio</td><td>mascafé.com</td></tr>
+          <tr><td>Punycode (técnico)</td><td><code>xn--mascaf-gva.com</code></td></tr>
+          <tr><td>Panel DNS GoDaddy</td><td><a href="https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com" target="_blank" rel="noopener">https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com</a></td></tr>
           <tr><td>www → destino</td><td><span class="field-empty">Ej: cname.vercel-dns.com</span></td></tr>
           <tr><td>@ (apex) → destino</td><td><span class="field-empty">Ej: A record del hosting</span></td></tr>
           <tr><td>SSL confirmado</td><td><span class="badge ref">Pendiente</span></td></tr>
-          <tr><td>Fecha corte GitHub Pages</td><td><span class="field-empty">Cuando www.mascafe.com esté estable</span></td></tr>
+          <tr><td>Fecha corte GitHub Pages</td><td><span class="field-empty">Cuando https://www.mascafé.com esté estable</span></td></tr>
           <tr><td>Fecha migración objetivo</td><td><span class="field-empty">Por acordar</span></td></tr>
           <tr><td>Notas DNS</td><td><span class="field-empty">—</span></td></tr>
         </tbody>
@@ -1285,7 +1288,7 @@
       <div class="callout"><strong>Backend recomendado:</strong> Firebase Auth + Firestore (ya hay código parcial en el repo) o Convex. El sitio actual no tiene login de clientes ni base de datos de puntos — todo esto es desarrollo nuevo.</div>
 
       <h3>MVP mínimo (v1 obligatoria)</h3>
-      <ul><li>Login cliente (teléfono OTP recomendado en Colombia)</li><li>Wallet con saldo visible</li><li>Historial de movimientos (ledger)</li><li>Admin: buscar cliente + sumar puntos por compra</li><li>Admin: 2–3 premios canjeables</li><li>Canje con código de un solo uso en mostrador</li><li>Deploy en hosting con backend (no GitHub Pages)</li><li>Dominio www.mascafe.com</li></ul>
+      <ul><li>Login cliente (teléfono OTP recomendado en Colombia)</li><li>Wallet con saldo visible</li><li>Historial de movimientos (ledger)</li><li>Admin: buscar cliente + sumar puntos por compra</li><li>Admin: 2–3 premios canjeables</li><li>Canje con código de un solo uso en mostrador</li><li>Deploy en hosting con backend (no GitHub Pages)</li><li>Dominio www.mascafé.com</li></ul>
 
       <h3>Reglas de negocio — completar con dueños</h3>
       
@@ -1382,11 +1385,11 @@
         <td class="muted"><span class="field-empty">—</span></td>
       </tr><tr>
         <td><span class="badge ok">Migración</span></td>
-        <td>Acceso DNS GoDaddy para conectar mascafe.com</td>
+        <td>Acceso DNS GoDaddy para conectar mascafé.com</td>
         <td><span class="badge ref">Pendiente</span></td>
         <td><span class="field-empty">Responsable</span></td>
         <td><span class="field-empty">Fecha</span></td>
-        <td class="muted"><span class="field-empty">—</span></td>
+        <td class="muted">Punycode: xn--mascaf-gva.com</td>
       </tr><tr>
         <td><span class="badge ok">Independencia</span></td>
         <td>Cuentas GitHub, Firebase y hosting a nombre de Más Café</td>
@@ -1473,7 +1476,7 @@
       <h2>13. Enlaces del ecosistema y por qué existen</h2>
       <table>
         <thead><tr><th>Enlace</th><th>URL</th><th>Motivo</th></tr></thead>
-        <tbody><tr><td>Sitio público (GitHub Pages)</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/</a></td><td>Hosting principal. Se actualiza con cada push a main.</td></tr><tr><td>Panel admin</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/</a></td><td>Edición de contenido sin tocar código. Publicación automática.</td></tr><tr><td>Este informe</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/</a></td><td>Documento constitucional para la marca. No aparece en el menú del sitio.</td></tr><tr><td>Repositorio GitHub</td><td><a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe" target="_blank" rel="noopener">https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe</a></td><td>Código fuente, historial de cambios y colaboración.</td></tr><tr><td>Carpeta Drive (marca)</td><td><a href="https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC" target="_blank" rel="noopener">https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC</a></td><td>Fuente original de logotipos, ilustraciones y aplicaciones.</td></tr><tr><td>Dominio mascafe.com</td><td><a href="https://www.mascafe.com/" target="_blank" rel="noopener">https://www.mascafe.com/</a></td><td>Destino final cuando DNS GoDaddy apunte al hosting con backend (wallet + sitio).</td></tr><tr><td>Firebase Hosting (respaldo)</td><td><a href="https://mas-cafe-c8413.web.app/" target="_blank" rel="noopener">https://mas-cafe-c8413.web.app/</a></td><td>Plataforma alternativa configurada en el repo. Mismo build HTML.</td></tr><tr><td>Instagram</td><td><a href="https://www.instagram.com/mascafecol315" target="_blank" rel="noopener">https://www.instagram.com/mascafecol315</a></td><td>Red social principal — tráfico y comunidad.</td></tr><tr><td>Facebook</td><td><a href="https://www.facebook.com/mascafecol" target="_blank" rel="noopener">https://www.facebook.com/mascafecol</a></td><td>Segunda red — eventos y alcance local.</td></tr><tr><td>WhatsApp</td><td><a href="https://wa.me/573156573897" target="_blank" rel="noopener">https://wa.me/573156573897</a></td><td>Canal de conversión directa (pedidos, reservas, consultas).</td></tr><tr><td>Google Maps</td><td><a href="https://maps.google.com/?q=Calle%205B%20%232-38-09%2C%20Barrio%20San%20Fernando%20Nuevo%2C%20Cali%2C%20Valle%20del%20Cauca%2C%20Colombia" target="_blank" rel="noopener">https://maps.google.com/?q=Calle%205B%20%232-38-09%2C%20Barrio%20San%20Fernando%20Nuevo%2C%20Cali%2C%20Valle%20del%20Cauca%2C%20Colombia</a></td><td>Navegación al local físico.</td></tr></tbody>
+        <tbody><tr><td>Sitio público (GitHub Pages)</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/</a></td><td>Hosting principal. Se actualiza con cada push a main.</td></tr><tr><td>Panel admin</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/</a></td><td>Edición de contenido sin tocar código. Publicación automática.</td></tr><tr><td>Este informe</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/</a></td><td>Documento constitucional para la marca. No aparece en el menú del sitio.</td></tr><tr><td>Repositorio GitHub</td><td><a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe" target="_blank" rel="noopener">https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe</a></td><td>Código fuente, historial de cambios y colaboración.</td></tr><tr><td>Carpeta Drive (marca)</td><td><a href="https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC" target="_blank" rel="noopener">https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC</a></td><td>Fuente original de logotipos, ilustraciones y aplicaciones.</td></tr><tr><td>Dominio mascafé.com</td><td><a href="https://www.mascafé.com/" target="_blank" rel="noopener">https://www.mascafé.com/</a></td><td>Destino final (punycode: xn--mascaf-gva.com). DNS GoDaddy → hosting con backend cuando haya wallet.</td></tr><tr><td>Firebase Hosting (respaldo)</td><td><a href="https://mas-cafe-c8413.web.app/" target="_blank" rel="noopener">https://mas-cafe-c8413.web.app/</a></td><td>Plataforma alternativa configurada en el repo. Mismo build HTML.</td></tr><tr><td>Instagram</td><td><a href="https://www.instagram.com/mascafecol315" target="_blank" rel="noopener">https://www.instagram.com/mascafecol315</a></td><td>Red social principal — tráfico y comunidad.</td></tr><tr><td>Facebook</td><td><a href="https://www.facebook.com/mascafecol" target="_blank" rel="noopener">https://www.facebook.com/mascafecol</a></td><td>Segunda red — eventos y alcance local.</td></tr><tr><td>WhatsApp</td><td><a href="https://wa.me/573156573897" target="_blank" rel="noopener">https://wa.me/573156573897</a></td><td>Canal de conversión directa (pedidos, reservas, consultas).</td></tr><tr><td>Google Maps</td><td><a href="https://maps.google.com/?q=Calle%205B%20%232-38-09%2C%20Barrio%20San%20Fernando%20Nuevo%2C%20Cali%2C%20Valle%20del%20Cauca%2C%20Colombia" target="_blank" rel="noopener">https://maps.google.com/?q=Calle%205B%20%232-38-09%2C%20Barrio%20San%20Fernando%20Nuevo%2C%20Cali%2C%20Valle%20del%20Cauca%2C%20Colombia</a></td><td>Navegación al local físico.</td></tr></tbody>
       </table>
     </section>
 
@@ -1490,14 +1493,14 @@
         <li><strong>Google Business Profile.</strong> Misma dirección y horarios que el sitio (NAP consistente).</li>
         <li><strong>Responder WhatsApp en &lt;15 min</strong> en horario comercial — el sitio convierte ahí.</li>
         <li><strong>Definir reglas de puntos antes de programar la wallet.</strong> Ver sección <a href="#wallet">Wallet</a> y completar <code>content/informe-requisitos.json</code>.</li>
-        <li><strong>Migración a mascafe.com:</strong> apuntar DNS cuando el backend de fidelización esté listo — no antes si quieren wallet funcional.</li>
+        <li><strong>Migración a mascafé.com:</strong> apuntar DNS cuando el backend de fidelización esté listo — no antes si quieren wallet funcional.</li>
       </ul>
       <p class="muted" style="margin-top:1rem">El checklist detallado de entregables está en la sección <a href="#requisitos">Requisitos</a>.</p>
     </section>
 
     <section id="changelog">
       <h2>15. Historial de entregas (se actualiza con cada cambio)</h2>
-      <ul><li><time>2026-06-27</time> — Carpeta proyecto-mas-cafe/ — entrega, enlaces de cuentas, REGISTRO-HECHO y plantilla CREDENCIALES.</li><li><time>2026-06-27</time> — Informe v1.1 — wallet de fidelización, migración mascafe.com, checklist editable en content/informe-requisitos.json.</li><li><time>2026-06-27</time> — Informe constitucional v1.0 — paleta crema, textos sin repetición, auditoría de activos Drive.</li><li><time>2026-06-27</time> — Favicon del logo en todas las páginas.</li><li><time>2026-06-27</time> — Rediseño móvil editorial y vista previa admin en todos los paneles.</li><li><time>2026-06-26</time> — Sitio multipágina HTML estático + panel admin + GitHub Actions.</li></ul>
+      <ul><li><time>2026-06-27</time> — Dominio oficial corregido a mascafé.com (punycode xn--mascaf-gva.com) en docs e informe.</li><li><time>2026-06-27</time> — Carpeta proyecto-mas-cafe/ — entrega, enlaces de cuentas, REGISTRO-HECHO y plantilla CREDENCIALES.</li><li><time>2026-06-27</time> — Informe v1.1 — wallet de fidelización, migración mascafé.com, checklist editable en content/informe-requisitos.json.</li><li><time>2026-06-27</time> — Informe constitucional v1.0 — paleta crema, textos sin repetición, auditoría de activos Drive.</li><li><time>2026-06-27</time> — Favicon del logo en todas las páginas.</li><li><time>2026-06-27</time> — Rediseño móvil editorial y vista previa admin en todos los paneles.</li><li><time>2026-06-26</time> — Sitio multipágina HTML estático + panel admin + GitHub Actions.</li></ul>
       <p class="muted" style="margin-top:1rem">Próxima actualización automática al ejecutar <code>npm run build:github-pages</code> tras cambios en el repositorio.</p>
     </section>
 
@@ -1505,7 +1508,7 @@
 
   <footer>
     <div class="wrap">
-      <p><strong>Más Café</strong> — Constitución Web v1.2.0</p>
+      <p><strong>Más Café</strong> — Constitución Web v1.2.1</p>
       <p style="margin-top:.5rem;opacity:.8">Repositorio: <a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe">https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe</a> · Sitio: <a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/</a></p>
       <p style="margin-top:.35rem;opacity:.6;font-size:.78rem">Documento para la marca. No enlazado desde el menú público.</p>
     </div>

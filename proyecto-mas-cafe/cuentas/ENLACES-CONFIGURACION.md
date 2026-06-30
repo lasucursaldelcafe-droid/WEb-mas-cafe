@@ -31,7 +31,7 @@ Abre cada enlace, inicia sesión con la cuenta de **Más Café** (o la que vayan
 |----------------|--------|
 | Inicio de sesión GoDaddy | https://sso.godaddy.com/ |
 | Mis productos / dominios | https://dcc.godaddy.com/control/portfolio |
-| DNS de **mascafe.com** | https://dcc.godaddy.com/control/dnsmanagement?domainName=mascafe.com |
+| DNS de **mascafé.com** | https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com |
 | Correo profesional (opcional) | https://email.godaddy.com/ |
 | Forwarding / reenvío (desactivar parking) | Dentro de DNS del dominio |
 
@@ -72,7 +72,7 @@ Proyecto actual: **mas-cafe-c8413**
 
 ## Hosting con backend (fase wallet — elegir uno)
 
-Cuando activemos wallet, **www.mascafe.com** deberá apuntar aquí (no solo GitHub Pages).
+Cuando activemos wallet, **www.mascafé.com** deberá apuntar aquí (no solo GitHub Pages).
 
 | Plataforma | Panel | Notas |
 |------------|-------|-------|
@@ -109,7 +109,7 @@ Cuando activemos wallet, **www.mascafe.com** deberá apuntar aquí (no solo GitH
 | Inicio | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/ |
 | Admin | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/ |
 | Informe | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/ |
-| Dominio objetivo | https://www.mascafe.com |
+| Dominio objetivo | https://www.mascafé.com |
 
 ---
 

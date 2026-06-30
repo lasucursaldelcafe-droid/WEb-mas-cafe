@@ -2,7 +2,7 @@
 
 ## Constitución Web
 
-Documento HTML completo sobre el estado del sitio, activos Drive, arquitectura, migración a **www.mascafe.com**, wallet de fidelización y checklist editable para dueños de Más Café.
+Documento HTML completo sobre el estado del sitio, activos Drive, arquitectura, migración a **www.mascafé.com**, wallet de fidelización y checklist editable para dueños de Más Café.
 
 | | |
 |-|-|

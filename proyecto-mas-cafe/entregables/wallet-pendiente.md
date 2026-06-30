@@ -22,6 +22,6 @@ Completar en `content/informe-requisitos.json` → `wallet.reglasNegocio`:
 
 1. Activar Firebase Auth + Firestore
 2. Pedir a Cursor: «implementar wallet MVP»
-3. Deploy en Vercel + DNS www.mascafe.com al nuevo hosting
+3. Deploy en Vercel + DNS www.mascafé.com al nuevo hosting
 
 Enlaces: [../cuentas/ENLACES-CONFIGURACION.md](../cuentas/ENLACES-CONFIGURACION.md)

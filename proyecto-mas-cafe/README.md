@@ -1,6 +1,6 @@
 # Proyecto Más Café — carpeta única de entrega
 
-Punto central para **todo lo hecho**, **migración a www.mascafe.com**, **cuentas** y **entrega final** a los dueños de la marca.
+Punto central para **todo lo hecho**, **migración a www.mascafé.com**, **cuentas** y **entrega final** a los dueños de la marca.
 
 > Trabajo mutuo: tú entras credenciales y pegas enlaces de lo ya configurado → yo conecto código, DNS, deploy y documentación.
 
@@ -28,7 +28,7 @@ Punto central para **todo lo hecho**, **migración a www.mascafe.com**, **cuenta
 | Admin | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/ |
 | Informe constitución | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/ |
 | Repositorio | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe |
-| Dominio objetivo | https://www.mascafe.com (GoDaddy — pendiente DNS final) |
+| Dominio objetivo | https://www.mascafé.com (GoDaddy — pendiente DNS final) |
 | Firebase (respaldo) | https://mas-cafe-c8413.web.app/ |
 
 ---

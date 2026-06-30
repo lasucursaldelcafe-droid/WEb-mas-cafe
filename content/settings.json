@@ -2,6 +2,8 @@
   "accessMode": "public",
   "deployMode": "github-pages",
   "godaddyReady": true,
-  "customDomain": "mascafe.com",
+  "customDomain": "mascafé.com",
+  "customDomainPunycode": "xn--mascaf-gva.com",
+  "customDomainWww": "www.mascafé.com",
   "googleDriveFolderId": "153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC"
 }

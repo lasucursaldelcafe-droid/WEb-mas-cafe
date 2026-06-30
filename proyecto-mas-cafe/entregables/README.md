@@ -61,7 +61,7 @@ Resumen de lo construido hasta hoy en **WEb-mas-cafe** (y ramas relacionadas).
 | Firebase Admin preparado | `src/lib/firebase/admin.ts` |
 | Tipos y store | `src/lib/types.ts`, `src/lib/store.ts` |
 
-**Uso futuro:** base para wallet + www.mascafe.com con backend en Vercel.
+**Uso futuro:** base para wallet + www.mascafé.com con backend en Vercel.
 
 ---
 

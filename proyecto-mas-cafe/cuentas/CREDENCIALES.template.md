@@ -29,7 +29,7 @@
 
 ---
 
-## 2. GoDaddy (mascafe.com)
+## 2. GoDaddy (mascafé.com)
 
 | Campo | Valor |
 |-------|-------|
@@ -37,7 +37,7 @@
 | Usuario / email cuenta | |
 | Contraseña | *(gestor de contraseñas)* |
 | Customer ID | |
-| Dominio | mascafe.com |
+| Dominio | mascafé.com |
 | DNS management link | |
 
 ---
@@ -66,7 +66,7 @@
 | Campo | Valor |
 |-------|-------|
 | URL admin | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/ |
-| URL futura | https://www.mascafe.com/admin/ |
+| URL futura | https://www.mascafé.com/admin/ |
 | Usuario | admin |
 | Contraseña | *(cambiar en producción — ver `content/users.json`)* |
 
@@ -80,7 +80,7 @@
 | Dashboard URL | |
 | Cuenta email | |
 | Proyecto / servicio | |
-| Dominio custom | www.mascafe.com |
+| Dominio custom | www.mascafé.com |
 | Variables de entorno | ver `.env.example` |
 
 ---
@@ -89,8 +89,8 @@
 
 | Email | Proveedor | Usuario | Notas |
 |-------|-----------|---------|-------|
-| hola@mascafe.com | | | |
-| admin@mascafe.com | | | |
+| hola@mascafé.com | | | |
+| admin@mascafé.com | | | |
 
 ---
 

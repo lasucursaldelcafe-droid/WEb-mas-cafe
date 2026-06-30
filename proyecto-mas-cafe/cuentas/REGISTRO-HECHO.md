@@ -17,7 +17,7 @@ Formato sugerido por línea:
 - [ ] Repo accesible | https://github.com/... | | 
 
 ### GoDaddy
-- [ ] Dominio mascafe.com activo | https://dcc.godaddy.com/... | |
+- [ ] Dominio mascafé.com activo | https://dcc.godaddy.com/... | |
 - [ ] DNS apuntando a GitHub Pages | (pegar resultado dig o screenshot) | |
 - [ ] Custom domain en GitHub Pages verde | https://github.com/.../settings/pages | |
 
@@ -29,7 +29,7 @@ Formato sugerido por línea:
 - [ ] Cuenta Vercel / Render creada | https://... | |
 
 ### Correo
-- [ ] hola@mascafe.com activo | | |
+- [ ] hola@mascafé.com activo | | |
 
 ### Otros
 - [ ] Google Drive marca | https://drive.google.com/... | |
@@ -48,7 +48,7 @@ Formato sugerido por línea:
 - [ ] Repo transferido a org Más Café | | |
 
 ### GoDaddy
-- [ ] Acceso a cuenta GoDaddy de mascafe.com | | |
+- [ ] Acceso a cuenta GoDaddy de mascafé.com | | |
 - [ ] DNS configurado (A + CNAME) | | |
 - [ ] Dominio verificado en GitHub Pages (check verde) | | |
 - [ ] HTTPS forzado en GitHub Pages | | |
@@ -61,7 +61,7 @@ Formato sugerido por línea:
 
 ### Hosting backend (fase wallet)
 - [ ] Vercel o Render conectado al repo | | |
-- [ ] www.mascafe.com apuntando al hosting con API | | |
+- [ ] www.mascafé.com apuntando al hosting con API | | |
 
 ### Contenido y marca
 - [x] Carpeta Drive marca | https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC | |
@@ -78,7 +78,7 @@ Formato sugerido por línea:
 
 Cuando escribas algo como:
 
-> «Ya configuré GoDaddy: https://dcc.godaddy.com/control/dnsmanagement?domainName=mascafe.com»
+> «Ya configuré GoDaddy: https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com»
 
 Yo actualizaré:
 

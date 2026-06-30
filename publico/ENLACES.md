@@ -3,7 +3,7 @@
 ## Internet
 
 - https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/
-- https://mascafe.com/ (con DNS configurado)
+- https://mascafé.com/ (con DNS configurado)
 
 ## Local
 

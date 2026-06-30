@@ -1,6 +1,6 @@
 # Trabajo mutuo — migración y puesta en línea
 
-Cómo avanzamos juntos hasta tener **www.mascafe.com** en línea, proyecto entregado a **Más Café** y listo para **wallet**.
+Cómo avanzamos juntos hasta tener **www.mascafé.com** en línea, proyecto entregado a **Más Café** y listo para **wallet**.
 
 ---
 
@@ -31,12 +31,12 @@ Cómo avanzamos juntos hasta tener **www.mascafe.com** en línea, proyecto entre
 - [x] Admin + informe
 - [x] CI/CD verde
 
-### Fase 2 — Dominio mascafe.com (sitio estático)
+### Fase 2 — Dominio mascafé.com (sitio estático)
 1. Acceso GoDaddy → [REGISTRO](./cuentas/REGISTRO-HECHO.md)
 2. DNS A + CNAME → [CHECKLIST migración](./migracion/CHECKLIST.md)
 3. Custom domain en GitHub Pages
-4. Verificar https://www.mascafe.com y https://mascafe.com
-5. Actualizar `content/site.json` URLs a mascafe.com
+4. Verificar https://www.mascafé.com y https://mascafé.com
+5. Actualizar `content/site.json` URLs a mascafé.com
 
 ### Fase 3 — Independencia Más Café
 1. Org GitHub Más Café
@@ -56,15 +56,15 @@ Cómo avanzamos juntos hasta tener **www.mascafe.com** en línea, proyecto entre
 ## Qué pegarme en el chat (ejemplos)
 
 ```
-Ya tengo GoDaddy: https://dcc.godaddy.com/control/dnsmanagement?domainName=mascafe.com
+Ya tengo GoDaddy: https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com
 ```
 
 ```
-GitHub Pages custom domain en verde: mascafe.com
+GitHub Pages custom domain en verde: mascafé.com
 ```
 
 ```
-Firebase: tengo acceso a mas-cafe-c8413, usuario dueño es hola@mascafe.com
+Firebase: tengo acceso a mas-cafe-c8413, usuario dueño es hola@mascafé.com
 ```
 
 ```
