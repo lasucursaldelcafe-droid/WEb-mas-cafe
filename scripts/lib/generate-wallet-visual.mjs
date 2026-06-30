@@ -4,12 +4,16 @@
  */
 import path from "path";
 import { fileURLToPath } from "url";
-import { loadSite } from "./site-html/shared.mjs";
+import { createPathHelpers, loadSite } from "./site-html/shared.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const LIVE_BASE = "https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe";
-const VISUAL_VERSION = "1.0.0";
+const VISUAL_VERSION = "1.0.1";
+
+/** Rutas relativas desde /informe/wallet/index.html (depth 2). */
+function walletPaths() {
+  return createPathHelpers(2);
+}
 
 /** Datos de ejemplo para el mockup — no son datos reales de clientes. */
 const MOCK_MEMBER = {
@@ -64,6 +68,7 @@ function qrSvg() {
 }
 
 function appleWalletPass(brand, member) {
+  const { img } = walletPaths();
   const progress = Math.round(((member.points % 100) / 100) * 100);
   return `
     <article class="phone phone-ios" aria-label="Vista previa Apple Wallet">
@@ -81,11 +86,11 @@ function appleWalletPass(brand, member) {
         <div class="pass pass-apple">
           <div class="pass-strip" role="img" aria-label="Franja decorativa Más Café">
             <div class="pass-strip-pattern"></div>
-            <img class="pass-strip-logo" src="../images/brand/favs.png" alt="" width="48" height="48"/>
+            <img class="pass-strip-logo" src="${img("/images/brand/favs.png")}" alt="" width="48" height="48"/>
           </div>
           <div class="pass-body">
             <div class="pass-org">
-              <img src="../images/brand/favs.png" alt="" width="28" height="28" class="pass-org-icon"/>
+              <img src="${img("/images/brand/favs.png")}" alt="" width="28" height="28" class="pass-org-icon"/>
               <span>${escapeHtml(brand.name)}</span>
             </div>
             <p class="pass-label">Puntos disponibles</p>
@@ -128,6 +133,7 @@ function appleWalletPass(brand, member) {
 }
 
 function googleWalletPass(brand, member) {
+  const { img } = walletPaths();
   const progress = Math.round(((member.points % 100) / 100) * 100);
   return `
     <article class="phone phone-android" aria-label="Vista previa Google Wallet">
@@ -147,7 +153,7 @@ function googleWalletPass(brand, member) {
           <div class="pass-g-hero">
             <div class="pass-g-hero-bg"></div>
             <div class="pass-g-hero-content">
-              <img src="../images/brand/horizontal-crema.png" alt="${escapeHtml(brand.name)}" class="pass-g-logo"/>
+              <img src="${img("/images/brand/horizontal-crema.png")}" alt="${escapeHtml(brand.name)}" class="pass-g-logo"/>
               <span class="pass-g-badge">Fidelización</span>
             </div>
           </div>
@@ -218,7 +224,7 @@ export function generateWalletVisualEmbed() {
       </div>
       <div class="wallet-embed-cta">
         <p><strong>Vista previa interactiva</strong> — mockup de cómo se verá la tarjeta de fidelización en el bolsillo del cliente (datos de ejemplo, no producción).</p>
-        <a class="wallet-embed-link" href="wallet/" target="_blank" rel="noopener">Abrir mockup Apple Wallet + Google Wallet →</a>
+        <a class="wallet-embed-link" href="./wallet/" rel="noopener">Abrir mockup Apple Wallet + Google Wallet →</a>
       </div>
     </div>`;
 }
@@ -228,6 +234,9 @@ export function generateWalletVisualPage() {
   const brand = site.brand;
   const member = MOCK_MEMBER;
   const generatedAt = new Date().toISOString();
+  const { img } = walletPaths();
+  const informeHref = "../";
+  const homeHref = "../../";
 
   return `<!DOCTYPE html>
 <html lang="es">
@@ -352,7 +361,7 @@ export function generateWalletVisualPage() {
       <div class="meta">
         <span>Versión mockup ${VISUAL_VERSION}</span>
         <span>Generado: ${escapeHtml(generatedAt.slice(0, 16).replace("T", " "))} UTC</span>
-        <span><a href="../">← Volver al informe constitucional</a></span>
+        <span><a href="${informeHref}">← Volver al informe constitucional</a></span>
       </div>
     </div>
   </header>
@@ -427,7 +436,7 @@ export function generateWalletVisualPage() {
 
   <footer>
     <div class="wrap">
-      <p>${escapeHtml(brand.name)} · Mockup wallet v${VISUAL_VERSION} · <a href="../">Informe constitucional</a> · <a href="${LIVE_BASE}/">Sitio público</a></p>
+      <p>${escapeHtml(brand.name)} · Mockup wallet v${VISUAL_VERSION} · <a href="${informeHref}">Informe constitucional</a> · <a href="${homeHref}">Sitio público</a></p>
     </div>
   </footer>
 </body>
