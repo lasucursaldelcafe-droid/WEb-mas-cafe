@@ -294,6 +294,8 @@
     "San Fernando Nuevo"
   ],
   "analytics": {
+    "enabled": true,
+    "googleAnalyticsId": "",
     "clicks": {
       "whatsapp": 0,
       "tienda": 0,
@@ -301,6 +303,8 @@
       "instagram": 0,
       "facebook": 0
     },
-    "monthlyIncome": []
+    "pageviews": {},
+    "monthlyIncome": [],
+    "lastPublishedAt": null
   }
 }

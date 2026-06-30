@@ -3,8 +3,14 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { brandThemeCss, fontFaces } from "./brand.mjs";
 import { getNavRoutes } from "./routes.mjs";
-import { formatPageTitle, seoHead, escapeMeta } from "../seo.mjs";
+import { formatPageTitle, seoHead, escapeMeta, loadSeoSettings } from "../seo.mjs";
 import { brandAssetPath } from "../brand-logo.mjs";
+import {
+  getGoogleAnalyticsId,
+  googleAnalyticsHead,
+  siteAnalyticsScript,
+  normalizeAnalytics,
+} from "../analytics.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "../../..");
@@ -659,7 +665,7 @@ export function siteStyles() {
   `;
 }
 
-function siteScripts(isHome) {
+function siteScripts(isHome, pageId, analyticsEnabled) {
   return `
     (function(){
       var header=document.getElementById('site-header');
@@ -694,18 +700,7 @@ function siteScripts(isHome) {
         });
       }
 
-      function trackClick(type){
-        try{
-          var p=JSON.parse(localStorage.getItem('mc_clicks_pending')||'{}');
-          p[type]=(p[type]||0)+1;
-          localStorage.setItem('mc_clicks_pending',JSON.stringify(p));
-        }catch(e){}
-      }
-      document.querySelectorAll('[data-track]').forEach(function(el){
-        el.addEventListener('click',function(){trackClick(el.getAttribute('data-track'));});
-      });
-      var wa=document.querySelector('.wa-float');
-      if(wa)wa.addEventListener('click',function(){trackClick('whatsapp');});
+      ${siteAnalyticsScript({ pageId: pageId || (isHome ? "home" : "page"), enabled: analyticsEnabled !== false })}
     })();
   `;
 }
@@ -721,6 +716,9 @@ function whatsappFloat(whatsapp) {
 export function shell({ title, description, depth, pageId, slug, heroArt, body, year = new Date().getFullYear() }) {
   const site = loadSite();
   const { brand } = site;
+  const analytics = normalizeAnalytics(site.analytics);
+  const seoSettings = loadSeoSettings();
+  const gaId = getGoogleAnalyticsId(site, { seo: seoSettings });
   const nav = getNav(site);
   const { img, href } = createPathHelpers(depth);
   const heroVar = heroArt ? `--hero-art:url('${img(heroArt)}')` : `--hero-art:none`;
@@ -744,7 +742,7 @@ export function shell({ title, description, depth, pageId, slug, heroArt, body, 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#073954"/>
   <title>${pageTitle}</title>
-  <meta name="description" content="${escapeMeta(description)}"/>${faviconHead(depth)}${seoHead({ brand, title, description, depth, slug: pageSlug, isHome, ogImagePath: brandAssetPath("og") })}
+  <meta name="description" content="${escapeMeta(description)}"/>${faviconHead(depth)}${seoHead({ brand, title, description, depth, slug: pageSlug, isHome, ogImagePath: brandAssetPath("og") })}${googleAnalyticsHead(gaId)}
   <style>${fontFaces(depth)}</style>
   <style>${brandThemeCss(site)}</style>
   <style>${siteStyles()}</style>
@@ -761,14 +759,14 @@ export function shell({ title, description, depth, pageId, slug, heroArt, body, 
       <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-overlay">☰</button>
       <nav class="site-nav" id="site-nav" aria-label="Principal">
         ${navLinks}
-        <a href="${href("/tienda")}" class="nav-cta">Comprar café</a>
+        <a href="${href("/tienda")}" class="nav-cta" data-track="tienda">Comprar café</a>
       </nav>
     </div>
   </header>
   <div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
   <div class="nav-overlay" id="nav-overlay" role="dialog" aria-modal="true" aria-label="Menú de navegación">
     ${overlayLinks}
-    <a href="${href("/tienda")}" class="nav-cta-overlay">Comprar café</a>
+    <a href="${href("/tienda")}" class="nav-cta-overlay" data-track="tienda">Comprar café</a>
   </div>
   <main id="main">${body}</main>
   <footer>
@@ -787,7 +785,7 @@ export function shell({ title, description, depth, pageId, slug, heroArt, body, 
         <div class="footer-nav">
           <a href="tel:${brand.phone.replace(/\s/g, "")}">${brand.phone}</a>
           <a href="mailto:${brand.email}">${brand.email}</a>
-          <a href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          <a href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer" data-track="whatsapp">WhatsApp</a>
         </div>
         <div class="social-links">
           <a href="${brand.social.instagram}" target="_blank" rel="noopener noreferrer" data-track="instagram">Instagram</a>
@@ -797,14 +795,14 @@ export function shell({ title, description, depth, pageId, slug, heroArt, body, 
       <div class="footer-bottom">
         <span>© ${year} ${brand.name} · Cali, Colombia</span>
         <span>
-          <a href="${href("/contacto")}">Contacto</a>
+          <a href="${href("/contacto")}" data-track="contacto">Contacto</a>
           · <a href="${href("/admin")}" class="admin-link">Administración</a>
         </span>
       </div>
     </div>
   </footer>
   ${whatsappFloat(brand.whatsapp)}
-  <script>${siteScripts(isHome)}</script>
+  <script>${siteScripts(isHome, pageId, analytics.enabled)}</script>
 </body>
 </html>`;
 }
