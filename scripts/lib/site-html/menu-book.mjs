@@ -14,7 +14,9 @@ export function menuBookStyles() {
     .menu-book-hint{
       text-align:center;font-size:.82rem;color:rgba(43,43,43,.5);
       margin-top:1rem;font-style:italic;
+      transition:transform .4s cubic-bezier(.22,1,.36,1),color .25s ease;
     }
+    .menu-book-hint:hover{transform:translateY(-1px);color:rgba(43,43,43,.68)}
     .menu-book-ui{
       display:flex;align-items:center;justify-content:center;gap:1rem;
       margin-top:1.35rem;flex-wrap:wrap;
