@@ -1,14 +1,14 @@
-# Checklist migración — www.mascafe.com
+# Checklist migración — www.mascafé.com
 
 ## Estado actual
 
 | Item | Estado |
 |------|--------|
 | Sitio en GitHub Pages | ✅ En línea |
-| Dominio mascafe.com en GoDaddy | ⏳ Pendiente confirmar acceso |
+| Dominio mascafé.com en GoDaddy | ⏳ Pendiente confirmar acceso |
 | DNS → GitHub Pages | ⏳ |
 | Custom domain GitHub verde | ⏳ |
-| URLs en site.json → mascafe.com | ⏳ |
+| URLs en site.json → mascafé.com | ⏳ |
 | Wallet + backend | 🔜 Fase siguiente |
 
 ---
@@ -17,7 +17,7 @@
 
 ### 1. GoDaddy
 - [ ] Iniciar sesión: https://sso.godaddy.com/
-- [ ] Abrir DNS: https://dcc.godaddy.com/control/dnsmanagement?domainName=mascafe.com
+- [ ] Abrir DNS: https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com
 - [ ] Desactivar parking / «Coming soon» / forwarding que tape el sitio
 - [ ] Eliminar registros A incorrectos (IPs GoDaddy tipo `76.223.x.x`)
 - [ ] Agregar 4 registros **A** en `@`:
@@ -29,19 +29,19 @@
 
 ### 2. GitHub Pages
 - [ ] Abrir: https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/pages
-- [ ] Custom domain: `mascafe.com` (o `www.mascafe.com` según prefieran)
+- [ ] Custom domain: `mascafé.com` (o `www.mascafé.com` según prefieran)
 - [ ] Esperar check DNS verde (puede tardar 10 min – 48 h)
 - [ ] Activar **Enforce HTTPS**
 
 ### 3. Verificación (yo puedo ayudar en terminal)
 ```bash
-dig mascafe.com A +short
-dig www.mascafe.com CNAME +short
-curl -sI https://www.mascafe.com | head -5
+dig mascafé.com A +short
+dig www.mascafé.com CNAME +short
+curl -sI https://www.mascafé.com | head -5
 ```
 
 ### 4. Actualizar proyecto (Cursor)
-- [ ] `content/site.json` → `brand.website` = `https://www.mascafe.com`
+- [ ] `content/site.json` → `brand.website` = `https://www.mascafé.com`
 - [ ] `content/settings.json` → `customDomain`
 - [ ] Regenerar informe
 - [ ] Push a main → deploy

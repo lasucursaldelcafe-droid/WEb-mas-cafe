@@ -34,7 +34,7 @@ No aparece en el menú del sitio público.
 
 Guía completa: [ADMIN.md](./ADMIN.md)
 
-Dominio: **https://mascafe.com/** (mismas rutas cuando DNS esté configurado)
+Dominio: **https://mascafé.com/** (mismas rutas cuando DNS esté configurado)
 
 ---
 

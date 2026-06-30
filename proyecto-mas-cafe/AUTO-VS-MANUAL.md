@@ -30,8 +30,8 @@
 | Crear secret `FIREBASE_TOKEN` (si quieren deploy Firebase) | GitHub Secrets | [Actions secrets](https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/secrets/actions) |
 | Acceso admin Firebase (proyecto mas-cafe-c8413) | Firebase Console | [Proyecto](https://console.firebase.google.com/project/mas-cafe-c8413) |
 | Transferir repo a org de Más Café (futuro) | GitHub | Crear org → Settings → Transfer |
-| Cuenta Vercel/Render para www.mascafe.com con backend | Vercel o Render | Cuando activemos wallet |
-| Email corporativo hola@mascafe.com | GoDaddy Email o Google Workspace | Panel GoDaddy |
+| Cuenta Vercel/Render para www.mascafé.com con backend | Vercel o Render | Cuando activemos wallet |
+| Email corporativo hola@mascafé.com | GoDaddy Email o Google Workspace | Panel GoDaddy |
 | Pegar lo ya hecho | Este repo | [REGISTRO-HECHO.md](./cuentas/REGISTRO-HECHO.md) |
 
 ---
@@ -59,7 +59,7 @@ TÚ                          CURSOR (yo)
 |------|----|----|
 | **A** Organización (cuentas a nombre Más Café) | Crear/transferir cuentas | Documentar y enlazar |
 | **B** Sitio en línea (hoy) | Verificar URLs públicas | Mantener deploy GitHub Pages |
-| **C** Dominio mascafe.com | DNS GoDaddy + custom domain GitHub | Guía + verificación `dig` |
+| **C** Dominio mascafé.com | DNS GoDaddy + custom domain GitHub | Guía + verificación `dig` |
 | **D** Backend wallet | Firebase Auth billing / OTP si aplica | Código wallet + Firestore |
-| **E** www.mascafe.com definitivo | DNS a Vercel/Render cuando haya backend | Deploy + SSL |
+| **E** www.mascafé.com definitivo | DNS a Vercel/Render cuando haya backend | Deploy + SSL |
 | **F** Entrega final | Revisar CREDENCIALES.md local | Paquete en `proyecto-mas-cafe/` |

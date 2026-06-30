@@ -16,7 +16,13 @@ const REPO_URL = "https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe";
 const DRIVE_FOLDER_ID = "153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC";
 const DRIVE_URL = `https://drive.google.com/drive/folders/${DRIVE_FOLDER_ID}`;
 
-const REPORT_VERSION = "1.2.0";
+const DOMAIN = "mascafé.com";
+const DOMAIN_WWW = "www.mascafé.com";
+const DOMAIN_URL = `https://${DOMAIN_WWW}`;
+const DOMAIN_PUNYCODE = "xn--mascaf-gva.com";
+const GODADDY_DNS_URL = `https://dcc.godaddy.com/control/dnsmanagement?domainName=${DOMAIN_PUNYCODE}`;
+
+const REPORT_VERSION = "1.2.1";
 const REQUISITOS_PATH = path.join(root, "content/informe-requisitos.json");
 
 function escapeHtml(s) {
@@ -209,7 +215,7 @@ export function generateConstitutionReport() {
     ["Este informe", `${LIVE_BASE}/informe/`, "Documento constitucional para la marca. No aparece en el menú del sitio."],
     ["Repositorio GitHub", REPO_URL, "Código fuente, historial de cambios y colaboración."],
     ["Carpeta Drive (marca)", DRIVE_URL, "Fuente original de logotipos, ilustraciones y aplicaciones."],
-    ["Dominio mascafe.com", "https://www.mascafe.com/", "Destino final cuando DNS GoDaddy apunte al hosting con backend (wallet + sitio)."],
+    ["Dominio mascafé.com", `${DOMAIN_URL}/`, `Destino final (punycode: ${DOMAIN_PUNYCODE}). DNS GoDaddy → hosting con backend cuando haya wallet.`],
     ["Firebase Hosting (respaldo)", "https://mas-cafe-c8413.web.app/", "Plataforma alternativa configurada en el repo. Mismo build HTML."],
     ["Instagram", brand.social.instagram, "Red social principal — tráfico y comunidad."],
     ["Facebook", brand.social.facebook, "Segunda red — eventos y alcance local."],
@@ -223,8 +229,9 @@ export function generateConstitutionReport() {
     .join("");
 
   const changelog = [
+    { date: "2026-06-27", note: "Dominio oficial corregido a mascafé.com (punycode xn--mascaf-gva.com) en docs e informe." },
     { date: "2026-06-27", note: "Carpeta proyecto-mas-cafe/ — entrega, enlaces de cuentas, REGISTRO-HECHO y plantilla CREDENCIALES." },
-    { date: "2026-06-27", note: "Informe v1.1 — wallet de fidelización, migración mascafe.com, checklist editable en content/informe-requisitos.json." },
+    { date: "2026-06-27", note: "Informe v1.1 — wallet de fidelización, migración mascafé.com, checklist editable en content/informe-requisitos.json." },
     { date: "2026-06-27", note: "Informe constitucional v1.0 — paleta crema, textos sin repetición, auditoría de activos Drive." },
     { date: "2026-06-27", note: "Favicon del logo en todas las páginas." },
     { date: "2026-06-27", note: "Rediseño móvil editorial y vista previa admin en todos los paneles." },
@@ -373,7 +380,7 @@ export function generateConstitutionReport() {
     <div class="wrap">
       <p style="font-size:.75rem;text-transform:uppercase;letter-spacing:.2em;opacity:.7;margin-bottom:.5rem">Documento vivo · No indexar</p>
       <h1>Constitución Web — ${escapeHtml(brand.name)}</h1>
-      <p style="margin-top:.85rem;max-width:42rem;opacity:.9">Modelo oficial del sitio, inventario Drive → web, arquitectura, migración a <strong>www.mascafe.com</strong>, wallet de fidelización y checklist editable para la marca.</p>
+      <p style="margin-top:.85rem;max-width:42rem;opacity:.9">Modelo oficial del sitio, inventario Drive → web, arquitectura, migración a <strong>${escapeHtml(DOMAIN_URL)}</strong>, wallet de fidelización y checklist editable para la marca.</p>
       <div class="meta">
         <span>Versión ${REPORT_VERSION}</span>
         <span>Generado: ${escapeHtml(generatedAt.slice(0, 16).replace("T", " "))} UTC</span>
@@ -420,7 +427,7 @@ export function generateConstitutionReport() {
         <li>Health check <code>npm run health-check</code> — OK</li>
         <li>URLs en línea: inicio, café, menú, nosotros, tienda, blog, contacto, admin — HTTP 200</li>
         <li>Contenido editable en <code>content/site.json</code> — válido</li>
-        <li>Dominio futuro: <strong>mascafe.com</strong> (DNS GoDaddy pendiente de apuntar a GitHub Pages)</li>
+        <li>Dominio futuro: <strong>${escapeHtml(DOMAIN)}</strong> (<code>${escapeHtml(DOMAIN_PUNYCODE)}</code>) — DNS GoDaddy pendiente</li>
       </ul>
     </section>
 
@@ -557,8 +564,9 @@ export function generateConstitutionReport() {
     </section>
 
     <section id="migracion">
-      <h2>10. Migración a www.mascafe.com (GoDaddy)</h2>
+      <h2>10. Migración a ${escapeHtml(DOMAIN_URL)} (GoDaddy)</h2>
       <p>${escapeHtml(req.migracion?.intro || "")}</p>
+      <div class="callout"><strong>Dominio con tilde:</strong> <strong>${escapeHtml(DOMAIN)}</strong> — en GitHub/DNS puede verse como <code>${escapeHtml(DOMAIN_PUNYCODE)}</code> (mismo dominio).</div>
       <div class="callout warn"><strong>Importante:</strong> La wallet de fidelización <em>no puede</em> funcionar solo con GitHub Pages (HTML estático). Al activar puntos, el dominio debe apuntar a un hosting con backend (Firebase, Vercel, Render, etc.).</div>
       <h3>Fases del plan</h3>
       <table>
@@ -570,11 +578,13 @@ export function generateConstitutionReport() {
         <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
         <tbody>
           <tr><td>Registrador</td><td>${fieldValue(dns.registrador, "GoDaddy")}</td></tr>
-          <tr><td>Dominio</td><td>${fieldValue(dns.dominio, "mascafe.com")}</td></tr>
+          <tr><td>Dominio</td><td>${fieldValue(dns.dominio, DOMAIN)}</td></tr>
+          <tr><td>Punycode (técnico)</td><td><code>${escapeHtml(DOMAIN_PUNYCODE)}</code></td></tr>
+          <tr><td>Panel DNS GoDaddy</td><td><a href="${GODADDY_DNS_URL}" target="_blank" rel="noopener">${escapeHtml(GODADDY_DNS_URL)}</a></td></tr>
           <tr><td>www → destino</td><td>${fieldValue(dns.wwwDestino, "Ej: cname.vercel-dns.com")}</td></tr>
           <tr><td>@ (apex) → destino</td><td>${fieldValue(dns.apexDestino, "Ej: A record del hosting")}</td></tr>
           <tr><td>SSL confirmado</td><td>${dns.sslConfirmado ? '<span class="badge ok">Sí</span>' : '<span class="badge ref">Pendiente</span>'}</td></tr>
-          <tr><td>Fecha corte GitHub Pages</td><td>${fieldValue(dns.fechaCorteGitHubPages, "Cuando www.mascafe.com esté estable")}</td></tr>
+          <tr><td>Fecha corte GitHub Pages</td><td>${fieldValue(dns.fechaCorteGitHubPages, `Cuando ${DOMAIN_URL} esté estable`)}</td></tr>
           <tr><td>Fecha migración objetivo</td><td>${fieldValue(meta.fechaMigracionObjetivo, "Por acordar")}</td></tr>
           <tr><td>Notas DNS</td><td>${fieldValue(dns.notas, "—")}</td></tr>
         </tbody>
@@ -664,7 +674,7 @@ export function generateConstitutionReport() {
         <li><strong>Google Business Profile.</strong> Misma dirección y horarios que el sitio (NAP consistente).</li>
         <li><strong>Responder WhatsApp en &lt;15 min</strong> en horario comercial — el sitio convierte ahí.</li>
         <li><strong>Definir reglas de puntos antes de programar la wallet.</strong> Ver sección <a href="#wallet">Wallet</a> y completar <code>content/informe-requisitos.json</code>.</li>
-        <li><strong>Migración a mascafe.com:</strong> apuntar DNS cuando el backend de fidelización esté listo — no antes si quieren wallet funcional.</li>
+        <li><strong>Migración a ${escapeHtml(DOMAIN)}:</strong> apuntar DNS cuando el backend de fidelización esté listo — no antes si quieren wallet funcional.</li>
       </ul>
       <p class="muted" style="margin-top:1rem">El checklist detallado de entregables está en la sección <a href="#requisitos">Requisitos</a>.</p>
     </section>

@@ -1,6 +1,6 @@
 # Plan SEO y marketing — Más Café
 
-Plan de acción para cuando el sitio esté publicado en GitHub Pages y, posteriormente, en **mascafe.com**.
+Plan de acción para cuando el sitio esté publicado en GitHub Pages y, posteriormente, en **mascafé.com**.
 
 ## URLs oficiales
 
@@ -8,7 +8,7 @@ Plan de acción para cuando el sitio esté publicado en GitHub Pages y, posterio
 |-------|-----|
 | Sitio (GitHub Pages) | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/ |
 | Admin | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/ |
-| Dominio futuro | https://mascafe.com/ |
+| Dominio futuro | https://mascafé.com/ |
 | Instagram | https://www.instagram.com/mascafecol315 |
 | Facebook | https://www.facebook.com/mascafecol |
 
@@ -24,7 +24,7 @@ Plan de acción para cuando el sitio esté publicado en GitHub Pages y, posterio
 - [ ] Enlaces internos entre Café → Tienda → Menú → Nosotros
 
 ### Indexación
-- [ ] Verificar en [Google Search Console](https://search.google.com/search-console) con dominio mascafe.com
+- [ ] Verificar en [Google Search Console](https://search.google.com/search-console) con dominio mascafé.com
 - [ ] Enviar sitemap (crear `sitemap.xml` en build si se añade dominio propio)
 - [ ] Archivo `robots.txt` permitiendo indexación del sitio público y bloqueando `/admin/`
 
@@ -86,7 +86,7 @@ Plan de acción para cuando el sitio esté publicado en GitHub Pages y, posterio
 ### Instagram (@mascafecol315)
 - 3–4 publicaciones/semana: producto, ambiente, equipo, behind the scenes
 - Stories diarias: horario, promoción del día, encuestas
-- Enlace en bio → sitio web (GitHub Pages o mascafe.com)
+- Enlace en bio → sitio web (GitHub Pages o mascafé.com)
 
 ### Facebook (@mascafecol)
 - Republicar contenido de Instagram
@@ -133,4 +133,4 @@ Plan de acción para cuando el sitio esté publicado en GitHub Pages y, posterio
 
 - El panel **Análisis** registra clics del sitio público y permite cargar ingresos mensuales para ver tendencia.
 - La **vista previa en vivo** del admin permite validar cambios antes de publicar.
-- Cuando **mascafe.com** apunte a GitHub Pages, actualizar enlaces en redes y Google Business.
+- Cuando **mascafé.com** apunte a GitHub Pages, actualizar enlaces en redes y Google Business.

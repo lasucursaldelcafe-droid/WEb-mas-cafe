@@ -1,30 +1,40 @@
-# Corregir mascafe.com → GitHub Pages
+# Conectar mascafé.com → GitHub Pages
 
-Error típico: **NotServedByPagesError** — el dominio no apunta a GitHub.
+**Dominio oficial de la marca:** **mascafé.com** (con tilde en la é).
+
+En paneles técnicos (GitHub, DNS) puede aparecer como **`xn--mascaf-gva.com`** — es el mismo dominio en formato punycode.
 
 ---
 
 ## Diagnóstico
 
-Si `mascafe.com` muestra una página de GoDaddy (“Próximo lanzamiento”, `/lander`), el DNS **no** apunta a GitHub.
-
-Comprueba en terminal:
+Si **mascafé.com** muestra una página de GoDaddy (“Próximo lanzamiento”, `/lander`), el DNS **no** apunta a GitHub.
 
 ```bash
-dig mascafe.com A +short
+dig mascafé.com A +short
+# o
+dig xn--mascaf-gva.com A +short
 ```
 
-Debe mostrar `185.199.108.153` (y las otras 3 IPs de GitHub).  
-**No** debe mostrar `76.223.54.146` ni `13.248.169.48`.
+Debe mostrar las IPs de GitHub Pages:
+
+- `185.199.108.153`
+- `185.199.109.153`
+- `185.199.110.153`
+- `185.199.111.153`
+
+**No** debe mostrar IPs de GoDaddy parking (`76.223.x.x`, `13.248.x.x`).
 
 ---
 
 ## DNS en GoDaddy
 
-1. GoDaddy → **mascafe.com** → **DNS**
+Panel: https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com
+
+1. GoDaddy → **mascafé.com** → **DNS**
 2. Desactiva reenvío / parking / “Coming soon”
 3. **Elimina** registros A incorrectos (IPs de GoDaddy)
-4. **Agrega** 4 registros A en `@`:
+4. **Agrega** 4 registros **A** en `@`:
 
 | Valor |
 |-------|
@@ -33,7 +43,7 @@ Debe mostrar `185.199.108.153` (y las otras 3 IPs de GitHub).
 | `185.199.110.153` |
 | `185.199.111.153` |
 
-5. **CNAME** para www:
+5. **CNAME** para `www`:
 
 | Tipo | Nombre | Valor |
 |------|--------|-------|
@@ -41,15 +51,26 @@ Debe mostrar `185.199.108.153` (y las otras 3 IPs de GitHub).
 
 ---
 
-## Verificar en GitHub
+## Verificar en GitHub Pages
 
 1. https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/pages
-2. Custom domain: `mascafe.com` → Save
-3. Espera check verde → activa **Enforce HTTPS**
+2. Custom domain: **`mascafé.com`** (GitHub puede guardarlo como `xn--mascaf-gva.com`)
+3. Espera el check DNS verde (10 min – 48 h)
+4. Activa **Enforce HTTPS**
 
 ---
 
-## Mientras tanto: usar GitHub Pages o local
+## URLs objetivo
+
+| | URL |
+|-|-----|
+| Con www | https://www.mascafé.com/ |
+| Sin www | https://mascafé.com/ |
+| Técnico (punycode) | https://xn--mascaf-gva.com/ |
+
+---
+
+## Mientras tanto
 
 | Opción | URL |
 |--------|-----|
@@ -58,8 +79,6 @@ Debe mostrar `185.199.108.153` (y las otras 3 IPs de GitHub).
 
 ---
 
-## mascafé.com (con tilde)
+## Nota sobre correo
 
-Si configuraste **mascafé.com** en GitHub, el DNS es el mismo proceso pero para ese dominio. GitHub lo guarda como `xn--mascaf-gva.com` (formato técnico).
-
-Verifica en Pages → Custom domain cuál dominio tienes activo.
+El sitio web usa **mascafé.com**. El correo corporativo puede ser `hola@mascafé.com` o un alias sin tilde según lo que permita GoDaddy — configurar en el panel de email del dominio.

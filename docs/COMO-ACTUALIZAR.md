@@ -7,7 +7,7 @@ El sitio es **HTML estático** con imágenes incluidas. Se publica automáticame
 | Dónde | URL |
 |-------|-----|
 | GitHub Pages | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/ |
-| Dominio | https://mascafe.com/ (cuando DNS esté configurado) |
+| Dominio | https://mascafé.com/ (cuando DNS esté configurado) |
 
 ---
 

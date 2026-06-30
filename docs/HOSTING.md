@@ -16,7 +16,7 @@ Activar una sola vez: [ACTIVAR-GITHUB-PAGES.md](./ACTIVAR-GITHUB-PAGES.md)
 
 | | |
 |-|-|
-| **Dominio** | https://mascafe.com/ |
+| **Dominio** | https://www.mascafé.com/ (`xn--mascaf-gva.com`) |
 | **DNS** | GoDaddy → apuntar a GitHub Pages |
 | **Guía** | [DOMINIO-MASCAFE-COM.md](./DOMINIO-MASCAFE-COM.md) |
 

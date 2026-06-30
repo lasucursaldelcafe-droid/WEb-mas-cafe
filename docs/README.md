@@ -15,7 +15,7 @@
 | Guía | Para qué |
 |------|----------|
 | [ACTIVAR-GITHUB-PAGES.md](./ACTIVAR-GITHUB-PAGES.md) | Activar el sitio en GitHub |
-| [DOMINIO-MASCAFE-COM.md](./DOMINIO-MASCAFE-COM.md) | Conectar mascafe.com |
+| [DOMINIO-MASCAFE-COM.md](./DOMINIO-MASCAFE-COM.md) | Conectar mascafé.com |
 
 ## Marketing y marca
 
