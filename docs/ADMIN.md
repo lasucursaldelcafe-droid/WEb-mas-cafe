@@ -46,6 +46,24 @@ No necesitas configurar nada manualmente. La publicación es automática desde e
 | **Contacto** | Dirección, horarios, redes sociales |
 | **Marquee** | Texto animado del sitio |
 | **Informe** | Informe constitucional (documento de avance, no público en el menú) |
+| **Análisis** | Clics, páginas vistas, ingresos mensuales y Google Analytics |
+
+## Estadísticas (Análisis)
+
+El panel **Análisis** ya está activo con lo incluido en el sitio:
+
+1. **Clics y páginas vistas (local)** — se registran en el navegador de cada visitante.
+2. Entra en **Análisis** → **Sincronizar este navegador** → **Guardar y publicar** para sumar esos datos al informe global.
+3. **Google Search Console** — enlace directo en Análisis (ya verificado para mascafé.com).
+4. **Google Analytics 4 (recomendado)** — en Análisis, pega el ID `G-XXXXXXXX` de [analytics.google.com](https://analytics.google.com/) (misma cuenta de Google que Search Console) y publica. A partir de ahí las visitas de todos los usuarios se miden automáticamente.
+
+| Métrica | Dónde |
+|---------|--------|
+| Clics WhatsApp / tienda / contacto | Admin → Análisis |
+| Páginas vistas por sección | Admin → Análisis (tras sincronizar) |
+| Ingresos mensuales COP | Admin → Análisis (registro manual) |
+| Tráfico de búsqueda Google | Enlace Search Console en Análisis |
+| Visitas automáticas (todos) | Google Analytics 4 con ID en Análisis |
 
 ## Informe constitucional
 

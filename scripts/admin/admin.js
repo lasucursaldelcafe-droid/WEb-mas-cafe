@@ -23,10 +23,32 @@
   if (!content.routes?.length) content.routes = structuredClone(DEFAULT_ROUTES);
   if (!content.analytics) {
     content.analytics = {
+      enabled: true,
+      googleAnalyticsId: "",
       clicks: { whatsapp: 0, tienda: 0, contacto: 0, instagram: 0, facebook: 0 },
+      pageviews: {},
       monthlyIncome: [],
+      lastPublishedAt: null,
     };
+  } else {
+    if (content.analytics.enabled === undefined) content.analytics.enabled = true;
+    if (!content.analytics.googleAnalyticsId) content.analytics.googleAnalyticsId = "";
+    if (!content.analytics.pageviews) content.analytics.pageviews = {};
+    if (!content.analytics.clicks) {
+      content.analytics.clicks = { whatsapp: 0, tienda: 0, contacto: 0, instagram: 0, facebook: 0 };
+    }
+    if (!content.analytics.monthlyIncome) content.analytics.monthlyIncome = [];
   }
+
+  const CLICK_LABELS = {
+    whatsapp: "WhatsApp",
+    tienda: "Tienda / comprar",
+    contacto: "Contacto",
+    instagram: "Instagram",
+    facebook: "Facebook",
+  };
+
+  const GSC_URL = "https://search.google.com/search-console?resource_id=sc-domain%3Axn--mascaf-gva.com";
 
   const SESSION_MAX_MS = 8 * 60 * 60 * 1000;
 
@@ -223,12 +245,13 @@
   function previewAnalytics() {
     const c = content.analytics.clicks;
     const total = Object.values(c).reduce((a, b) => a + b, 0);
+    const views = Object.values(content.analytics.pageviews || {}).reduce((a, b) => a + b, 0);
     const income = [...(content.analytics.monthlyIncome || [])].sort((a, b) => a.month.localeCompare(b.month)).slice(-3);
     const maxIncome = Math.max(...income.map((i) => i.amount), 1);
     return `<div class="ctx-preview ctx-analytics">
-      <p class="ctx-label">Clics · ${total} total</p>
+      <p class="ctx-label">Clics · ${total} · Vistas · ${views}</p>
       ${Object.entries(c).map(([k, v]) => `
-        <div class="ctx-bar-row"><span>${k}</span><div class="ctx-bar"><i style="width:${total ? (v / total) * 100 : 0}%"></i></div><strong>${v}</strong></div>`).join("")}
+        <div class="ctx-bar-row"><span>${CLICK_LABELS[k] || k}</span><div class="ctx-bar"><i style="width:${total ? (v / total) * 100 : 0}%"></i></div><strong>${v}</strong></div>`).join("")}
       ${income.length ? `<p class="ctx-label" style="margin-top:.75rem">Ingresos recientes</p>
         ${income.map((row) => `<div class="ctx-bar-row"><span>${row.month}</span><div class="ctx-bar ctx-bar-brown"><i style="width:${(row.amount / maxIncome) * 100}%"></i></div></div>`).join("")}` : ""}
     </div>`;
@@ -496,6 +519,7 @@
     buildNav();
     renderPanel(currentPanel);
     updateStatus();
+    mergePendingAnalytics();
     refreshFromServer();
   }
 
@@ -624,34 +648,86 @@
     (handlers[id] || handlers.overview)();
   }
 
-  function mergePendingClicks() {
+  function mergePendingFromStorage(storageKey, targetKey) {
     try {
-      const pending = JSON.parse(localStorage.getItem("mc_clicks_pending") || "{}");
+      const pending = JSON.parse(localStorage.getItem(storageKey) || "{}");
       for (const [k, v] of Object.entries(pending)) {
-        if (typeof v === "number" && content.analytics.clicks[k] !== undefined) {
-          content.analytics.clicks[k] += v;
-        }
+        if (typeof v !== "number" || v <= 0) continue;
+        if (targetKey === "clicks" && content.analytics.clicks[k] === undefined) continue;
+        const bucket = targetKey === "clicks" ? content.analytics.clicks : content.analytics.pageviews;
+        bucket[k] = (bucket[k] || 0) + v;
       }
-      localStorage.removeItem("mc_clicks_pending");
+      localStorage.removeItem(storageKey);
     } catch { /* ignore */ }
   }
 
+  function mergePendingAnalytics() {
+    mergePendingFromStorage("mc_clicks_pending", "clicks");
+    mergePendingFromStorage("mc_pageviews_pending", "pageviews");
+  }
+
   function renderAnalytics() {
-    mergePendingClicks();
+    mergePendingAnalytics();
     const c = content.analytics.clicks;
+    const pv = content.analytics.pageviews || {};
     const totalClicks = Object.values(c).reduce((a, b) => a + b, 0);
+    const totalViews = Object.values(pv).reduce((a, b) => a + b, 0);
     const income = [...(content.analytics.monthlyIncome || [])].sort((a, b) => a.month.localeCompare(b.month));
     const maxIncome = Math.max(...income.map((i) => i.amount), 1);
-    return `<div class="card"><h3>Clics registrados</h3>
-      <p class="analytics-stat">${totalClicks}</p>
-      <p style="opacity:.7;font-size:.85rem;margin-bottom:1rem">Interacciones en el sitio público (WhatsApp, tienda, contacto, redes)</p>
-      ${Object.entries(c).map(([k, v]) => `
-        <div style="margin-bottom:.65rem">
-          <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.25rem">
-            <span>${k}</span><strong>${v}</strong>
-          </div>
-          <div class="analytics-bar-wrap"><div class="analytics-bar" style="width:${totalClicks ? (v / totalClicks) * 100 : 0}%"></div></div>
-        </div>`).join("")}
+    const gaId = content.analytics.googleAnalyticsId || "";
+    const trackingOn = content.analytics.enabled !== false;
+    const lastPub = content.analytics.lastPublishedAt
+      ? new Date(content.analytics.lastPublishedAt).toLocaleString("es-CO")
+      : "Aún no publicado";
+
+    return `<div class="card"><h3>Estado</h3>
+      <p style="line-height:1.65;opacity:.85">
+        Seguimiento interno: <strong>${trackingOn ? "activo" : "pausado"}</strong> ·
+        Última publicación de datos: <strong>${lastPub}</strong>
+      </p>
+      <div class="row" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem">
+        <button type="button" class="btn btn-blue" id="sync-analytics-btn">Sincronizar este navegador</button>
+        <a class="btn btn-ghost" href="${GSC_URL}" target="_blank" rel="noopener">Google Search Console</a>
+        <a class="btn btn-ghost" href="https://analytics.google.com/" target="_blank" rel="noopener">Google Analytics</a>
+      </div>
+      <p style="margin-top:.75rem;font-size:.85rem;opacity:.7;line-height:1.55">
+        Los clics y visitas de cada visitante se guardan en su navegador. Pulsa <strong>Sincronizar</strong> y luego <strong>Guardar y publicar</strong> para sumarlos al informe del admin.
+        Para estadísticas automáticas de todos los visitantes, activa Google Analytics abajo (misma cuenta que Search Console).
+      </p>
+    </div>
+    <div class="card"><h3>Google Analytics (recomendado)</h3>
+      <label class="checkbox-row" style="margin-bottom:.75rem">
+        <input type="checkbox" id="analytics-enabled" ${trackingOn ? "checked" : ""}/> Activar seguimiento en el sitio
+      </label>
+      <div class="field">
+        <label for="ga-measurement-id">ID de medición GA4 (formato G-XXXXXXXX)</label>
+        <input id="ga-measurement-id" placeholder="G-XXXXXXXXXX" value="${escapeAttr(gaId)}"/>
+        <small>Crear en <a href="https://analytics.google.com/" target="_blank" rel="noopener">analytics.google.com</a> → Administrar → Flujos de datos → Web → copiar ID. Publica para activarlo en el sitio.</small>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><h3>Clics registrados</h3>
+        <p class="analytics-stat">${totalClicks}</p>
+        <p style="opacity:.7;font-size:.85rem;margin-bottom:1rem">WhatsApp, tienda, contacto, redes</p>
+        ${Object.entries(c).map(([k, v]) => `
+          <div style="margin-bottom:.65rem">
+            <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.25rem">
+              <span>${CLICK_LABELS[k] || k}</span><strong>${v}</strong>
+            </div>
+            <div class="analytics-bar-wrap"><div class="analytics-bar" style="width:${totalClicks ? (v / totalClicks) * 100 : 0}%"></div></div>
+          </div>`).join("")}
+      </div>
+      <div class="card"><h3>Páginas vistas (local)</h3>
+        <p class="analytics-stat">${totalViews}</p>
+        <p style="opacity:.7;font-size:.85rem;margin-bottom:1rem">Por sección, desde navegadores sincronizados</p>
+        ${Object.keys(pv).length ? Object.entries(pv).sort((a, b) => b[1] - a[1]).map(([k, v]) => `
+          <div style="margin-bottom:.65rem">
+            <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.25rem">
+              <span>${k}</span><strong>${v}</strong>
+            </div>
+            <div class="analytics-bar-wrap"><div class="analytics-bar" style="width:${totalViews ? (v / totalViews) * 100 : 0}%"></div></div>
+          </div>`).join("") : '<p style="opacity:.7">Sin datos aún. Visita el sitio público y sincroniza.</p>'}
+      </div>
     </div>
     <div class="card"><h3>Tendencia de ingresos (COP)</h3>
       ${income.length ? income.map((row) => `
@@ -670,6 +746,20 @@
   }
 
   function bindAnalyticsEvents(root) {
+    $("#sync-analytics-btn", root)?.addEventListener("click", () => {
+      mergePendingAnalytics();
+      markDirty();
+      toast("Datos de este navegador sincronizados. Publica para guardarlos en el sitio.", "success");
+      renderPanel("analytics");
+    });
+    $("#analytics-enabled", root)?.addEventListener("change", (e) => {
+      content.analytics.enabled = e.target.checked;
+      markDirty();
+    });
+    $("#ga-measurement-id", root)?.addEventListener("input", (e) => {
+      content.analytics.googleAnalyticsId = e.target.value.trim();
+      markDirty();
+    });
     $("#add-income", root)?.addEventListener("click", () => {
       const month = $("#income-month", root)?.value.trim();
       const amount = Number($("#income-amount", root)?.value);
@@ -684,6 +774,9 @@
   }
 
   function renderOverview() {
+    mergePendingAnalytics();
+    const totalClicks = Object.values(content.analytics.clicks).reduce((a, b) => a + b, 0);
+    const totalViews = Object.values(content.analytics.pageviews || {}).reduce((a, b) => a + b, 0);
     return `
     <div class="status-bar"><span class="status-dot"></span> Sitio público activo · <a href="../" target="_blank" rel="noopener">Ver sitio →</a> · <a href="${INFORME_URL}" target="_blank" rel="noopener">Informe →</a></div>
     <div class="grid-2">
@@ -691,6 +784,13 @@
         <p>${content.experiences.length} experiencias · ${content.products.length} productos</p>
         <p>${content.menu.length} categorías · ${content.blog.filter((b) => b.published).length} posts publicados</p>
       </div>
+      <div class="card"><h3>Estadísticas</h3>
+        <p><strong>${totalClicks}</strong> clics · <strong>${totalViews}</strong> páginas vistas (local)</p>
+        <p style="font-size:.85rem;opacity:.75;margin-top:.35rem">${content.analytics.googleAnalyticsId ? "Google Analytics activo" : "Activa GA4 en Análisis para visitas automáticas"}</p>
+        <button type="button" class="btn btn-ghost" data-goto="analytics" style="margin-top:.75rem">Ver análisis →</button>
+      </div>
+    </div>
+    <div class="grid-2">
       <div class="card"><h3>Acciones rápidas</h3>
         <div class="row" style="margin-top:.75rem;flex-wrap:wrap;gap:.5rem;display:flex">
           <button type="button" class="btn btn-primary" data-goto="brand">Editar marca</button>
@@ -1244,7 +1344,7 @@
     for (const key of scalarKeys) {
       if (local[key]) out[key] = { ...server[key], ...local[key] };
     }
-    const arrayKeys = ["routes", "brewGuide", "marquee", "experiences", "products", "menu", "blog", "analytics"];
+    const arrayKeys = ["routes", "brewGuide", "marquee", "experiences", "products", "menu", "blog"];
     for (const key of arrayKeys) {
       if (local[key] === undefined || local[key] === null) continue;
       if (Array.isArray(local[key]) && local[key].length === 0 && Array.isArray(server[key]) && server[key].length > 0) {
@@ -1254,10 +1354,14 @@
     }
     if (local.analytics) {
       out.analytics = {
+        enabled: local.analytics.enabled !== false,
+        googleAnalyticsId: local.analytics.googleAnalyticsId ?? server.analytics?.googleAnalyticsId ?? "",
         clicks: { ...(server.analytics?.clicks || {}), ...(local.analytics.clicks || {}) },
+        pageviews: { ...(server.analytics?.pageviews || {}), ...(local.analytics.pageviews || {}) },
         monthlyIncome: local.analytics.monthlyIncome?.length
           ? local.analytics.monthlyIncome
           : (server.analytics?.monthlyIncome || []),
+        lastPublishedAt: local.analytics.lastPublishedAt ?? server.analytics?.lastPublishedAt ?? null,
       };
     }
     return out;
@@ -1297,10 +1401,10 @@
     try {
       const latest = await fetchLatestContent();
       const toPublish = latest ? mergeForPublish(latest, content) : structuredClone(content);
+      mergePendingAnalytics();
       ensureRoutes();
-      mergePendingClicks();
       toPublish.routes = content.routes;
-      toPublish.analytics = content.analytics;
+      toPublish.analytics = { ...content.analytics, lastPublishedAt: new Date().toISOString() };
       validateBeforePublish(toPublish);
 
       for (const upload of pendingUploads) {

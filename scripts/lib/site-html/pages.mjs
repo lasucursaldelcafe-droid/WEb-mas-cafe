@@ -28,8 +28,8 @@ function visitBand(href, brand) {
         <p>${brand.address}<br/>${brand.city}</p>
         <p style="font-size:.88rem;margin-top:.5rem;opacity:.8">${brand.hours}</p>
         <div class="cta actions">
-          <a class="btn btn-sage" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-          <a class="btn btn-outline" href="${href("/contacto")}">Contacto</a>
+          <a class="btn btn-sage" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer" data-track="whatsapp">WhatsApp</a>
+          <a class="btn btn-outline" href="${href("/contacto")}" data-track="contacto">Contacto</a>
           <a class="btn btn-outline" href="https://maps.google.com/?q=${encodeURIComponent(brand.address + ", " + brand.city)}" target="_blank" rel="noopener noreferrer">Cómo llegar</a>
         </div>
       </div>
@@ -92,7 +92,7 @@ export function pageHome() {
         <p class="subhead">${brand.subheadline}</p>
         <p class="descriptor">${brand.descriptor}</p>
         <div class="actions">
-          <a class="btn btn-sage" href="${href("/tienda")}">Comprar café fresco</a>
+          <a class="btn btn-sage" href="${href("/tienda")}" data-track="tienda">Comprar café fresco</a>
           <a class="btn btn-outline" href="${href("/nosotros")}">Conócenos</a>
         </div>
         <div class="brand-note">
@@ -116,7 +116,7 @@ export function pageHome() {
     <div class="wrap">
       ${sectionHead(ph.productsLabel, ph.productsTitle)}
       <div class="products">${featured.map((p) => productCard(p, img)).join("")}</div>
-      <p class="section-actions"><a class="btn btn-outline" href="${href("/tienda")}">Ver tienda →</a></p>
+      <p class="section-actions"><a class="btn btn-outline" href="${href("/tienda")}" data-track="tienda">Ver tienda →</a></p>
     </div>
   </section>
   <section class="alt">
@@ -176,7 +176,7 @@ export function pageCafe() {
       </div>
       <p class="label" style="margin-top:3rem">${pc.productsNote}</p>
       <div class="products cols-3" style="margin-top:1rem">${featured.map((p) => productCard(p, img)).join("")}</div>
-      <p class="section-actions" style="text-align:center"><a class="btn btn-blue" href="${href("/tienda")}">Ver catálogo completo</a></p>
+      <p class="section-actions" style="text-align:center"><a class="btn btn-blue" href="${href("/tienda")}" data-track="tienda">Ver catálogo completo</a></p>
     </div>
   </section>
   ${visitBand(href, brand)}`;
