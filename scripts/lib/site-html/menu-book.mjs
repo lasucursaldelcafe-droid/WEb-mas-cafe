@@ -7,9 +7,10 @@ export function menuBookStyles() {
       background:linear-gradient(180deg,var(--cream) 0%,var(--cream-dark) 100%);
     }
     .menu-book-stage{
-      max-width:min(920px,96vw);
+      max-width:920px;
+      width:100%;
       margin:0 auto;
-      padding:0 1rem;
+      padding:0 clamp(1.25rem,4vw,1.5rem);
     }
     .menu-book-hint{
       text-align:center;font-size:.84rem;color:rgba(43,43,43,.55);
@@ -170,8 +171,16 @@ export function menuBookStyles() {
       .menu-book-spread{display:none}
       .menu-book-mobile{display:block}
       .menu-book-flipper{display:none}
-      .menu-book-hint{font-size:.82rem}
+      .menu-book-stage{
+        padding-left:max(clamp(1.2rem,5.5vw,1.65rem),env(safe-area-inset-left,0px));
+        padding-right:max(clamp(1.2rem,5.5vw,1.65rem),env(safe-area-inset-right,0px));
+      }
+      .menu-book-hint{
+        font-size:.82rem;
+        padding:0 .15rem;
+      }
       .menu-book-counter{font-size:.82rem}
+      .menu-book-ui{padding:0 .15rem}
       .menu-book-btn:active:not(:disabled){
         transform:none;
         box-shadow:0 4px 18px rgba(7,57,84,.08);

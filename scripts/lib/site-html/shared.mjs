@@ -662,7 +662,10 @@ export function siteStyles() {
 
     /* ── Móvil (≤767px) — editorial tipo Pergamino: títulos primero ── */
     @media(max-width:767px){
-      .wrap{padding:0 1.15rem}
+      .wrap{
+        padding-left:max(clamp(1.25rem,5.5vw,1.65rem),env(safe-area-inset-left,0px));
+        padding-right:max(clamp(1.25rem,5.5vw,1.65rem),env(safe-area-inset-right,0px));
+      }
       header.site-header{padding:.85rem 0}
       header.site-header.scrolled{padding:.55rem 0}
       .logo,.logo img{height:1.85rem}
@@ -745,7 +748,9 @@ export function siteStyles() {
       .menu-hero .soul{font-size:1.05rem;line-height:1.15;margin-bottom:.15rem}
       .menu-hero h1{font-size:clamp(1.95rem,8vw,2.35rem);line-height:1.05;margin-top:.25rem}
       .menu-hero .intro{font-size:.84rem;margin-top:.65rem;padding:0;text-align:left;line-height:1.65;opacity:.78}
-      .menu-page .menu-book-section{padding:4.35rem 0 .75rem}
+      .menu-page .menu-book-section{
+        padding:4.35rem 0 .75rem;
+      }
       .menu-page .menu-hero-below{
         padding:0 0 1.75rem;text-align:left;
       }
