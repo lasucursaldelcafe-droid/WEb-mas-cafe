@@ -45,6 +45,17 @@ No necesitas configurar nada manualmente. La publicación es automática desde e
 | **Nosotros** | Historia, valores, imagen principal |
 | **Contacto** | Dirección, horarios, redes sociales |
 | **Marquee** | Texto animado del sitio |
+| **Informe** | Informe constitucional (documento de avance, no público en el menú) |
+
+## Informe constitucional
+
+En el menú lateral → **Informe**, o el botón **Informe** arriba a la derecha:
+
+- Vista integrada del documento en `/informe/`
+- Enlace al mockup Wallet en `/informe/wallet/`
+- El informe no aparece en el menú del sitio público
+
+Para editar el contenido del informe, modifica `content/informe-requisitos.json` en el repositorio y publica con push a `main`.
 
 ## Secciones y subcarpetas
 

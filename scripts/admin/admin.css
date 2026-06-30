@@ -382,6 +382,26 @@ body.admin-authed #app { display: grid; }
 .ctx-page { padding: 1rem; background: var(--cream); }
 .ctx-preview-stack .ctx-preview { border-radius: 0; box-shadow: none; border: none; border-top: 1px solid rgba(7,57,84,.06); }
 .ctx-preview-stack .ctx-preview:first-child { border-top: none; }
+
+.informe-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.informe-frame {
+  width: 100%;
+  min-height: 420px;
+  height: min(72vh, 820px);
+  border: 1px solid rgba(7, 57, 84, 0.12);
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+@media (max-width: 768px) {
+  .informe-frame { height: min(55vh, 520px); }
+}
 .ctx-stats, .ctx-publish-status, .ctx-help { padding: .85rem 1rem; }
 .ctx-steps { font-size: .72rem; padding-left: 1.1rem; line-height: 1.65; margin-top: .35rem; }
 .ctx-steps li { margin-bottom: .25rem; }

@@ -101,6 +101,7 @@ export function generateAdminPage() {
         </div>
         <div class="topbar-actions">
           <button type="button" class="btn btn-ghost" id="preview-btn">Ver sitio</button>
+          <button type="button" class="btn btn-ghost" id="informe-btn">Informe</button>
           <button type="button" class="btn btn-blue" id="publish-top">Guardar y publicar</button>
         </div>
       </div>

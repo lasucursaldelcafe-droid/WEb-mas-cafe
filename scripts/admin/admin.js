@@ -89,6 +89,7 @@
   const PANELS = [
     { id: "overview", label: "Resumen", icon: "◉" },
     { id: "help", label: "Cómo funciona", icon: "?" },
+    { id: "informe", label: "Informe", icon: "📋" },
     { id: "analytics", label: "Análisis", icon: "▤" },
     { id: "brand", label: "Marca e inicio", icon: "◇" },
     { id: "theme", label: "Colores", icon: "◐" },
@@ -104,7 +105,12 @@
     { id: "config", label: "Publicar", icon: "⚙" },
   ];
 
-  const PREVIEW_PANELS = new Set(PANELS.map((p) => p.id));
+  const PREVIEW_PANELS = new Set(
+    PANELS.filter((p) => p.id !== "informe").map((p) => p.id)
+  );
+
+  const INFORME_URL = "../informe/";
+  const INFORME_WALLET_URL = "../informe/wallet/";
 
   const THEME_FIELDS = [
     ["cream", "Crema (fondo)"],
@@ -581,7 +587,7 @@
     if (!requireAuth()) return;
     const main = $("#panel-root");
     const titles = {
-      overview: "Panel de administración", help: "Cómo funciona",
+      overview: "Panel de administración", help: "Cómo funciona", informe: "Informe constitucional",
       analytics: "Análisis e ingresos", brand: "Marca e inicio",
       sections: "Secciones del sitio", theme: "Colores del sitio", pages: "Textos de páginas", experiences: "Experiencias",
       products: "Café y tienda", menu: "Menú coffee shop", blog: "Blog", nosotros: "Nosotros",
@@ -592,6 +598,7 @@
     const handlers = {
       overview: () => finishPanel("overview", main, renderOverview()),
       help: () => finishPanel("help", main, renderHelp()),
+      informe: () => finishPanel("informe", main, renderInforme(), bindInformeEvents),
       analytics: () => finishPanel("analytics", main, renderAnalytics(), bindAnalyticsEvents),
       brand: () => finishPanel("brand", main, renderBrand(), (root) => bindFields(root, content.brand)),
       sections: () => finishPanel("sections", main, renderSections(), bindSectionsEvents),
@@ -678,7 +685,7 @@
 
   function renderOverview() {
     return `
-    <div class="status-bar"><span class="status-dot"></span> Sitio público activo · <a href="../" target="_blank" rel="noopener">Ver sitio →</a></div>
+    <div class="status-bar"><span class="status-dot"></span> Sitio público activo · <a href="../" target="_blank" rel="noopener">Ver sitio →</a> · <a href="${INFORME_URL}" target="_blank" rel="noopener">Informe →</a></div>
     <div class="grid-2">
       <div class="card"><h3>Contenido</h3>
         <p>${content.experiences.length} experiencias · ${content.products.length} productos</p>
@@ -690,13 +697,14 @@
           <button type="button" class="btn btn-ghost" data-goto="theme">Colores</button>
           <button type="button" class="btn btn-ghost" data-goto="sections">Secciones</button>
           <button type="button" class="btn btn-ghost" data-goto="menu">Menú</button>
+          <button type="button" class="btn btn-ghost" data-goto="informe">Informe</button>
           <button type="button" class="btn btn-blue" data-goto="config">Publicar</button>
         </div>
       </div>
     </div>
     <div class="card"><h3>Secciones</h3>
       <p style="opacity:.75;margin-bottom:1rem">Cada sección corresponde a una página del sitio público.</p>
-      <div class="row" style="display:flex;flex-wrap:wrap;gap:.5rem">${PANELS.filter((p) => !["overview", "help", "config"].includes(p.id)).map((p) => `<button type="button" class="btn btn-ghost" data-goto="${p.id}">${p.label}</button>`).join("")}</div>
+      <div class="row" style="display:flex;flex-wrap:wrap;gap:.5rem">${PANELS.filter((p) => !["overview", "help", "config", "informe"].includes(p.id)).map((p) => `<button type="button" class="btn btn-ghost" data-goto="${p.id}">${p.label}</button>`).join("")}</div>
     </div>`;
   }
 
@@ -724,7 +732,36 @@
     <div class="card"><h3>Acceso al panel</h3>
       <p>Desde el sitio público: pie de página → <strong>Administración</strong>.</p>
       <p style="margin-top:.5rem">URL directa: <code>/admin/</code></p>
+    </div>
+    <div class="card"><h3>Informe constitucional</h3>
+      <p>Documento de avance para la marca (no aparece en el menú del sitio). Ábrelo desde la sección <strong>Informe</strong> del menú lateral o en <a href="${INFORME_URL}" target="_blank" rel="noopener">/informe/</a>.</p>
     </div>`;
+  }
+
+  function renderInforme() {
+    return `
+    <div class="card informe-access-card">
+      <h3>Informe constitucional</h3>
+      <p style="opacity:.85;line-height:1.65;margin-bottom:1rem">Reporte de avance, requisitos de migración, wallet y SEO. No está enlazado desde el sitio público; solo accesible desde aquí o con la URL directa.</p>
+      <div class="informe-actions">
+        <a href="${INFORME_URL}" target="_blank" rel="noopener" class="btn btn-blue">Abrir en nueva pestaña</a>
+        <a href="${INFORME_WALLET_URL}" target="_blank" rel="noopener" class="btn btn-ghost">Mockup Wallet</a>
+        <button type="button" class="btn btn-ghost" id="informe-reload-frame">Recargar vista</button>
+      </div>
+      <iframe id="informe-frame" class="informe-frame" src="${INFORME_URL}" title="Informe constitucional Más Café"></iframe>
+    </div>
+    <div class="card">
+      <h3>Actualizar el informe</h3>
+      <p style="line-height:1.65">El contenido editable vive en <code>content/informe-requisitos.json</code>. Tras modificarlo en el repositorio y hacer push a <code>main</code>, el deploy regenera automáticamente <code>/informe/</code>.</p>
+      <p style="margin-top:.75rem;opacity:.75;font-size:.9rem">La fuente HTML está en <code>informes/constitucion-web.html</code> (generada por el build).</p>
+    </div>`;
+  }
+
+  function bindInformeEvents(root) {
+    $("#informe-reload-frame", root)?.addEventListener("click", () => {
+      const frame = $("#informe-frame", root);
+      if (frame) frame.src = INFORME_URL;
+    });
   }
 
   function renderBrand() {
@@ -1324,6 +1361,11 @@
   $("#logout-btn")?.addEventListener("click", logout);
   $("#publish-top")?.addEventListener("click", publishSite);
   $("#preview-btn")?.addEventListener("click", () => window.open("../", "_blank"));
+  $("#informe-btn")?.addEventListener("click", () => {
+    currentPanel = "informe";
+    buildNav();
+    renderPanel("informe");
+  });
 
   window.addEventListener("beforeunload", (e) => {
     if (dirty) { e.preventDefault(); e.returnValue = ""; }
