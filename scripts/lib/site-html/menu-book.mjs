@@ -144,6 +144,7 @@ export function menuBookScript() {
     (function(){
       var root=document.getElementById('menu-book');
       if(!root)return;
+      var stage=root.closest('.menu-book-stage')||root.parentElement||root;
       var pages=JSON.parse(root.getAttribute('data-pages')||'[]');
       if(!pages.length)return;
 
@@ -155,9 +156,9 @@ export function menuBookScript() {
       var flipper=root.querySelector('.menu-book-flipper');
       var flipFront=flipper?flipper.querySelector('.menu-book-flip-face.front img'):null;
       var flipBack=flipper?flipper.querySelector('.menu-book-flip-face.back img'):null;
-      var counter=root.querySelector('.menu-book-counter');
-      var btnPrev=root.querySelector('[data-book-prev]');
-      var btnNext=root.querySelector('[data-book-next]');
+      var counter=stage.querySelector('.menu-book-counter');
+      var navPrev=stage.querySelectorAll('[data-book-prev]');
+      var navNext=stage.querySelectorAll('[data-book-next]');
       var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var mobile=window.matchMedia('(max-width: 767px)').matches;
 
@@ -301,8 +302,10 @@ export function menuBookScript() {
       }
 
       function updateButtons(){
-        if(btnPrev)btnPrev.disabled=mobile?(page<=0):(spread<=0);
-        if(btnNext)btnNext.disabled=mobile?(page>=pages.length-1):(spread>=spreadsCount()-1);
+        var atStart=mobile?(page<=0):(spread<=0);
+        var atEnd=mobile?(page>=pages.length-1):(spread>=spreadsCount()-1);
+        navPrev.forEach(function(btn){btn.disabled=atStart;});
+        navNext.forEach(function(btn){btn.disabled=atEnd;});
       }
 
       function renderSpread(){
@@ -384,10 +387,10 @@ export function menuBookScript() {
         renderSpread();
       }
 
-      root.querySelectorAll('[data-book-next]').forEach(function(el){
+      navNext.forEach(function(el){
         el.addEventListener('click',function(){goNext(false);});
       });
-      root.querySelectorAll('[data-book-prev]').forEach(function(el){
+      navPrev.forEach(function(el){
         el.addEventListener('click',function(){goPrev(false);});
       });
 
