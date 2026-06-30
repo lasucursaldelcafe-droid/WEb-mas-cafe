@@ -9,7 +9,11 @@
     "contactoPrincipalMarca": "",
     "emailCorporativo": "hola@mascafe.com",
     "fechaMigracionObjetivo": "",
-    "notasGenerales": ""
+    "notasGenerales": "",
+    "carpetaEntrega": "proyecto-mas-cafe/",
+    "registroHecho": "proyecto-mas-cafe/cuentas/REGISTRO-HECHO.md",
+    "enlacesConfiguracion": "proyecto-mas-cafe/cuentas/ENLACES-CONFIGURACION.md",
+    "credencialesLocal": "proyecto-mas-cafe/cuentas/CREDENCIALES.md (no subir a Git — copiar desde CREDENCIALES.template.md)"
   },
   "independencia": {
     "intro": "La web pasará a propiedad de Más Café, independiente de La Sucursal del Café. Seguiremos actualizando con Cursor, pero cuentas y dominio deben quedar a nombre de la marca.",

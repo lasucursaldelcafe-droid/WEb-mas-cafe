@@ -41,6 +41,9 @@ yarn-error.log*
 .env*
 !.env.example
 
+# credenciales locales de entrega (nunca en Git)
+proyecto-mas-cafe/cuentas/CREDENCIALES.md
+
 # vercel
 .vercel
 

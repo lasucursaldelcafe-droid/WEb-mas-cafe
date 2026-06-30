@@ -58,6 +58,19 @@ npm run preview
 | [HOSTING.md](docs/HOSTING.md) | GitHub Pages, dominio, Firebase |
 | [COMO-ACTUALIZAR.md](docs/COMO-ACTUALIZAR.md) | Editar contenido |
 | [informes/README.md](informes/README.md) | Constitución web para la marca |
+| [proyecto-mas-cafe/README.md](proyecto-mas-cafe/README.md) | **Entrega, cuentas, migración mascafe.com** |
+
+---
+
+## Entrega y migración (dueños Más Café)
+
+Carpeta única: **`proyecto-mas-cafe/`**
+
+| Archivo | Uso |
+|---------|-----|
+| [cuentas/ENLACES-CONFIGURACION.md](proyecto-mas-cafe/cuentas/ENLACES-CONFIGURACION.md) | Links donde ingresar credenciales |
+| [cuentas/REGISTRO-HECHO.md](proyecto-mas-cafe/cuentas/REGISTRO-HECHO.md) | Bloc de notas — pegar lo ya configurado |
+| [cuentas/CREDENCIALES.template.md](proyecto-mas-cafe/cuentas/CREDENCIALES.template.md) | Plantilla → copiar a `CREDENCIALES.md` (local, no Git) |
 
 ---
 
@@ -69,6 +82,7 @@ scripts/lib/site-html/         # Generador HTML (7 páginas)
 scripts/lib/generate-constitution-report.mjs  # Informe marca
 scripts/build-github-pages.mjs # Build → gh-pages-site/
 informes/                      # Constitución web (generada)
+proyecto-mas-cafe/             # Entrega, cuentas, migración
 public/images/                 # Activos desde Drive
 .github/workflows/             # Deploy automático
 ```

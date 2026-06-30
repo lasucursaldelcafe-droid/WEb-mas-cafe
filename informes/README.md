@@ -30,6 +30,17 @@ Estados válidos: `pendiente`, `en_proceso`, `listo`.
 
 Tras editar: push a `main` → GitHub Actions regenera el informe en `/informe/`.
 
+### Carpeta de entrega del proyecto
+
+Todo organizado para migración, cuentas y entrega a dueños:
+
+| Ruta | Uso |
+|------|-----|
+| `proyecto-mas-cafe/README.md` | Índice principal |
+| `proyecto-mas-cafe/cuentas/ENLACES-CONFIGURACION.md` | Links donde ingresar credenciales |
+| `proyecto-mas-cafe/cuentas/REGISTRO-HECHO.md` | Bloc de notas — lo ya configurado |
+| `proyecto-mas-cafe/cuentas/CREDENCIALES.template.md` | Plantilla de credenciales |
+
 ### Regenerar localmente
 
 ```bash
