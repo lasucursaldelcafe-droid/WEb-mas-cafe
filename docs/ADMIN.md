@@ -6,10 +6,21 @@ Edita todo el contenido del sitio desde el navegador: textos, colores, imágenes
 
 | | |
 |--|--|
-| **URL** | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/ |
+| **URL** | http://mascafé.com/admin/ |
 | **Desde el sitio** | Pie de página → **Administración** |
 | **Usuario** | `admin` |
 | **Contraseña** | `mascafe2025` |
+
+## Publicación no funciona
+
+Si al pulsar **Guardar y publicar** aparece un error sobre `ADMIN_PUBLISH_KEY`:
+
+1. En GitHub → **Settings** → **Secrets and variables** → **Actions**
+2. Crea o actualiza **`ADMIN_PUBLISH_KEY`** con un [Personal Access Token](https://github.com/settings/tokens) que tenga permiso **`contents: write`** en este repositorio
+3. Alternativa: si ya tienes **`GH_PAGES_PAT`** con esos permisos, el build lo usará como respaldo
+4. Haz un push a `main` (o vuelve a ejecutar el workflow **Publicar HTML en GitHub Pages**) para regenerar `/admin/`
+
+El login funciona también por **HTTP** (sin HTTPS). Cuando el certificado esté activo, usa `https://mascafé.com/admin/`.
 
 ## Cómo publicar
 

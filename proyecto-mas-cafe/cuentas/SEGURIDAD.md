@@ -19,7 +19,7 @@ Guía para guardar secretos **sin subirlos a Git** y para que Cursor / GitHub Ac
 
 | Tipo | Dónde | Quién lo usa | Para qué |
 |------|-------|--------------|----------|
-| Deploy sitio HTML | GitHub Secret `ADMIN_PUBLISH_KEY` | Workflow Pages | Publicar desde `/admin/` |
+| Deploy sitio HTML | GitHub Secret `ADMIN_PUBLISH_KEY` | Workflow Pages | Publicar desde `/admin/` (PAT con `contents: write`; si falta, se usa `GH_PAGES_PAT`) |
 | Deploy Firebase | GitHub Secret `FIREBASE_TOKEN` | Workflow Firebase | Hosting respaldo |
 | DNS GoDaddy | `GODADDY_API_KEY` + `GODADDY_API_SECRET` | Workflows + `npm run domain:configure` | Automatizar mascafé.com |
 | GitHub Pages API | `GH_PAGES_PAT` (o `GITHUB_TOKEN` local) | Workflows dominio | Custom domain |
@@ -43,7 +43,7 @@ Guía para guardar secretos **sin subirlos a Git** y para que Cursor / GitHub Ac
 | `GODADDY_API_KEY` | https://developer.godaddy.com/keys → Production | ☐ |
 | `GODADDY_API_SECRET` | Mismo panel (key + secret van juntos) | ☐ |
 | `GH_PAGES_PAT` | https://github.com/settings/tokens → `repo` + Pages | ☐ |
-| `ADMIN_PUBLISH_KEY` | String aleatorio largo (tú lo defines) | ☐ |
+| `ADMIN_PUBLISH_KEY` | PAT con `contents: write` en este repo (o deja vacío si `GH_PAGES_PAT` ya lo tiene) | ☐ |
 | `FIREBASE_TOKEN` | `npx firebase login:ci` en tu PC | ☐ |
 
 > **Importante:** GitHub no permite un secret llamado `GITHUB_PAT`. Usa `GH_PAGES_PAT`.

@@ -34,7 +34,16 @@ export function generateAdminPage() {
     hash: hashPassword(u.password),
   }));
 
-  const publishSecret = process.env.ADMIN_PUBLISH_KEY || "";
+  const publishSecret =
+    process.env.ADMIN_PUBLISH_KEY ||
+    process.env.GH_PAGES_PAT ||
+    process.env.GITHUB_TOKEN ||
+    "";
+
+  const sha256Fallback = readFileSync(
+    path.join(root, "scripts/admin/sha256-fallback.js"),
+    "utf8"
+  );
 
   const css = readFileSync(path.join(root, "scripts/admin/admin.css"), "utf8");
   const js = readFileSync(path.join(root, "scripts/admin/admin.js"), "utf8");
@@ -100,6 +109,7 @@ export function generateAdminPage() {
   </div>
 
   <script>
+    ${sha256Fallback}
     const SITE_BOOT = ${JSON.stringify(site)};
     const REPO_CONFIG = ${JSON.stringify(REPO_CONFIG)};
     const USER_HASHES = ${JSON.stringify(userHashes)};
