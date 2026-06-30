@@ -3,6 +3,8 @@ import {
   loadSite,
   price,
   shell,
+  mapsUrl,
+  addressLinkHtml,
 } from "./shared.mjs";
 import { brandAssetPath } from "../brand-logo.mjs";
 import { getEnabledRoutes } from "./routes.mjs";
@@ -26,12 +28,12 @@ function visitBand(href, brand) {
       <div class="cta">
         <p class="cta-tagline">${ctaLine}</p>
         <h2>Te esperamos en Cali</h2>
-        <p>${brand.address}<br/>${brand.city}</p>
+        <p>${addressLinkHtml(brand, { className: "address-link address-link--on-dark" })}</p>
         <p style="font-size:.88rem;margin-top:.5rem;opacity:.8">${brand.hours}</p>
         <div class="cta actions">
           <a class="btn btn-sage" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer" data-track="whatsapp">WhatsApp</a>
           <a class="btn btn-outline" href="${href("/contacto")}" data-track="contacto">Contacto</a>
-          <a class="btn btn-outline" href="https://maps.google.com/?q=${encodeURIComponent(brand.address + ", " + brand.city)}" target="_blank" rel="noopener noreferrer">Cómo llegar</a>
+          <a class="btn btn-outline" href="${mapsUrl(brand)}" target="_blank" rel="noopener noreferrer" data-track="maps">Cómo llegar</a>
         </div>
       </div>
     </div>
@@ -386,7 +388,7 @@ export function pageContacto() {
     <div class="wrap grid-2">
       <div class="contact-info">
         <h2>${pc.visitTitle}</h2>
-        <p style="margin-top:1rem;line-height:1.8">${brand.address}<br/>${brand.city}<br/><span style="font-size:.9rem;opacity:.7">${brand.hours}</span></p>
+        <p style="margin-top:1rem;line-height:1.8">${addressLinkHtml(brand)}<br/><span style="font-size:.9rem;opacity:.7">${brand.hours}</span></p>
         <h2 style="margin-top:2rem">${pc.writeTitle}</h2>
         <p style="margin-top:1rem;line-height:2.2">
           <a href="tel:${brand.phone.replace(/\s/g, "")}">${brand.phone}</a><br/>

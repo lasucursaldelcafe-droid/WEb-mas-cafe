@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Brand } from "@/lib/types";
+import { getMapsUrl } from "@/lib/maps";
 
 export function SubscriptionBand({ brand }: { brand: Brand }) {
   return (
@@ -47,15 +48,20 @@ export function VisitBand({ brand }: { brand: Brand }) {
       <div className="mx-auto max-w-[1400px] px-6 text-center md:px-12">
         <p className="font-accent text-4xl text-sage md:text-5xl">Te esperamos</p>
         <h2 className="mt-6 font-display text-5xl md:text-6xl">Visítanos en Cali</h2>
-        <p className="mx-auto mt-6 max-w-lg text-cream/70">
+        <a
+          href={getMapsUrl(brand)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mx-auto mt-6 block max-w-lg text-cream/70 transition-colors hover:text-sage hover:underline hover:underline-offset-4"
+        >
           {brand.address}
           <br />
           {brand.city}
-        </p>
+        </a>
         <p className="mt-3 text-sm text-cream/50">{brand.hours}</p>
         <div className="mt-10 flex flex-wrap justify-center gap-4">
           <a
-            href={`https://maps.google.com/?q=${encodeURIComponent(`${brand.address}, ${brand.city}`)}`}
+            href={getMapsUrl(brand)}
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-full bg-sage px-10 py-4 text-sm font-bold text-blue-deep"

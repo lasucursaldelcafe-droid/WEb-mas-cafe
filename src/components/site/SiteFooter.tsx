@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { assetPath } from "@/lib/paths";
+import { getMapsUrl } from "@/lib/maps";
 import type { Brand } from "@/lib/types";
 
 export function SiteFooter({ brand }: { brand: Brand }) {
@@ -58,8 +59,15 @@ export function SiteFooter({ brand }: { brand: Brand }) {
                 Visítanos
               </p>
               <address className="space-y-1 not-italic text-cream/75">
-                <p>{brand.address}</p>
-                <p>{brand.city}</p>
+                <a
+                  href={getMapsUrl(brand)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block transition-colors hover:text-sage hover:underline hover:underline-offset-4"
+                >
+                  <span className="block">{brand.address}</span>
+                  <span className="block">{brand.city}</span>
+                </a>
                 <a href={`tel:${brand.phone}`} className="hover:text-sage">
                   {brand.phone}
                 </a>
