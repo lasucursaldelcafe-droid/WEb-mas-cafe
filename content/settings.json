@@ -12,7 +12,8 @@
     "primaryLogoDriveId": "1ujaXixhIBH7nMdV-xg3sjtkkKXDT9wmo",
     "primaryLogoDriveUrl": "https://drive.google.com/file/d/1ujaXixhIBH7nMdV-xg3sjtkkKXDT9wmo/view?usp=drive_link",
     "primaryLogoPath": "/images/brand/logo-principal.png",
-    "faviconSource": "/images/brand/logo-principal.png"
+    "faviconSource": "/images/brand/horizontal-azul.png",
+    "thumbnailSource": "/images/brand/horizontal-crema.png"
   },
   "seo": {
     "siteUrl": "https://www.mascafé.com",

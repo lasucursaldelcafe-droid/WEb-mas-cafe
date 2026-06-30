@@ -96,7 +96,7 @@ export function pageHome() {
           <a class="btn btn-outline" href="${href("/nosotros")}">Conócenos</a>
         </div>
         <div class="brand-note">
-          <img src="${img(brandAssetPath("favicon"))}" alt=""/>
+          <img src="${img(brandAssetPath("horizontalAzul"))}" alt="${brand.name}" style="height:1.75rem;width:auto"/>
           <p>San Fernando Nuevo · Cali</p>
         </div>
       </div>
