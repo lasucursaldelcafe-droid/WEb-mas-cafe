@@ -164,6 +164,71 @@ export function menuBookScript() {
       var busy=false;
       var touchX=0;
       var preloaded={};
+      var inView=true;
+      var autoplayTimer=null;
+      var autoplayPaused=false;
+      var autoplayResumeTimer=null;
+      var AUTOPLAY_MS=parseInt(root.getAttribute('data-autoplay-ms')||'4200',10)||4200;
+      var AUTOPLAY_START_MS=parseInt(root.getAttribute('data-autoplay-start-ms')||'1600',10)||1600;
+      var AUTOPLAY_RESUME_MS=12000;
+
+      function clearAutoplay(){
+        if(autoplayTimer){window.clearTimeout(autoplayTimer);autoplayTimer=null;}
+      }
+
+      function clearAutoplayResume(){
+        if(autoplayResumeTimer){window.clearTimeout(autoplayResumeTimer);autoplayResumeTimer=null;}
+      }
+
+      function isAtEnd(){
+        if(mobile)return page>=pages.length-1;
+        return spread>=spreadsCount()-1;
+      }
+
+      function canAutoplay(){
+        if(reduced||autoplayPaused||busy||document.hidden||!inView)return false;
+        return true;
+      }
+
+      function scheduleAutoplay(delay){
+        clearAutoplay();
+        if(!canAutoplay())return;
+        autoplayTimer=window.setTimeout(function(){
+          autoplayTimer=null;
+          if(!canAutoplay())return;
+          if(isAtEnd()){
+            if(mobile){page=0;renderMobile();}
+            else{spread=0;renderSpread();}
+            scheduleAutoplay(AUTOPLAY_MS);
+            return;
+          }
+          goNext(true);
+          scheduleAutoplay(AUTOPLAY_MS);
+        },typeof delay==='number'?delay:AUTOPLAY_MS);
+      }
+
+      function startAutoplay(){
+        if(reduced)return;
+        clearAutoplay();
+        autoplayTimer=window.setTimeout(function(){
+          autoplayTimer=null;
+          scheduleAutoplay(AUTOPLAY_MS);
+        },AUTOPLAY_START_MS);
+      }
+
+      function pauseAutoplay(){
+        autoplayPaused=true;
+        clearAutoplay();
+        clearAutoplayResume();
+        autoplayResumeTimer=window.setTimeout(function(){
+          autoplayPaused=false;
+          scheduleAutoplay(AUTOPLAY_MS);
+        },AUTOPLAY_RESUME_MS);
+      }
+
+      function userTookControl(){
+        pauseAutoplay();
+      }
 
       function markReady(){
         root.classList.remove('menu-book-loading');
@@ -287,8 +352,9 @@ export function menuBookScript() {
         }, reduced?0:650);
       }
 
-      function goNext(){
+      function goNext(fromAutoplay){
         if(busy)return;
+        if(!fromAutoplay)userTookControl();
         if(mobile){
           if(page>=pages.length-1)return;
           page+=1;
@@ -302,8 +368,9 @@ export function menuBookScript() {
         });
       }
 
-      function goPrev(){
+      function goPrev(fromAutoplay){
         if(busy)return;
+        if(!fromAutoplay)userTookControl();
         if(mobile){
           if(page<=0)return;
           page-=1;
@@ -316,27 +383,42 @@ export function menuBookScript() {
       }
 
       root.querySelectorAll('[data-book-next]').forEach(function(el){
-        el.addEventListener('click',goNext);
+        el.addEventListener('click',function(){goNext(false);});
       });
       root.querySelectorAll('[data-book-prev]').forEach(function(el){
-        el.addEventListener('click',goPrev);
+        el.addEventListener('click',function(){goPrev(false);});
       });
 
       root.addEventListener('keydown',function(e){
-        if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();goNext();}
-        if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();goPrev();}
+        if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();goNext(false);}
+        if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();goPrev(false);}
       });
 
       root.addEventListener('touchstart',function(e){
         touchX=e.changedTouches[0].clientX;
+        userTookControl();
       },{passive:true});
 
       root.addEventListener('touchend',function(e){
         var dx=e.changedTouches[0].clientX-touchX;
         if(Math.abs(dx)<40)return;
-        if(dx<0)goNext();
-        else goPrev();
+        if(dx<0)goNext(false);
+        else goPrev(false);
       },{passive:true});
+
+      if('IntersectionObserver' in window){
+        var observer=new IntersectionObserver(function(entries){
+          inView=!!(entries[0]&&entries[0].isIntersecting);
+          if(inView&&!autoplayPaused&&!reduced)scheduleAutoplay(AUTOPLAY_MS);
+          else clearAutoplay();
+        },{threshold:0.3});
+        observer.observe(root);
+      }
+
+      document.addEventListener('visibilitychange',function(){
+        if(document.hidden)clearAutoplay();
+        else if(!autoplayPaused&&!reduced)scheduleAutoplay(AUTOPLAY_MS);
+      });
 
       window.addEventListener('resize',function(){
         var wasMobile=mobile;
@@ -359,6 +441,12 @@ export function menuBookScript() {
           var s=spreadPages(spread);
           if(s.right>=0){preloadPage(s.right+1);preloadPage(s.right+2);}
         }
+        startAutoplay();
+        window.setTimeout(function(){
+          try{
+            root.scrollIntoView({behavior:reduced?'auto':'smooth',block:'center'});
+          }catch(e){}
+        },reduced?0:280);
       });
     })();
   `;
@@ -381,7 +469,7 @@ export function renderMenuBook({ img, pages, disclaimer }) {
   <div class="menu-book-section">
     <style>${menuBookStyles()}</style>
     <div class="menu-book-stage">
-      <div class="menu-book-viewport menu-book-loading" id="menu-book" data-pages='${dataPages}' tabindex="0" aria-label="Menú digital interactivo">
+      <div class="menu-book-viewport menu-book-loading" id="menu-book" data-pages='${dataPages}' data-autoplay-ms="4200" data-autoplay-start-ms="1600" tabindex="0" aria-label="Menú digital interactivo">
         <div class="menu-book-spread" aria-hidden="false">
           <div class="menu-book-page-slot left blank"><img alt="" loading="lazy" decoding="async"/></div>
           <div class="menu-book-page-slot right"><img src="${pageUrls[0]}" alt="Página 1 del menú" loading="eager" fetchpriority="high" decoding="async"/></div>
@@ -407,7 +495,7 @@ export function renderMenuBook({ img, pages, disclaimer }) {
         <span class="menu-book-counter">1 / ${pages.length}</span>
         <button type="button" class="menu-book-btn" data-book-next aria-label="Página siguiente">›</button>
       </div>
-      <p class="menu-book-hint">Desliza, usa las flechas del teclado o toca los lados para pasar página</p>
+      <p class="menu-book-hint">El menú avanza solo al abrir. Toca, desliza o usa las flechas para tomar el control</p>
       ${disclaimer ? `<div class="menu-book-footer"><p>${disclaimer}</p></div>` : ""}
     </div>
   </div>
