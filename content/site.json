@@ -54,7 +54,12 @@
     "brown": "#b07a3a",
     "brownDark": "#8a4a24",
     "cherry": "#e84545",
-    "charcoal": "#2b2b2b"
+    "charcoal": "#2b2b2b",
+    "typography": {
+      "display": "Playfair Display",
+      "body": "Satoshi",
+      "accent": "Marydale"
+    }
   },
   "routes": [
     { "id": "home", "slug": "", "label": "Inicio", "enabled": true, "builtin": true, "inNav": false },

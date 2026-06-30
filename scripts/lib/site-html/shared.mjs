@@ -743,7 +743,7 @@ export function shell({ title, description, depth, pageId, slug, heroArt, body, 
   <meta name="theme-color" content="#073954"/>
   <title>${pageTitle}</title>
   <meta name="description" content="${escapeMeta(description)}"/>${faviconHead(depth)}${seoHead({ brand, title, description, depth, slug: pageSlug, isHome, ogImagePath: brandAssetPath("og") })}${googleAnalyticsHead(gaId)}
-  <style>${fontFaces(depth)}</style>
+  <style>${fontFaces(depth, site)}</style>
   <style>${brandThemeCss(site)}</style>
   <style>${siteStyles()}</style>
   <style>:root{${heroVar}}</style>

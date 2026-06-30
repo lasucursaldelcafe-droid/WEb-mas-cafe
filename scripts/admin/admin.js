@@ -1,4 +1,4 @@
-/* global SITE_BOOT, REPO_CONFIG, USER_HASHES, PUBLISH_SECRET, DEFAULT_ROUTES */
+/* global SITE_BOOT, REPO_CONFIG, USER_HASHES, PUBLISH_SECRET, DEFAULT_ROUTES, DRIVE_ASSETS */
 
 (function () {
   "use strict";
@@ -16,7 +16,11 @@
       cream: "#f6f5ef", creamDark: "#ebe8df", blue: "#073954", blueMid: "#0a4d6e",
       green: "#1bb175", sage: "#d8daa8", brown: "#b07a3a", brownDark: "#8a4a24",
       cherry: "#e84545", charcoal: "#2b2b2b",
+      typography: { display: "Playfair Display", body: "Satoshi", accent: "Marydale" },
     };
+  }
+  if (!content.theme.typography) {
+    content.theme.typography = { display: "Playfair Display", body: "Satoshi", accent: "Marydale" };
   }
   if (!content.pages) content.pages = {};
   if (!content.brewGuide) content.brewGuide = [];
@@ -108,13 +112,144 @@
     nosotros: "800 × 1000 px (vertical 4:5). JPG o WebP. Máx. 500 KB. Ambiente del local.",
   };
 
+  const TYPOGRAPHY_ROLES = [
+    ["display", "Títulos grandes", "font-display"],
+    ["body", "Texto general", "font-body"],
+    ["accent", "Acento manuscrito", "font-accent"],
+  ];
+
+  const DRIVE_FOLDER_URL = DRIVE_ASSETS?.folderUrl || "";
+
+  function driveThumbUrl(driveId, size = 400) {
+    return `https://drive.google.com/thumbnail?id=${driveId}&sz=w${size}`;
+  }
+
+  function parseDriveFileId(input) {
+    const raw = String(input || "").trim();
+    if (!raw) return "";
+    const match =
+      raw.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
+      raw.match(/[?&]id=([a-zA-Z0-9_-]+)/) ||
+      raw.match(/^([a-zA-Z0-9_-]{20,})$/);
+    return match?.[1] || "";
+  }
+
+  function getDriveImagesForCategory(specKey) {
+    const category = specKey === "nosotros" ? "nosotros" : specKey;
+    return (DRIVE_ASSETS?.images || []).filter(
+      (img) => img.driveId && (img.categories || []).includes(category)
+    );
+  }
+
+  function ensureDriveModal() {
+    let modal = $("#drive-picker-modal");
+    if (modal) return modal;
+    modal = document.createElement("div");
+    modal.id = "drive-picker-modal";
+    modal.className = "drive-modal hidden";
+    modal.innerHTML = `
+      <div class="drive-modal-backdrop" data-close-drive></div>
+      <div class="drive-modal-card" role="dialog" aria-labelledby="drive-modal-title">
+        <div class="drive-modal-head">
+          <h3 id="drive-modal-title">Elegir imagen desde Drive</h3>
+          <button type="button" class="btn btn-ghost drive-modal-close" data-close-drive>✕</button>
+        </div>
+        <p class="drive-modal-hint">Solo aparecen archivos del manifiesto con ID de Drive. <a href="${DRIVE_FOLDER_URL}" target="_blank" rel="noopener">Abrir carpeta</a></p>
+        <div class="drive-url-row">
+          <input type="text" id="drive-url-input" placeholder="Pega enlace o ID de archivo Drive"/>
+          <button type="button" class="btn btn-ghost" id="drive-url-use">Usar enlace</button>
+        </div>
+        <div id="drive-picker-grid" class="drive-picker-grid"></div>
+      </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener("click", (e) => {
+      if (e.target.closest("[data-close-drive]")) closeDrivePicker();
+    });
+    $("#drive-url-use", modal)?.addEventListener("click", () => {
+      const id = parseDriveFileId($("#drive-url-input", modal)?.value);
+      if (!id) { toast("Enlace o ID de Drive no válido", "error"); return; }
+      selectDriveImage(id, "", "Drive");
+    });
+    return modal;
+  }
+
+  let drivePickerCallback = null;
+  let drivePickerSpecKey = "";
+
+  function closeDrivePicker() {
+    $("#drive-picker-modal")?.classList.add("hidden");
+    drivePickerCallback = null;
+    drivePickerSpecKey = "";
+  }
+
+  function openDrivePicker(specKey, onSelect) {
+    const modal = ensureDriveModal();
+    drivePickerCallback = onSelect;
+    drivePickerSpecKey = specKey;
+    const grid = $("#drive-picker-grid", modal);
+    const items = getDriveImagesForCategory(specKey);
+    if (!items.length) {
+      grid.innerHTML = `<p class="drive-empty">No hay imágenes de Drive para esta sección. Añade <code>driveId</code> en <code>content/drive-assets.json</code> o pega un enlace arriba.</p>`;
+    } else {
+      grid.innerHTML = items.map((img) => `
+        <button type="button" class="drive-pick" data-drive-id="${escapeAttr(img.driveId)}" data-local-path="${escapeAttr(img.localPath || "")}" data-label="${escapeAttr(img.label || img.id)}">
+          <img src="${driveThumbUrl(img.driveId)}" alt="${escapeAttr(img.label || "")}" loading="lazy"/>
+          <span>${escapeHtml(img.label || img.id)}</span>
+        </button>`).join("");
+      grid.querySelectorAll(".drive-pick").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          selectDriveImage(btn.dataset.driveId, btn.dataset.localPath, btn.dataset.label);
+        });
+      });
+    }
+    modal.classList.remove("hidden");
+  }
+
+  async function fetchDriveImageAsUpload(driveId) {
+    const thumbUrl = driveThumbUrl(driveId, 2000);
+    const res = await fetch(thumbUrl);
+    if (!res.ok) throw new Error("No se pudo descargar la imagen desde Drive");
+    const blob = await res.blob();
+    const mime = blob.type && blob.type.startsWith("image/") ? blob.type : "image/jpeg";
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = () => reject(new Error("No se pudo leer la imagen"));
+      reader.readAsDataURL(blob);
+    });
+    return { base64, mime };
+  }
+
+  async function selectDriveImage(driveId, localPath, label) {
+    if (!drivePickerCallback) return;
+    const cb = drivePickerCallback;
+    closeDrivePicker();
+    try {
+      toast(`Descargando ${label || "imagen"} desde Drive…`, "");
+      const result = await fetchDriveImageAsUpload(driveId);
+      const ext = result.mime.includes("png") ? "png" : result.mime.includes("webp") ? "webp" : "jpg";
+      const newPath = localPath || `/images/drive/${driveId.slice(0, 12)}.${ext}`;
+      await cb(newPath, result);
+      toast("Imagen de Drive lista para publicar", "success");
+    } catch (e) {
+      toast(e.message, "error");
+    }
+  }
+
+  function queueImageUpload(newPath, result, previousPath) {
+    const upload = { path: newPath, base64: result.base64, mime: result.mime };
+    const existing = pendingUploads.findIndex((u) => u.path === previousPath || u.path === newPath);
+    if (existing >= 0) pendingUploads.splice(existing, 1, upload);
+    else pendingUploads.push(upload);
+  }
+
   const PANELS = [
     { id: "overview", label: "Resumen", icon: "◉" },
     { id: "help", label: "Cómo funciona", icon: "?" },
     { id: "informe", label: "Informe", icon: "📋" },
     { id: "analytics", label: "Análisis", icon: "▤" },
     { id: "brand", label: "Marca e inicio", icon: "◇" },
-    { id: "theme", label: "Colores", icon: "◐" },
+    { id: "theme", label: "Colores y fuentes", icon: "◐" },
     { id: "sections", label: "Secciones", icon: "▣" },
     { id: "pages", label: "Textos de páginas", icon: "¶" },
     { id: "experiences", label: "Experiencias", icon: "◎" },
@@ -414,16 +549,20 @@
   function imageField(id, label, value, specKey, onChange) {
     const spec = IMAGE_SPECS[specKey] || IMAGE_SPECS.blog;
     const src = imgPreviewSrc(value);
+    const hasDrive = getDriveImagesForCategory(specKey).length > 0 || DRIVE_FOLDER_URL;
     return `<div class="img-field" data-img-field="${id}">
       <label>${label}</label>
       <div class="img-preview-wrap">
         ${src ? `<img src="${src}" alt="Vista previa" class="img-preview" data-preview="${id}"/>` : `<div class="img-preview img-preview-empty" data-preview="${id}">Sin imagen</div>`}
       </div>
       <input type="text" id="${id}" class="img-path-input" value="${escapeAttr(value || "")}" placeholder="/images/..."/>
-      <label class="btn btn-ghost img-upload-btn">
-        Subir imagen
-        <input type="file" accept="image/png,image/jpeg,image/webp" class="hidden-file" data-upload="${id}" data-spec="${specKey}"/>
-      </label>
+      <div class="img-actions">
+        <label class="btn btn-ghost img-upload-btn">
+          Subir imagen
+          <input type="file" accept="image/png,image/jpeg,image/webp" class="hidden-file" data-upload="${id}" data-spec="${specKey}"/>
+        </label>
+        ${hasDrive ? `<button type="button" class="btn btn-ghost" data-drive-pick="${id}" data-spec="${specKey}">Elegir desde Drive</button>` : ""}
+      </div>
       <small class="img-spec">${spec}</small>
     </div>`;
   }
@@ -431,6 +570,7 @@
   function bindImageField(root, id, getPath, setPath) {
     const input = $(`#${id}`, root);
     const fileInput = $(`[data-upload="${id}"]`, root);
+    const driveBtn = $(`[data-drive-pick="${id}"]`, root);
     if (input) {
       input.addEventListener("input", () => {
         setPath(input.value);
@@ -445,10 +585,7 @@
         try {
           const result = await processImageUpload(file, fileInput.dataset.spec);
           const newPath = `/images/uploads/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "-")}`;
-          const existing = pendingUploads.findIndex((u) => u.path === getPath());
-          const upload = { path: newPath, base64: result.base64, mime: result.mime };
-          if (existing >= 0) pendingUploads.splice(existing, 1, upload);
-          else pendingUploads.push(upload);
+          queueImageUpload(newPath, result, getPath());
           setPath(newPath);
           if (input) input.value = newPath;
           updatePreview(root, id, newPath);
@@ -458,6 +595,17 @@
           toast(e.message, "error");
         }
         fileInput.value = "";
+      });
+    }
+    if (driveBtn) {
+      driveBtn.addEventListener("click", () => {
+        openDrivePicker(driveBtn.dataset.spec, async (newPath, result) => {
+          queueImageUpload(newPath, result, getPath());
+          setPath(newPath);
+          if (input) input.value = newPath;
+          updatePreview(root, id, newPath);
+          markDirty();
+        });
       });
     }
   }
@@ -598,6 +746,10 @@
     root.style.setProperty("--sage", t.sage);
     root.style.setProperty("--brown", t.brown);
     root.style.setProperty("--charcoal", t.charcoal);
+    const typo = t.typography || {};
+    if (typo.display) root.style.setProperty("--font-display", `"${typo.display}", Georgia, serif`);
+    if (typo.body) root.style.setProperty("--font-body", `"${typo.body}", system-ui, sans-serif`);
+    if (typo.accent) root.style.setProperty("--font-accent", `"${typo.accent}", cursive`);
     updateContextPreview("theme");
   }
 
@@ -613,7 +765,7 @@
     const titles = {
       overview: "Panel de administración", help: "Cómo funciona", informe: "Informe constitucional",
       analytics: "Análisis e ingresos", brand: "Marca e inicio",
-      sections: "Secciones del sitio", theme: "Colores del sitio", pages: "Textos de páginas", experiences: "Experiencias",
+      sections: "Secciones del sitio", theme: "Colores y tipografías", pages: "Textos de páginas", experiences: "Experiencias",
       products: "Café y tienda", menu: "Menú coffee shop", blog: "Blog", nosotros: "Nosotros",
       contacto: "Contacto", marquee: "Texto marquee", config: "Publicar cambios",
     };
@@ -961,6 +1113,11 @@
   }
 
   function renderTheme() {
+    const fonts = DRIVE_ASSETS?.fonts || [];
+    const typo = content.theme.typography || {};
+    const fontOptions = fonts.map((f) =>
+      `<option value="${escapeAttr(f.family)}">${escapeHtml(f.label || f.family)}</option>`
+    ).join("");
     return `<div class="card"><h3>Paleta de colores</h3>
       <p style="opacity:.75;margin-bottom:1rem;font-size:.9rem">Estos colores se aplican en todo el sitio: encabezado, botones, fondos y textos.</p>
       <div class="color-grid">${THEME_FIELDS.map(([key, label]) => `
@@ -973,6 +1130,19 @@
         </div>`).join("")}
       </div>
       <button type="button" class="btn btn-ghost" id="reset-theme" style="margin-top:1rem">Restaurar colores originales</button>
+    </div>
+    <div class="card"><h3>Tipografías</h3>
+      <p style="opacity:.75;margin-bottom:1rem;font-size:.9rem">Solo fuentes sincronizadas desde la carpeta de Drive. Cambia el rol de cada estilo de texto.</p>
+      ${TYPOGRAPHY_ROLES.map(([key, label, cssClass]) => `
+        <div class="field typo-field">
+          <label for="typo-${key}">${label}</label>
+          <select id="typo-${key}" data-typo="${key}" class="typo-select">
+            ${fonts.map((f) => `<option value="${escapeAttr(f.family)}"${typo[key] === f.family ? " selected" : ""}>${escapeHtml(f.label || f.family)}</option>`).join("")}
+          </select>
+          <p class="typo-sample ${cssClass}" data-typo-sample="${key}">Más Café — ${label.toLowerCase()}</p>
+        </div>`).join("")}
+      ${DRIVE_FOLDER_URL ? `<p style="margin-top:.75rem;font-size:.85rem;opacity:.7"><a href="${DRIVE_FOLDER_URL}" target="_blank" rel="noopener">Carpeta de marca en Drive</a> · para añadir fuentes nuevas, súbelas allí y actualiza <code>content/drive-assets.json</code></p>` : ""}
+      <button type="button" class="btn btn-ghost" id="reset-typography" style="margin-top:1rem">Restaurar tipografías originales</button>
     </div>`;
   }
 
@@ -1045,11 +1215,37 @@
         });
       });
     });
+    root.querySelectorAll("[data-typo]").forEach((sel) => {
+      sel.addEventListener("change", () => {
+        if (!content.theme.typography) content.theme.typography = {};
+        content.theme.typography[sel.dataset.typo] = sel.value;
+        const sample = $(`[data-typo-sample="${sel.dataset.typo}"]`, root);
+        if (sample) sample.style.fontFamily = `"${sel.value}", sans-serif`;
+        markDirty();
+        applyThemePreview();
+      });
+    });
+    TYPOGRAPHY_ROLES.forEach(([key]) => {
+      const sel = $(`#typo-${key}`, root);
+      const sample = $(`[data-typo-sample="${key}"]`, root);
+      if (sel && sample) sample.style.fontFamily = `"${sel.value}", sans-serif`;
+    });
     $("#reset-theme", root)?.addEventListener("click", () => {
+      const typo = content.theme.typography;
       content.theme = {
         cream: "#f6f5ef", creamDark: "#ebe8df", blue: "#073954", blueMid: "#0a4d6e",
         green: "#1bb175", sage: "#d8daa8", brown: "#b07a3a", brownDark: "#8a4a24",
         cherry: "#e84545", charcoal: "#2b2b2b",
+        typography: typo,
+      };
+      markDirty();
+      renderPanel("theme");
+    });
+    $("#reset-typography", root)?.addEventListener("click", () => {
+      content.theme.typography = {
+        display: "Playfair Display",
+        body: "Satoshi",
+        accent: "Marydale",
       };
       markDirty();
       renderPanel("theme");

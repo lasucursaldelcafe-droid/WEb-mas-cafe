@@ -2,6 +2,7 @@ import { readFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { loadSite } from "./shared.mjs";
+import { loadDriveAssets } from "../drive-assets.mjs";
 import { hashPassword } from "./admin-hash.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -26,6 +27,7 @@ const DEFAULT_ROUTES = [
 
 export function generateAdminPage() {
   const site = loadSite();
+  const driveAssets = loadDriveAssets();
   const users = JSON.parse(readFileSync(path.join(root, "content/users.json"), "utf8"));
   const userHashes = users.map((u) => ({
     username: u.username,
@@ -115,6 +117,7 @@ export function generateAdminPage() {
     const REPO_CONFIG = ${JSON.stringify(REPO_CONFIG)};
     const USER_HASHES = ${JSON.stringify(userHashes)};
     const DEFAULT_ROUTES = ${JSON.stringify(DEFAULT_ROUTES)};
+    const DRIVE_ASSETS = ${JSON.stringify(driveAssets)};
     const PUBLISH_SECRET = ${JSON.stringify(publishSecret)};
   </script>
   <script>${js}</script>
