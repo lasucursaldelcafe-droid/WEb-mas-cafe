@@ -100,3 +100,15 @@ jobs:
       - name: Verificar dominio
         if: env.DRY_RUN != '1'
         run: node scripts/verify-domain.mjs || true
+
+      - name: Setup wallet Firebase
+        if: env.DRY_RUN != '1'
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ] && [ -z "$FIREBASE_TOKEN" ]; then
+            echo "::warning::Sin credenciales Firebase — wallet backend no activado automáticamente."
+            exit 0
+          fi
+          node scripts/setup-firebase-wallet.mjs || true

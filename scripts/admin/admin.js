@@ -1055,8 +1055,17 @@
       </ul>
     </div>
     <div class="card">
-      <h3>Activar en Firebase (una vez)</h3>
-      <p style="line-height:1.65;font-size:.92rem">En la consola de Firebase (<code>mas-cafe-c8413</code>): activar <strong>Authentication</strong> (Email/Password y Google) y <strong>Firestore</strong>. Luego el workflow <code>deploy-firebase</code> publica reglas y funciones automáticamente.</p>
+      <h3>Activación automática del backend</h3>
+      <p style="line-height:1.65;font-size:.92rem;margin-bottom:.75rem">
+        El pipeline <strong>Setup autónomo — Wallet Firebase</strong> activa Auth, Firestore, Functions y despliega todo sin consola manual.
+      </p>
+      <ul style="line-height:1.7;font-size:.88rem;margin-left:1.1rem;margin-bottom:.75rem">
+        <li>Comando local: <code>npm run wallet:setup</code></li>
+        <li>GitHub Actions → <strong>Setup autónomo — Wallet Firebase</strong></li>
+        <li>Secret requerido: <code>FIREBASE_SERVICE_ACCOUNT</code> (JSON)</li>
+        <li>Se ejecuta solo tras cada deploy a <code>main</code></li>
+      </ul>
+      <p style="font-size:.82rem;opacity:.75">API dispatch: <code>firebase-wallet-setup</code></p>
     </div>`;
   }
 

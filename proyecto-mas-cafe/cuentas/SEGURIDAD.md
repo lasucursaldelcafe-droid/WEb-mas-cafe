@@ -20,7 +20,7 @@ Guía para guardar secretos **sin subirlos a Git** y para que Cursor / GitHub Ac
 | Tipo | Dónde | Quién lo usa | Para qué |
 |------|-------|--------------|----------|
 | Deploy sitio HTML | GitHub Secret `ADMIN_PUBLISH_KEY` | Workflow Pages | Publicar desde `/admin/` (PAT con `contents: write`; si falta, se usa `GH_PAGES_PAT`) |
-| Deploy Firebase | GitHub Secret `FIREBASE_TOKEN` | Workflow Firebase | Hosting respaldo |
+| Deploy Firebase + wallet backend | GitHub Secret `FIREBASE_SERVICE_ACCOUNT` (JSON) o `FIREBASE_TOKEN` | Workflows `setup-firebase-wallet`, `deploy-firebase` | Auth, Firestore, Functions automático |
 | DNS GoDaddy | `GODADDY_API_KEY` + `GODADDY_API_SECRET` | Workflows + `npm run domain:configure` | Automatizar mascafé.com |
 | GitHub Pages API | `GH_PAGES_PAT` (o `GITHUB_TOKEN` local) | Workflows dominio | Custom domain |
 | Desarrollo local / agente | `.env.local` (copiar de `.env.example`) | Cursor en tu máquina | Scripts npm |
@@ -44,7 +44,8 @@ Guía para guardar secretos **sin subirlos a Git** y para que Cursor / GitHub Ac
 | `GODADDY_API_SECRET` | Mismo panel (key + secret van juntos) | ☐ |
 | `GH_PAGES_PAT` | https://github.com/settings/tokens → `repo` + Pages | ☐ |
 | `ADMIN_PUBLISH_KEY` | PAT con `contents: write` en este repo (o deja vacío si `GH_PAGES_PAT` ya lo tiene) | ☐ |
-| `FIREBASE_TOKEN` | `npx firebase login:ci` en tu PC | ☐ |
+| `FIREBASE_SERVICE_ACCOUNT` | JSON cuenta de servicio Firebase (Admin + Service Usage) | ☐ |
+| `FIREBASE_TOKEN` | `npx firebase login:ci` (solo deploy parcial) | ☐ |
 
 > **Importante:** GitHub no permite un secret llamado `GITHUB_PAT`. Usa `GH_PAGES_PAT`.
 
@@ -86,7 +87,8 @@ Con secrets configurados:
 | `Setup autónomo` | Tras deploy: valida credenciales + DNS |
 | `Configurar dominio mascafé.com` | GoDaddy DNS + custom domain (solo si DNS público listo) |
 | `npm run verify:links` | Comprueba rutas rotas |
-| `npm run setup:autonomous` | Pipeline completo local |
+| `npm run wallet:setup` | Activa Auth + Firestore + Functions + seed |
+| `npm run setup:autonomous` | Pipeline completo local (incluye wallet si hay SA) |
 
 **Aún necesito decisión humana para:** reglas de puntos, premios, términos legales, transferencia de repo a org Más Café, activar facturación Firebase si superan cuotas gratis.
 

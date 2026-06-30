@@ -29,18 +29,7 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
-      - name: Generar sitio HTML + wallet
-        run: |
-          node scripts/wallet/sync-program.mjs
-          node scripts/build-mas-cafe.mjs
-          node scripts/build-github-pages.mjs
-          mkdir -p mas-cafe/wallet mas-cafe/caja
-          cp -r gh-pages-site/wallet/* mas-cafe/wallet/
-          cp gh-pages-site/caja/index.html mas-cafe/caja/
-          cp gh-pages-site/caja/caja-app.js mas-cafe/caja/
-          cp gh-pages-site/wallet/wallet.css mas-cafe/caja/
-
-      - name: Autenticar con Workload Identity (opcional)
+      - name: Autenticar Workload Identity (opcional)
         id: wif-auth
         if: vars.WIF_PROVIDER != '' && vars.WIF_SERVICE_ACCOUNT != ''
         uses: google-github-actions/auth@v2
@@ -49,64 +38,14 @@ jobs:
           service_account: ${{ vars.WIF_SERVICE_ACCOUNT }}
           create_credentials_file: true
 
-      - name: Verificar credenciales Firebase
-        id: firebase-auth
+      - name: Setup y deploy wallet (automático)
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        run: |
-          if [ -n "${{ steps.wif-auth.outputs.credentials_file_path }}" ]; then
-            echo "mode=wif" >> "$GITHUB_OUTPUT"
-            echo "can_deploy=true" >> "$GITHUB_OUTPUT"
-          elif [ -n "$FIREBASE_SERVICE_ACCOUNT" ]; then
-            echo "mode=service_account" >> "$GITHUB_OUTPUT"
-            echo "can_deploy=true" >> "$GITHUB_OUTPUT"
-          elif [ -n "$FIREBASE_TOKEN" ]; then
-            if npx -y firebase-tools@latest projects:list \
-              --token "$FIREBASE_TOKEN" \
-              --non-interactive >/dev/null 2>&1; then
-              echo "mode=token" >> "$GITHUB_OUTPUT"
-              echo "can_deploy=true" >> "$GITHUB_OUTPUT"
-            else
-              echo "mode=token_invalid" >> "$GITHUB_OUTPUT"
-              echo "can_deploy=false" >> "$GITHUB_OUTPUT"
-              echo "::warning::FIREBASE_TOKEN inválido o expirado."
-            fi
-          else
-            echo "mode=none" >> "$GITHUB_OUTPUT"
-            echo "can_deploy=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::Sin credenciales Firebase. Deploy omitido."
-          fi
-
-      - name: Instalar dependencias Functions
-        if: steps.firebase-auth.outputs.can_deploy == 'true'
-        run: npm ci --prefix functions
-
-      - name: Deploy Firebase (hosting + functions + firestore)
-        if: steps.firebase-auth.outputs.can_deploy == 'true'
-        env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.wif-auth.outputs.credentials_file_path }}
         run: |
-          if [ "${{ steps.firebase-auth.outputs.mode }}" = "service_account" ]; then
-            echo "$FIREBASE_SERVICE_ACCOUNT" > /tmp/firebase-sa.json
-            export GOOGLE_APPLICATION_CREDENTIALS=/tmp/firebase-sa.json
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ] && [ -z "$FIREBASE_TOKEN" ] && [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
+            echo "::warning::Sin credenciales Firebase — omitiendo backend. Añade FIREBASE_SERVICE_ACCOUNT en Secrets."
+            exit 0
           fi
-
-          npx -y firebase-tools@latest deploy \
-            --only hosting:mas-cafe-c8413,functions:wallet,firestore \
-            --project mas-cafe-c8413 \
-            --non-interactive
-
-          rm -f /tmp/firebase-sa.json
-
-      - name: Verificar sitio en vivo
-        if: steps.firebase-auth.outputs.can_deploy == 'true'
-        run: |
-          for URL in \
-            https://mas-cafe-c8413.web.app/wallet/ \
-            https://mas-cafe-c8413.web.app/caja/; do
-            CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
-            echo "$URL → HTTP $CODE"
-          done
+          node scripts/setup-firebase-wallet.mjs

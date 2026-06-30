@@ -9,7 +9,7 @@
  * Uso (agente / CI):
  *   npm run setup:autonomous
  *   npm run setup:autonomous -- --dry-run
- *   npm run setup:autonomous -- --skip-godaddy
+ *   npm run setup:autonomous -- --skip-firebase
  */
 import { execSync } from "child_process";
 import path from "path";
@@ -26,7 +26,11 @@ function run(cmd, label) {
 }
 
 loadEnvLocal();
-const opts = parseArgs();
+const rawArgs = process.argv.slice(2);
+const opts = {
+  ...parseArgs(),
+  skipFirebase: rawArgs.includes("--skip-firebase"),
+};
 
 console.log("\n═══════════════════════════════════════════════════");
 console.log("  Setup autónomo — Más Café");
@@ -50,7 +54,17 @@ const domainArgs = [
   .filter(Boolean)
   .join(" ");
 
-run(`node scripts/configure-domain.mjs ${domainArgs}`, "4/4 Configurar dominio");
+run(`node scripts/configure-domain.mjs ${domainArgs}`, "4/5 Configurar dominio");
+
+if (!opts.dryRun && !opts.skipFirebase) {
+  try {
+    run("node scripts/setup-firebase-wallet.mjs", "5/5 Setup wallet Firebase (Auth + Functions)");
+  } catch (err) {
+    console.log("\n⚠ Setup Firebase omitido o falló — configura FIREBASE_SERVICE_ACCOUNT en Secrets.\n");
+  }
+} else {
+  console.log("\n▸ 5/5 Setup Firebase — omitido (dry-run o --skip-firebase)\n");
+}
 
 if (!opts.dryRun) {
   try {
