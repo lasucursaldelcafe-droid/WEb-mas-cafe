@@ -152,8 +152,8 @@ export function siteStyles() {
     .btn:hover{transform:translateY(-1px)}
     .btn-sage{background:var(--sage);color:var(--blue)}
     .btn-sage:hover{background:var(--cream);box-shadow:0 8px 24px rgba(var(--sage-rgb),.4)}
-    .btn-outline{border:1px solid rgba(246,245,239,.3);color:var(--cream);background:transparent}
-    .btn-outline:hover{background:rgba(246,245,239,.1)}
+    .btn-outline{border:1px solid rgba(246,245,239,.35);color:var(--cream);background:transparent}
+    .btn-outline:hover{background:rgba(246,245,239,.12);color:var(--cream)}
     .btn-blue{background:var(--blue);color:var(--cream)}
     .btn-blue:hover{background:var(--blue-mid);box-shadow:0 8px 24px rgba(7,57,84,.25)}
     .btn-green{background:var(--green);color:#fff}
