@@ -21,7 +21,8 @@
     "godaddy:prep": "node scripts/godaddy-prep.mjs",
     "domain:configure": "node scripts/configure-domain.mjs",
     "domain:configure:dry": "node scripts/configure-domain.mjs --dry-run",
-    "domain:verify": "node scripts/verify-domain.mjs"
+    "domain:verify": "node scripts/verify-domain.mjs",
+    "verify:links": "node scripts/verify-links.mjs"
   },
   "dependencies": {
     "next": "^15.5.0",

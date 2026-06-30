@@ -7,8 +7,11 @@ Documento HTML completo sobre el estado del sitio, activos Drive, arquitectura, 
 | | |
 |-|-|
 | **En línea** | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/ |
+| **Mockup Wallet** | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/wallet/ |
 | **Fuente generada** | `informes/constitucion-web.html` (auto al hacer build) |
+| **Mockup fuente** | `informes/wallet-visual.html` (auto al hacer build) |
 | **Generador** | `scripts/lib/generate-constitution-report.mjs` |
+| **Mockup generador** | `scripts/lib/generate-wallet-visual.mjs` |
 | **Checklist editable** | `content/informe-requisitos.json` |
 
 No está enlazado desde el menú del sitio público. Se entrega a la marca como reporte de avance.

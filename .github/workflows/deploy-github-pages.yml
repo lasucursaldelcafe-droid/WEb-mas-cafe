@@ -39,6 +39,9 @@ jobs:
           ADMIN_PUBLISH_KEY: ${{ secrets.ADMIN_PUBLISH_KEY }}
         run: node scripts/build-github-pages.mjs
 
+      - name: Verificar enlaces internos
+        run: npm run verify:links
+
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
 
@@ -56,7 +59,7 @@ jobs:
           URL="${{ steps.deployment.outputs.page_url }}"
           echo "URL publicada: $URL"
           FAILED=0
-          for path in "" "cafe/" "menu/" "nosotros/" "tienda/" "blog/" "contacto/" "admin/" "informe/"; do
+          for path in "" "cafe/" "menu/" "nosotros/" "tienda/" "blog/" "contacto/" "admin/" "informe/" "informe/wallet/"; do
             CODE=$(curl -s -o /dev/null -w "%{http_code}" "${URL}${path}")
             echo "${URL}${path} → HTTP $CODE"
             if [ "$CODE" != "200" ]; then FAILED=1; fi

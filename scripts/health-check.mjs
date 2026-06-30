@@ -22,6 +22,7 @@ const required = [
   "public/images/brand/horizontal-azul.png",
   "scripts/build-github-pages.mjs",
   "scripts/lib/generate-constitution-report.mjs",
+  "scripts/lib/generate-wallet-visual.mjs",
   "scripts/serve-local.mjs",
   ".github/workflows/deploy-github-pages.yml",
 ];
@@ -55,7 +56,7 @@ if (errors.length) {
   process.exit(1);
 }
 
-const routes = ["/", "/cafe/", "/menu/", "/nosotros/", "/tienda/", "/blog/", "/contacto/", "/informe/"];
+const routes = ["/", "/cafe/", "/menu/", "/nosotros/", "/tienda/", "/blog/", "/contacto/", "/informe/", "/informe/wallet/"];
 console.log("Rutas que se generarán:");
 routes.forEach((r) => console.log(`  • ${r}`));
 console.log("\n✅ Listo para GitHub Pages (push a main o npm run build)\n");
