@@ -22,10 +22,22 @@ Abre cada enlace, inicia sesión con la cuenta de **Más Café** (o la que vayan
 |--------|----------|----------------|
 | `FIREBASE_TOKEN` | Deploy automático Firebase | En PC: `npx firebase login:ci` |
 | `ADMIN_PUBLISH_KEY` | Publicar desde admin vía API | String aleatorio que definan ustedes |
+| `GODADDY_API_KEY` | Automatizar DNS mascafé.com | https://developer.godaddy.com/keys |
+| `GODADDY_API_SECRET` | Automatizar DNS | Mismo panel API |
+| `GITHUB_PAT` | Workflow dominio (si el token por defecto no alcanza) | https://github.com/settings/tokens |
 
 ---
 
-## GoDaddy {#godaddy}
+## GoDaddy API (automatizar DNS)
+
+| Qué | Enlace |
+|-----|--------|
+| Crear API Key | https://developer.godaddy.com/keys |
+| DNS manual (respaldo) | https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com |
+
+**Workflow automático:** `npm run domain:configure` — ver [AUTOMATIZAR-DOMINIO.md](../migracion/AUTOMATIZAR-DOMINIO.md)
+
+---
 
 | Qué configurar | Enlace |
 |----------------|--------|

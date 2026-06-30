@@ -36,6 +36,17 @@ npm run deploy:firebase
 
 Workflow opcional: `.github/workflows/deploy-firebase.yml` (requiere secret `FIREBASE_TOKEN`).
 
+## Dominio mascafé.com (automático)
+
+```bash
+npm run domain:configure:dry   # simular
+npm run domain:configure       # aplicar DNS + GitHub Pages
+npm run domain:verify          # verificar
+```
+
+Guía: [proyecto-mas-cafe/migracion/AUTOMATIZAR-DOMINIO.md](../proyecto-mas-cafe/migracion/AUTOMATIZAR-DOMINIO.md)  
+Workflow CI: `.github/workflows/configure-domain.yml`
+
 ## Informe constitucional (marca)
 
 Documento HTML separado del sitio público:

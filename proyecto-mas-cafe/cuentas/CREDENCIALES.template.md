@@ -19,6 +19,7 @@
 | Usuario admin GitHub | |
 | Contraseña / 2FA | *(no escribir contraseña aquí si se entrega por gestor de contraseñas)* |
 | Personal Access Token (si aplica) | |
+| GITHUB_TOKEN (domain:configure) | https://github.com/settings/tokens |
 
 ### Secrets en GitHub Actions
 
@@ -34,6 +35,9 @@
 | Campo | Valor |
 |-------|-------|
 | URL panel | https://dcc.godaddy.com/control/portfolio |
+| API Keys (automatizar DNS) | https://developer.godaddy.com/keys |
+| GODADDY_API_KEY | |
+| GODADDY_API_SECRET | |
 | Usuario / email cuenta | |
 | Contraseña | *(gestor de contraseñas)* |
 | Customer ID | |
