@@ -36,7 +36,7 @@ No necesitas configurar nada manualmente. La publicación es automática desde e
 |---------|-----------|
 | **Secciones** | Activar/desactivar subcarpetas, crear páginas nuevas |
 | **Marca e inicio** | Nombre, tagline, titulares |
-| **Colores** | Paleta completa del sitio (vista previa en vivo) |
+| **Colores y fuentes** | Paleta del sitio y tipografías (solo fuentes de Drive) |
 | **Textos de páginas** | Títulos y subtítulos de cada página |
 | **Experiencias** | Coffee shop: Pausa, Carta, Horno, Visita |
 | **Café / Tienda** | Productos, precios, imágenes |
@@ -95,7 +95,29 @@ Cada campo de imagen muestra la **vista previa actual** y las medidas recomendad
 | Productos | 600 × 600 px (cuadrada). PNG fondo transparente. Máx. 400 KB |
 | Blog | 1200 × 750 px (16:10 horizontal). JPG o WebP. Máx. 600 KB |
 
-Pulsa **Subir imagen** y se publicará automáticamente al guardar.
+Pulsa **Subir imagen** o **Elegir desde Drive** y se publicará automáticamente al guardar.
+
+## Tipografías (Drive)
+
+En **Colores y fuentes** puedes asignar qué fuente usa cada tipo de texto:
+
+| Rol | Uso en el sitio |
+|-----|-----------------|
+| Títulos grandes | Encabezados principales |
+| Texto general | Párrafos y navegación |
+| Acento manuscrito | Frases destacadas y etiquetas |
+
+Solo aparecen las fuentes definidas en `content/drive-assets.json` (sincronizadas desde la [carpeta de marca en Drive](https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC)). Para añadir una fuente nueva, súbela a Drive y actualiza ese archivo en el repositorio.
+
+## Imágenes desde Google Drive
+
+En cada campo de imagen (experiencias, productos, blog, nosotros):
+
+1. Pulsa **Elegir desde Drive**
+2. Selecciona una imagen del catálogo o pega un enlace/ID de archivo Drive
+3. **Guardar y publicar** — la imagen se descarga y se sube al sitio
+
+Las imágenes visibles en el selector tienen un `driveId` en `content/drive-assets.json`. Para añadir más archivos de la carpeta de Drive, copia el ID del archivo (desde la URL de Drive) al manifiesto. En el build también se sincronizan con `npm run drive:sync-assets`.
 
 ## Desarrollo local
 

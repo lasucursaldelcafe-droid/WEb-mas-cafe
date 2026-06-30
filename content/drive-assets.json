@@ -1,0 +1,102 @@
+{
+  "folderId": "153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC",
+  "folderUrl": "https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC",
+  "fonts": [
+    {
+      "id": "satoshi",
+      "family": "Satoshi",
+      "label": "Satoshi — texto general",
+      "roles": ["body"],
+      "faces": [
+        { "weight": 400, "path": "/fonts/Satoshi-Regular.woff2", "format": "woff2" },
+        { "weight": 500, "path": "/fonts/Satoshi-Medium.woff2", "format": "woff2" },
+        { "weight": 700, "path": "/fonts/Satoshi-Bold.woff2", "format": "woff2" }
+      ]
+    },
+    {
+      "id": "playfair",
+      "family": "Playfair Display",
+      "label": "Playfair Display — títulos",
+      "roles": ["display"],
+      "faces": [
+        { "weight": 400, "path": "/fonts/PlayfairDisplay-Regular.ttf", "format": "truetype" },
+        { "weight": 500, "path": "/fonts/PlayfairDisplay-Medium.ttf", "format": "truetype" }
+      ]
+    },
+    {
+      "id": "marydale",
+      "family": "Marydale",
+      "label": "Marydale — acento manuscrito",
+      "roles": ["accent"],
+      "faces": [
+        { "weight": 400, "path": "/fonts/Marydale-Regular.ttf", "format": "truetype" }
+      ]
+    }
+  ],
+  "images": [
+    {
+      "id": "logo-principal",
+      "label": "Logo principal",
+      "driveId": "1ujaXixhIBH7nMdV-xg3sjtkkKXDT9wmo",
+      "localPath": "/images/brand/logo-principal.png",
+      "categories": ["brand"],
+      "mime": "image/png"
+    },
+    {
+      "id": "pausa",
+      "label": "Ambiente / pausa",
+      "driveId": "",
+      "localPath": "/images/brand/pausa.png",
+      "categories": ["experience", "brand"],
+      "mime": "image/png"
+    },
+    {
+      "id": "carta",
+      "label": "Carta / mesa",
+      "driveId": "",
+      "localPath": "/images/brand/carta.png",
+      "categories": ["experience", "blog", "brand"],
+      "mime": "image/png"
+    },
+    {
+      "id": "horno",
+      "label": "Horno / repostería",
+      "driveId": "",
+      "localPath": "/images/brand/horno.png",
+      "categories": ["experience", "brand"],
+      "mime": "image/png"
+    },
+    {
+      "id": "visita",
+      "label": "Visita al local",
+      "driveId": "",
+      "localPath": "/images/brand/visita.png",
+      "categories": ["experience", "brand"],
+      "mime": "image/png"
+    },
+    {
+      "id": "mood",
+      "label": "Ambiente Nosotros",
+      "driveId": "",
+      "localPath": "/images/brand/mood.png",
+      "categories": ["nosotros", "brand"],
+      "mime": "image/png"
+    },
+    {
+      "id": "caja-cafe",
+      "label": "Caja de café",
+      "driveId": "",
+      "localPath": "/images/products/caja-cafe.png",
+      "categories": ["product"],
+      "mime": "image/png"
+    },
+    {
+      "id": "grafica-1",
+      "label": "Gráfica editorial 1",
+      "driveId": "",
+      "localPath": "/images/grafica/1.png",
+      "categories": ["blog"],
+      "mime": "image/png"
+    }
+  ]
+}

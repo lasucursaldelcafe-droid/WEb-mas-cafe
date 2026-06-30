@@ -6,6 +6,8 @@ import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { collectImagePaths, generateSitePages } from "./lib/generate-site-pages.mjs";
+import { collectFontFiles, loadDriveAssets, syncAllDriveAssets } from "./lib/drive-assets.mjs";
+import { loadSite } from "./lib/site-html/shared.mjs";
 import { generateAdminPage } from "./lib/site-html/admin.mjs";
 import { generateConstitutionReport } from "./lib/generate-constitution-report.mjs";
 import { generateWalletVisualPage } from "./lib/generate-wallet-visual.mjs";
@@ -17,6 +19,15 @@ const root = path.join(__dirname, "..");
 const outDir = path.join(root, "gh-pages-site");
 
 console.log("\n▸ Generando sitio multipágina para GitHub Pages...\n");
+
+const site = loadSite();
+const driveManifest = loadDriveAssets();
+try {
+  const synced = await syncAllDriveAssets(driveManifest);
+  if (synced) console.log(`  • ${synced} imagen(es) sincronizada(s) desde Drive`);
+} catch (err) {
+  console.warn(`  ⚠ Drive sync: ${err.message}`);
+}
 
 await generateFavicons(path.join(root, "public"));
 
@@ -97,7 +108,7 @@ const fontsDir = path.join(root, "public/fonts");
 if (existsSync(fontsDir)) {
   const fontsOut = path.join(outDir, "fonts");
   mkdirSync(fontsOut, { recursive: true });
-  for (const file of ["Satoshi-Regular.woff2", "Satoshi-Medium.woff2", "Satoshi-Bold.woff2", "PlayfairDisplay-Regular.ttf", "PlayfairDisplay-Medium.ttf", "Marydale-Regular.ttf"]) {
+  for (const file of collectFontFiles(site, driveManifest)) {
     const src = path.join(fontsDir, file);
     if (existsSync(src)) {
       cpSync(src, path.join(fontsOut, file));

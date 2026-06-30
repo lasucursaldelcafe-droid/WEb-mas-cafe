@@ -11,6 +11,7 @@
     "build:site": "node scripts/build-github-pages.mjs",
     "generate:favicons": "node scripts/generate-favicons.mjs",
     "brand:sync-logo": "node scripts/sync-brand-logo.mjs",
+    "drive:sync-assets": "node scripts/sync-drive-assets.mjs",
     "preview": "node scripts/build-github-pages.mjs && node scripts/serve-local.mjs",
     "local": "npm run preview",
     "build:mas-cafe": "node scripts/build-mas-cafe.mjs",
