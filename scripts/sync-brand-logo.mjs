@@ -49,12 +49,12 @@ async function writeIconMark(horizontalPath, outPath) {
   return side;
 }
 
-/** Cuadrado con lockup horizontal azul centrado (UI / referencia) */
-async function writeSquareFavicon(horizontalPath, outPath, size = 512) {
+/** Cuadrado con lockup horizontal crema sobre azul marca (miniatura oficial) */
+async function writeSquareFavicon(horizontalCremaPath, outPath, size = 512) {
   const pad = Math.round(size * 0.1);
   const innerW = size - pad * 2;
-  const innerH = Math.round(size * 0.35);
-  const resized = await sharp(horizontalPath)
+  const innerH = Math.round(size * 0.28);
+  const resized = await sharp(horizontalCremaPath)
     .resize(innerW, innerH, {
       fit: "inside",
       background: { r: 0, g: 0, b: 0, alpha: 0 },
@@ -67,7 +67,7 @@ async function writeSquareFavicon(horizontalPath, outPath, size = 512) {
       width: size,
       height: size,
       channels: 4,
-      background: CREAM,
+      background: BLUE,
     },
   })
     .composite([{ input: resized, gravity: "centre" }])
@@ -140,8 +140,8 @@ async function main() {
   console.log(`  ✅ icon-mark.png (${iconSide}×${iconSide} desde lockup)`);
 
   const favsPath = resolveBrandFile(BRAND_ASSETS.favicon);
-  const sq = await writeSquareFavicon(horizontalAzulPath, favsPath);
-  console.log(`  ✅ favs.png (${sq}px, lockup horizontal azul)`);
+  const sq = await writeSquareFavicon(horizontalCremaPath, favsPath);
+  console.log(`  ✅ favs.png (${sq}px, lockup crema sobre azul)`);
 
   const ogPath = resolveBrandFile(BRAND_ASSETS.og);
   await writeOgImageWalletStyle(horizontalCremaPath, ogPath);

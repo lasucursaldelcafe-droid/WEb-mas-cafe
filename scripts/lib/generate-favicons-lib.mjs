@@ -1,6 +1,5 @@
 /**
- * Genera favicons para pestañas del navegador desde el lockup horizontal de marca.
- * Tamaños pequeños: isotipo (+). Tamaños grandes: lockup horizontal azul.
+ * Genera favicons desde horizontal-crema.png (lockup oficial sobre fondo azul marca).
  */
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import path from "path";
@@ -12,7 +11,7 @@ import toIco from "to-ico";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "../..");
 
-const CREAM = { r: 246, g: 245, b: 239, alpha: 1 };
+const BRAND_BLUE = { r: 7, g: 57, b: 84, alpha: 1 };
 
 const SMALL_SIZES = [
   { name: "favicon-16x16.png", size: 16 },
@@ -43,7 +42,7 @@ function pickSource(candidates) {
   return src;
 }
 
-async function resizeIcon(src, size, { padRatio = 0.08 } = {}) {
+async function resizeIconOnBrand(src, size, { padRatio = 0.1 } = {}) {
   const pad = Math.max(1, Math.round(size * padRatio));
   const inner = size - pad * 2;
   const resized = await sharp(src)
@@ -59,7 +58,7 @@ async function resizeIcon(src, size, { padRatio = 0.08 } = {}) {
       width: size,
       height: size,
       channels: 4,
-      background: CREAM,
+      background: BRAND_BLUE,
     },
   })
     .composite([{ input: resized, gravity: "centre" }])
@@ -67,10 +66,10 @@ async function resizeIcon(src, size, { padRatio = 0.08 } = {}) {
     .toBuffer();
 }
 
-async function resizeHorizontal(src, size) {
-  const pad = Math.round(size * 0.12);
+async function resizeHorizontalCrema(src, size) {
+  const pad = Math.round(size * 0.1);
   const innerW = size - pad * 2;
-  const innerH = Math.round(size * 0.32);
+  const innerH = Math.round(size * 0.28);
   const resized = await sharp(src)
     .resize(innerW, innerH, {
       fit: "inside",
@@ -84,7 +83,7 @@ async function resizeHorizontal(src, size) {
       width: size,
       height: size,
       channels: 4,
-      background: CREAM,
+      background: BRAND_BLUE,
     },
   })
     .composite([{ input: resized, gravity: "centre" }])
@@ -97,9 +96,7 @@ export async function generateFavicons(outDir = path.join(root, "public")) {
     resolveBrandFile(BRAND_ASSETS.iconMark),
     resolveBrandFile(BRAND_ASSETS.horizontalCrema),
   ]);
-  const horizontalSrc = pickSource([
-    resolveBrandFile(BRAND_ASSETS.horizontalAzul),
-    resolveBrandFile(BRAND_ASSETS.favicon),
+  const lockupCrema = pickSource([
     resolveBrandFile(BRAND_ASSETS.horizontalCrema),
   ]);
 
@@ -107,13 +104,13 @@ export async function generateFavicons(outDir = path.join(root, "public")) {
 
   const pngBuffers = [];
   for (const { name, size } of SMALL_SIZES) {
-    const buffer = await resizeIcon(iconSrc, size);
+    const buffer = await resizeIconOnBrand(iconSrc, size);
     writeFileSync(path.join(outDir, name), buffer);
     pngBuffers.push(buffer);
   }
 
   for (const { name, size } of LARGE_SIZES) {
-    const buffer = await resizeHorizontal(horizontalSrc, size);
+    const buffer = await resizeHorizontalCrema(lockupCrema, size);
     writeFileSync(path.join(outDir, name), buffer);
   }
 
@@ -135,7 +132,7 @@ export async function generateFavicons(outDir = path.join(root, "public")) {
           { src: "apple-touch-icon.png", sizes: "180x180", type: "image/png" },
         ],
         theme_color: "#073954",
-        background_color: "#f6f5ef",
+        background_color: "#073954",
         display: "standalone",
       },
       null,

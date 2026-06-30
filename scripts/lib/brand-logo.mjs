@@ -23,7 +23,7 @@ export const BRAND_ASSETS = {
   horizontalAzul: "public/images/brand/horizontal-azul.png",
   /** Isotipo (+ café) recortado del lockup — favicons pequeños */
   iconMark: "public/images/brand/icon-mark.png",
-  /** Cuadrado derivado del lockup azul */
+  /** Cuadrado — lockup crema sobre azul */
   favicon: "public/images/brand/favs.png",
   /** 1200×630 — gradiente marca + lockup crema (como Google Wallet) */
   og: "public/images/brand/logo-og.png",
@@ -52,7 +52,7 @@ export function loadBrandSettings() {
     primaryLogoDriveId: brand.primaryLogoDriveId || PRIMARY_LOGO_DRIVE_ID,
     primaryLogoPath: brand.primaryLogoPath || BRAND_PATHS.primary,
     ogImagePath: settings.seo?.ogImagePath || BRAND_PATHS.og,
-    faviconSource: brand.faviconSource || BRAND_PATHS.horizontalAzul,
+    faviconSource: brand.faviconSource || BRAND_PATHS.horizontalCrema,
     thumbnailSource: brand.thumbnailSource || BRAND_PATHS.horizontalCrema,
   };
 }
