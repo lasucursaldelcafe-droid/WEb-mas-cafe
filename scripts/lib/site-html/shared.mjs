@@ -27,6 +27,16 @@ export function price(n) {
   }).format(n);
 }
 
+export function mapsUrl(brand) {
+  const query = [brand?.address, brand?.city].filter(Boolean).join(", ");
+  return `https://maps.google.com/?q=${encodeURIComponent(query)}`;
+}
+
+export function addressLinkHtml(brand, { className = "address-link", suffix = "" } = {}) {
+  const cityLine = brand?.city ? `<br/>${brand.city}` : "";
+  return `<a class="${className}" href="${mapsUrl(brand)}" target="_blank" rel="noopener noreferrer" data-track="maps">${brand.address}${cityLine}${suffix}</a>`;
+}
+
 /** depth 0 = index.html, depth 1 = cafe/index.html, etc. */
 export function createPathHelpers(depth) {
   const up = depth === 0 ? "" : "../".repeat(depth);
@@ -466,6 +476,20 @@ export function siteStyles() {
     }
     .social-links a:hover{background:rgba(var(--sage-rgb),.2);border-color:var(--sage);color:var(--blue)}
 
+    .address-link{
+      display:inline-block;text-decoration:none;color:inherit;
+      transition:color .2s,opacity .2s;
+    }
+    .address-link:hover{text-decoration:underline;text-underline-offset:.2em}
+    .address-link--on-dark{color:rgba(246,245,239,.88)}
+    .address-link--on-dark:hover{color:var(--sage)}
+    footer .address-link{color:rgba(246,245,239,.85)}
+    footer .address-link:hover{color:var(--sage)}
+    .cta .address-link{color:rgba(246,245,239,.9)}
+    .cta .address-link:hover{color:var(--sage)}
+    .contact-info .address-link{color:var(--blue);font-weight:500}
+    .contact-info .address-link:hover{color:var(--blue-mid)}
+
     /* ── Footer ── */
     footer{background:var(--blue);color:var(--cream);padding:3.5rem 0 2rem;margin-top:auto}
     footer .wrap{display:grid;gap:2.5rem}
@@ -777,7 +801,7 @@ export function shell({ title, description, depth, pageId, slug, heroArt, body, 
       </div>
       <div>
         <p style="font-weight:600;margin-bottom:.75rem">Visítanos</p>
-        <p style="font-size:.95rem;line-height:1.75;opacity:.85">${brand.address}<br/>${brand.city}</p>
+        <p style="font-size:.95rem;line-height:1.75;opacity:.85">${addressLinkHtml(brand, { className: "address-link address-link--on-dark" })}</p>
         <p style="margin-top:.65rem;font-size:.9rem;opacity:.75">${brand.hours}</p>
       </div>
       <div>

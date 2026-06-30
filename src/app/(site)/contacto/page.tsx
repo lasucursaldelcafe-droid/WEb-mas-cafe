@@ -1,5 +1,6 @@
 import { VisitBand } from "@/components/site/CTABands";
 import { getContent } from "@/lib/store";
+import { getMapsUrl } from "@/lib/maps";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -24,8 +25,15 @@ export default async function ContactoPage() {
             <div>
               <h2 className="font-display text-2xl text-blue-deep">Visítanos</h2>
               <address className="mt-4 space-y-1 not-italic text-charcoal/75">
-                <p>{brand.address}</p>
-                <p>{brand.city}</p>
+                <a
+                  href={getMapsUrl(brand)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block transition-colors hover:text-blue-deep hover:underline hover:underline-offset-4"
+                >
+                  <span className="block">{brand.address}</span>
+                  <span className="block">{brand.city}</span>
+                </a>
                 <p className="text-sm text-charcoal/50">{brand.hours}</p>
               </address>
             </div>

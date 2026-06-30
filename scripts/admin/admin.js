@@ -29,7 +29,7 @@
     content.analytics = {
       enabled: true,
       googleAnalyticsId: "",
-      clicks: { whatsapp: 0, tienda: 0, contacto: 0, instagram: 0, facebook: 0 },
+      clicks: { whatsapp: 0, tienda: 0, contacto: 0, instagram: 0, facebook: 0, maps: 0 },
       pageviews: {},
       monthlyIncome: [],
       lastPublishedAt: null,
@@ -39,7 +39,7 @@
     if (!content.analytics.googleAnalyticsId) content.analytics.googleAnalyticsId = "";
     if (!content.analytics.pageviews) content.analytics.pageviews = {};
     if (!content.analytics.clicks) {
-      content.analytics.clicks = { whatsapp: 0, tienda: 0, contacto: 0, instagram: 0, facebook: 0 };
+      content.analytics.clicks = { whatsapp: 0, tienda: 0, contacto: 0, instagram: 0, facebook: 0, maps: 0 };
     }
     if (!content.analytics.monthlyIncome) content.analytics.monthlyIncome = [];
   }
@@ -50,7 +50,13 @@
     contacto: "Contacto",
     instagram: "Instagram",
     facebook: "Facebook",
+    maps: "Google Maps / dirección",
   };
+
+  function brandMapsUrl(b) {
+    const query = [b?.address, b?.city].filter(Boolean).join(", ");
+    return `https://maps.google.com/?q=${encodeURIComponent(query)}`;
+  }
 
   const GSC_URL = "https://search.google.com/search-console?resource_id=sc-domain%3Axn--mascaf-gva.com";
 
@@ -490,7 +496,7 @@
     const b = content.brand;
     return `<div class="ctx-preview ctx-contact">
       <h3 class="ctx-h3">Visítanos</h3>
-      <p class="ctx-body">${escapeHtml(b.address || "")}<br/>${escapeHtml(b.city || "")}</p>
+      <p class="ctx-body"><a href="${brandMapsUrl(b)}" target="_blank" rel="noopener noreferrer">${escapeHtml(b.address || "")}<br/>${escapeHtml(b.city || "")}</a></p>
       <p class="ctx-body">${escapeHtml(b.hours || "")}</p>
       <p class="ctx-body" style="margin-top:.75rem">${escapeHtml(b.phone || "")}<br/>${escapeHtml(b.email || "")}</p>
       <div class="ctx-links">

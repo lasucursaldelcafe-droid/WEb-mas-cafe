@@ -2,7 +2,7 @@
  * Estadísticas del sitio — clics, páginas vistas y Google Analytics (opcional).
  */
 
-const CLICK_KEYS = ["whatsapp", "tienda", "contacto", "instagram", "facebook"];
+const CLICK_KEYS = ["whatsapp", "tienda", "contacto", "instagram", "facebook", "maps"];
 
 const CLICK_LABELS = {
   whatsapp: "WhatsApp",
@@ -10,6 +10,7 @@ const CLICK_LABELS = {
   contacto: "Contacto",
   instagram: "Instagram",
   facebook: "Facebook",
+  maps: "Google Maps / dirección",
 };
 
 export function defaultAnalytics() {
