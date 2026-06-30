@@ -26,38 +26,18 @@ jobs:
   validate-and-merge:
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event.pull_request.head.ref != '' &&
+      (github.event.pull_request.state == 'open' &&
+       github.event.pull_request.head.ref != '' &&
        startsWith(github.event.pull_request.head.ref, 'cursor/'))
     runs-on: ubuntu-latest
     steps:
-      - name: Estado del PR
-        id: pr
-        env:
-          GH_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "should_run=true" >> "$GITHUB_OUTPUT"
-            echo "Modo manual — continuar"
-            exit 0
-          fi
-          STATE=$(gh pr view "${{ github.event.pull_request.number }}" --json state --jq .state)
-          echo "Estado PR #${{ github.event.pull_request.number }}: $STATE"
-          if [ "$STATE" = "OPEN" ]; then
-            echo "should_run=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "should_run=false" >> "$GITHUB_OUTPUT"
-            echo "✅ Omitiendo — PR ya no está abierto ($STATE). Evita falso fallo tras fusionar."
-          fi
-
       - name: Obtener código del PR
-        if: steps.pr.outputs.should_run == 'true'
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha || github.ref }}
           fetch-depth: 0
 
       - name: Configurar Node.js
-        if: steps.pr.outputs.should_run == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "22"
@@ -74,7 +54,6 @@ jobs:
           npm run ci:validate
 
       - name: Fusionar PR automáticamente
-        if: steps.pr.outputs.should_run == 'true'
         env:
           GH_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
         run: |
