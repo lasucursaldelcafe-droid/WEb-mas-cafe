@@ -2,6 +2,11 @@
 
 Resumen de lo construido hasta hoy en **WEb-mas-cafe** (y ramas relacionadas).
 
+| Documento | Descripción |
+|-----------|-------------|
+| [COTIZACION-PERPETUO.md](./COTIZACION-PERPETUO.md) | Cotización $ 2.500.000 COP — trabajo entregado (Markdown) |
+| [COTIZACION-PERPETUO.html](./COTIZACION-PERPETUO.html) | Misma cotización, lista para imprimir o PDF |
+
 ---
 
 ## Sitio web público (HTML — producción)

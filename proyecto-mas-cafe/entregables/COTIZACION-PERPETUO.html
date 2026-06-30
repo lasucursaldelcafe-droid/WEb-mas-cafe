@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Cotización — Perpetuo · Más Café</title>
+  <style>
+    :root{
+      --blue:#073954;--cream:#f6f5ef;--brown:#8b6914;--ink:#2b2b2b;--muted:#666;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:Georgia,"Times New Roman",serif;
+      color:var(--ink);background:#fff;line-height:1.55;
+      padding:2.5rem 1.5rem 3rem;
+    }
+    .sheet{max-width:820px;margin:0 auto}
+    header{
+      display:flex;justify-content:space-between;align-items:flex-start;
+      gap:2rem;padding-bottom:1.75rem;border-bottom:2px solid var(--blue);
+      margin-bottom:2rem;
+    }
+    .brand{font-size:2rem;font-weight:600;color:var(--blue);letter-spacing:.04em}
+    .brand small{display:block;font-size:.75rem;font-weight:400;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;margin-top:.35rem}
+    .meta{text-align:right;font-size:.88rem;color:var(--muted)}
+    .meta strong{display:block;color:var(--blue);font-size:1rem;margin-bottom:.25rem}
+    h1{font-size:1.35rem;color:var(--blue);margin-bottom:1rem;font-weight:600}
+    .intro{margin-bottom:2rem;font-size:.95rem;color:var(--ink)}
+    .total-box{
+      background:var(--blue);color:var(--cream);
+      padding:1.25rem 1.5rem;border-radius:.5rem;
+      margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+    }
+    .total-box span{font-size:.85rem;opacity:.85}
+    .total-box strong{font-size:1.65rem;letter-spacing:.02em}
+    table{width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:2rem}
+    th,td{border:1px solid #ddd;padding:.65rem .75rem;text-align:left;vertical-align:top}
+    th{background:var(--cream);color:var(--blue);font-weight:600}
+    td.num,.th-num{text-align:right;white-space:nowrap}
+    tr.total td{font-weight:700;background:#f0f4f6;border-top:2px solid var(--blue)}
+    h2{font-size:1rem;color:var(--blue);margin:1.75rem 0 .75rem;text-transform:uppercase;letter-spacing:.12em}
+    ul{margin:0 0 1rem 1.25rem;font-size:.88rem}
+    ul li{margin-bottom:.35rem}
+    .notes{font-size:.8rem;color:var(--muted);margin-top:2rem;padding-top:1.25rem;border-top:1px solid #e5e5e5}
+    .notes p{margin-bottom:.65rem}
+    .sign{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--blue)}
+    .sign p{font-size:.9rem}
+    .sign .name{font-size:1.15rem;font-weight:600;color:var(--blue);margin-top:2rem}
+    @media print{
+      body{padding:0}
+      .sheet{max-width:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="sheet">
+    <header>
+      <div class="brand">
+        Perpetuo
+        <small>Desarrollo web · presencia digital</small>
+      </div>
+      <div class="meta">
+        <strong>COTIZACIÓN</strong>
+        No. MC-2026-001<br/>
+        Fecha: 26 de junio de 2026<br/>
+        Validez: 30 días
+      </div>
+    </header>
+
+    <h1>Sitio web Más Café — mascafé.com</h1>
+    <p class="intro">
+      Cotización por diseño, desarrollo, despliegue e iteraciones del sitio web institucional de
+      <strong>Más Café</strong>, incluyendo panel de administración, menú digital interactivo,
+      integración Google Drive, SEO, dominio, correo institucional, informe constitucional web
+      y pipeline de publicación continua.
+    </p>
+
+    <div class="total-box">
+      <span>Valor total del proyecto entregado</span>
+      <strong>$ 2.500.000 COP</strong>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width:2.5rem">#</th>
+          <th>Concepto</th>
+          <th>Alcance entregado</th>
+          <th class="th-num">Valor (COP)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><strong>Diseño web editorial y sitio multipágina</strong></td>
+          <td>8 páginas HTML, identidad de marca, tipografías, layout editorial Pergamino, móvil, transiciones y microinteracciones.</td>
+          <td class="num">$ 550.000</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong>Panel de administración</strong></td>
+          <td>Login, edición de contenido, colores, imágenes Drive, secciones, publicación automática e informe embebido.</td>
+          <td class="num">$ 420.000</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><strong>Menú digital interactivo</strong></td>
+          <td>Flipbook 20 páginas desde PDF/Drive, volteo móvil, autoplay, precarga, zoom sin márgenes, controles táctiles.</td>
+          <td class="num">$ 380.000</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><strong>Google Drive y marca digital</strong></td>
+          <td>Sync logo, fuentes, imágenes y menú PDF. Favicons, Open Graph, lockup horizontal, ampersand Marydale.</td>
+          <td class="num">$ 260.000</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td><strong>SEO, analytics e indexación</strong></td>
+          <td>Sitemap, robots, JSON-LD, Search Console, preparación GA4, meta tags y checklist SEO.</td>
+          <td class="num">$ 240.000</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td><strong>Dominio, hosting y CI/CD</strong></td>
+          <td>GoDaddy DNS, GitHub Pages, workflows deploy, validación automática y auto-merge PRs.</td>
+          <td class="num">$ 220.000</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td><strong>Correo e infraestructura</strong></td>
+          <td>Correo institucional, guías DNS, diagnóstico HTTPS y scripts de dominio.</td>
+          <td class="num">$ 180.000</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td><strong>Informe constitucional web v1.5</strong></td>
+          <td>Checklist editable, migración, wallet pendiente, mockup Apple/Google Wallet.</td>
+          <td class="num">$ 150.000</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td><strong>UX, ubicación y contenido</strong></td>
+          <td>Maps CTA, márgenes, tipografía hero menú, pie de página, carga instantánea.</td>
+          <td class="num">$ 100.000</td>
+        </tr>
+        <tr class="total">
+          <td colspan="3" style="text-align:right">TOTAL</td>
+          <td class="num">$ 2.500.000</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Entregables</h2>
+    <ul>
+      <li>Repositorio fuente y sitio publicado en GitHub Pages</li>
+      <li>Respaldo Firebase (<code>mas-cafe-c8413</code>)</li>
+      <li>Documentación técnica, informe constitucional y checklists</li>
+      <li>Scripts de build, verificación y sincronización Drive</li>
+    </ul>
+
+    <h2>Forma de pago (referencia)</h2>
+    <table>
+      <thead>
+        <tr><th>Cuota</th><th>Concepto</th><th class="th-num">Valor (COP)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Anticipo a la firma (50 %)</td><td class="num">$ 1.250.000</td></tr>
+        <tr><td>2</td><td>Entrega y puesta en línea (50 %)</td><td class="num">$ 1.250.000</td></tr>
+      </tbody>
+    </table>
+
+    <div class="notes">
+      <p><strong>Notas:</strong></p>
+      <p>1. Valor correspondiente al trabajo realizado hasta la fecha; no incluye wallet con backend ni fases futuras del informe.</p>
+      <p>2. Servicios de terceros (dominio, hosting, campañas) corren por cuenta del cliente salvo acuerdo distinto.</p>
+      <p>3. Soporte y nuevas funcionalidades posteriores se cotizan por separado.</p>
+    </div>
+
+    <div class="sign">
+      <p>Cliente: <strong>Más Café</strong></p>
+      <p class="name">Perpetuo</p>
+      <p>Proyecto: Sitio web y presencia digital · 26 / 06 / 2026</p>
+    </div>
+  </div>
+</body>
+</html>
