@@ -72,6 +72,11 @@ Formato sugerido por línea:
 
 ### Contenido y marca
 - [x] Carpeta Drive marca | https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC | |
+- [x] Manifiesto Drive (fuentes + imágenes) | content/drive-assets.json | 2026-06-30 |
+- [x] Admin: tipografías e imágenes desde Drive | /admin/ → Colores y fuentes | 2026-06-30 |
+- [x] Admin: navegación desplegable | /admin/ | 2026-06-30 |
+- [x] Admin: informe embebido + analytics | /admin/ → Informe, Análisis | 2026-06-30 |
+- [x] Informe constitucional v1.5 | /informe/ | 2026-06-30 |
 - [ ] Fotos reales del local subidas | | |
 - [ ] Reglas de puntos acordadas | ver `content/informe-requisitos.json` → wallet.reglasNegocio | |
 
