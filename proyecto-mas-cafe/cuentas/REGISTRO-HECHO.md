@@ -18,8 +18,8 @@ Formato sugerido por línea:
 
 ### GoDaddy
 - [x] DNS automático | npm run domain:configure | 2026-06-30 | Cursor script
-- [ ] Dominio mascafé.com activo | https://dcc.godaddy.com/... | |
-- [ ] DNS apuntando a GitHub Pages | (pegar resultado dig o screenshot) | |
+- [x] Dominio mascafé.com activo (HTTP) | http://mascafé.com | 2026-06-30 | GitHub Pages
+- [x] www → apex sin www | http://www.mascafé.com redirige | 2026-06-30 |
 - [ ] Custom domain en GitHub Pages verde | https://github.com/.../settings/pages | |
 
 ### Firebase

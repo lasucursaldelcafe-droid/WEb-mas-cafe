@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import { collectImagePaths } from "./generate-site-pages.mjs";
 import { loadSite } from "./site-html/shared.mjs";
 import { generateWalletVisualEmbed } from "./generate-wallet-visual.mjs";
+import { BRAND_PATHS, PRIMARY_LOGO_DRIVE_URL } from "./brand-logo.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "../..");
@@ -17,13 +18,19 @@ const REPO_URL = "https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe";
 const DRIVE_FOLDER_ID = "153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC";
 const DRIVE_URL = `https://drive.google.com/drive/folders/${DRIVE_FOLDER_ID}`;
 
-const DOMAIN = "mascafé.com";
-const DOMAIN_WWW = "www.mascafé.com";
-const DOMAIN_URL = `https://${DOMAIN_WWW}`;
-const DOMAIN_PUNYCODE = "xn--mascaf-gva.com";
+const SETTINGS_PATH = path.join(root, "content/settings.json");
+const settings = existsSync(SETTINGS_PATH)
+  ? JSON.parse(readFileSync(SETTINGS_PATH, "utf8"))
+  : {};
+
+const DOMAIN = settings.customDomain || "mascafé.com";
+const DOMAIN_WWW = settings.customDomainWww || "www.mascafé.com";
+const DOMAIN_URL = settings.seo?.siteUrl || `https://${DOMAIN_WWW}`;
+const DOMAIN_LIVE_HTTP = `http://${DOMAIN}`;
+const DOMAIN_PUNYCODE = settings.customDomainPunycode || "xn--mascaf-gva.com";
 const GODADDY_DNS_URL = `https://dcc.godaddy.com/control/dnsmanagement?domainName=${DOMAIN_PUNYCODE}`;
 
-const REPORT_VERSION = "1.3.1";
+const REPORT_VERSION = "1.4.0";
 const REQUISITOS_PATH = path.join(root, "content/informe-requisitos.json");
 
 function escapeHtml(s) {
@@ -63,7 +70,9 @@ function imageUsageMap() {
 
   register("/images/brand/horizontal-crema.png", "Header / Footer", "Logo sobre fondos oscuros (azul). Legibilidad en navegación fija.");
   register("/images/brand/horizontal-azul.png", "Header (scroll)", "Logo sobre fondo crema al desplazarse. Contraste de marca.");
-  register("/images/brand/favs.png", "Inicio (hero)", "Isotipo de apoyo bajo el titular. Refuerzo de identidad sin saturar.");
+  register(BRAND_PATHS.primary, "Logo oficial", "Fuente Drive — reconocimiento de marca, JSON-LD, referencia principal.");
+  register(BRAND_PATHS.og, "SEO / redes", "Open Graph y Twitter Card 1200×630 — miniatura al compartir.");
+  register(BRAND_PATHS.favicon, "Inicio (hero) / favicon", "Isotipo cuadrado derivado del logo Drive. Pestaña y hero.");
   register("/images/grafica/3.png", "Inicio (hero)", "Ilustración de marca detrás del texto, baja opacidad. Humaniza sin competir con el mensaje.");
   register("/images/grafica/2.png", "Café (hero)", "Arte decorativo del hero. Conecta la página con el personaje gráfico del manual.");
   register("/images/decor/Recurso-4.svg", "Inicio (hero)", "Forma orgánica decorativa. Ritmo visual de la guía de marca.");
@@ -77,7 +86,6 @@ function imageUsageMap() {
   for (const p of site.products) register(p.image, "Tienda / Café", `Producto: ${p.name}`);
   for (const b of site.blog.filter((x) => x.published)) register(b.image, `Blog — ${b.title}`, b.category);
   register(site.brand.nosotrosImage, "Nosotros", "Foto de ambiente. Prueba social y calidez del espacio físico.");
-  register("/images/brand/favs.png", "Favicon / pestaña", "Derivado del isotipo para reconocimiento en el navegador.");
 
   for (const u of used) {
     if (!map.has(u)) map.set(u, [{ where: "Build de producción", why: "Copiado al sitio publicado." }]);
@@ -91,6 +99,7 @@ function loadInformeRequisitos() {
       meta: {},
       independencia: { intro: "", items: [] },
       migracion: { intro: "", fases: [], dns: {} },
+      seo: { intro: "", items: [] },
       wallet: { intro: "", mvp: [], reglasNegocio: {}, pantallasCliente: [], modulosAdmin: [], operacionCaja: [], modeloDatos: [], integracionesFuturas: [] },
       necesitamosDeUstedes: [],
       camposLibres: [],
@@ -211,13 +220,19 @@ export function generateConstitutionReport() {
     .join("");
 
   const linkRows = [
-    ["Sitio público (GitHub Pages)", `${LIVE_BASE}/`, "Hosting principal. Se actualiza con cada push a main."],
+    ["Sitio en dominio (producción)", `${DOMAIN_LIVE_HTTP}/`, "Actualización automática con cada push a main (~1–2 min)."],
+    ["Sitio (HTTPS objetivo)", `${DOMAIN_URL}/`, "Pendiente certificado SSL GitHub — workflow cada 6 h."],
+    ["Sitio público (GitHub Pages)", `${LIVE_BASE}/`, "URL técnica de respaldo — mismo contenido."],
     ["Panel admin", `${LIVE_BASE}/admin/`, "Edición de contenido sin tocar código. Publicación automática."],
-    ["Este informe", `${LIVE_BASE}/informe/`, "Documento constitucional para la marca. No aparece en el menú del sitio."],
-    ["Mockup Wallet (Apple + Google)", `${LIVE_BASE}/informe/wallet/`, "Vista previa visual de la tarjeta de fidelización en iPhone y Android."],
+    ["Este informe", `${DOMAIN_LIVE_HTTP}/informe/`, "Documento constitucional para la marca. No aparece en el menú del sitio."],
+    ["Mockup Wallet (Apple + Google)", `${DOMAIN_LIVE_HTTP}/informe/wallet/`, "Vista previa visual de la tarjeta de fidelización en iPhone y Android."],
+    ["SEO checklist", "proyecto-mas-cafe/entregables/SEO-CHECKLIST.md", "Guía de reconocimiento en Google y redes."],
+    ["Correo institucional", "proyecto-mas-cafe/entregables/CORREO-INSTITUCIONAL.md", "Zoho Mail — administracion@mascafé.com"],
+    ["Logo principal (Drive)", PRIMARY_LOGO_DRIVE_URL, "Fuente oficial — sincroniza con npm run brand:sync-logo."],
+    ["Google Search Console", "https://search.google.com/search-console", "Verificado 2026-06-30. Sitemap: /sitemap.xml"],
     ["Repositorio GitHub", REPO_URL, "Código fuente, historial de cambios y colaboración."],
     ["Carpeta Drive (marca)", DRIVE_URL, "Fuente original de logotipos, ilustraciones y aplicaciones."],
-    ["Dominio mascafé.com", `${DOMAIN_URL}/`, `Destino final (punycode: ${DOMAIN_PUNYCODE}). DNS GoDaddy → hosting con backend cuando haya wallet.`],
+    ["DNS GoDaddy", GODADDY_DNS_URL, "A records GitHub + CNAME www. Automatizado vía API."],
     ["Firebase Hosting (respaldo)", "https://mas-cafe-c8413.web.app/", "Plataforma alternativa configurada en el repo. Mismo build HTML."],
     ["Instagram", brand.social.instagram, "Red social principal — tráfico y comunidad."],
     ["Facebook", brand.social.facebook, "Segunda red — eventos y alcance local."],
@@ -231,6 +246,10 @@ export function generateConstitutionReport() {
     .join("");
 
   const changelog = [
+    { date: "2026-06-30", note: "Informe v1.4 — dominio mascafé.com en vivo (HTTP), SEO, logo Drive, Google Search Console, automatización HTTPS." },
+    { date: "2026-06-30", note: "Logo principal desde Google Drive en favicon, OG, JSON-LD y wallet mockup (brand:sync-logo)." },
+    { date: "2026-06-30", note: "Google Search Console verificado + post-publish automático + workflow maintain-domain." },
+    { date: "2026-06-30", note: "DNS GoDaddy → GitHub Pages activo. Certificado SSL en emisión." },
     { date: "2026-06-30", note: "Seguridad y credenciales (SEGURIDAD.md) + checklist wallet gratis paso a paso." },
     { date: "2026-06-30", note: "Fix dominio — custom domain solo si DNS público propagado; sitio github.io estable." },
     { date: "2026-06-27", note: "Informe v1.3 — mockup visual Apple Wallet + Google Wallet en /informe/wallet/." },
@@ -297,6 +316,17 @@ export function generateConstitutionReport() {
         <td>${escapeHtml(i.nombre)}</td>
         <td>${escapeHtml(i.uso)}</td>
         <td><span class="badge ref">${escapeHtml(i.prioridad)}</span></td>
+      </tr>`
+    )
+    .join("");
+
+  const seoRows = (req.seo?.items || [])
+    .map(
+      (i) => `<tr>
+        <td>${escapeHtml(i.item)}</td>
+        <td>${statusBadge(i.estado)}</td>
+        <td>${fieldValue(i.valor, "—")}</td>
+        <td class="muted">${fieldValue(i.notas, "—")}</td>
       </tr>`
     )
     .join("");
@@ -405,7 +435,7 @@ export function generateConstitutionReport() {
       <div class="meta">
         <span>Versión ${REPORT_VERSION}</span>
         <span>Generado: ${escapeHtml(generatedAt.slice(0, 16).replace("T", " "))} UTC</span>
-        <span class="badge live">Sitio en línea OK</span>
+        <span class="badge live">${escapeHtml(DOMAIN)} en vivo</span>
       </div>
     </div>
   </header>
@@ -422,6 +452,7 @@ export function generateConstitutionReport() {
       <a href="#clientes">Clientes</a>
       <a href="#independencia">Independencia</a>
       <a href="#migracion">Migración</a>
+      <a href="#seo">SEO</a>
       <a href="#wallet">Wallet</a>
       <a href="#wallet-visual">Mockup Wallet</a>
       <a href="#seguridad">Seguridad</a>
@@ -440,17 +471,20 @@ export function generateConstitutionReport() {
         <div class="card stat"><strong>7+1</strong><span>Páginas públicas + admin</span></div>
         <div class="card stat"><strong>${used.size}</strong><span>Imágenes en producción</span></div>
         <div class="card stat"><strong>${allImages.length}</strong><span>Activos en repositorio</span></div>
-        <div class="card stat"><strong>HTTP 200</strong><span>Todas las rutas verificadas</span></div>
+        <div class="card stat"><strong>DNS OK</strong><span>${escapeHtml(DOMAIN)} → GitHub Pages</span></div>
       </div>
-      <div class="callout"><strong>Hosting principal:</strong> GitHub Pages vía GitHub Actions (<code>deploy-github-pages.yml</code>). Cada push a <code>main</code> reconstruye y publica en ~1 minuto.</div>
-      <div class="callout warn"><strong>Plataforma de respaldo:</strong> Firebase Hosting (<code>mas-cafe-c8413</code>) está configurada en el repositorio como alternativa (mismo HTML estático). No se encontró configuración de «VertiZone» en el código — si es un servicio externo futuro, documentar credenciales en <code>content/settings.json</code>.</div>
+      <div class="callout"><strong>Hosting principal:</strong> GitHub Pages vía GitHub Actions (<code>deploy-github-pages.yml</code>). Cada push a <code>main</code> reconstruye y publica en <a href="${DOMAIN_LIVE_HTTP}/">${escapeHtml(DOMAIN)}</a> en ~1–2 minutos.</div>
+      <div class="callout warn"><strong>HTTPS pendiente:</strong> El sitio responde en HTTP. Certificado SSL de GitHub en emisión — workflow <code>maintain-domain.yml</code> reintenta cada 6 h. Cuando esté listo: <code>npm run domain:enable-https</code>.</div>
       <h3>Verificación realizada</h3>
       <ul>
         <li>Build <code>npm run build:github-pages</code> — OK (${pagesLive.length} páginas + admin + informe)</li>
         <li>Health check <code>npm run health-check</code> — OK</li>
-        <li>URLs en línea: inicio, café, menú, nosotros, tienda, blog, contacto, admin — HTTP 200</li>
+        <li>URLs en línea (github.io + <strong>${escapeHtml(DOMAIN)}</strong>): inicio, café, menú, nosotros, tienda, blog, contacto, admin — HTTP 200</li>
         <li>Contenido editable en <code>content/site.json</code> — válido</li>
-        <li>Dominio futuro: <strong>${escapeHtml(DOMAIN)}</strong> (<code>${escapeHtml(DOMAIN_PUNYCODE)}</code>) — DNS GoDaddy pendiente</li>
+        <li>DNS GoDaddy: A @ → GitHub (4 IPs) + CNAME www → github.io — <span class="badge ok">activo</span></li>
+        <li>Google Search Console — <span class="badge ok">verificado</span> (2026-06-30)</li>
+        <li>Logo principal Drive sincronizado — favicon, OG, JSON-LD</li>
+        <li>HTTPS — <span class="badge ref">en emisión</span> (certificado GitHub <code>state: new</code>)</li>
       </ul>
     </section>
 
@@ -461,8 +495,9 @@ export function generateConstitutionReport() {
         <h3>Ubicación</h3>
         <ul>
           <li><strong>En el repositorio:</strong> <code>informes/constitucion-web.html</code> (fuente) + generador <code>scripts/lib/generate-constitution-report.mjs</code></li>
-          <li><strong>Enlace público del informe:</strong> <a href="${LIVE_BASE}/informe/">${LIVE_BASE}/informe/</a></li>
-          <li><strong>Sitio de clientes:</strong> <a href="${LIVE_BASE}/">${LIVE_BASE}/</a> (sin enlace al informe en el menú)</li>
+          <li><strong>Enlace público del informe:</strong> <a href="${DOMAIN_LIVE_HTTP}/informe/">${DOMAIN_LIVE_HTTP}/informe/</a></li>
+          <li><strong>Sitio de clientes:</strong> <a href="${DOMAIN_LIVE_HTTP}/">${DOMAIN_LIVE_HTTP}/</a> (sin enlace al informe en el menú)</li>
+          <li><strong>Respaldo técnico:</strong> <a href="${LIVE_BASE}/">${LIVE_BASE}/</a></li>
         </ul>
       </div>
       <h3>Ciclo de actualización</h3>
@@ -615,8 +650,26 @@ export function generateConstitutionReport() {
       <div class="source-hint">Editar: <code>content/informe-requisitos.json</code> → <code>migracion</code> y <code>meta.fechaMigracionObjetivo</code></div>
     </section>
 
+    <section id="seo">
+      <h2>11. SEO y reconocimiento de marca</h2>
+      <p>${escapeHtml(req.seo?.intro || "Reconocimiento de marca en Google, redes y pestañas del navegador.")}</p>
+      <div class="callout"><strong>Automatización:</strong> cada deploy ejecuta <code>brand:sync-logo</code>, <code>seo:sync-google</code> y ping de sitemap vía <code>post:publish</code>. Guía: <code>${escapeHtml(meta.seoChecklist || "proyecto-mas-cafe/entregables/SEO-CHECKLIST.md")}</code></div>
+      <table>
+        <thead><tr><th>Ítem</th><th>Estado</th><th>Valor / herramienta</th><th>Notas</th></tr></thead>
+        <tbody>${seoRows}</tbody>
+      </table>
+      <h3>Comandos útiles</h3>
+      <ul>
+        <li><code>npm run brand:sync-logo</code> — logo Drive → favicon, OG, JSON-LD</li>
+        <li><code>npm run seo:sync-google</code> — TXT verificación + ping sitemap</li>
+        <li><code>npm run domain:enable-https</code> — activar HTTPS cuando certificado listo</li>
+        <li><code>npm run email:configure</code> — MX Zoho para administracion@${escapeHtml(DOMAIN)}</li>
+      </ul>
+      <div class="source-hint">Editar: <code>content/informe-requisitos.json</code> → <code>seo.items</code> · Config: <code>content/settings.json</code> → <code>seo</code>, <code>brand.primaryLogoDriveId</code></div>
+    </section>
+
     <section id="wallet">
-      <h2>11. Wallet de fidelización — plan completo</h2>
+      <h2>12. Wallet de fidelización — plan completo</h2>
       <p>${escapeHtml(req.wallet?.intro || "")}</p>
       <div class="callout"><strong>Backend recomendado:</strong> ${fieldValue(req.wallet?.backendRecomendado, "Firebase Auth + Firestore o Convex")}. El sitio actual no tiene login de clientes ni base de datos de puntos — todo esto es desarrollo nuevo.</div>
 
@@ -661,7 +714,7 @@ export function generateConstitutionReport() {
     </section>
 
     <section id="seguridad">
-      <h2>12. Seguridad, credenciales y ejecución autónoma</h2>
+      <h2>13. Seguridad, credenciales y ejecución autónoma</h2>
       <p>Para que Cursor y GitHub Actions desplieguen dominio y sitio <strong>sin pedir contraseñas en cada chat</strong>, los secretos viven en GitHub Secrets y en archivos locales que <em>no</em> se suben a Git.</p>
       <div class="callout"><strong>Guía completa:</strong> <code>proyecto-mas-cafe/cuentas/SEGURIDAD.md</code></div>
       <h3>Dónde guardar cada credencial</h3>
@@ -684,7 +737,7 @@ export function generateConstitutionReport() {
     </section>
 
     <section id="requisitos">
-      <h2>13. Lo que necesitamos de ustedes — checklist editable</h2>
+      <h2>14. Lo que necesitamos de ustedes — checklist editable</h2>
       <p>Esta tabla se actualiza editando un solo archivo en el repositorio. Los campos vacíos aparecen como <span class="field-empty">Por completar</span>.</p>
       <div class="callout"><strong>Archivo para completar:</strong> <code>content/informe-requisitos.json</code><br/>
       Tras editarlo: push a <code>main</code> → el informe se regenera automáticamente en el deploy.</div>
@@ -707,7 +760,7 @@ export function generateConstitutionReport() {
     </section>
 
     <section id="enlaces">
-      <h2>14. Enlaces del ecosistema y por qué existen</h2>
+      <h2>15. Enlaces del ecosistema y por qué existen</h2>
       <table>
         <thead><tr><th>Enlace</th><th>URL</th><th>Motivo</th></tr></thead>
         <tbody>${linkRows}</tbody>
@@ -715,7 +768,7 @@ export function generateConstitutionReport() {
     </section>
 
     <section id="dueños">
-      <h2>15. Recomendaciones para dueños de Más Café</h2>
+      <h2>16. Recomendaciones para dueños de Más Café</h2>
       <h3>Consejos para dueños de Más Café</h3>
       <ul>
         <li><strong>Una frase por pantalla.</strong> Evitar repetir tagline y descriptor en cada sección; reservarlos para momentos clave.</li>
@@ -733,7 +786,7 @@ export function generateConstitutionReport() {
     </section>
 
     <section id="changelog">
-      <h2>16. Historial de entregas (se actualiza con cada cambio)</h2>
+      <h2>17. Historial de entregas (se actualiza con cada cambio)</h2>
       <ul>${changelog}</ul>
       <p class="muted" style="margin-top:1rem">Próxima actualización automática al ejecutar <code>npm run build:github-pages</code> tras cambios en el repositorio.</p>
     </section>
@@ -743,7 +796,7 @@ export function generateConstitutionReport() {
   <footer>
     <div class="wrap">
       <p><strong>${escapeHtml(brand.name)}</strong> — Constitución Web v${REPORT_VERSION}</p>
-      <p style="margin-top:.5rem;opacity:.8">Repositorio: <a href="${REPO_URL}">${REPO_URL}</a> · Sitio: <a href="${LIVE_BASE}/">${LIVE_BASE}/</a></p>
+      <p style="margin-top:.5rem;opacity:.8">Repositorio: <a href="${REPO_URL}">${REPO_URL}</a> · Sitio: <a href="${DOMAIN_LIVE_HTTP}/">${DOMAIN_LIVE_HTTP}/</a> · Respaldo: <a href="${LIVE_BASE}/">${LIVE_BASE}/</a></p>
       <p style="margin-top:.35rem;opacity:.6;font-size:.78rem">Documento para la marca. No enlazado desde el menú público.</p>
     </div>
   </footer>
