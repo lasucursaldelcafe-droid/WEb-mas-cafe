@@ -35,34 +35,73 @@ function dig(query) {
   }
 }
 
+function apexIpsOk(results) {
+  return GITHUB_PAGES_A_RECORDS.every((ip) => results.includes(ip));
+}
+
 function checkApexFromResolver(resolver) {
   const results = digAt(resolver, `${DOMAIN_PUNYCODE} A`);
-  const ok = GITHUB_PAGES_A_RECORDS.every((ip) => results.includes(ip));
+  const ok = apexIpsOk(results);
   return { results, ok };
 }
 
 function checkWwwFromResolver(resolver) {
-  const results = digAt(resolver, `www.${DOMAIN_PUNYCODE} CNAME`);
-  const normalized = results.map((r) => r.replace(/\.$/, ""));
-  const ok = normalized.some(
+  const cnameResults = digAt(resolver, `www.${DOMAIN_PUNYCODE} CNAME`);
+  const normalized = cnameResults.map((r) => r.replace(/\.$/, ""));
+
+  const directGithub = normalized.some(
     (r) => r === GITHUB_PAGES_HOST || r.endsWith(GITHUB_PAGES_HOST),
   );
-  return { results, ok };
+  if (directGithub) return { results: cnameResults, ok: true };
+
+  // GoDaddy a veces aplana www → apex (CNAME al dominio raíz)
+  const pointsToApex = normalized.some(
+    (r) => r === DOMAIN_PUNYCODE || r.endsWith(DOMAIN_PUNYCODE),
+  );
+  if (pointsToApex && checkApexFromResolver(resolver).ok) {
+    return { results: cnameResults, ok: true };
+  }
+
+  // CNAME flattening: www resuelve como A a las IPs de GitHub
+  const aResults = digAt(resolver, `www.${DOMAIN_PUNYCODE} A`);
+  if (aResults.length > 0 && apexIpsOk(aResults)) {
+    return { results: aResults, ok: true };
+  }
+
+  return { results: cnameResults.length ? cnameResults : aResults, ok: false };
 }
 
 export function checkApexDns() {
   const results = dig(`${DOMAIN_PUNYCODE} A`);
-  const ok = GITHUB_PAGES_A_RECORDS.every((ip) => results.includes(ip));
+  const ok = apexIpsOk(results);
   return { results, ok, expected: GITHUB_PAGES_A_RECORDS };
 }
 
 export function checkWwwDns() {
-  const results = dig(`www.${DOMAIN_PUNYCODE} CNAME`);
-  const normalized = results.map((r) => r.replace(/\.$/, ""));
-  const ok = normalized.some(
+  const cnameResults = dig(`www.${DOMAIN_PUNYCODE} CNAME`);
+  const normalized = cnameResults.map((r) => r.replace(/\.$/, ""));
+
+  let ok = normalized.some(
     (r) => r === GITHUB_PAGES_HOST || r.endsWith(GITHUB_PAGES_HOST),
   );
-  return { results, ok, expected: GITHUB_PAGES_HOST };
+
+  if (!ok) {
+    const pointsToApex = normalized.some(
+      (r) => r === DOMAIN_PUNYCODE || r.endsWith(DOMAIN_PUNYCODE),
+    );
+    if (pointsToApex && checkApexDns().ok) ok = true;
+  }
+
+  if (!ok) {
+    const aResults = dig(`www.${DOMAIN_PUNYCODE} A`);
+    if (aResults.length > 0 && apexIpsOk(aResults)) ok = true;
+  }
+
+  return {
+    results: cnameResults.length ? cnameResults : dig(`www.${DOMAIN_PUNYCODE} A`),
+    ok,
+    expected: GITHUB_PAGES_HOST,
+  };
 }
 
 /** Consenso en resolvers públicos — evita activar custom domain demasiado pronto */
