@@ -19,12 +19,18 @@
 | Usuario admin GitHub | |
 | Contraseña / 2FA | *(no escribir contraseña aquí si se entrega por gestor de contraseñas)* |
 | Personal Access Token (si aplica) | |
-| GITHUB_TOKEN (domain:configure) | https://github.com/settings/tokens |
+| GITHUB_TOKEN (local / scripts) | https://github.com/settings/tokens |
+| GH_PAGES_PAT (GitHub Secret) | Mismo PAT — nombre obligatorio en Secrets |
 
-### Secrets en GitHub Actions
+### Secrets en GitHub Actions (para ejecución autónoma)
+
+Ver guía completa: [SEGURIDAD.md](./SEGURIDAD.md)
 
 | Secret | Configurado | Notas |
 |--------|-------------|-------|
+| `GODADDY_API_KEY` | ☐ | Par con GODADDY_API_SECRET |
+| `GODADDY_API_SECRET` | ☐ | https://developer.godaddy.com/keys |
+| `GH_PAGES_PAT` | ☐ | PAT repo + Pages (no usar nombre GITHUB_PAT) |
 | `FIREBASE_TOKEN` | ☐ | `npx firebase login:ci` |
 | `ADMIN_PUBLISH_KEY` | ☐ | Para publicar desde admin |
 

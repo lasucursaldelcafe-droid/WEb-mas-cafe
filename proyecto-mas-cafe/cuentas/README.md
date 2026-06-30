@@ -3,6 +3,7 @@
 | Archivo | Uso |
 |---------|-----|
 | [ENLACES-CONFIGURACION.md](./ENLACES-CONFIGURACION.md) | **Enlaces** donde debes iniciar sesión y configurar |
+| [SEGURIDAD.md](./SEGURIDAD.md) | **Credenciales y ejecución autónoma** (Secrets, .env.local, sin chat) |
 | [REGISTRO-HECHO.md](./REGISTRO-HECHO.md) | **Bloc público** — pega links de lo ya hecho (sí va a Git) |
 | [CREDENCIALES.template.md](./CREDENCIALES.template.md) | Plantilla para copiar |
 | `CREDENCIALES.md` | **Bloc privado** — contraseñas y tokens (NO va a Git) |
