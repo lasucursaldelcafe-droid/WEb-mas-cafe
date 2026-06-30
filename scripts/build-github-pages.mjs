@@ -12,6 +12,7 @@ import { generateAdminPage } from "./lib/site-html/admin.mjs";
 import { generateConstitutionReport } from "./lib/generate-constitution-report.mjs";
 import { generateWalletVisualPage } from "./lib/generate-wallet-visual.mjs";
 import { FAVICON_FILES, generateFavicons } from "./lib/generate-favicons-lib.mjs";
+import { generateWalletPage, generateCajaPage, generateWalletManifest } from "./lib/site-html/wallet-pages.mjs";
 import { generateRobotsTxt, generateSitemapXml } from "./lib/seo.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -72,6 +73,24 @@ if (!skipInformeSource) {
   writeFileSync(walletSource, walletVisualHtml, "utf8");
 }
 console.log("  • informe/wallet/index.html (mockup Apple + Google Wallet)");
+
+await import("./wallet/sync-program.mjs");
+
+const walletDir = path.join(outDir, "wallet");
+const cajaDir = path.join(outDir, "caja");
+mkdirSync(walletDir, { recursive: true });
+mkdirSync(cajaDir, { recursive: true });
+
+writeFileSync(path.join(walletDir, "index.html"), generateWalletPage(), "utf8");
+writeFileSync(path.join(walletDir, "manifest.webmanifest"), generateWalletManifest(), "utf8");
+writeFileSync(path.join(cajaDir, "index.html"), generateCajaPage(), "utf8");
+
+for (const file of ["wallet.css", "wallet-app.js"]) {
+  cpSync(path.join(root, "scripts/wallet", file), path.join(walletDir, file));
+}
+cpSync(path.join(root, "scripts/wallet/caja-app.js"), path.join(cajaDir, "caja-app.js"));
+console.log("  • wallet/index.html (fidelización cliente)");
+console.log("  • caja/index.html (modo mostrador)");
 
 const cotizacionSrc = path.join(root, "public/cotizacion-perpetuo/index.html");
 const cotizacionDest = path.join(outDir, "cotizacion-perpetuo/index.html");
@@ -135,5 +154,6 @@ console.log(`\n✅ ${pages.length + 1} páginas · ${copied} imágenes\n`);
 console.log("Local:    npm run preview");
 console.log("Público:  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/");
 console.log("Informe:  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/");
-console.log("Wallet:   https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/wallet/");
+console.log("Wallet:   https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/wallet/");
+console.log("Caja:     https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/caja/");
 console.log("Cotización: https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/cotizacion-perpetuo/\n");

@@ -1050,6 +1050,7 @@ export function shell({
           <a href="tel:${brand.phone.replace(/\s/g, "")}">${brand.phone}</a>
           <a href="mailto:${brand.email}">${brand.email}</a>
           <a href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer" data-track="whatsapp">WhatsApp</a>
+          <a href="${href("/wallet")}" data-track="wallet">Mi wallet · puntos</a>
         </div>
         <div class="social-links">
           <a href="${brand.social.instagram}" target="_blank" rel="noopener noreferrer" data-track="instagram">Instagram</a>

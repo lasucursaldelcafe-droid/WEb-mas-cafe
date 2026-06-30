@@ -253,6 +253,7 @@
     { id: "overview", label: "Resumen", icon: "◉" },
     { id: "help", label: "Cómo funciona", icon: "?" },
     { id: "informe", label: "Informe", icon: "📋" },
+    { id: "wallet", label: "Fidelización", icon: "◈" },
     { id: "analytics", label: "Análisis", icon: "▤" },
     { id: "brand", label: "Marca e inicio", icon: "◇" },
     { id: "theme", label: "Colores y fuentes", icon: "◐" },
@@ -274,6 +275,8 @@
 
   const INFORME_URL = "../informe/";
   const INFORME_WALLET_URL = "../informe/wallet/";
+  const WALLET_APP_URL = "../wallet/";
+  const CAJA_URL = "../caja/";
 
   const THEME_FIELDS = [
     ["cream", "Crema (fondo)"],
@@ -776,6 +779,7 @@
     const main = $("#panel-root");
     const titles = {
       overview: "Panel de administración", help: "Cómo funciona", informe: "Informe constitucional",
+      wallet: "Wallet de fidelización",
       analytics: "Análisis e ingresos", brand: "Marca e inicio",
       sections: "Secciones del sitio", theme: "Colores y tipografías", pages: "Textos de páginas", experiences: "Experiencias",
       products: "Café y tienda", menu: "Menú coffee shop", blog: "Blog", nosotros: "Nosotros",
@@ -787,6 +791,7 @@
       overview: () => finishPanel("overview", main, renderOverview()),
       help: () => finishPanel("help", main, renderHelp()),
       informe: () => finishPanel("informe", main, renderInforme(), bindInformeEvents),
+      wallet: () => finishPanel("wallet", main, renderWallet(), bindWalletEvents),
       analytics: () => finishPanel("analytics", main, renderAnalytics(), bindAnalyticsEvents),
       brand: () => finishPanel("brand", main, renderBrand(), (root) => bindFields(root, content.brand)),
       sections: () => finishPanel("sections", main, renderSections(), bindSectionsEvents),
@@ -1027,6 +1032,36 @@
       const frame = $("#informe-frame", root);
       if (frame) frame.src = INFORME_URL;
     });
+  }
+
+  function renderWallet() {
+    return `
+    <div class="card">
+      <h3>Wallet en producción</h3>
+      <p style="line-height:1.65;margin-bottom:1rem">Programa de puntos con registro de clientes, QR en mostrador y canje automático. Backend en Firebase Cloud Functions.</p>
+      <div class="informe-actions">
+        <a href="${WALLET_APP_URL}" target="_blank" rel="noopener" class="btn btn-blue">App cliente (/wallet/)</a>
+        <a href="${CAJA_URL}" target="_blank" rel="noopener" class="btn btn-ghost">Modo caja (/caja/)</a>
+        <a href="${INFORME_WALLET_URL}" target="_blank" rel="noopener" class="btn btn-ghost">Mockup diseño</a>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Operación automática</h3>
+      <ul style="line-height:1.7;font-size:.92rem;margin-left:1.1rem">
+        <li>El cliente se registra en <strong>/wallet/</strong> y recibe ID <code>MC-XXXXXX</code> automático.</li>
+        <li>En caja, ingresa PIN (inicial <code>123456</code>) y el monto de compra → los puntos se calculan solos.</li>
+        <li>Canje: el cliente genera código en la app; caja lo valida en segundos.</li>
+        <li>Reglas editables en <code>content/wallet-program.json</code> + redeploy de Functions.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Activar en Firebase (una vez)</h3>
+      <p style="line-height:1.65;font-size:.92rem">En la consola de Firebase (<code>mas-cafe-c8413</code>): activar <strong>Authentication</strong> (Email/Password y Google) y <strong>Firestore</strong>. Luego el workflow <code>deploy-firebase</code> publica reglas y funciones automáticamente.</p>
+    </div>`;
+  }
+
+  function bindWalletEvents() {
+    /* enlaces externos — sin lógica adicional */
   }
 
   function renderBrand() {

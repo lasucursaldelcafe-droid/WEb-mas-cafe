@@ -37,9 +37,9 @@
     "intro": "Hoy el sitio público vive en GitHub Pages (HTML estático). La wallet de fidelización requiere backend. El dominio www.mascafé.com apuntará al hosting con Node.js/API.",
     "fases": [
       { "fase": "A", "nombre": "Organización", "descripcion": "Repo y cuentas a nombre Más Café", "estado": "pendiente", "fechaObjetivo": "" },
-      { "fase": "B", "nombre": "Backend", "descripcion": "Firebase Auth + Firestore (o Convex) activado", "estado": "pendiente", "fechaObjetivo": "" },
-      { "fase": "C", "nombre": "Wallet MVP", "descripcion": "Login cliente + saldo + sumar/restar + historial", "estado": "pendiente", "fechaObjetivo": "" },
-      { "fase": "D", "nombre": "Admin fidelización", "descripcion": "Panel dueños + modo caja en mostrador", "estado": "pendiente", "fechaObjetivo": "" },
+      { "fase": "B", "nombre": "Backend", "descripcion": "Firebase Auth + Firestore (o Convex) activado", "estado": "listo", "fechaObjetivo": "2026-06-30" },
+      { "fase": "C", "nombre": "Wallet MVP", "descripcion": "Login cliente + saldo + sumar/restar + historial", "estado": "listo", "fechaObjetivo": "2026-06-30" },
+      { "fase": "D", "nombre": "Admin fidelización", "descripcion": "Panel dueños + modo caja en mostrador", "estado": "listo", "fechaObjetivo": "2026-06-30" },
       { "fase": "E", "nombre": "Dominio", "descripcion": "www.mascafé.com → hosting con backend", "estado": "pendiente", "fechaObjetivo": "" },
       { "fase": "F", "nombre": "Cursor", "descripcion": "Repo Más Café conectado a Cursor para actualizaciones", "estado": "en_proceso", "fechaObjetivo": "" }
     ],
@@ -94,39 +94,39 @@
       "Dominio www.mascafé.com"
     ],
     "reglasNegocio": {
-      "puntosPorMilPesos": "",
+      "puntosPorMilPesos": "1",
       "ejemplo": "1 punto cada $1.000 COP",
-      "minimoCompraParaSumar": "",
-      "caducidadPuntosMeses": "",
-      "premiosCanjeables": [],
-      "canjeParcial": "",
-      "puntosManualesPermitidos": "",
-      "limiteDiarioPuntos": "",
-      "antiFraude": "",
-      "notas": "Completar con los dueños de Más Café antes de programar."
+      "minimoCompraParaSumar": "$15.000",
+      "caducidadPuntosMeses": "No caducan (v1)",
+      "premiosCanjeables": ["Café filtro gratis (100 pts)", "$5.000 descuento (50 pts)", "Postre de la casa (150 pts)"],
+      "canjeParcial": "Canje total por premio",
+      "puntosManualesPermitidos": "Solo vía caja con PIN",
+      "limiteDiarioPuntos": "500 pts/día por cliente",
+      "antiFraude": "Ledger inmutable en Cloud Functions",
+      "notas": "Reglas en content/wallet-program.json · backend Firebase mas-cafe-c8413"
     },
     "pantallasCliente": [
-      { "pantalla": "Registro / login", "descripcion": "Entrar a la wallet", "estado": "pendiente" },
-      { "pantalla": "Mi wallet", "descripcion": "Saldo, QR o código corto para mostrador", "estado": "pendiente" },
-      { "pantalla": "Historial", "descripcion": "Movimientos con fecha y motivo", "estado": "pendiente" },
-      { "pantalla": "Premios", "descripcion": "Catálogo de canjes", "estado": "pendiente" },
-      { "pantalla": "Canjear", "descripcion": "Confirmación + código para validar en caja", "estado": "pendiente" },
-      { "pantalla": "Mi perfil", "descripcion": "Datos y preferencias", "estado": "pendiente" }
+      { "pantalla": "Registro / login", "descripcion": "Entrar a la wallet", "estado": "listo" },
+      { "pantalla": "Mi wallet", "descripcion": "Saldo, QR o código corto para mostrador", "estado": "listo" },
+      { "pantalla": "Historial", "descripcion": "Movimientos con fecha y motivo", "estado": "listo" },
+      { "pantalla": "Premios", "descripcion": "Catálogo de canjes", "estado": "listo" },
+      { "pantalla": "Canjear", "descripcion": "Confirmación + código para validar en caja", "estado": "listo" },
+      { "pantalla": "Mi perfil", "descripcion": "Datos y preferencias", "estado": "listo" }
     ],
     "modulosAdmin": [
-      { "modulo": "Programa de fidelización", "funciones": "Reglas, premios, activar/desactivar", "estado": "pendiente" },
-      { "modulo": "Clientes", "funciones": "Buscar por teléfono, ver saldo", "estado": "pendiente" },
-      { "modulo": "Ajuste manual de puntos", "funciones": "Sumar/restar con motivo obligatorio", "estado": "pendiente" },
-      { "modulo": "Canjes pendientes", "funciones": "Validar código en mostrador", "estado": "pendiente" },
+      { "modulo": "Programa de fidelización", "funciones": "Reglas, premios, activar/desactivar", "estado": "listo" },
+      { "modulo": "Clientes", "funciones": "Buscar por teléfono, ver saldo", "estado": "listo" },
+      { "modulo": "Ajuste manual de puntos", "funciones": "Sumar/restar con motivo obligatorio", "estado": "listo" },
+      { "modulo": "Canjes pendientes", "funciones": "Validar código en mostrador", "estado": "listo" },
       { "modulo": "Reportes", "funciones": "Puntos emitidos, canjeados, clientes activos", "estado": "pendiente" },
-      { "modulo": "Staff / caja", "funciones": "Usuarios con permiso limitado (solo cargar puntos)", "estado": "pendiente" }
+      { "modulo": "Staff / caja", "funciones": "Usuarios con permiso limitado (solo cargar puntos)", "estado": "listo" }
     ],
     "operacionCaja": [
-      { "item": "Tablet o móvil con modo caja", "estado": "pendiente", "notas": "" },
-      { "item": "Buscar cliente por teléfono o QR", "estado": "pendiente", "notas": "" },
-      { "item": "Registrar compra → sumar puntos automáticos", "estado": "pendiente", "notas": "" },
-      { "item": "Validar canje con código de un solo uso", "estado": "pendiente", "notas": "" },
-      { "item": "PIN o login staff (no cualquiera suma puntos)", "estado": "pendiente", "notas": "" }
+      { "item": "Tablet o móvil con modo caja", "estado": "listo", "notas": "/caja/" },
+      { "item": "Buscar cliente por teléfono o QR", "estado": "listo", "notas": "ID MC- o correo" },
+      { "item": "Registrar compra → sumar puntos automáticos", "estado": "listo", "notas": "Monto COP → puntos auto" },
+      { "item": "Validar canje con código de un solo uso", "estado": "listo", "notas": "Código 6 caracteres, 30 min" },
+      { "item": "PIN o login staff (no cualquiera suma puntos)", "estado": "listo", "notas": "PIN inicial 123456" }
     ],
     "modeloDatos": [
       "Customer — usuario de la wallet",

@@ -1,0 +1,33 @@
+{
+  "enabled": true,
+  "pointsPerThousandCop": 1,
+  "minPurchaseCop": 15000,
+  "maxPointsPerDay": 500,
+  "defaultStaffPin": "123456",
+  "brandName": "Más Café",
+  "tiers": [
+    { "name": "Amante del café", "minPoints": 0 },
+    { "name": "Conocedor", "minPoints": 200 },
+    { "name": "Maestro tostador", "minPoints": 500 }
+  ],
+  "rewards": [
+    {
+      "id": "cafe-filtro",
+      "name": "Café filtro gratis",
+      "pointsCost": 100,
+      "active": true
+    },
+    {
+      "id": "descuento-5k",
+      "name": "$5.000 de descuento",
+      "pointsCost": 50,
+      "active": true
+    },
+    {
+      "id": "postre",
+      "name": "Postre de la casa",
+      "pointsCost": 150,
+      "active": true
+    }
+  ]
+}

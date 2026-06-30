@@ -19,6 +19,9 @@ const REQUIRED_ROUTES = [
   "blog/index.html",
   "contacto/index.html",
   "admin/index.html",
+  "wallet/index.html",
+  "wallet/wallet-app.js",
+  "caja/index.html",
   "informe/index.html",
   "informe/wallet/index.html",
 ];

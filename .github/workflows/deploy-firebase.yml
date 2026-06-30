@@ -1,4 +1,4 @@
-name: Publicar en Firebase Hosting
+name: Publicar en Firebase (hosting + wallet backend)
 
 on:
   push:
@@ -12,7 +12,6 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # Solo necesario si usas Workload Identity Federation (ver docs/HOSTING.md)
     permissions:
       contents: read
       id-token: write
@@ -30,8 +29,16 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
-      - name: Generar sitio HTML
-        run: node scripts/build-mas-cafe.mjs
+      - name: Generar sitio HTML + wallet
+        run: |
+          node scripts/wallet/sync-program.mjs
+          node scripts/build-mas-cafe.mjs
+          node scripts/build-github-pages.mjs
+          mkdir -p mas-cafe/wallet mas-cafe/caja
+          cp -r gh-pages-site/wallet/* mas-cafe/wallet/
+          cp gh-pages-site/caja/index.html mas-cafe/caja/
+          cp gh-pages-site/caja/caja-app.js mas-cafe/caja/
+          cp gh-pages-site/wallet/wallet.css mas-cafe/caja/
 
       - name: Autenticar con Workload Identity (opcional)
         id: wif-auth
@@ -63,37 +70,32 @@ jobs:
             else
               echo "mode=token_invalid" >> "$GITHUB_OUTPUT"
               echo "can_deploy=false" >> "$GITHUB_OUTPUT"
-              echo "::warning::FIREBASE_TOKEN inválido o expirado. El sitio principal en GitHub Pages no se ve afectado."
-              echo "Renueva el token con: npx firebase login:ci"
-              echo "Luego actualiza el secret FIREBASE_TOKEN en GitHub."
+              echo "::warning::FIREBASE_TOKEN inválido o expirado."
             fi
           else
             echo "mode=none" >> "$GITHUB_OUTPUT"
             echo "can_deploy=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::Sin credenciales Firebase. Deploy omitido (GitHub Pages es el canal principal)."
+            echo "::warning::Sin credenciales Firebase. Deploy omitido."
           fi
 
-      - name: Deploy Firebase Hosting
+      - name: Instalar dependencias Functions
+        if: steps.firebase-auth.outputs.can_deploy == 'true'
+        run: npm ci --prefix functions
+
+      - name: Deploy Firebase (hosting + functions + firestore)
         if: steps.firebase-auth.outputs.can_deploy == 'true'
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.wif-auth.outputs.credentials_file_path }}
         run: |
-          AUTH_MODE=""
-          if [ "${{ steps.firebase-auth.outputs.mode }}" = "wif" ]; then
-            AUTH_MODE="Workload Identity Federation"
-          elif [ "${{ steps.firebase-auth.outputs.mode }}" = "service_account" ]; then
-            AUTH_MODE="cuenta de servicio (JSON)"
+          if [ "${{ steps.firebase-auth.outputs.mode }}" = "service_account" ]; then
             echo "$FIREBASE_SERVICE_ACCOUNT" > /tmp/firebase-sa.json
             export GOOGLE_APPLICATION_CREDENTIALS=/tmp/firebase-sa.json
-          else
-            AUTH_MODE="token CI (firebase login:ci)"
           fi
 
-          echo "Autenticación: $AUTH_MODE"
           npx -y firebase-tools@latest deploy \
-            --only hosting:mas-cafe-c8413 \
+            --only hosting:mas-cafe-c8413,functions:wallet,firestore \
             --project mas-cafe-c8413 \
             --non-interactive
 
@@ -102,7 +104,9 @@ jobs:
       - name: Verificar sitio en vivo
         if: steps.firebase-auth.outputs.can_deploy == 'true'
         run: |
-          for URL in https://mas-cafe-c8413.web.app/ https://mas-cafe-c8413.firebaseapp.com/; do
+          for URL in \
+            https://mas-cafe-c8413.web.app/wallet/ \
+            https://mas-cafe-c8413.web.app/caja/; do
             CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
             echo "$URL → HTTP $CODE"
           done
