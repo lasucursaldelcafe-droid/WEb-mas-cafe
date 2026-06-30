@@ -1,0 +1,41 @@
+name: CI — validar PR
+
+# Validación estable en cada push a PR (sin auto-merge).
+# Complementa auto-merge-cursor-prs.yml para ramas cursor/*.
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
+          fetch-depth: 0
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Validar build, enlaces y SEO
+        env:
+          ADMIN_PUBLISH_KEY: ${{ secrets.ADMIN_PUBLISH_KEY }}
+          GH_PAGES_PAT: ${{ secrets.GH_PAGES_PAT }}
+          CI_SKIP_INFORME_SOURCE: "1"
+        run: |
+          npm ci
+          npm run ci:validate

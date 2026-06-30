@@ -17,6 +17,7 @@ import { generateRobotsTxt, generateSitemapXml } from "./lib/seo.mjs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
 const outDir = path.join(root, "gh-pages-site");
+const skipInformeSource = process.env.CI_SKIP_INFORME_SOURCE === "1";
 
 console.log("\n▸ Generando sitio multipágina para GitHub Pages...\n");
 
@@ -54,18 +55,22 @@ const constitutionHtml = generateConstitutionReport();
 const informeDest = path.join(outDir, "informe/index.html");
 mkdirSync(path.dirname(informeDest), { recursive: true });
 writeFileSync(informeDest, constitutionHtml, "utf8");
-const informeSource = path.join(root, "informes/constitucion-web.html");
-mkdirSync(path.dirname(informeSource), { recursive: true });
-writeFileSync(informeSource, constitutionHtml, "utf8");
+if (!skipInformeSource) {
+  const informeSource = path.join(root, "informes/constitucion-web.html");
+  mkdirSync(path.dirname(informeSource), { recursive: true });
+  writeFileSync(informeSource, constitutionHtml, "utf8");
+}
 console.log("  • informe/index.html (constitución web)");
 
 const walletVisualHtml = generateWalletVisualPage();
 const walletDest = path.join(outDir, "informe/wallet/index.html");
-const walletSource = path.join(root, "informes/wallet-visual.html");
 mkdirSync(path.dirname(walletDest), { recursive: true });
 writeFileSync(walletDest, walletVisualHtml, "utf8");
-mkdirSync(path.dirname(walletSource), { recursive: true });
-writeFileSync(walletSource, walletVisualHtml, "utf8");
+if (!skipInformeSource) {
+  const walletSource = path.join(root, "informes/wallet-visual.html");
+  mkdirSync(path.dirname(walletSource), { recursive: true });
+  writeFileSync(walletSource, walletVisualHtml, "utf8");
+}
 console.log("  • informe/wallet/index.html (mockup Apple + Google Wallet)");
 
 writeFileSync(
