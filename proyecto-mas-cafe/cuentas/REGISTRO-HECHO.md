@@ -17,6 +17,7 @@ Formato sugerido por línea:
 - [ ] Repo accesible | https://github.com/... | | 
 
 ### GoDaddy
+- [x] DNS automático | npm run domain:configure | 2026-06-30 | Cursor script
 - [ ] Dominio mascafé.com activo | https://dcc.godaddy.com/... | |
 - [ ] DNS apuntando a GitHub Pages | (pegar resultado dig o screenshot) | |
 - [ ] Custom domain en GitHub Pages verde | https://github.com/.../settings/pages | |
@@ -49,8 +50,11 @@ Formato sugerido por línea:
 
 ### GoDaddy
 - [x] API GoDaddy Production (key + secret en GitHub Secrets) | https://developer.godaddy.com/keys | 2026-06-30 | configurado
-- [x] DNS A @ + CNAME www vía API | npm run domain:configure | 2026-06-30 | aplicado — propagando
-- [ ] Dominio verificado en GitHub Pages (check verde) | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/pages | |
+- [x] DNS A @ + CNAME www vía API | npm run domain:configure | 2026-06-30 | aplicado — propagado
+- [x] DNS público (8.8.8.8) apunta a GitHub Pages | dig A @ → 185.199.x.x | 2026-06-30 |
+- [x] Custom domain activado en GitHub Pages | xn--mascaf-gva.com | 2026-06-30 | npm run domain:configure
+- [x] Sitio responde HTTP en mascafé.com | http://www.mascafé.com → 200 | 2026-06-30 |
+- [ ] HTTPS certificado GitHub (check verde) | Settings → Pages → Enforce HTTPS | pendiente ~24–48 h |
 - [ ] HTTPS forzado en GitHub Pages | | |
 
 ### Firebase
