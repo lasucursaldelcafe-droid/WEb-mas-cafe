@@ -39,7 +39,7 @@ npm run verify:seo
 | 4 | Pegar en `content/settings.json` → `seo.googleSiteVerification` | Ejemplo: `"googleSiteVerification": "abc123..."` |
 | 5 | Push a `main` → deploy automático | |
 | 6 | En Search Console → **Verificar** | |
-| 7 | **Sitemaps** → Añadir | `https://www.mascafé.com/sitemap.xml` |
+| 7 | **Sitemaps** → Añadir | `http://mascafé.com/sitemap.xml` (o `http://xn--mascaf-gva.com/sitemap.xml`) |
 | 8 | **Inspección de URLs** → Probar inicio | Solicitar indexación |
 
 ---
@@ -64,7 +64,7 @@ npm run verify:seo
 | 1 | https://www.bing.com/webmasters |
 | 2 | Añadir sitio `https://www.mascafé.com` |
 | 3 | Código en `content/settings.json` → `seo.bingSiteVerification` |
-| 4 | Enviar sitemap: `https://www.mascafé.com/sitemap.xml` |
+| 4 | Enviar sitemap: `http://mascafé.com/sitemap.xml` — **no** usar HTTPS hasta que el certificado esté activo |
 
 ---
 

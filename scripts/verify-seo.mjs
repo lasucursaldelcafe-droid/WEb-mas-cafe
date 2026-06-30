@@ -5,6 +5,7 @@
 import { existsSync, readFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { domainToASCII } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const siteDir = path.join(__dirname, "../gh-pages-site");
@@ -50,6 +51,33 @@ if (!robots.includes("Disallow: /admin/")) passed = fail("robots.txt sin Disallo
 const sitemap = readFileSync(path.join(siteDir, "sitemap.xml"), "utf8");
 if (!sitemap.includes("<loc>")) passed = fail("sitemap.xml vacío") && passed;
 else ok("sitemap con URLs públicas");
+
+const settingsRaw = readFileSync(path.join(__dirname, "../content/settings.json"), "utf8");
+const httpsReady = settingsRaw.includes('"httpsReady": true');
+const locMatches = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+if (locMatches.length === 0) {
+  passed = fail("sitemap sin entradas <loc>") && passed;
+} else {
+  for (const loc of locMatches) {
+    let parsed;
+    try {
+      parsed = new URL(loc);
+    } catch {
+      passed = fail(`sitemap URL inválida: ${loc}`) && passed;
+      continue;
+    }
+    if (parsed.hostname !== domainToASCII(parsed.hostname)) {
+      passed = fail(`sitemap debe usar punycode: ${parsed.hostname}`) && passed;
+    }
+    if (parsed.protocol === "https:" && !httpsReady) {
+      passed = fail("sitemap HTTPS pero el sitio aún no tiene SSL activo") && passed;
+    }
+    if (parsed.hostname.startsWith("www.")) {
+      passed = fail(`sitemap con www (${loc}) — usar apex sin www`) && passed;
+    }
+  }
+  if (passed) ok(`${locMatches.length} URLs sitemap (protocolo y host correctos)`);
+}
 
 for (const page of PUBLIC_PAGES) {
   const full = path.join(siteDir, page);

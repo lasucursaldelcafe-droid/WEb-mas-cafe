@@ -15,7 +15,8 @@
     "faviconSource": "/images/brand/logo-principal.png"
   },
   "seo": {
-    "siteUrl": "https://www.mascafé.com",
+    "siteUrl": "http://xn--mascaf-gva.com",
+    "httpsReady": false,
     "siteName": "Más Café",
     "ogImagePath": "/images/brand/logo-og.png",
     "locale": "es_CO",
