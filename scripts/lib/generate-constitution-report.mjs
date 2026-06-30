@@ -231,7 +231,8 @@ export function generateConstitutionReport() {
     .join("");
 
   const changelog = [
-    { date: "2026-06-30", note: "Fix mockup wallet — rutas de imágenes ../../images/ y verificación de enlaces (npm run verify:links)." },
+    { date: "2026-06-30", note: "Seguridad y credenciales (SEGURIDAD.md) + checklist wallet gratis paso a paso." },
+    { date: "2026-06-30", note: "Fix dominio — custom domain solo si DNS público propagado; sitio github.io estable." },
     { date: "2026-06-27", note: "Informe v1.3 — mockup visual Apple Wallet + Google Wallet en /informe/wallet/." },
     { date: "2026-06-27", note: "Automatización DNS dominio mascafé.com (npm run domain:configure)." },
     { date: "2026-06-27", note: "Carpeta proyecto-mas-cafe/ — entrega, enlaces de cuentas, REGISTRO-HECHO y plantilla CREDENCIALES." },
@@ -423,6 +424,7 @@ export function generateConstitutionReport() {
       <a href="#migracion">Migración</a>
       <a href="#wallet">Wallet</a>
       <a href="#wallet-visual">Mockup Wallet</a>
+      <a href="#seguridad">Seguridad</a>
       <a href="#requisitos">Requisitos</a>
       <a href="#enlaces">Enlaces</a>
       <a href="#dueños">Dueños</a>
@@ -654,16 +656,42 @@ export function generateConstitutionReport() {
         <li>Staff con PIN o login limitado para cargar puntos en caja.</li>
         <li>Contraseñas admin hasheadas (mejora pendiente en el panel actual).</li>
       </ul>
-      <div class="source-hint">Editar reglas y estados: <code>content/informe-requisitos.json</code> → <code>wallet</code></div>
+      <div class="source-hint">Editar reglas y estados: <code>content/informe-requisitos.json</code> → <code>wallet</code><br/>
+      Checklist gratis paso a paso: <code>proyecto-mas-cafe/entregables/WALLET-CHECKLIST-GRATIS.md</code></div>
+    </section>
+
+    <section id="seguridad">
+      <h2>12. Seguridad, credenciales y ejecución autónoma</h2>
+      <p>Para que Cursor y GitHub Actions desplieguen dominio y sitio <strong>sin pedir contraseñas en cada chat</strong>, los secretos viven en GitHub Secrets y en archivos locales que <em>no</em> se suben a Git.</p>
+      <div class="callout"><strong>Guía completa:</strong> <code>proyecto-mas-cafe/cuentas/SEGURIDAD.md</code></div>
+      <h3>Dónde guardar cada credencial</h3>
+      <table>
+        <thead><tr><th>Tipo</th><th>Dónde</th><th>Para qué</th></tr></thead>
+        <tbody>
+          <tr><td>DNS GoDaddy</td><td>GitHub Secrets <code>GODADDY_API_KEY</code> + <code>GODADDY_API_SECRET</code></td><td><code>npm run domain:configure</code></td></tr>
+          <tr><td>GitHub Pages API</td><td>Secret <code>GH_PAGES_PAT</code></td><td>Custom domain automático</td></tr>
+          <tr><td>Deploy admin</td><td>Secret <code>ADMIN_PUBLISH_KEY</code></td><td>Publicar desde <code>/admin/</code></td></tr>
+          <tr><td>Firebase CI</td><td>Secret <code>FIREBASE_TOKEN</code></td><td>Deploy hosting respaldo</td></tr>
+          <tr><td>Desarrollo local</td><td><code>.env.local</code> (gitignored)</td><td>Scripts en tu PC</td></tr>
+          <tr><td>Entrega al dueño</td><td><code>CREDENCIALES.md</code> (gitignored)</td><td>Bloc privado — copiar desde plantilla</td></tr>
+        </tbody>
+      </table>
+      <h3>Panel de secrets</h3>
+      <p><a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/secrets/actions" target="_blank" rel="noopener">github.com/.../settings/secrets/actions</a></p>
+      <div class="callout warn"><strong>Nunca</strong> pegues tokens en el chat ni en commits. Di «configurado» y actualiza Secrets o <code>REGISTRO-HECHO.md</code>.</div>
+      <h3>Migración a GitHub solo Más Café</h3>
+      <p>Cuando exista la organización/repo de Más Café: transferir repositorio, <strong>recrear todos los Secrets</strong>, reconectar Cursor y volver a ejecutar <code>domain:configure</code>. Ver checklist en <code>proyecto-mas-cafe/migracion/CHECKLIST.md</code>.</p>
     </section>
 
     <section id="requisitos">
-      <h2>12. Lo que necesitamos de ustedes — checklist editable</h2>
+      <h2>13. Lo que necesitamos de ustedes — checklist editable</h2>
       <p>Esta tabla se actualiza editando un solo archivo en el repositorio. Los campos vacíos aparecen como <span class="field-empty">Por completar</span>.</p>
       <div class="callout"><strong>Archivo para completar:</strong> <code>content/informe-requisitos.json</code><br/>
       Tras editarlo: push a <code>main</code> → el informe se regenera automáticamente en el deploy.</div>
       <div class="callout warn"><strong>Carpeta de entrega y cuentas:</strong> <code>proyecto-mas-cafe/</code><br/>
       • Enlaces para configurar: <code>proyecto-mas-cafe/cuentas/ENLACES-CONFIGURACION.md</code><br/>
+      • Seguridad y secrets: <code>proyecto-mas-cafe/cuentas/SEGURIDAD.md</code><br/>
+      • Wallet gratis paso a paso: <code>proyecto-mas-cafe/entregables/WALLET-CHECKLIST-GRATIS.md</code><br/>
       • Pegar lo ya hecho: <code>proyecto-mas-cafe/cuentas/REGISTRO-HECHO.md</code><br/>
       • Credenciales locales (no Git): copiar <code>CREDENCIALES.template.md</code> → <code>CREDENCIALES.md</code></div>
       <table>
@@ -679,7 +707,7 @@ export function generateConstitutionReport() {
     </section>
 
     <section id="enlaces">
-      <h2>13. Enlaces del ecosistema y por qué existen</h2>
+      <h2>14. Enlaces del ecosistema y por qué existen</h2>
       <table>
         <thead><tr><th>Enlace</th><th>URL</th><th>Motivo</th></tr></thead>
         <tbody>${linkRows}</tbody>
@@ -687,7 +715,7 @@ export function generateConstitutionReport() {
     </section>
 
     <section id="dueños">
-      <h2>14. Recomendaciones para dueños de Más Café</h2>
+      <h2>15. Recomendaciones para dueños de Más Café</h2>
       <h3>Consejos para dueños de Más Café</h3>
       <ul>
         <li><strong>Una frase por pantalla.</strong> Evitar repetir tagline y descriptor en cada sección; reservarlos para momentos clave.</li>
@@ -705,7 +733,7 @@ export function generateConstitutionReport() {
     </section>
 
     <section id="changelog">
-      <h2>15. Historial de entregas (se actualiza con cada cambio)</h2>
+      <h2>16. Historial de entregas (se actualiza con cada cambio)</h2>
       <ul>${changelog}</ul>
       <p class="muted" style="margin-top:1rem">Próxima actualización automática al ejecutar <code>npm run build:github-pages</code> tras cambios en el repositorio.</p>
     </section>

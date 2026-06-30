@@ -72,6 +72,10 @@ Formato sugerido por línea:
 - [x] Proyecto editable con Cursor Cloud Agent | este repositorio | 2026-06 |
 - [ ] Repo futuro conectado en Cursor (org Más Café) | | |
 
+### Seguridad y documentación
+- [x] Guía SEGURIDAD.md (secrets + ejecución autónoma) | proyecto-mas-cafe/cuentas/SEGURIDAD.md | 2026-06-30 |
+- [x] Checklist wallet gratis paso a paso | proyecto-mas-cafe/entregables/WALLET-CHECKLIST-GRATIS.md | 2026-06-30 |
+
 ---
 
 ## Lo que me pegues en el chat
