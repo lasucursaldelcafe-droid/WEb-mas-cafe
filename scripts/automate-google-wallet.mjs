@@ -21,6 +21,7 @@
 import { execSync } from "child_process";
 import { loadEnvLocal } from "./lib/load-env-local.mjs";
 import { upsertEnvLocal } from "./lib/upsert-env-local.mjs";
+import { resolveIssuerIdFromConfig, resolveMerchantIdFromConfig, applyGoogleWalletConfigToEnv } from "./lib/google-wallet-config.mjs";
 import {
   extractKeystoreFingerprints,
   printKeystoreInstructions,
@@ -44,6 +45,7 @@ import {
 import { deployGoogleWalletSecrets, triggerPagesPublish } from "./lib/google-wallet-deploy.mjs";
 
 loadEnvLocal();
+applyGoogleWalletConfigToEnv();
 
 function parseCli(argv) {
   const out = {
@@ -93,8 +95,8 @@ const links = googleCloudConsoleLinks();
 // ── 1/7 Guardar .env.local ─────────────────────────────────────
 console.log("▸ 1/7 Variables locales…");
 const envUpdates = {};
-const merchantId = resolveMerchantId();
-const issuerId = resolveIssuerId();
+const merchantId = resolveMerchantIdFromConfig() || resolveMerchantId();
+const issuerId = resolveIssuerIdFromConfig() || resolveIssuerId();
 const apiKey = resolveApiKey();
 const sa = resolveGoogleWalletServiceAccount();
 
@@ -130,7 +132,8 @@ if (!issuerId || !isNumericIssuerId(issuerId)) {
 }
 
 if (!sa?.client_email) {
-  console.error("\n✗ Falta GOOGLE_WALLET_SERVICE_ACCOUNT (JSON) en .env.local");
+  console.error("\n✗ Falta cuenta de servicio Google Cloud (JSON)");
+  console.error("  GOOGLE_WALLET_SERVICE_ACCOUNT o FIREBASE_SERVICE_ACCOUNT en .env.local / GitHub Secrets");
   console.error(`  Crear en: ${links.serviceAccounts}\n`);
   process.exit(1);
 }
@@ -152,7 +155,9 @@ if (!cli.dryRun) {
     console.log(`  ✓ Proyecto Cloud: ${walletSetup.projectId}`);
     console.log(`  ✓ Clase: ${walletSetup.classId}`);
     if (walletSetup.loyalty?.created) console.log("  ✓ LoyaltyClass creada");
-    else if (walletSetup.loyalty?.exists) console.log("  ✓ LoyaltyClass ya existía");
+    else if (walletSetup.loyalty?.verified || walletSetup.loyalty?.exists) {
+      console.log("  ✓ LoyaltyClass verificada en Pay Console");
+    }
   } else {
     console.error(`  ✗ ${walletSetup.error || "Error en Wallet API"}`);
     printGoogleWalletInstructions(issuerId, sa.client_email);

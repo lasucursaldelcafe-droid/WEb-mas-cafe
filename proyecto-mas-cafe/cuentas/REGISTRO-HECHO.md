@@ -72,12 +72,12 @@ Formato sugerido por línea:
 - [ ] Prueba registro cliente en móvil | /wallet/ | |
 
 ### Google Wallet (tarjeta nativa Android — Google Cloud, no Firebase)
-- [ ] Proyecto Google Cloud creado | https://console.cloud.google.com/projectcreate | |
-- [ ] Issuer ID en Pay Console | https://pay.google.com/business/console | |
-- [ ] Service account + JSON | IAM → Service accounts | |
-- [ ] Secrets GOOGLE_WALLET_* en GitHub + Supabase | npm run wallet:google-setup | |
-- [ ] Botón «Añadir a Google Wallet» en /wallet/ | pestaña QR | código listo |
-- [ ] Emisor aprobado por Google | UNDER_REVIEW → LIVE | 24–48 h |
+- [x] Merchant ID BCR2DN5TR7J4FLAR | Pay Console | 2026-07-01 |
+- [x] Issuer ID 3388000000023162431 | Pay Console | 2026-07-01 |
+- [x] LoyaltyClass mas_cafe_loyalty creada | Pay Console | 2026-07-01 |
+- [ ] Secrets GOOGLE_WALLET_* en Supabase | workflow Setup Google Wallet | |
+- [ ] Botón «Añadir a Google Wallet» activo | /wallet/ pestaña QR | |
+- [ ] Emisor aprobado por Google (publicación) | UNDER_REVIEW → LIVE | 24–48 h |
 
 ### Firebase
 - [ ] Acceso consola mas-cafe-c8413 | https://console.firebase.google.com/project/mas-cafe-c8413 | |

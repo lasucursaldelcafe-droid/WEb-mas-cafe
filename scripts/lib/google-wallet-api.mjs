@@ -41,7 +41,9 @@ export const GOOGLE_WALLET_LINKS = googleCloudConsoleLinks();
 
 export function resolveGoogleWalletServiceAccount() {
   loadEnvLocal();
-  const raw = process.env.GOOGLE_WALLET_SERVICE_ACCOUNT?.trim();
+  const raw =
+    process.env.GOOGLE_WALLET_SERVICE_ACCOUNT?.trim() ||
+    process.env.FIREBASE_SERVICE_ACCOUNT?.trim();
   if (raw) {
     try {
       return JSON.parse(raw);
@@ -136,21 +138,28 @@ export async function getLoyaltyClass(token, issuerId, brandName = "Más Café")
     `https://walletobjects.googleapis.com/walletobjects/v1/loyaltyClass/${encodeURIComponent(id)}`,
     { headers: { Authorization: `Bearer ${token}` } },
   );
-  if (res.ok) return { exists: true, data: await res.json() };
+  if (res.ok) {
+    const data = await res.json();
+    return { exists: true, verified: true, data };
+  }
   if (res.status !== 404) {
     return { exists: false, error: await res.text() };
   }
 
+  const cfg = (await import("./google-wallet-config.mjs")).loadGoogleWalletConfig();
+
   const payload = {
     id,
-    issuerName: brandName,
+    issuerName: cfg.brandName || brandName,
     reviewStatus: "UNDER_REVIEW",
-    programName: "Programa de fidelización",
+    programName: cfg.programName || "Programa de fidelización",
     programLogo: {
-      sourceUri: { uri: LOGO_URI },
-      contentDescription: { defaultValue: { language: "es", value: brandName } },
+      sourceUri: { uri: cfg.logoUri || LOGO_URI },
+      contentDescription: {
+        defaultValue: { language: "es", value: cfg.brandName || brandName },
+      },
     },
-    hexBackgroundColor: "#073954",
+    hexBackgroundColor: cfg.hexBackgroundColor || "#073954",
   };
 
   const create = await fetch(
@@ -186,7 +195,8 @@ export async function setupGoogleWalletClass(options = {}) {
   if (!credentials?.client_email) {
     return {
       ok: false,
-      error: "Falta GOOGLE_WALLET_SERVICE_ACCOUNT (JSON de cuenta de servicio Google Cloud)",
+      error:
+        "Falta GOOGLE_WALLET_SERVICE_ACCOUNT o FIREBASE_SERVICE_ACCOUNT (JSON cuenta de servicio Google Cloud)",
       links,
     };
   }
