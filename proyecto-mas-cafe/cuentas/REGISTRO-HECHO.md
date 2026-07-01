@@ -79,6 +79,8 @@ Formato sugerido por línea:
 - [ ] `secrets/google-wallet-sa.json` (JSON GCP) | ver secrets/README.md | |
 - [ ] Automatización completa | `npm run wallet:google-auto` | tras pegar JSON |
 - [x] Botón «Añadir a Google Wallet» en tarjeta + pestaña QR | /wallet/ | 2026-07-01 |
+- [x] Wallet publicada en GitHub Pages | npm run wallet:publish + test:wallet | 2026-07-01 |
+- [x] Plantilla reutilizable | proyecto-mas-cafe/plantillas/wallet-supabase/ | 2026-07-01 |
 - [ ] Botón genera enlace JWT (requiere secrets/google-wallet-sa.json) | npm run wallet:google-auto | |
 - [ ] Emisor aprobado por Google (publicación) | UNDER_REVIEW → LIVE | 24–48 h |
 
