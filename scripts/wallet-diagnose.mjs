@@ -12,7 +12,9 @@ import {
 
 loadEnvLocal();
 
-const serviceRole = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+const serviceRole =
+  process.env.SUPABASE_SECRET_KEY?.trim() ||
+  process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
 const accessToken = process.env.SUPABASE_ACCESS_TOKEN?.trim();
 const projectRef = process.env.SUPABASE_PROJECT_REF?.trim();
 

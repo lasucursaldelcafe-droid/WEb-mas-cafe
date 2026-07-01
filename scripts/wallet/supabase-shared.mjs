@@ -25,9 +25,19 @@ export const SUPABASE_URL = (
   ""
 ).replace(/\/$/, "");
 
-/** Clave anon (pública) — segura en frontend con RLS + Edge Functions */
+/** Clave pública — anon legacy o publishable (sb_publishable_…) */
 export const SUPABASE_ANON_KEY =
-  process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+  process.env.SUPABASE_PUBLISHABLE_KEY?.trim() ||
+  process.env.SUPABASE_ANON_KEY?.trim() ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() ||
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim() ||
+  "";
+
+/** Clave servidor — service_role legacy o secret (sb_secret_…) */
+export const SUPABASE_SERVICE_ROLE_KEY =
+  process.env.SUPABASE_SECRET_KEY?.trim() ||
+  process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ||
+  "";
 
 export const WALLET_CONFIGURED = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 
