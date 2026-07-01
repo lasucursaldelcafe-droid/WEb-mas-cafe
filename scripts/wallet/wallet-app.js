@@ -1,32 +1,9 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  GoogleAuthProvider,
-  signInWithPopup,
-  updateProfile,
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { getFunctions, httpsCallable, connectFunctionsEmulator } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/+esm";
+import { walletCall, walletConfigured, walletConfigError } from "./wallet-api.mjs";
 
-const config = window.FIREBASE_CONFIG;
-const REGION = window.FIREBASE_FUNCTIONS_REGION || "us-central1";
-
-const app = initializeApp(config);
-const auth = getAuth(app);
-const functions = getFunctions(app, REGION);
-
-if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
-  try { connectFunctionsEmulator(functions, "localhost", 5001); } catch (_) { /* noop */ }
-}
-
-const callEnsureProgram = httpsCallable(functions, "ensureProgram");
-const callEnsureProfile = httpsCallable(functions, "ensureCustomerProfile");
-const callGetWallet = httpsCallable(functions, "getMyWallet");
-const callRedeem = httpsCallable(functions, "redeemReward");
-const callProgram = httpsCallable(functions, "getProgramStatus");
+const supabase = walletConfigured()
+  ? createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY)
+  : null;
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -39,6 +16,7 @@ const tabs = $$(".tab");
 const panels = $$("[data-panel]");
 
 let walletData = null;
+let accessToken = null;
 
 function showMsg(el, text, type = "error") {
   if (!el) return;
@@ -74,15 +52,18 @@ function setLoading(btn, loading) {
   btn.textContent = loading ? "Espera…" : btn.dataset.label;
 }
 
+async function api(action, payload = {}) {
+  return walletCall(action, payload, accessToken);
+}
+
 async function loadWallet() {
-  const res = await callGetWallet();
-  walletData = res.data;
+  walletData = await api("getMyWallet");
   renderWallet();
 }
 
 function renderWallet() {
   if (!walletData) return;
-  const { customer, wallet, nextReward, program } = walletData;
+  const { customer, wallet, nextReward } = walletData;
 
   $("#member-name").textContent = customer.displayName;
   $("#member-id").textContent = customer.memberId;
@@ -92,12 +73,8 @@ function renderWallet() {
   if (idCopy) idCopy.textContent = customer.memberId;
   $("#points-balance").innerHTML = `${wallet.points} <small>pts</small>`;
 
-  const target = nextReward
-    ? wallet.points + nextReward.pointsNeeded
-    : wallet.points || 1;
-  const pct = nextReward
-    ? Math.min(100, Math.round((wallet.points / target) * 100))
-    : 100;
+  const target = nextReward ? wallet.points + nextReward.pointsNeeded : wallet.points || 1;
+  const pct = nextReward ? Math.min(100, Math.round((wallet.points / target) * 100)) : 100;
   $("#progress-label").textContent = nextReward
     ? `Próximo: ${nextReward.name} · faltan ${nextReward.pointsNeeded} pts`
     : "¡Puedes canjear premios!";
@@ -118,7 +95,7 @@ function renderQr(memberId) {
     { width: 160, margin: 1, color: { dark: "#073954", light: "#ffffff" } },
     (err, canvas) => {
       if (!err && canvas) box.appendChild(canvas);
-    }
+    },
   );
 }
 
@@ -187,12 +164,8 @@ async function redeem(rewardId, btn) {
   const msg = $("#redeem-msg");
   hideMsg(msg);
   try {
-    const res = await callRedeem({ rewardId });
-    showMsg(
-      msg,
-      `Canje listo. Muestra este código en caja: ${res.data.code} (válido 30 min)`,
-      "ok"
-    );
+    const res = await api("redeemReward", { rewardId });
+    showMsg(msg, `Canje listo. Muestra este código en caja: ${res.code} (válido 30 min)`, "ok");
     await loadWallet();
     activateTab("canje");
   } catch (err) {
@@ -211,9 +184,25 @@ tabs.forEach((tab) => {
   tab.addEventListener("click", () => activateTab(tab.dataset.tab));
 });
 
+function translateAuthError(err) {
+  const msg = err?.message || "";
+  if (msg.includes("already registered") || msg.includes("User already registered")) {
+    return "Este correo ya está registrado. Inicia sesión.";
+  }
+  if (msg.includes("Invalid login credentials")) return "Correo o contraseña incorrectos.";
+  if (msg.includes("Password should be at least")) return "La contraseña debe tener al menos 6 caracteres.";
+  return msg || "Error de autenticación";
+}
+
 async function handleAuth(mode) {
   const msg = $("#auth-msg");
   hideMsg(msg);
+
+  if (!supabase) {
+    showMsg(msg, walletConfigError(), "error");
+    return;
+  }
+
   const email = $("#auth-email").value.trim();
   const password = $("#auth-password").value;
   const name = $("#auth-name")?.value.trim();
@@ -227,14 +216,17 @@ async function handleAuth(mode) {
   setLoading(btn, true);
 
   try {
-    await callEnsureProgram();
+    await api("ensureProgram");
     if (mode === "register") {
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      if (name) await updateProfile(cred.user, { displayName: name });
-      await callEnsureProfile({ displayName: name || undefined });
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: name || undefined } },
+      });
+      if (error) throw error;
     } else {
-      await signInWithEmailAndPassword(auth, email, password);
-      await callEnsureProfile({});
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
     }
   } catch (err) {
     showMsg(msg, translateAuthError(err), "error");
@@ -246,34 +238,36 @@ async function handleAuth(mode) {
 async function handleGoogle() {
   const msg = $("#auth-msg");
   hideMsg(msg);
+
+  if (!supabase) {
+    showMsg(msg, walletConfigError(), "error");
+    return;
+  }
+
   setLoading($("#btn-google"), true);
   try {
-    await callEnsureProgram();
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
-    await callEnsureProfile({});
+    await api("ensureProgram");
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.href.split("#")[0] },
+    });
+    if (error) throw error;
   } catch (err) {
     showMsg(msg, translateAuthError(err), "error");
-  } finally {
     setLoading($("#btn-google"), false);
   }
-}
-
-function translateAuthError(err) {
-  const code = err?.code || "";
-  if (code.includes("email-already-in-use")) return "Este correo ya está registrado. Inicia sesión.";
-  if (code.includes("wrong-password") || code.includes("invalid-credential")) return "Correo o contraseña incorrectos.";
-  if (code.includes("weak-password")) return "La contraseña debe tener al menos 6 caracteres.";
-  return err.message || "Error de autenticación";
 }
 
 $("#btn-login")?.addEventListener("click", () => handleAuth("login"));
 $("#btn-register")?.addEventListener("click", () => handleAuth("register"));
 $("#btn-google")?.addEventListener("click", handleGoogle);
-$("#btn-logout")?.addEventListener("click", () => signOut(auth));
+$("#btn-logout")?.addEventListener("click", async () => {
+  await supabase?.auth.signOut();
+});
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
+async function onSession(session) {
+  if (!session) {
+    accessToken = null;
     views.auth?.classList.remove("hidden");
     views.app?.classList.add("hidden");
     $("#btn-logout")?.classList.add("hidden");
@@ -281,19 +275,31 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
+  accessToken = session.access_token;
   views.auth?.classList.add("hidden");
   views.app?.classList.remove("hidden");
   $("#btn-logout")?.classList.remove("hidden");
 
   try {
-    await callEnsureProfile({});
+    const name =
+      session.user.user_metadata?.full_name ||
+      session.user.user_metadata?.name ||
+      undefined;
+    await api("ensureCustomerProfile", { displayName: name });
     await loadWallet();
-    const prog = await callProgram();
+    const prog = await api("getProgramStatus");
     $("#program-hint").textContent =
-      `Ganas ${prog.data.pointsPerThousandCop} punto(s) por cada $1.000 · mínimo ${formatCop(prog.data.minPurchaseCop)}`;
+      `Ganas ${prog.pointsPerThousandCop} punto(s) por cada $1.000 · mínimo ${formatCop(prog.minPurchaseCop)}`;
   } catch (err) {
     showMsg($("#app-msg"), err.message || "Error cargando wallet", "error");
   }
-});
+}
+
+if (!walletConfigured()) {
+  showMsg($("#auth-msg"), walletConfigError(), "error");
+} else if (supabase) {
+  supabase.auth.getSession().then(({ data: { session } }) => onSession(session));
+  supabase.auth.onAuthStateChange((_event, session) => onSession(session));
+}
 
 activateTab("tarjeta");

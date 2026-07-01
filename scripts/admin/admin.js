@@ -1038,7 +1038,7 @@
     return `
     <div class="card">
       <h3>Wallet en producción</h3>
-      <p style="line-height:1.65;margin-bottom:1rem">Programa de puntos con registro de clientes, QR en mostrador y canje automático. Backend en Firebase Cloud Functions.</p>
+      <p style="line-height:1.65;margin-bottom:1rem">Programa de puntos con registro de clientes, QR en mostrador y canje automático. Backend en <strong>Supabase</strong> (plan gratuito — sin facturación Blaze).</p>
       <div class="informe-actions">
         <a href="${WALLET_APP_URL}" target="_blank" rel="noopener" class="btn btn-blue">App cliente (/wallet/)</a>
         <a href="${CAJA_URL}" target="_blank" rel="noopener" class="btn btn-ghost">Modo caja (/caja/)</a>
@@ -1051,35 +1051,22 @@
         <li>El cliente se registra en <strong>/wallet/</strong> y recibe ID <code>MC-XXXXXX</code> automático.</li>
         <li>En caja, ingresa PIN (inicial <code>123456</code>) y el monto de compra → los puntos se calculan solos.</li>
         <li>Canje: el cliente genera código en la app; caja lo valida en segundos.</li>
-        <li>Reglas editables en <code>content/wallet-program.json</code> + redeploy de Functions.</li>
+        <li>Reglas editables en <code>content/wallet-program.json</code> + redeploy Supabase.</li>
       </ul>
     </div>
     <div class="card">
-      <h3>Permisos Google Cloud (si algo no te deja)</h3>
+      <h3>Activar Supabase (backend gratuito)</h3>
       <p style="line-height:1.65;font-size:.92rem;margin-bottom:.75rem">
-        El setup automático pide y asigna permisos vía API. Si falla, suele ser por <strong>plan Blaze</strong> sin activar o la cuenta de servicio sin roles IAM.
+        Firebase Spark no permite Cloud Functions. Migrado a Supabase: Auth + Postgres + Edge Functions sin tarjeta.
       </p>
       <ul style="line-height:1.7;font-size:.88rem;margin-left:1.1rem;margin-bottom:.75rem">
+        <li>Crear proyecto: <a href="https://supabase.com/dashboard/new/new-project" target="_blank" rel="noopener">Supabase (gratis)</a></li>
         <li>Diagnóstico: <code>npm run wallet:diagnose</code></li>
-        <li>Auto-reparar: <code>npm run wallet:diagnose -- --fix</code></li>
-        <li>Facturación Blaze: <a href="https://console.firebase.google.com/project/mas-cafe-c8413/usage/details" target="_blank" rel="noopener">Firebase usage</a></li>
-        <li>Permisos IAM: <a href="https://console.cloud.google.com/iam-admin/grantaccess?project=mas-cafe-c8413" target="_blank" rel="noopener">Google Cloud IAM</a></li>
-        <li>OAuth / Google login: <a href="https://console.cloud.google.com/apis/credentials/consent?project=mas-cafe-c8413" target="_blank" rel="noopener">OAuth consent screen</a></li>
-        <li>APIs: <a href="https://console.cloud.google.com/apis/dashboard?project=mas-cafe-c8413" target="_blank" rel="noopener">APIs dashboard</a></li>
+        <li>Deploy: <code>npm run wallet:setup</code></li>
+        <li>GitHub Secrets: <code>SUPABASE_URL</code>, <code>SUPABASE_ANON_KEY</code>, <code>SUPABASE_ACCESS_TOKEN</code>, <code>SUPABASE_PROJECT_REF</code>, <code>SUPABASE_SERVICE_ROLE_KEY</code></li>
+        <li>Workflow: <strong>Deploy wallet Supabase</strong></li>
+        <li>Auth Google: Supabase → Authentication → Providers → Google</li>
       </ul>
-    </div>
-    <div class="card">
-      <h3>Activación automática del backend</h3>
-      <p style="line-height:1.65;font-size:.92rem;margin-bottom:.75rem">
-        El pipeline <strong>Setup autónomo — Wallet Firebase</strong> activa Auth, Firestore, Functions y despliega todo sin consola manual.
-      </p>
-      <ul style="line-height:1.7;font-size:.88rem;margin-left:1.1rem;margin-bottom:.75rem">
-        <li>Comando local: <code>npm run wallet:setup</code></li>
-        <li>GitHub Actions → <strong>Setup autónomo — Wallet Firebase</strong></li>
-        <li>Secret requerido: <code>FIREBASE_SERVICE_ACCOUNT</code> (JSON)</li>
-        <li>Se ejecuta solo tras cada deploy a <code>main</code></li>
-      </ul>
-      <p style="font-size:.82rem;opacity:.75">API dispatch: <code>firebase-wallet-setup</code></p>
     </div>`;
   }
 

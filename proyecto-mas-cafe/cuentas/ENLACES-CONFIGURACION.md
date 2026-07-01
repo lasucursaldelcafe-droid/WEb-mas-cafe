@@ -20,8 +20,12 @@ Abre cada enlace, inicia sesión con la cuenta de **Más Café** (o la que vayan
 
 | Secret | Para qué | Cómo obtenerlo |
 |--------|----------|----------------|
-| **`FIREBASE_SERVICE_ACCOUNT`** | **Setup wallet completo** (Auth, Firestore, APIs, permisos IAM) | Firebase → Configuración → Cuentas de servicio → Generar clave JSON |
-| `FIREBASE_TOKEN` | Deploy parcial (sin configurar Auth/Firestore por API) | En PC: `npx firebase login:ci` |
+| **`SUPABASE_URL`** | URL del proyecto wallet | Supabase → Settings → API |
+| **`SUPABASE_ANON_KEY`** | Clave pública (frontend) | Supabase → Settings → API → anon |
+| **`SUPABASE_SERVICE_ROLE_KEY`** | Seed + CI (nunca en frontend) | Supabase → Settings → API → service_role |
+| **`SUPABASE_ACCESS_TOKEN`** | Deploy automático CLI | https://supabase.com/dashboard/account/tokens |
+| **`SUPABASE_PROJECT_REF`** | ID corto del proyecto | Supabase → Settings → General → Reference ID |
+| `FIREBASE_TOKEN` | *(legacy)* Solo hosting Firebase | Obsoleto para wallet |
 | `ADMIN_PUBLISH_KEY` | Publicar desde admin vía API | String aleatorio que definan ustedes |
 | `GODADDY_API_KEY` | Automatizar DNS mascafé.com | https://developer.godaddy.com/keys |
 | `GODADDY_API_SECRET` | Automatizar DNS | Mismo panel API |
@@ -68,46 +72,58 @@ Guía completa: [docs/DOMINIO-MASCAFE-COM.md](../../docs/DOMINIO-MASCAFE-COM.md)
 
 ---
 
-## Firebase (backend + hosting respaldo)
+## Supabase (backend wallet — plan gratuito)
 
-Proyecto actual: **mas-cafe-c8413**
+> **Migración desde Firebase:** Cloud Functions exige plan Blaze (facturación). Supabase incluye Auth, Postgres y Edge Functions en el tier gratis.
 
 | Qué configurar | Enlace |
 |----------------|--------|
-| Consola del proyecto | https://console.firebase.google.com/project/mas-cafe-c8413 |
-| Hosting | https://console.firebase.google.com/project/mas-cafe-c8413/hosting |
-| Authentication (wallet — futuro) | https://console.firebase.google.com/project/mas-cafe-c8413/authentication |
-| Firestore Database (wallet — futuro) | https://console.firebase.google.com/project/mas-cafe-c8413/firestore |
-| Configuración general | https://console.firebase.google.com/project/mas-cafe-c8413/settings/general |
-| Cuentas de servicio (CI/CD) | https://console.firebase.google.com/project/mas-cafe-c8413/settings/serviceaccounts/adminsdk |
-| Uso y facturación (plan **Blaze** — obligatorio para Functions) | https://console.firebase.google.com/project/mas-cafe-c8413/usage/details |
-| **Google Cloud — IAM / permisos** | https://console.cloud.google.com/iam-admin/grantaccess?project=mas-cafe-c8413 |
-| **OAuth consent (login con Google)** | https://console.cloud.google.com/apis/credentials/consent?project=mas-cafe-c8413 |
-| **APIs habilitadas** | https://console.cloud.google.com/apis/dashboard?project=mas-cafe-c8413 |
-| Auth providers (email + Google) | https://console.firebase.google.com/project/mas-cafe-c8413/authentication/providers |
-| Workflow setup automático | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/actions/workflows/setup-firebase-wallet.yml |
+| Crear proyecto (gratis) | https://supabase.com/dashboard/new/new-project |
+| Token CLI (CI/CD) | https://supabase.com/dashboard/account/tokens |
+| GitHub Secrets | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/secrets/actions |
+| Workflow deploy | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/actions/workflows/deploy-supabase-wallet.yml |
 
-**Comandos locales (permisos + backend):**
+**Secrets requeridos:**
+
+| Secret | Para qué |
+|--------|----------|
+| `SUPABASE_URL` | URL del proyecto (`https://xxx.supabase.co`) |
+| `SUPABASE_ANON_KEY` | Clave anon — se embebe en el build de `/wallet/` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Seed del programa + Edge Function (solo CI) |
+| `SUPABASE_ACCESS_TOKEN` | Supabase CLI en GitHub Actions |
+| `SUPABASE_PROJECT_REF` | Reference ID del proyecto |
+
+**Pasos (una sola vez):**
+
+1. Crear proyecto en Supabase (región `South America` recomendada).
+2. Settings → API → copiar URL, anon key y service_role.
+3. Account → Access Tokens → crear token para CI.
+4. Pegar los 5 secrets en GitHub.
+5. Supabase → Authentication → Providers → activar **Email** y **Google** (Redirect URL: `https://xn--mascaf-gva.com/wallet/`).
+6. Ejecutar workflow **Deploy wallet Supabase** o `npm run wallet:setup`.
+
+**Comandos:**
 
 | Comando | Qué hace |
 |---------|----------|
-| `npm run wallet:diagnose` | Muestra qué bloquea el setup y enlaces directos |
-| `npm run wallet:diagnose -- --fix` | Intenta asignar roles IAM y activar APIs automáticamente |
-| `npm run wallet:setup` | Diagnóstico + Auth + Firestore + deploy + seed |
+| `npm run wallet:diagnose` | Verifica secrets y si responde la Edge Function |
+| `npm run wallet:setup` | Migraciones SQL + deploy function + seed programa |
 
-**Por qué a veces “no deja hacer cosas”:**
+**Wallet en vivo (frontend GitHub Pages):**
 
-| Bloqueo | Causa | Solución |
-|---------|-------|----------|
-| Cloud Functions | Sin plan Blaze | Activar facturación en el enlace de usage arriba |
-| APIs / Auth vía script | Cuenta de servicio sin roles | `wallet:diagnose --fix` o IAM manual |
-| Solo `FIREBASE_TOKEN` | No puede configurar Google Console | Usar `FIREBASE_SERVICE_ACCOUNT` (JSON completo) |
-| Login con Google | OAuth consent sin configurar | Enlace OAuth consent arriba |
+- https://xn--mascaf-gva.com/wallet/
+- https://xn--mascaf-gva.com/caja/
 
-**Sitio en vivo Firebase:**
+---
 
-- https://mas-cafe-c8413.web.app/
-- https://mas-cafe-c8413.firebaseapp.com/
+## Firebase (legacy — solo hosting estático)
+
+Proyecto: **mas-cafe-c8413** — ya no se usa para la wallet (requiere Blaze).
+
+| Enlace | Notas |
+|--------|-------|
+| https://console.firebase.google.com/project/mas-cafe-c8413 | Consola legacy |
+| https://mas-cafe-c8413.web.app/ | Hosting respaldo |
 
 ---
 
