@@ -44,7 +44,9 @@ if (!projectRef && SUPABASE_URL) {
     /* noop */
   }
 }
-const serviceRole = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+const serviceRole =
+  process.env.SUPABASE_SECRET_KEY?.trim() ||
+  process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
 
 function log(step, msg) {
   console.log(`  ${dryRun ? "○" : "✓"} [${step}] ${msg}`);

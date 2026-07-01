@@ -37,12 +37,20 @@ const REPO = "lasucursaldelcafe-droid/WEb-mas-cafe";
 
 const required = [
   "SUPABASE_URL",
-  "SUPABASE_ANON_KEY",
-  "SUPABASE_SERVICE_ROLE_KEY",
   "SUPABASE_ACCESS_TOKEN",
 ];
 
 const missing = required.filter((k) => !process.env[k]?.trim());
+
+const publishable =
+  process.env.SUPABASE_PUBLISHABLE_KEY?.trim() ||
+  process.env.SUPABASE_ANON_KEY?.trim();
+const secret =
+  process.env.SUPABASE_SECRET_KEY?.trim() ||
+  process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+
+if (!publishable) missing.push("SUPABASE_PUBLISHABLE_KEY (o SUPABASE_ANON_KEY)");
+if (!secret) missing.push("SUPABASE_SECRET_KEY (o SUPABASE_SERVICE_ROLE_KEY)");
 
 console.log("\n═══════════════════════════════════════════════════");
 console.log("  Conectar wallet Supabase → GitHub + deploy");
@@ -51,8 +59,10 @@ console.log("══════════════════════�
 if (missing.length) {
   console.error("✗ Faltan variables en .env.local:\n");
   for (const k of missing) console.error(`    ${k}=`);
+  if (!publishable) missing.push("SUPABASE_PUBLISHABLE_KEY (o SUPABASE_ANON_KEY)");
+  if (!secret) missing.push("SUPABASE_SECRET_KEY (o SUPABASE_SERVICE_ROLE_KEY)");
   console.error("\n  Obtén los valores en:");
-  console.error("  Supabase → Settings → API (URL, anon, service_role)");
+  console.error("  Supabase → Settings → API (Project URL, publishable, secret)");
   console.error("  Supabase → Account → Access Tokens");
   console.error("\n  Plantilla: copia .env.example → .env.local y rellena.\n");
   process.exit(1);
@@ -77,8 +87,10 @@ if (!ghToken) {
   console.log("\n▸ Subiendo secrets a GitHub…\n");
   const secrets = {
     SUPABASE_URL: process.env.SUPABASE_URL,
-    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
-    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    SUPABASE_ANON_KEY: publishable,
+    SUPABASE_PUBLISHABLE_KEY: publishable,
+    SUPABASE_SERVICE_ROLE_KEY: secret,
+    SUPABASE_SECRET_KEY: secret,
     SUPABASE_ACCESS_TOKEN: process.env.SUPABASE_ACCESS_TOKEN,
     SUPABASE_PROJECT_REF: projectRef,
   };
