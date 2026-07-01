@@ -50,54 +50,6 @@ export async function deployWalletFunction(dryRun = false) {
   return true;
 }
 
-/** Solo Issuer/Merchant ID (sin cuenta de servicio — botón Wallet sigue desactivado). */
-export async function deployGoogleWalletIdsOnly({ issuerId, merchantId, dryRun = false }) {
-  const projectRef = process.env.SUPABASE_PROJECT_REF?.trim() || projectRefFromUrl(SUPABASE_URL);
-  const accessToken = process.env.SUPABASE_ACCESS_TOKEN?.trim();
-  const ghToken = process.env.GITHUB_TOKEN || process.env.GH_PAGES_PAT;
-
-  const results = { supabase: false, github: false };
-
-  if (dryRun) {
-    console.log("  (dry-run) IDs omitidos");
-    return results;
-  }
-
-  if (accessToken && projectRef && issuerId) {
-    let cmd = `npx supabase secrets set GOOGLE_WALLET_ISSUER_ID="${issuerId}"`;
-    if (merchantId) cmd += ` GOOGLE_PAY_MERCHANT_ID="${merchantId}"`;
-    cmd += ` --project-ref ${projectRef}`;
-    execSync(cmd, {
-      stdio: "inherit",
-      env: { ...process.env, SUPABASE_ACCESS_TOKEN: accessToken },
-    });
-    results.supabase = true;
-  }
-
-  if (ghToken && issuerId) {
-    const ghEnv = { ...process.env, GH_TOKEN: ghToken };
-    execSync(`gh secret set GOOGLE_WALLET_ISSUER_ID --repo ${REPO}`, { input: issuerId, env: ghEnv });
-    if (merchantId) {
-      execSync(`gh secret set GOOGLE_PAY_MERCHANT_ID --repo ${REPO}`, { input: merchantId, env: ghEnv });
-    }
-    results.github = true;
-  }
-
-  return results;
-}
-
-export async function deployWalletFunction(dryRun = false) {
-  const projectRef = process.env.SUPABASE_PROJECT_REF?.trim() || projectRefFromUrl(SUPABASE_URL);
-  const accessToken = process.env.SUPABASE_ACCESS_TOKEN?.trim();
-  if (dryRun || !accessToken || !projectRef) return false;
-
-  execSync(`npx supabase functions deploy wallet --no-verify-jwt --project-ref ${projectRef}`, {
-    stdio: "inherit",
-    env: { ...process.env, SUPABASE_ACCESS_TOKEN: accessToken },
-  });
-  return true;
-}
-
 export async function deployGoogleWalletSecrets({
   issuerId,
   serviceAccount,
