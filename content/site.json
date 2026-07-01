@@ -68,7 +68,8 @@
     { "id": "nosotros", "slug": "nosotros", "label": "Nosotros", "enabled": true, "builtin": true, "inNav": true },
     { "id": "tienda", "slug": "tienda", "label": "Tienda", "enabled": true, "builtin": true, "inNav": true },
     { "id": "blog", "slug": "blog", "label": "Blog", "enabled": true, "builtin": true, "inNav": true },
-    { "id": "contacto", "slug": "contacto", "label": "Contacto", "enabled": true, "builtin": true, "inNav": true }
+    { "id": "contacto", "slug": "contacto", "label": "Contacto", "enabled": true, "builtin": true, "inNav": true },
+    { "id": "fidelizacion", "slug": "fidelizacion", "label": "Fidelización", "enabled": true, "builtin": true, "inNav": true }
   ],
   "pages": {
     "home": {
@@ -111,6 +112,11 @@
       "visitTitle": "Visítanos",
       "writeTitle": "Escríbenos",
       "formTitle": "Envíanos un mensaje"
+    },
+    "fidelizacion": {
+      "tagline": "Fidelización",
+      "headline": "Programa de puntos Más Café",
+      "intro": "Acumula puntos en cada visita, revisa tu saldo cuando quieras y canjea premios en mostrador."
     }
   },
   "brewGuide": [

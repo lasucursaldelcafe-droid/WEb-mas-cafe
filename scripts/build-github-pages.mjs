@@ -154,6 +154,7 @@ console.log(`\n✅ ${pages.length + 1} páginas · ${copied} imágenes\n`);
 console.log("Local:    npm run preview");
 console.log("Público:  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/");
 console.log("Informe:  https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/");
+console.log("Fidelización: https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/fidelizacion/");
 console.log("Wallet:   https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/wallet/");
 console.log("Caja:     https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/caja/");
 console.log("Cotización: https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/cotizacion-perpetuo/\n");

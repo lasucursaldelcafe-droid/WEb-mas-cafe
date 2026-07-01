@@ -8,6 +8,14 @@ export const DEFAULT_ROUTES = [
   { id: "tienda", slug: "tienda", label: "Tienda", enabled: true, builtin: true, inNav: true },
   { id: "blog", slug: "blog", label: "Blog", enabled: true, builtin: true, inNav: true },
   { id: "contacto", slug: "contacto", label: "Contacto", enabled: true, builtin: true, inNav: true },
+  {
+    id: "fidelizacion",
+    slug: "fidelizacion",
+    label: "Fidelización",
+    enabled: true,
+    builtin: true,
+    inNav: true,
+  },
 ];
 
 export function ensureRoutes(site) {

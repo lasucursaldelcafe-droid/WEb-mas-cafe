@@ -18,6 +18,7 @@ const REQUIRED_ROUTES = [
   "tienda/index.html",
   "blog/index.html",
   "contacto/index.html",
+  "fidelizacion/index.html",
   "admin/index.html",
   "wallet/index.html",
   "wallet/wallet-app.js",
