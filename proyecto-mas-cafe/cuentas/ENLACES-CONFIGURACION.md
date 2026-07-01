@@ -102,6 +102,12 @@ Guía completa: [docs/DOMINIO-MASCAFE-COM.md](../../docs/DOMINIO-MASCAFE-COM.md)
 5. Supabase → Authentication → Providers → activar **Email** y **Google** (Redirect URL: `https://xn--mascaf-gva.com/wallet/`).
 6. Ejecutar workflow **Deploy wallet Supabase** o `npm run wallet:setup`.
 
+**Conectar todo de una vez (local):**
+
+1. Copiar `.env.example` → `.env.local` y pegar las 5 claves Supabase + `GITHUB_TOKEN`.
+2. Ejecutar: `npm run wallet:connect`  
+   (sube secrets, configura redirects, despliega backend y republica GitHub Pages)
+
 **Comandos:**
 
 | Comando | Qué hace |

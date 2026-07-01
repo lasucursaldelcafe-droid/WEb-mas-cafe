@@ -36,7 +36,14 @@ const dryRun = args.includes("--dry-run");
 loadEnvLocal();
 
 const accessToken = process.env.SUPABASE_ACCESS_TOKEN?.trim();
-const projectRef = process.env.SUPABASE_PROJECT_REF?.trim();
+let projectRef = process.env.SUPABASE_PROJECT_REF?.trim();
+if (!projectRef && SUPABASE_URL) {
+  try {
+    projectRef = new URL(SUPABASE_URL).hostname.split(".")[0];
+  } catch {
+    /* noop */
+  }
+}
 const serviceRole = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
 
 function log(step, msg) {

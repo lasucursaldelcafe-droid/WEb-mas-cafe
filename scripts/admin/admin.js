@@ -1061,6 +1061,7 @@
       </p>
       <ul style="line-height:1.7;font-size:.88rem;margin-left:1.1rem;margin-bottom:.75rem">
         <li>Crear proyecto: <a href="https://supabase.com/dashboard/new/new-project" target="_blank" rel="noopener">Supabase (gratis)</a></li>
+        <li>Conectar todo: <code>npm run wallet:connect</code> (lee <code>.env.local</code> → GitHub Secrets → deploy)</li>
         <li>Diagnóstico: <code>npm run wallet:diagnose</code></li>
         <li>Deploy: <code>npm run wallet:setup</code></li>
         <li>GitHub Secrets: <code>SUPABASE_URL</code>, <code>SUPABASE_ANON_KEY</code>, <code>SUPABASE_ACCESS_TOKEN</code>, <code>SUPABASE_PROJECT_REF</code>, <code>SUPABASE_SERVICE_ROLE_KEY</code></li>
