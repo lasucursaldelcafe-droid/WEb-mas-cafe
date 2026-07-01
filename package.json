@@ -32,6 +32,8 @@
     "wallet:google-bootstrap": "node scripts/bootstrap-google-wallet-env.mjs",
     "wallet:google-import-sa": "node scripts/import-google-service-account.mjs",
     "wallet:google-publish": "node scripts/wallet-google-publish.mjs",
+    "wallet:google-console": "node scripts/prepare-google-console.mjs",
+    "wallet:google-ingest": "node scripts/wallet-google-ingest.mjs",
     "test:google-wallet": "node scripts/test-google-wallet.mjs",
     "validate:google-sa": "node scripts/validate-google-service-account.mjs",
     "wallet:setup:firebase": "node scripts/setup-firebase-wallet.mjs",

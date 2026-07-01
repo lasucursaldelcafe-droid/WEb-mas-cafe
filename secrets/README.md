@@ -1,35 +1,43 @@
-# Google Wallet nativo — credenciales
+# Google Wallet — descarga el JSON aquí
 
-La tarjeta en el **monedero digital del Android** requiere el JSON de cuenta de servicio de Google Cloud.
-
-## Archivo local (recomendado)
+## Paso 1 — Preparar (ya hecho en CI si hay token Supabase)
 
 ```bash
-# Coloca el JSON descargado de GCP aquí:
+npm run wallet:google-console
+```
+
+## Paso 2 — En Google Cloud (enlaces directos)
+
+| Paso | URL |
+|------|-----|
+| Activar Wallet API | https://console.cloud.google.com/apis/library/walletobjects.googleapis.com?project=mas-cafe-c8413 |
+| Cuenta de servicio | https://console.cloud.google.com/iam-admin/serviceaccounts?project=mas-cafe-c8413 |
+| Pay Console (autorizar) | https://pay.google.com/business/console |
+
+1. Abre **firebase-adminsdk-fbsvc@mas-cafe-c8413.iam.gserviceaccount.com**
+2. **Claves** → **Añadir clave** → **JSON** → Descargar
+3. En Pay Console → **Usuarios autorizados** → añade ese mismo email
+
+## Paso 3 — Importar (un solo comando)
+
+```bash
+npm run wallet:google-ingest -- ~/Downloads/mas-cafe-c8413-xxxxx.json
+```
+
+O copia el archivo a:
+
+```
 secrets/google-wallet-sa.json
-
-npm run wallet:google-bootstrap -- ./ruta/descarga.json
-npm run wallet:google-publish
+npm run wallet:google-ingest
 ```
 
-## GitHub Secret (CI)
+## Paso 4 — Probar en Android
 
-Nombre: **`GOOGLE_WALLET_SERVICE_ACCOUNT`**  
-Valor: contenido completo del `.json` (una sola línea).
+https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/wallet/
 
-Workflow: **Actions → Setup Google Wallet → Run workflow**
+Login → **Añadir a Google Wallet**
 
-## Pay Console — usuario autorizado
+## GitHub (alternativa sin local)
 
-https://pay.google.com/business/console → emisor → **Usuarios autorizados**  
-Añadir: `client_email` del JSON (ej. `firebase-adminsdk-fbsvc@mas-cafe-c8413.iam.gserviceaccount.com`)
-
-## Probar
-
-```bash
-npm run test:google-wallet -- --strict
-```
-
-En Android: https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/wallet/ → login → **Añadir a Google Wallet**
-
-Guía completa: `proyecto-mas-cafe/entregables/GOOGLE-WALLET-RUTAS.md`
+Secret: **GOOGLE_WALLET_SERVICE_ACCOUNT** = contenido del JSON (una línea)  
+Luego: **Actions → Setup Google Wallet → Run workflow**

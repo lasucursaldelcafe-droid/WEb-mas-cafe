@@ -122,15 +122,16 @@ Escanea el QR del cliente o busca por ID `MC-…` para sumar puntos / validar ca
 ## Comandos únicos (después del JSON)
 
 ```bash
-# 1. Colocar JSON
-npm run wallet:google-bootstrap -- ./cuenta-servicio.json
+# 0. Preparar Supabase + ver enlaces Google Console
+npm run wallet:google-console
 
-# 2. Desplegar todo + prueba estricta
-npm run wallet:google-publish
+# 1. Descargar JSON en GCP (ver secrets/README.md)
+
+# 2. Importar y activar botón Google Wallet
+npm run wallet:google-ingest -- ./archivo-descargado.json
 
 # 3. Solo diagnóstico
-npm run test:google-wallet
-npm run wallet:diagnose
+npm run test:google-wallet -- --strict
 ```
 
 ---

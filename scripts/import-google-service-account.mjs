@@ -14,6 +14,7 @@ import { resolveIssuerIdFromConfig, resolveMerchantIdFromConfig, applyGoogleWall
 import { deployGoogleWalletSecrets } from "./lib/google-wallet-deploy.mjs";
 import { isNumericIssuerId } from "./lib/google-wallet-credentials.mjs";
 import { DEFAULT_GOOGLE_WALLET_SA_PATH } from "./lib/google-wallet-sa-path.mjs";
+import { resolveCredentialsPath } from "./lib/read-google-sa.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -21,7 +22,10 @@ loadEnvLocal();
 applyGoogleWalletConfigToEnv();
 
 const fileArg = process.argv.slice(2).find((a) => !a.startsWith("-"));
-const credPath = fileArg || process.env.GOOGLE_APPLICATION_CREDENTIALS?.trim();
+const credPath =
+  (fileArg && resolveCredentialsPath(fileArg)) ||
+  resolveCredentialsPath(process.env.GOOGLE_APPLICATION_CREDENTIALS) ||
+  fileArg;
 
 if (!credPath || !existsSync(credPath)) {
   console.error("✗ Indica la ruta al JSON de cuenta de servicio Google Cloud");

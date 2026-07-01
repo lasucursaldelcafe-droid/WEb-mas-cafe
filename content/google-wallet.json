@@ -1,6 +1,8 @@
 {
   "merchantId": "BCR2DN5TR7J4FLAR",
   "issuerId": "3388000000023162431",
+  "googleCloudProjectId": "mas-cafe-c8413",
+  "serviceAccountEmail": "firebase-adminsdk-fbsvc@mas-cafe-c8413.iam.gserviceaccount.com",
   "classSuffix": "mas_cafe_loyalty",
   "classId": "3388000000023162431.mas_cafe_loyalty",
   "brandName": "Más Café",
@@ -11,5 +13,12 @@
   "homepageUrl": "http://xn--mascaf-gva.com/wallet/",
   "supportEmail": "hola@mascafé.com",
   "supportPhone": "+57 315 657 3897",
-  "consoleEditUrl": "https://pay.google.com/business/console/passes/BCR2DN5TR7J4FLAR/issuer/3388000000023162431/loyalty/edit/3388000000023162431.mas_cafe_loyalty"
+  "consoleEditUrl": "https://pay.google.com/business/console/passes/BCR2DN5TR7J4FLAR/issuer/3388000000023162431/loyalty/edit/3388000000023162431.mas_cafe_loyalty",
+  "console": {
+    "project": "https://console.cloud.google.com/home/dashboard?project=mas-cafe-c8413",
+    "serviceAccounts": "https://console.cloud.google.com/iam-admin/serviceaccounts?project=mas-cafe-c8413",
+    "walletApi": "https://console.cloud.google.com/apis/library/walletobjects.googleapis.com?project=mas-cafe-c8413",
+    "payConsole": "https://pay.google.com/business/console",
+    "iamCredentials": "https://console.cloud.google.com/iam-admin/serviceaccounts?project=mas-cafe-c8413"
+  }
 }
