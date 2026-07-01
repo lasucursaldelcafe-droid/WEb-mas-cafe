@@ -42,7 +42,7 @@ import {
   resolveGoogleWalletServiceAccount,
   googleCloudConsoleLinks,
 } from "./lib/google-wallet-api.mjs";
-import { deployGoogleWalletSecrets, triggerPagesPublish } from "./lib/google-wallet-deploy.mjs";
+import { deployGoogleWalletSecrets, deployGoogleWalletIdsOnly, deployWalletFunction, triggerPagesPublish } from "./lib/google-wallet-deploy.mjs";
 
 loadEnvLocal();
 applyGoogleWalletConfigToEnv();
@@ -53,6 +53,7 @@ function parseCli(argv) {
     writeEnv: argv.includes("--write-env"),
     skipDeploy: argv.includes("--skip-deploy"),
     skipPages: argv.includes("--skip-pages"),
+    idsOnly: argv.includes("--ids-only"),
     merchantId: "",
     issuerId: "",
     apiKey: "",
@@ -132,10 +133,17 @@ if (!issuerId || !isNumericIssuerId(issuerId)) {
 }
 
 if (!sa?.client_email) {
-  console.error("\n✗ Falta cuenta de servicio Google Cloud (JSON)");
-  console.error("  GOOGLE_WALLET_SERVICE_ACCOUNT o FIREBASE_SERVICE_ACCOUNT en .env.local / GitHub Secrets");
-  console.error(`  Crear en: ${links.serviceAccounts}\n`);
-  process.exit(1);
+  if (cli.idsOnly) {
+    console.warn("\n⚠ Sin cuenta de servicio — modo --ids-only (clase ya en Pay Console)");
+    console.warn("  Se desplegarán Issuer/Merchant ID; el botón Wallet requiere JSON GCP válido.\n");
+  } else {
+    console.error("\n✗ Falta cuenta de servicio Google Cloud (JSON)");
+    console.error("  GOOGLE_WALLET_SERVICE_ACCOUNT o FIREBASE_SERVICE_ACCOUNT en .env.local / GitHub Secrets");
+    console.error(`  Crear en: ${links.serviceAccounts}`);
+    console.error("\n  Si la LoyaltyClass ya existe en Pay Console, puedes desplegar solo IDs:");
+    console.error("  npm run wallet:google-auto -- --ids-only\n");
+    process.exit(1);
+  }
 }
 
 // ── 3/7 Keystore / keytool ───────────────────────────────────────
@@ -144,12 +152,17 @@ const ksConfig = resolveKeystoreConfig();
 const fingerprints = ksConfig
   ? extractKeystoreFingerprints(ksConfig)
   : { ok: false, error: "Sin ANDROID_KEYSTORE_PATH (opcional para web)" };
-printKeystoreInstructions(fingerprints);
+if (!cli.idsOnly) printKeystoreInstructions(fingerprints);
+else console.log("  ○ omitido (--ids-only)");
 
 // ── 4/7 Google Wallet API + LoyaltyClass ─────────────────────────
 console.log("\n▸ 4/7 Google Wallet API + clase loyalty…");
 let walletSetup = { ok: false };
-if (!cli.dryRun) {
+if (cli.idsOnly) {
+  const cfg = (await import("./lib/google-wallet-config.mjs")).loadGoogleWalletConfig();
+  walletSetup = { ok: true, classId: cfg.classId || `${issuerId}.mas_cafe_loyalty`, loyalty: { verified: true } };
+  console.log(`  ✓ Clase existente en Pay Console: ${walletSetup.classId}`);
+} else if (!cli.dryRun) {
   walletSetup = await setupGoogleWalletClass();
   if (walletSetup.ok) {
     console.log(`  ✓ Proyecto Cloud: ${walletSetup.projectId}`);
@@ -169,20 +182,34 @@ if (!cli.dryRun) {
 
 // ── 5/7 Secrets Supabase + GitHub ────────────────────────────────
 console.log("\n▸ 5/7 Secrets + Edge Function…");
-const deploy = await deployGoogleWalletSecrets({
-  issuerId,
-  serviceAccount: sa,
-  merchantId,
-  apiKey,
-  dryRun: cli.dryRun || cli.skipDeploy,
-});
-if (deploy.supabase) console.log("  ✓ Secrets en Supabase");
-else if (!cli.dryRun && !cli.skipDeploy) console.warn("  ⚠ Supabase secrets omitidos (falta SUPABASE_ACCESS_TOKEN)");
+let deploy;
+if (cli.idsOnly || !sa?.client_email) {
+  deploy = await deployGoogleWalletIdsOnly({
+    issuerId,
+    merchantId,
+    dryRun: cli.dryRun || cli.skipDeploy,
+  });
+  if (deploy.supabase) console.log("  ✓ Issuer/Merchant ID en Supabase");
+  if (deploy.github) console.log("  ✓ Issuer/Merchant ID en GitHub");
+} else {
+  deploy = await deployGoogleWalletSecrets({
+    issuerId,
+    serviceAccount: sa,
+    merchantId,
+    apiKey,
+    dryRun: cli.dryRun || cli.skipDeploy,
+  });
+  if (deploy.supabase) console.log("  ✓ Secrets en Supabase");
+  if (deploy.github) console.log("  ✓ Secrets en GitHub");
+}
 
-if (deploy.github) console.log("  ✓ Secrets en GitHub");
-else if (!cli.dryRun && !cli.skipDeploy) console.warn("  ⚠ GitHub secrets omitidos (falta GITHUB_TOKEN)");
-
-if (deploy.function) console.log("  ✓ Edge Function wallet desplegada");
+if (!cli.dryRun && !cli.skipDeploy) {
+  if (await deployWalletFunction(false)) console.log("  ✓ Edge Function wallet desplegada");
+} else if (deploy.function) {
+  console.log("  ✓ Edge Function wallet desplegada");
+} else if (!cli.dryRun && !cli.skipDeploy) {
+  console.warn("  ⚠ Edge Function omitida (falta SUPABASE_ACCESS_TOKEN)");
+}
 
 // ── 6/7 Republicar sitio ─────────────────────────────────────────
 console.log("\n▸ 6/7 Republicar GitHub Pages…");
@@ -204,13 +231,13 @@ if (!cli.dryRun) {
   }
 }
 
-printGoogleWalletInstructions(issuerId, sa.client_email);
+printGoogleWalletInstructions(issuerId, sa?.client_email || "");
 
 console.log("\n═══════════════════════════════════════════════════");
 console.log("  Resumen");
 console.log(`  Merchant ID (Pay):  ${merchantId || "—"}`);
 console.log(`  Issuer ID (Wallet): ${issuerId}`);
-console.log(`  Service account:    ${sa.client_email}`);
+console.log(`  Service account:    ${sa?.client_email || "— (pendiente JSON GCP)"}`);
 if (fingerprints.ok && fingerprints.sha1) {
   console.log(`  SHA-1 keystore:     ${fingerprints.sha1}`);
 }
