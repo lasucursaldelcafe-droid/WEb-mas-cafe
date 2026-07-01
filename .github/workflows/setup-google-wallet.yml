@@ -45,12 +45,11 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_PAGES_PAT: ${{ secrets.GH_PAGES_PAT }}
+          SKIP_GITHUB_SECRETS: "1"
         run: |
           set -euo pipefail
-          export GITHUB_TOKEN="${GITHUB_TOKEN:-$GH_PAGES_PAT}"
-          node scripts/automate-google-wallet.mjs --ids-only
+          node scripts/automate-google-wallet.mjs --ids-only --skip-pages
 
       - name: Automatización completa (requiere JSON GCP válido)
         env:
@@ -88,8 +87,8 @@ jobs:
             exit 0
           fi
           unset GOOGLE_WALLET_SERVICE_ACCOUNT FIREBASE_SERVICE_ACCOUNT
-          export GITHUB_TOKEN="${GITHUB_TOKEN:-$GH_PAGES_PAT}"
-          node scripts/automate-google-wallet.mjs
+          export GH_PAGES_PAT="${{ secrets.GH_PAGES_PAT }}"
+          node scripts/automate-google-wallet.mjs --skip-pages
           rm -f /tmp/gcp-sa.json
 
       - name: Republicar GitHub Pages
