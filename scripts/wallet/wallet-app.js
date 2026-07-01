@@ -81,6 +81,7 @@ function renderWallet() {
   $("#progress-fill").style.width = `${pct}%`;
 
   renderQr(customer.memberId);
+  renderGoogleWallet();
   renderLedger();
   renderRewards();
   renderPending();
@@ -100,43 +101,83 @@ function renderQr(memberId) {
   renderGoogleWallet();
 }
 
-let googleWalletConfigured = null;
+let googleWalletStatus = null;
 
-async function renderGoogleWallet() {
-  const wrap = $("#g-wallet-wrap");
-  const link = $("#g-wallet-link");
-  const msg = $("#g-wallet-msg");
-  if (!wrap || !link) return;
+function isAndroid() {
+  return /Android/i.test(navigator.userAgent);
+}
 
-  hideMsg(msg);
-
-  if (googleWalletConfigured === null) {
-    try {
-      const status = await api("getGoogleWalletStatus");
-      googleWalletConfigured = !!status.configured;
-    } catch {
-      googleWalletConfigured = false;
-    }
-  }
-
-  if (!googleWalletConfigured) {
-    wrap.classList.add("hidden");
+function showWalletMsg(wrap, text, type = "error") {
+  const msg = wrap?.querySelector("[data-g-wallet-msg]");
+  if (!msg) return;
+  if (!text) {
+    msg.classList.add("hidden");
     return;
   }
+  msg.textContent = text;
+  msg.className = `g-wallet-msg msg-${type}`;
+  msg.classList.remove("hidden");
+}
 
-  wrap.classList.remove("hidden");
-  link.href = "#";
-  link.onclick = async (e) => {
-    e.preventDefault();
-    showMsg(msg, "Generando enlace…", "ok");
-    try {
-      const res = await api("getGoogleWalletSaveUrl");
-      window.open(res.saveUrl, "_blank", "noopener,noreferrer");
-      hideMsg(msg);
-    } catch (err) {
-      showMsg(msg, err.message || "No se pudo abrir Google Wallet", "error");
+async function handleGoogleWalletClick(wrap, btn) {
+  if (btn.disabled) return;
+
+  showWalletMsg(wrap, "Generando enlace…", "ok");
+  btn.disabled = true;
+
+  try {
+    if (!googleWalletStatus) {
+      googleWalletStatus = await api("getGoogleWalletStatus");
     }
-  };
+    if (!googleWalletStatus?.configured) {
+      showWalletMsg(
+        wrap,
+        "Tarjeta en configuración. Mientras tanto usa el QR en caja.",
+        "error",
+      );
+      return;
+    }
+    const res = await api("getGoogleWalletSaveUrl");
+    window.open(res.saveUrl, "_blank", "noopener,noreferrer");
+    showWalletMsg(wrap, "", "ok");
+  } catch (err) {
+    showWalletMsg(wrap, err.message || "No se pudo abrir Google Wallet", "error");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function renderGoogleWallet() {
+  const wraps = $$("[data-g-wallet]");
+  if (!wraps.length) return;
+
+  try {
+    googleWalletStatus = await api("getGoogleWalletStatus");
+  } catch {
+    googleWalletStatus = { configured: false, issuerConfigured: false };
+  }
+
+  for (const wrap of wraps) {
+    const btn = wrap.querySelector("[data-g-wallet-trigger]");
+    if (!btn) continue;
+
+    wrap.classList.remove("hidden");
+
+    if (!googleWalletStatus.configured) {
+      const hint = googleWalletStatus.issuerConfigured
+        ? "Pulsa para intentar añadir (activación en curso)"
+        : isAndroid()
+          ? "Pulsa para guardar en Google Wallet cuando esté activo"
+          : "Disponible en Android con Google Wallet";
+      showWalletMsg(wrap, hint, googleWalletStatus.issuerConfigured ? "ok" : "error");
+    } else {
+      showWalletMsg(wrap, "", "ok");
+    }
+
+    if (btn.dataset.bound === "1") continue;
+    btn.dataset.bound = "1";
+    btn.addEventListener("click", () => handleGoogleWalletClick(wrap, btn));
+  }
 }
 
 function renderLedger() {

@@ -78,7 +78,8 @@ Formato sugerido por línea:
 - [x] Edge Function wallet desplegada | supabase functions deploy | 2026-07-01 |
 - [ ] `secrets/google-wallet-sa.json` (JSON GCP) | ver secrets/README.md | |
 - [ ] Automatización completa | `npm run wallet:google-auto` | tras pegar JSON |
-- [ ] Botón «Añadir a Google Wallet» activo | /wallet/ pestaña QR | requiere JSON GCP |
+- [x] Botón «Añadir a Google Wallet» en tarjeta + pestaña QR | /wallet/ | 2026-07-01 |
+- [ ] Botón genera enlace JWT (requiere secrets/google-wallet-sa.json) | npm run wallet:google-auto | |
 - [ ] Emisor aprobado por Google (publicación) | UNDER_REVIEW → LIVE | 24–48 h |
 
 ### Firebase
