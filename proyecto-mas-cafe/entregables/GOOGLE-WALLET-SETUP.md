@@ -70,19 +70,32 @@ GOOGLE_WALLET_SERVICE_ACCOUNT={"type":"service_account","project_id":"mas-cafe-w
 
 `GOOGLE_CLOUD_PROJECT_ID` es opcional si el JSON ya trae `project_id`.
 
-### 6. Setup automático
+### 6. Setup automático (recomendado)
 
 ```bash
-npm run wallet:google-setup
+# Guardar credenciales en .env.local y ejecutar todo el trámite:
+npm run wallet:google-auto -- --write-env \
+  --merchant-id BCR2DN5TR7J4FLAR \
+  --api-key TU_API_KEY \
+  --issuer-id 3388000000022883204
+
+# Solo simular:
+npm run wallet:google-auto:dry
 ```
 
-Esto:
+El script automático:
 
-- Activa **Wallet API** en tu proyecto Google Cloud  
-- Crea la **LoyaltyClass** `mas_cafe_loyalty`  
-- Sube secrets a **Supabase Edge Function**  
-- Sube secrets a **GitHub Actions**  
-- Redespliega la function `wallet`
+1. Guarda variables en `.env.local` (con `--write-env`)
+2. Valida Merchant ID vs Issuer ID (BCR ≠ Issuer)
+3. Ejecuta `keytool` si hay keystore (SHA-1 para app Android)
+4. Activa Wallet API y crea LoyaltyClass
+5. Sube secrets a Supabase + GitHub
+6. Redespliega Edge Function y GitHub Pages
+7. Ejecuta diagnóstico
+
+**Importante:** `BCR2DN5TR7J4FLAR` es **Merchant ID** (Google Pay). El **Issuer ID** de Wallet API es otro valor **numérico** en la sección «Google Wallet API» de Pay Console.
+
+Setup manual (solo API): `npm run wallet:google-setup`
 
 ### 7. Republicar frontend
 
@@ -114,8 +127,9 @@ La clase queda en `UNDER_REVIEW` hasta que Google apruebe el emisor (~24–48 h)
 
 | Comando | Qué hace |
 |---------|----------|
-| `npm run wallet:google-setup:dry` | Verifica `.env.local` sin cambios |
-| `npm run wallet:google-setup` | Configura API + secrets + deploy |
+| `npm run wallet:google-auto` | Trámite completo (env + API + deploy + diagnose) |
+| `npm run wallet:google-auto:dry` | Simular sin cambios |
+| `npm run wallet:google-setup` | Solo API + secrets (sin merchant/keytool) |
 | `npm run wallet:diagnose` | Supabase + Google Wallet |
 
 ---

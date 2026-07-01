@@ -24,6 +24,8 @@
     "wallet:finalize": "node scripts/finalize-wallet-config.mjs",
     "wallet:google-setup": "node scripts/setup-google-wallet.mjs",
     "wallet:google-setup:dry": "node scripts/setup-google-wallet.mjs --dry-run",
+    "wallet:google-auto": "node scripts/automate-google-wallet.mjs",
+    "wallet:google-auto:dry": "node scripts/automate-google-wallet.mjs --dry-run",
     "wallet:setup:firebase": "node scripts/setup-firebase-wallet.mjs",
     "validate:firebase": "node scripts/validate-firebase-credentials.mjs",
     "deploy:firebase": "node scripts/setup-firebase-wallet.mjs",
