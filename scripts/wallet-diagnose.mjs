@@ -3,6 +3,9 @@
  * Diagnóstico rápido de configuración Supabase para la wallet.
  */
 import { loadEnvLocal } from "./lib/load-env-local.mjs";
+import { resolveIssuerIdFromConfig } from "./lib/google-wallet-config.mjs";
+import { resolveGoogleWalletServiceAccount } from "./lib/google-wallet-api.mjs";
+import { findGoogleWalletSaFile } from "./lib/google-wallet-sa-path.mjs";
 import {
   SUPABASE_URL,
   SUPABASE_ANON_KEY,
@@ -90,18 +93,26 @@ if (WALLET_CONFIGURED) {
   add("backend", false, "Backend no configurado en build", SUPABASE_LINKS.githubSecrets);
 }
 
-const gwIssuer = process.env.GOOGLE_WALLET_ISSUER_ID?.trim();
-const gwSa = process.env.GOOGLE_WALLET_SERVICE_ACCOUNT?.trim();
+const gwIssuer = resolveIssuerIdFromConfig();
+const gwSaObj = resolveGoogleWalletServiceAccount();
+const gwSaFile = findGoogleWalletSaFile();
+const gwSaReady = Boolean(gwIssuer && gwSaObj?.client_email);
 add(
   "google_wallet_env",
-  Boolean(gwIssuer && gwSa),
-  gwIssuer && gwSa
+  gwSaReady,
+  gwSaReady
     ? `Google Wallet env OK (issuer ${gwIssuer})`
-    : "Google Wallet sin configurar en .env.local",
-  "npm run wallet:google-setup — ver proyecto-mas-cafe/cuentas/ENLACES-CONFIGURACION.md",
+    : gwIssuer && gwSaFile
+      ? "JSON en secrets/ inválido o incompleto"
+      : gwIssuer
+        ? "Falta secrets/google-wallet-sa.json"
+        : "Google Wallet sin configurar en .env.local",
+  gwSaReady
+    ? ""
+    : "npm run wallet:google-bootstrap — luego npm run wallet:google-auto",
 );
 
-if (WALLET_CONFIGURED && gwIssuer && gwSa) {
+if (WALLET_CONFIGURED && gwSaReady) {
   try {
     const res = await fetch(`${SUPABASE_URL}/functions/v1/wallet`, {
       method: "POST",
@@ -119,11 +130,11 @@ if (WALLET_CONFIGURED && gwIssuer && gwSa) {
         data.configured
           ? "Google Wallet activo en Edge Function"
           : "Secrets Google Wallet no desplegados en Supabase",
-        "npm run wallet:google-setup",
+        "npm run wallet:google-auto",
       );
     }
   } catch {
-    add("google_wallet_backend", false, "No se pudo verificar Google Wallet", "npm run wallet:google-setup");
+    add("google_wallet_backend", false, "No se pudo verificar Google Wallet", "npm run wallet:google-auto");
   }
 }
 

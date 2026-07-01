@@ -43,9 +43,18 @@ import {
   googleCloudConsoleLinks,
 } from "./lib/google-wallet-api.mjs";
 import { deployGoogleWalletSecrets, deployGoogleWalletIdsOnly, deployWalletFunction, triggerPagesPublish } from "./lib/google-wallet-deploy.mjs";
+import { DEFAULT_GOOGLE_WALLET_SA_PATH } from "./lib/google-wallet-sa-path.mjs";
 
 loadEnvLocal();
 applyGoogleWalletConfigToEnv();
+
+// Escribe líneas estándar en .env.local (IDs + ruta al JSON)
+const envBootstrap = {
+  GOOGLE_APPLICATION_CREDENTIALS: "secrets/google-wallet-sa.json",
+};
+if (resolveMerchantIdFromConfig()) envBootstrap.GOOGLE_PAY_MERCHANT_ID = resolveMerchantIdFromConfig();
+if (resolveIssuerIdFromConfig()) envBootstrap.GOOGLE_WALLET_ISSUER_ID = resolveIssuerIdFromConfig();
+upsertEnvLocal(envBootstrap);
 
 function parseCli(argv) {
   const out = {
@@ -138,9 +147,10 @@ if (!sa?.client_email) {
     console.warn("  Se desplegarán Issuer/Merchant ID; el botón Wallet requiere JSON GCP válido.\n");
   } else {
     console.error("\n✗ Falta cuenta de servicio Google Cloud (JSON)");
-    console.error("  GOOGLE_WALLET_SERVICE_ACCOUNT o FIREBASE_SERVICE_ACCOUNT en .env.local / GitHub Secrets");
+    console.error(`  Coloca el archivo en: ${DEFAULT_GOOGLE_WALLET_SA_PATH}`);
+    console.error("  O: npm run wallet:google-bootstrap -- ./cuenta-servicio.json");
     console.error(`  Crear en: ${links.serviceAccounts}`);
-    console.error("\n  Si la LoyaltyClass ya existe en Pay Console, puedes desplegar solo IDs:");
+    console.error("\n  Si la LoyaltyClass ya existe en Pay Console:");
     console.error("  npm run wallet:google-auto -- --ids-only\n");
     process.exit(1);
   }

@@ -4,8 +4,10 @@
  */
 import { readFileSync, existsSync } from "fs";
 import { loadEnvLocal } from "./lib/load-env-local.mjs";
+import { applyGoogleWalletSaPathToEnv } from "./lib/google-wallet-sa-path.mjs";
 
 loadEnvLocal();
+applyGoogleWalletSaPathToEnv();
 
 function loadSa() {
   const credPath = process.env.GOOGLE_APPLICATION_CREDENTIALS?.trim();
@@ -21,7 +23,9 @@ function loadSa() {
 
 const item = loadSa();
 if (!item) {
-  console.error("✗ No hay cuenta de servicio en GOOGLE_APPLICATION_CREDENTIALS ni env JSON");
+  console.error("✗ No hay cuenta de servicio");
+  console.error("  Coloca el JSON en secrets/google-wallet-sa.json");
+  console.error("  O: GOOGLE_APPLICATION_CREDENTIALS / GOOGLE_WALLET_SERVICE_ACCOUNT");
   process.exit(1);
 }
 

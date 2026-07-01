@@ -4,12 +4,16 @@
 import { existsSync, readFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { applyGoogleWalletSaPathToEnv } from "./google-wallet-sa-path.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "../..");
 
 export function loadEnvLocal(envPath = path.join(root, ".env.local")) {
-  if (!existsSync(envPath)) return;
+  if (!existsSync(envPath)) {
+    applyGoogleWalletSaPathToEnv();
+    return;
+  }
   for (const line of readFileSync(envPath, "utf8").split("\n")) {
     const trimmed = line.trim();
     if (!trimmed || trimmed.startsWith("#")) continue;
@@ -25,4 +29,5 @@ export function loadEnvLocal(envPath = path.join(root, ".env.local")) {
     }
     if (!process.env[key]) process.env[key] = val;
   }
+  applyGoogleWalletSaPathToEnv();
 }
