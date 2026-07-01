@@ -37,7 +37,24 @@ https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/wallet/
 
 Login → **Añadir a Google Wallet**
 
-## GitHub (alternativa sin local)
+## GitHub Secrets (estado verificado en CI)
 
-Secret: **GOOGLE_WALLET_SERVICE_ACCOUNT** = contenido del JSON (una línea)  
+| Secret | Debe contener | Estado actual |
+|--------|----------------|---------------|
+| `GOOGLE_WALLET_SERVICE_ACCOUNT` | JSON completo en una línea | **No configurado** |
+| `FIREBASE_SERVICE_ACCOUNT` | JSON completo (legacy) | **Solo email** (~31 caracteres) — inválido |
+| `FIREBASE_TOKEN` | Token de `npx firebase login:ci` | **Expirado** — no puede crear claves IAM |
+| `GOOGLE_WALLET_ISSUER_ID` | `3388000000023162431` | OK |
+
+## GitHub (sin PC local)
+
+**Opción recomendada — workflow con pegado de JSON:**
+
+1. Actions → **Ingestar JSON Google Wallet** → Run workflow  
+2. Pega el JSON completo descargado de GCP  
+3. El workflow importa a Supabase, actualiza secrets y republica Pages  
+
+**Opción secret:**
+
+Secret: **GOOGLE_WALLET_SERVICE_ACCOUNT** = contenido del JSON (una línea, sin saltos rotos en `private_key`)  
 Luego: **Actions → Setup Google Wallet → Run workflow**
