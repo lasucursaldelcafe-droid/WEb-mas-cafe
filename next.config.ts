@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 
 // GitHub Pages (proyecto): /WEb-mas-cafe — dominio propio: raíz /
 const repo = "WEb-mas-cafe";
-const useBasePath = process.env.GITHUB_PAGES === "true";
+const useBasePath =
+  process.env.GITHUB_PAGES === "true" && process.env.VERCEL !== "1";
 
 const basePath = useBasePath ? `/${repo}` : "";
 
