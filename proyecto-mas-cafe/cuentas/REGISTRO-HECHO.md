@@ -60,6 +60,13 @@ Formato sugerido por línea:
 - [x] Parking GoDaddy resuelto | nameservers sirven GitHub | 2026-06-30 |
 - [ ] HTTPS certificado + Enforce HTTPS | `npm run domain:enable-https` | cert en estado «new» |
 
+### Supabase (wallet — backend gratuito)
+- [ ] Proyecto creado | https://supabase.com/dashboard | |
+- [ ] Secrets en GitHub (5 claves) | npm run wallet:connect | |
+- [ ] Auth Email activo | Supabase → Authentication | |
+- [ ] Auth Google activo | Supabase → Providers → Google | |
+- [ ] Wallet en vivo | https://xn--mascaf-gva.com/wallet/ | |
+
 ### Firebase
 - [ ] Acceso consola mas-cafe-c8413 | https://console.firebase.google.com/project/mas-cafe-c8413 | |
 - [ ] FIREBASE_TOKEN renovado en GitHub Secrets | | |
