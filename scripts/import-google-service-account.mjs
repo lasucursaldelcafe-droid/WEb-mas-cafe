@@ -6,11 +6,16 @@
  *   npm run wallet:google-import-sa -- path/to/service-account.json
  *   GOOGLE_APPLICATION_CREDENTIALS=./sa.json npm run wallet:google-import-sa
  */
-import { readFileSync, existsSync } from "fs";
+import { readFileSync, existsSync, copyFileSync } from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import { loadEnvLocal } from "./lib/load-env-local.mjs";
 import { resolveIssuerIdFromConfig, resolveMerchantIdFromConfig, applyGoogleWalletConfigToEnv } from "./lib/google-wallet-config.mjs";
 import { deployGoogleWalletSecrets } from "./lib/google-wallet-deploy.mjs";
 import { isNumericIssuerId } from "./lib/google-wallet-credentials.mjs";
+import { DEFAULT_GOOGLE_WALLET_SA_PATH } from "./lib/google-wallet-sa-path.mjs";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 loadEnvLocal();
 applyGoogleWalletConfigToEnv();
@@ -21,12 +26,16 @@ const credPath = fileArg || process.env.GOOGLE_APPLICATION_CREDENTIALS?.trim();
 if (!credPath || !existsSync(credPath)) {
   console.error("✗ Indica la ruta al JSON de cuenta de servicio Google Cloud");
   console.error("  npm run wallet:google-import-sa -- ./mi-cuenta-servicio.json");
+  console.error("  O guarda el archivo en secrets/google-wallet-sa.json y npm run wallet:google-auto");
   process.exit(1);
 }
 
+copyFileSync(credPath, DEFAULT_GOOGLE_WALLET_SA_PATH);
+console.log(`✓ Copiado a secrets/google-wallet-sa.json`);
+
 let sa;
 try {
-  sa = JSON.parse(readFileSync(credPath, "utf8"));
+  sa = JSON.parse(readFileSync(DEFAULT_GOOGLE_WALLET_SA_PATH, "utf8"));
 } catch {
   console.error("✗ El archivo no es JSON válido");
   process.exit(1);

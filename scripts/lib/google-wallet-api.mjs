@@ -6,6 +6,7 @@ import { readFileSync } from "fs";
 import { createSign } from "crypto";
 import { loadEnvLocal } from "./load-env-local.mjs";
 import { DOMAIN_PUNYCODE, GITHUB_PAGES_HOST } from "./domain-config.mjs";
+import { applyGoogleWalletSaPathToEnv } from "./google-wallet-sa-path.mjs";
 
 export const CLASS_SUFFIX = "mas_cafe_loyalty";
 export const LOGO_URI =
@@ -41,6 +42,7 @@ export const GOOGLE_WALLET_LINKS = googleCloudConsoleLinks();
 
 export function resolveGoogleWalletServiceAccount() {
   loadEnvLocal();
+  applyGoogleWalletSaPathToEnv();
   const credPath = process.env.GOOGLE_APPLICATION_CREDENTIALS?.trim();
   if (credPath) {
     try {

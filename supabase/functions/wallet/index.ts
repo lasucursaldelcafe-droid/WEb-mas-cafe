@@ -626,7 +626,12 @@ Deno.serve(async (req) => {
 
       case "getGoogleWalletStatus": {
         const cfg = googleWalletConfigured();
-        return json({ configured: !!cfg });
+        const issuerId = Deno.env.get("GOOGLE_WALLET_ISSUER_ID")?.trim() || "";
+        return json({
+          configured: !!cfg,
+          issuerConfigured: Boolean(issuerId),
+          classId: issuerId ? `${issuerId}.mas_cafe_loyalty` : null,
+        });
       }
 
       case "getGoogleWalletSaveUrl": {

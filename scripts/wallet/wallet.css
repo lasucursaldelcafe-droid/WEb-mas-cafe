@@ -182,6 +182,16 @@ h2.section {
   text-align: center;
 }
 
+.g-wallet-wrap--pass {
+  border-top-color: rgba(255, 255, 255, .2);
+  position: relative;
+  z-index: 1;
+}
+
+.g-wallet-wrap--pass .g-wallet-label {
+  color: rgba(246, 245, 239, .85);
+}
+
 .g-wallet-label {
   font-size: .78rem;
   color: var(--muted);
@@ -191,11 +201,22 @@ h2.section {
 .g-wallet-btn {
   display: inline-block;
   line-height: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.g-wallet-btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
 }
 
 .g-wallet-btn img {
   height: 48px;
   width: auto;
+  pointer-events: none;
 }
 
 .g-wallet-msg {
@@ -205,3 +226,6 @@ h2.section {
 
 .g-wallet-msg.msg-ok { color: var(--ok); }
 .g-wallet-msg.msg-error { color: var(--warn); }
+
+.g-wallet-wrap--pass .g-wallet-msg.msg-ok { color: #bbf7d0; }
+.g-wallet-wrap--pass .g-wallet-msg.msg-error { color: #fde68a; }

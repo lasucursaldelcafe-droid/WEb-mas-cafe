@@ -76,9 +76,10 @@ Formato sugerido por línea:
 - [x] LoyaltyClass mas_cafe_loyalty creada | Pay Console | 2026-07-01 |
 - [x] Issuer/Merchant ID en Supabase secrets | npm run wallet:google-auto:ids | 2026-07-01 |
 - [x] Edge Function wallet desplegada | supabase functions deploy | 2026-07-01 |
-- [ ] FIREBASE_SERVICE_ACCOUNT válido (JSON GCP) | GitHub Secrets — actualmente texto «Wallet aut…», no JSON | |
-- [ ] Secrets GOOGLE_WALLET_SERVICE_ACCOUNT en Supabase | npm run wallet:google-import-sa -- ./sa.json | |
-- [ ] Botón «Añadir a Google Wallet» activo | /wallet/ pestaña QR | requiere JSON GCP |
+- [ ] `secrets/google-wallet-sa.json` (JSON GCP) | ver secrets/README.md | |
+- [ ] Automatización completa | `npm run wallet:google-auto` | tras pegar JSON |
+- [x] Botón «Añadir a Google Wallet» en tarjeta + pestaña QR | /wallet/ | 2026-07-01 |
+- [ ] Botón genera enlace JWT (requiere secrets/google-wallet-sa.json) | npm run wallet:google-auto | |
 - [ ] Emisor aprobado por Google (publicación) | UNDER_REVIEW → LIVE | 24–48 h |
 
 ### Firebase
