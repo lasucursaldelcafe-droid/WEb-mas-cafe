@@ -21,6 +21,7 @@
     "wallet:setup:dry": "node scripts/setup-supabase-wallet.mjs --dry-run",
     "wallet:diagnose": "node scripts/wallet-diagnose.mjs",
     "wallet:connect": "node scripts/connect-supabase-wallet.mjs",
+    "wallet:finalize": "node scripts/finalize-wallet-config.mjs",
     "wallet:setup:firebase": "node scripts/setup-firebase-wallet.mjs",
     "validate:firebase": "node scripts/validate-firebase-credentials.mjs",
     "deploy:firebase": "node scripts/setup-firebase-wallet.mjs",

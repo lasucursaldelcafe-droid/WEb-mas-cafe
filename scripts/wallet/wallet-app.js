@@ -297,7 +297,10 @@ async function onSession(session) {
 
 if (!walletConfigured()) {
   showMsg($("#auth-msg"), walletConfigError(), "error");
-} else if (supabase) {
+} else {
+  if (!window.WALLET_GOOGLE_ENABLED) {
+    $("#btn-google")?.classList.add("hidden");
+  }
   supabase.auth.getSession().then(({ data: { session } }) => onSession(session));
   supabase.auth.onAuthStateChange((_event, session) => onSession(session));
 }

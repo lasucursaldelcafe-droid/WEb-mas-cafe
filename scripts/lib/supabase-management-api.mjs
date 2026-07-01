@@ -17,10 +17,15 @@ export function projectRefFromUrl(url) {
 }
 
 export function walletRedirectUrls() {
+  const base = DOMAIN_PUNYCODE;
+  const ghWallet = `https://${GITHUB_PAGES_HOST}/WEb-mas-cafe/wallet/`;
   return [
-    `https://${DOMAIN_PUNYCODE}/wallet/`,
-    `https://www.${DOMAIN_PUNYCODE}/wallet/`,
-    `https://${GITHUB_PAGES_HOST}/WEb-mas-cafe/wallet/`,
+    `https://${base}/wallet/`,
+    `https://www.${base}/wallet/`,
+    `http://${base}/wallet/`,
+    `http://www.${base}/wallet/`,
+    ghWallet,
+    `https://${GITHUB_PAGES_HOST}/WEb-mas-cafe/caja/`,
     "http://localhost:8080/wallet/",
     "http://127.0.0.1:8080/wallet/",
   ];

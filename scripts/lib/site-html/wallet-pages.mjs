@@ -27,6 +27,7 @@ function supabaseBootScript() {
 window.SUPABASE_URL = ${JSON.stringify(SUPABASE_URL)};
 window.SUPABASE_ANON_KEY = ${JSON.stringify(SUPABASE_ANON_KEY)};
 window.WALLET_BACKEND = ${JSON.stringify(WALLET_CONFIGURED ? "supabase" : "unconfigured")};
+window.WALLET_GOOGLE_ENABLED = false;
 </script>`;
 }
 
