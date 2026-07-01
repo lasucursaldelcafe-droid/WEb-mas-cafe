@@ -56,8 +56,17 @@ function tryParseServiceAccount(raw) {
 
   const attempts = [text];
 
+  try {
+    const once = JSON.parse(text);
+    if (typeof once === "string") attempts.push(once);
+    if (once && typeof once === "object" && once.client_email && once.private_key) return once;
+  } catch {
+    /* continue */
+  }
+
   if (text.startsWith("{") && text.endsWith("}")) {
     attempts.push(text.replace(/\\n/g, "\n"));
+    attempts.push(text.replace(/\r\n/g, "\n"));
   }
 
   if (!text.startsWith("{")) {
@@ -73,10 +82,28 @@ function tryParseServiceAccount(raw) {
     attempts.push(text.slice(1, -1));
   }
 
+  const emailMatch = text.match(/"client_email"\s*:\s*"([^"]+)"/);
+  const keyMatch = text.match(/"private_key"\s*:\s*"((?:[^"\\]|\\.)*)"/s);
+  if (emailMatch && keyMatch) {
+    attempts.push(
+      JSON.stringify({
+        type: "service_account",
+        project_id: PROJECT_ID,
+        client_email: emailMatch[1],
+        private_key: keyMatch[1].replace(/\\n/g, "\n"),
+      }),
+    );
+  }
+
   for (const candidate of attempts) {
     try {
-      const parsed = JSON.parse(candidate);
-      if (parsed?.client_email && parsed?.private_key) return parsed;
+      const parsed = typeof candidate === "string" ? JSON.parse(candidate) : candidate;
+      if (parsed?.client_email && parsed?.private_key) {
+        if (!parsed.private_key.includes("BEGIN PRIVATE KEY")) {
+          parsed.private_key = parsed.private_key.replace(/\\n/g, "\n");
+        }
+        return parsed;
+      }
     } catch {
       /* next */
     }
@@ -91,38 +118,85 @@ function resolveRawServiceAccountEnv() {
   ]) {
     const raw = process.env[key]?.trim();
     if (!raw) continue;
+    console.log(`  ○ [parse] ${key} longitud=${raw.length}`);
     const parsed = tryParseServiceAccount(raw);
     if (parsed) return { account: parsed, source: key };
-    warn("parse", `${key} presente pero no es JSON válido (${raw.slice(0, 40)}…)`);
+    warn("parse", `${key} presente pero no es JSON válido`);
   }
   return null;
 }
 
 async function refreshFirebaseAccessToken(refreshToken) {
-  const body = new URLSearchParams({
-    refresh_token: refreshToken,
-    client_id: FIREBASE_CLIENT_ID,
-    client_secret: FIREBASE_CLIENT_SECRET,
-    grant_type: "refresh_token",
-    scope: CLOUD_PLATFORM_SCOPE,
-  });
+  const attempts = [
+    { scope: CLOUD_PLATFORM_SCOPE },
+    { scope: "" },
+  ];
 
-  const res = await fetch("https://oauth2.googleapis.com/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body,
-  });
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.error_description || data.error || `OAuth ${res.status}`);
+  let lastErr = "OAuth falló";
+  for (const { scope } of attempts) {
+    const body = new URLSearchParams({
+      refresh_token: refreshToken,
+      client_id: FIREBASE_CLIENT_ID,
+      client_secret: FIREBASE_CLIENT_SECRET,
+      grant_type: "refresh_token",
+    });
+    if (scope) body.set("scope", scope);
+
+    const res = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body,
+    });
+    const data = await res.json();
+    if (res.ok && data.access_token) return data.access_token;
+    lastErr = data.error_description || data.error || `OAuth ${res.status}`;
+    if (data.error === "invalid_scope") continue;
   }
-  if (!data.access_token) throw new Error("Sin access_token en respuesta OAuth");
-  return data.access_token;
+  throw new Error(lastErr);
+}
+
+async function probeAccessToken(token) {
+  const url = `https://iam.googleapis.com/v1/projects/${PROJECT_ID}/serviceAccounts/${encodeURIComponent(SA_EMAIL)}`;
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.ok;
+}
+
+async function resolveGoogleAccessToken(firebaseToken) {
+  try {
+    const access = await refreshFirebaseAccessToken(firebaseToken);
+    log("oauth", "Access token desde refresh FIREBASE_TOKEN");
+    return access;
+  } catch (refreshErr) {
+    warn("oauth", `Refresh falló: ${refreshErr.message}`);
+  }
+
+  if (await probeAccessToken(firebaseToken)) {
+    log("oauth", "FIREBASE_TOKEN ya es access token válido");
+    return firebaseToken;
+  }
+
+  try {
+    const { createRequire } = await import("module");
+    const require = createRequire(import.meta.url);
+    const auth = require("firebase-tools/lib/auth");
+    const scopes = require("firebase-tools/lib/scopes");
+    const tokens = await auth.refreshTokens(firebaseToken, [scopes.CLOUD_PLATFORM]);
+    if (tokens?.access_token) {
+      log("oauth", "Access token vía firebase-tools");
+      return tokens.access_token;
+    }
+  } catch (err) {
+    warn("oauth", `firebase-tools: ${err.message || err}`);
+  }
+
+  throw new Error("No se pudo obtener access token de Google (renueva FIREBASE_TOKEN con npx firebase login:ci)");
 }
 
 async function createServiceAccountKey(accessToken) {
-  const name = `projects/${PROJECT_ID}/serviceAccounts/${SA_EMAIL}`;
-  const url = `https://iam.googleapis.com/v1/${name}/keys`;
+  const resource = `projects/${PROJECT_ID}/serviceAccounts/${SA_EMAIL}`;
+  const url = `https://iam.googleapis.com/v1/${encodeURI(resource)}/keys`;
 
   const res = await fetch(url, {
     method: "POST",
@@ -178,8 +252,7 @@ async function main() {
 
     warn("iam", "Creando clave nueva en GCP (IAM API)…");
     try {
-      const accessToken = await refreshFirebaseAccessToken(firebaseToken);
-      log("oauth", "Access token obtenido desde FIREBASE_TOKEN");
+      const accessToken = await resolveGoogleAccessToken(firebaseToken);
       sa = await createServiceAccountKey(accessToken);
       source = "IAM generateKey";
       log("iam", `Clave creada para ${sa.client_email}`);
