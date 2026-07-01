@@ -22,8 +22,9 @@ const required = [
   "public/images/brand/horizontal-azul.png",
   "scripts/build-github-pages.mjs",
   "scripts/lib/generate-constitution-report.mjs",
-  "scripts/setup-firebase-wallet.mjs",
-  "scripts/lib/firebase-setup-api.mjs",
+  "scripts/setup-supabase-wallet.mjs",
+  "supabase/functions/wallet/index.ts",
+  "supabase/migrations/20250626120000_wallet.sql",
   "scripts/serve-local.mjs",
   ".github/workflows/deploy-github-pages.yml",
 ];

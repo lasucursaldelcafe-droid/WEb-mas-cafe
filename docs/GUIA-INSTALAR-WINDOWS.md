@@ -89,7 +89,7 @@ Se abre el navegador → inicia sesión con la cuenta de Google del proyecto **m
 ## Paso 7 — Publicar el sitio
 
 ```powershell
-npm run deploy:firebase
+npm run deploy:wallet
 ```
 
 Al finalizar:
@@ -108,7 +108,7 @@ Abre esa URL en el navegador.
 2. En PowerShell, dentro de la carpeta del proyecto:
 
 ```powershell
-npm run deploy:firebase
+npm run deploy:wallet
 ```
 
 ---

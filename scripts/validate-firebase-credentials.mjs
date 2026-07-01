@@ -1,36 +1,56 @@
 #!/usr/bin/env node
 /**
- * Valida credenciales Firebase para setup automático de wallet.
+ * @deprecated Valida credenciales Supabase para la wallet (reemplaza validate-firebase).
  */
 import { loadEnvLocal } from "./lib/load-env-local.mjs";
-import { resolveServiceAccountJson, getAccessToken, FIREBASE_PROJECT } from "./lib/firebase-setup-api.mjs";
+import {
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY,
+  SUPABASE_SERVICE_ROLE_KEY,
+  WALLET_CONFIGURED,
+  SUPABASE_LINKS,
+} from "./wallet/supabase-shared.mjs";
 
 loadEnvLocal();
 
-console.log("\n═══ Validación Firebase — Wallet ═══\n");
+console.log("\n═══ Validación Supabase — Wallet ═══\n");
+console.warn("  (validate-firebase-credentials.mjs está obsoleto — usa Supabase)\n");
 
-const sa = resolveServiceAccountJson();
-const token = process.env.FIREBASE_TOKEN?.trim();
+let ok = true;
 
-if (!sa && !token) {
-  console.log("  ✗ Falta FIREBASE_SERVICE_ACCOUNT (JSON) o FIREBASE_TOKEN");
-  console.log("\n  Configura en GitHub Secrets:");
-  console.log("  https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/secrets/actions");
-  console.log("\n  Cuenta de servicio → Firebase Console → Configuración → Cuentas de servicio");
-  console.log("  Token CI → npx firebase login:ci\n");
-  process.exit(1);
+if (!SUPABASE_URL) {
+  ok = false;
+  console.log("  ✗ Falta SUPABASE_URL");
+} else {
+  console.log(`  ✓ SUPABASE_URL — ${SUPABASE_URL}`);
 }
 
-if (sa) {
-  try {
-    await getAccessToken(sa);
-    console.log(`  ✓ Cuenta de servicio — acceso API OK (${FIREBASE_PROJECT})`);
-    console.log("  ✓ Setup completo disponible (Auth + Firestore + deploy + seed)\n");
-    process.exit(0);
-  } catch (err) {
-    console.log("  ✗ Cuenta de servicio:", err.message);
-    process.exit(1);
-  }
+if (!SUPABASE_ANON_KEY) {
+  ok = false;
+  console.log("  ✗ Falta SUPABASE_PUBLISHABLE_KEY o SUPABASE_ANON_KEY");
+} else {
+  console.log("  ✓ Clave pública (anon/publishable) configurada");
 }
 
-console.log("  ⚠ Solo FIREBASE_TOKEN — deploy parcial (Auth/Firestore manual o SA recomendada)\n");
+if (!process.env.SUPABASE_ACCESS_TOKEN?.trim()) {
+  console.log("  ⚠ SUPABASE_ACCESS_TOKEN — necesario para deploy automático (CI)");
+} else {
+  console.log("  ✓ SUPABASE_ACCESS_TOKEN configurado");
+}
+
+if (!SUPABASE_SERVICE_ROLE_KEY) {
+  console.log("  ⚠ SUPABASE_SECRET_KEY / SERVICE_ROLE — necesario para seed programa");
+} else {
+  console.log("  ✓ Clave service_role / secret configurada");
+}
+
+if (!WALLET_CONFIGURED) {
+  ok = false;
+  console.log("\n  ✗ Wallet no configurada para el build (falta URL o clave pública)");
+}
+
+console.log(`\n  Panel secrets: ${SUPABASE_LINKS.githubSecrets}`);
+console.log(`  Workflow deploy: ${SUPABASE_LINKS.workflow}\n`);
+
+if (!ok) process.exit(1);
+console.log("✅ Supabase listo para wallet\n");

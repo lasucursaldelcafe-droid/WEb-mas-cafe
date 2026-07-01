@@ -20,7 +20,7 @@ export const LINKS = {
   firestore: `https://console.firebase.google.com/project/${P}/firestore`,
   functions: `https://console.firebase.google.com/project/${P}/functions`,
   githubSecrets: `https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/secrets/actions`,
-  workflowSetup: `https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/actions/workflows/setup-firebase-wallet.yml`,
+  workflowSetup: `https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/actions/workflows/deploy-supabase-wallet.yml`,
 };
 
 /** Enlace para habilitar una API concreta */

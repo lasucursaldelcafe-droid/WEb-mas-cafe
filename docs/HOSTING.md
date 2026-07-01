@@ -20,9 +20,24 @@ Activar una sola vez: [ACTIVAR-GITHUB-PAGES.md](./ACTIVAR-GITHUB-PAGES.md)
 | **DNS** | GoDaddy → apuntar a GitHub Pages |
 | **Guía** | [DOMINIO-MASCAFE-COM.md](./DOMINIO-MASCAFE-COM.md) |
 
-## Firebase Hosting (respaldo)
+## Wallet (backend Supabase)
 
-Mismo sitio HTML estático, proyecto `mas-cafe-c8413`.
+| | |
+|-|-|
+| **API** | `https://oogzhvdsjkvmwscqrfyu.supabase.co/functions/v1/wallet` |
+| **Deploy** | `npm run deploy:wallet` o workflow `Deploy wallet Supabase` |
+| **UI** | `/wallet/` y `/caja/` en GitHub Pages (HTML estático + API Supabase) |
+| **Guía** | [proyecto-mas-cafe/entregables/WALLET-CHECKLIST-GRATIS.md](../proyecto-mas-cafe/entregables/WALLET-CHECKLIST-GRATIS.md) |
+
+```bash
+npm run wallet:diagnose
+npm run test:wallet
+npm run wallet:setup
+```
+
+## Firebase Hosting (legacy — solo espejo estático)
+
+Mismo sitio HTML, proyecto `mas-cafe-c8413`. **No usar Cloud Functions** (requiere Blaze).
 
 | URL | |
 |-----|--|
@@ -30,11 +45,11 @@ Mismo sitio HTML estático, proyecto `mas-cafe-c8413`.
 | https://mas-cafe-c8413.firebaseapp.com/ | |
 
 ```bash
-npx firebase login
-npm run deploy:firebase
+# Obsoleto para wallet — redirige a Supabase:
+npm run deploy:firebase   # → npm run wallet:setup
 ```
 
-Workflow opcional: `.github/workflows/deploy-firebase.yml` (requiere secret `FIREBASE_TOKEN`).
+Workflow: `.github/workflows/deploy-firebase.yml` (desactivado).
 
 ## Dominio mascafé.com (automático)
 
