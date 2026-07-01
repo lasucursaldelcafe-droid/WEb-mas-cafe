@@ -90,6 +90,43 @@ if (WALLET_CONFIGURED) {
   add("backend", false, "Backend no configurado en build", SUPABASE_LINKS.githubSecrets);
 }
 
+const gwIssuer = process.env.GOOGLE_WALLET_ISSUER_ID?.trim();
+const gwSa = process.env.GOOGLE_WALLET_SERVICE_ACCOUNT?.trim();
+add(
+  "google_wallet_env",
+  Boolean(gwIssuer && gwSa),
+  gwIssuer && gwSa
+    ? `Google Wallet env OK (issuer ${gwIssuer})`
+    : "Google Wallet sin configurar en .env.local",
+  "npm run wallet:google-setup — ver proyecto-mas-cafe/cuentas/ENLACES-CONFIGURACION.md",
+);
+
+if (WALLET_CONFIGURED && gwIssuer && gwSa) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/wallet`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({ action: "getGoogleWalletStatus" }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      add(
+        "google_wallet_backend",
+        data.configured === true,
+        data.configured
+          ? "Google Wallet activo en Edge Function"
+          : "Secrets Google Wallet no desplegados en Supabase",
+        "npm run wallet:google-setup",
+      );
+    }
+  } catch {
+    add("google_wallet_backend", false, "No se pudo verificar Google Wallet", "npm run wallet:google-setup");
+  }
+}
+
 console.log("\n── Enlaces ──");
 console.log(`  Nuevo proyecto:  ${SUPABASE_LINKS.newProject}`);
 console.log(`  GitHub Secrets:  ${SUPABASE_LINKS.githubSecrets}`);
@@ -99,7 +136,13 @@ console.log("\n── Por qué Firebase no servía ──");
 console.log("  Cloud Functions requieren plan Blaze (facturación).");
 console.log("  Supabase plan gratuito incluye Auth + Postgres + Edge Functions.");
 
-const blockers = checks.filter((c) => !c.ok && c.id !== "service_role" && c.id !== "cli");
+const blockers = checks.filter(
+  (c) =>
+    !c.ok &&
+    c.id !== "service_role" &&
+    c.id !== "cli" &&
+    !c.id.startsWith("google_wallet"),
+);
 console.log("\n═══════════════════════════════════════════════════");
 if (blockers.length === 0) {
   console.log("  Listo — npm run wallet:setup");

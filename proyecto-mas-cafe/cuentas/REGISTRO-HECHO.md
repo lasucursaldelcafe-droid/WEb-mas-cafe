@@ -71,6 +71,13 @@ Formato sugerido por línea:
 - [ ] HTTPS mascafé.com | npm run domain:enable-https | cert pendiente |
 - [ ] Prueba registro cliente en móvil | /wallet/ | |
 
+### Google Wallet (tarjeta nativa Android)
+- [ ] Issuer ID en Pay Console | https://pay.google.com/business/console | |
+- [ ] Service account autorizada en emisor | Pay Console → Usuarios | |
+- [ ] Secrets GOOGLE_WALLET_* en GitHub + Supabase | npm run wallet:google-setup | |
+- [ ] Botón «Añadir a Google Wallet» en /wallet/ | pestaña QR | código listo |
+- [ ] Emisor aprobado por Google | estado UNDER_REVIEW → LIVE | 24–48 h |
+
 ### Firebase
 - [ ] Acceso consola mas-cafe-c8413 | https://console.firebase.google.com/project/mas-cafe-c8413 | |
 - [ ] FIREBASE_TOKEN renovado en GitHub Secrets | | |

@@ -114,11 +114,33 @@ Guía completa: [docs/DOMINIO-MASCAFE-COM.md](../../docs/DOMINIO-MASCAFE-COM.md)
 |---------|----------|
 | `npm run wallet:diagnose` | Verifica secrets y si responde la Edge Function |
 | `npm run wallet:setup` | Migraciones SQL + deploy function + seed programa |
+| `npm run wallet:google-setup` | Google Wallet API + secrets + botón «Añadir a Google Wallet» |
 
 **Wallet en vivo (frontend GitHub Pages):**
 
 - https://xn--mascaf-gva.com/wallet/
 - https://xn--mascaf-gva.com/caja/
+
+---
+
+## Google Wallet (tarjeta nativa Android — gratis)
+
+Guía completa: [GOOGLE-WALLET-SETUP.md](../entregables/GOOGLE-WALLET-SETUP.md)
+
+| Qué configurar | Enlace |
+|----------------|--------|
+| Google Pay & Wallet Console (Issuer ID) | https://pay.google.com/business/console |
+| Google Wallet API | https://console.cloud.google.com/apis/library/walletobjects.googleapis.com?project=mas-cafe-c8413 |
+| Cuentas de servicio | https://console.cloud.google.com/iam-admin/serviceaccounts?project=mas-cafe-c8413 |
+
+**Secrets adicionales en GitHub:**
+
+| Secret | Para qué |
+|--------|----------|
+| `GOOGLE_WALLET_ISSUER_ID` | ID numérico del emisor |
+| `GOOGLE_WALLET_SERVICE_ACCOUNT` | JSON de la cuenta de servicio |
+
+**Setup automático:** `npm run wallet:google-setup` (requiere Issuer ID + JSON en `.env.local`)
 
 ---
 

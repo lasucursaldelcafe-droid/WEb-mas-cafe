@@ -97,6 +97,46 @@ function renderQr(memberId) {
       if (!err && canvas) box.appendChild(canvas);
     },
   );
+  renderGoogleWallet();
+}
+
+let googleWalletConfigured = null;
+
+async function renderGoogleWallet() {
+  const wrap = $("#g-wallet-wrap");
+  const link = $("#g-wallet-link");
+  const msg = $("#g-wallet-msg");
+  if (!wrap || !link) return;
+
+  hideMsg(msg);
+
+  if (googleWalletConfigured === null) {
+    try {
+      const status = await api("getGoogleWalletStatus");
+      googleWalletConfigured = !!status.configured;
+    } catch {
+      googleWalletConfigured = false;
+    }
+  }
+
+  if (!googleWalletConfigured) {
+    wrap.classList.add("hidden");
+    return;
+  }
+
+  wrap.classList.remove("hidden");
+  link.href = "#";
+  link.onclick = async (e) => {
+    e.preventDefault();
+    showMsg(msg, "Generando enlace…", "ok");
+    try {
+      const res = await api("getGoogleWalletSaveUrl");
+      window.open(res.saveUrl, "_blank", "noopener,noreferrer");
+      hideMsg(msg);
+    } catch (err) {
+      showMsg(msg, err.message || "No se pudo abrir Google Wallet", "error");
+    }
+  };
 }
 
 function renderLedger() {

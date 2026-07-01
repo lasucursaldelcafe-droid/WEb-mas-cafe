@@ -18,6 +18,8 @@ on:
       - "supabase/**"
       - "content/wallet-program.json"
       - "scripts/setup-supabase-wallet.mjs"
+      - "scripts/setup-google-wallet.mjs"
+      - "scripts/lib/google-wallet-api.mjs"
       - "scripts/wallet/**"
       - ".github/workflows/deploy-supabase-wallet.yml"
 
@@ -56,10 +58,18 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GOOGLE_WALLET_ISSUER_ID: ${{ secrets.GOOGLE_WALLET_ISSUER_ID }}
+          GOOGLE_WALLET_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_WALLET_SERVICE_ACCOUNT }}
         run: |
           if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_PROJECT_REF" ]; then
             echo "::warning::Configura SUPABASE_ACCESS_TOKEN y SUPABASE_PROJECT_REF para deploy automático."
             echo "Guía: proyecto-mas-cafe/cuentas/ENLACES-CONFIGURACION.md"
             exit 0
+          fi
+          if [ -n "$GOOGLE_WALLET_ISSUER_ID" ] && [ -n "$GOOGLE_WALLET_SERVICE_ACCOUNT" ]; then
+            npx supabase secrets set \
+              GOOGLE_WALLET_ISSUER_ID="$GOOGLE_WALLET_ISSUER_ID" \
+              GOOGLE_WALLET_SERVICE_ACCOUNT="$GOOGLE_WALLET_SERVICE_ACCOUNT" \
+              --project-ref "$SUPABASE_PROJECT_REF"
           fi
           node scripts/setup-supabase-wallet.mjs
