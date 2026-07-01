@@ -11,7 +11,7 @@ on:
       - "content/google-wallet.json"
       - "scripts/**/google-wallet*.mjs"
       - "scripts/prepare-google-console.mjs"
-      - "scripts/wallet-google-ingest.mjs"
+      - "scripts/provision-google-wallet-sa.mjs"
       - "scripts/lib/read-google-sa.mjs"
       - ".github/workflows/setup-google-wallet.yml"
 
@@ -48,12 +48,13 @@ jobs:
           SKIP_GITHUB_SECRETS: "1"
         run: node scripts/prepare-google-console.mjs
 
-      - name: Ingestar JSON si existe en secrets
+      - name: Provisionar JSON (reparar secret o crear clave IAM)
         env:
           GOOGLE_PAY_MERCHANT_ID: BCR2DN5TR7J4FLAR
           GOOGLE_WALLET_ISSUER_ID: "3388000000023162431"
           GOOGLE_WALLET_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_WALLET_SERVICE_ACCOUNT }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -63,27 +64,8 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           GH_PAGES_PAT: ${{ secrets.GH_PAGES_PAT }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          SA_JSON="${GOOGLE_WALLET_SERVICE_ACCOUNT:-}"
-          if [ -z "$SA_JSON" ] && [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
-            SA_JSON="$FIREBASE_SERVICE_ACCOUNT"
-          fi
-          if [ -z "$SA_JSON" ]; then
-            echo "::notice::Pendiente: crea GOOGLE_WALLET_SERVICE_ACCOUNT con el JSON de GCP"
-            echo "::notice::Local: npm run wallet:google-ingest -- ./archivo.json"
-            node scripts/test-google-wallet.mjs || true
-            exit 0
-          fi
-          printf '%s' "$SA_JSON" > /tmp/gcp-sa.json
-          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp-sa.json
-          if ! node scripts/validate-google-service-account.mjs; then
-            echo "::warning::El secret no es JSON válido — reemplázalo con el archivo .json descargado"
-            rm -f /tmp/gcp-sa.json
-            exit 0
-          fi
-          node scripts/wallet-google-ingest.mjs /tmp/gcp-sa.json
-          rm -f /tmp/gcp-sa.json
+          SKIP_GITHUB_SECRETS: "0"
+        run: node scripts/provision-google-wallet-sa.mjs
 
       - name: Republicar GitHub Pages
         env:
