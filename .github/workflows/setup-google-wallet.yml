@@ -1,8 +1,7 @@
 name: Setup Google Wallet
 
-# Backend wallet: Supabase. Clase loyalty ya creada en Pay Console.
-# Fase 1: siempre despliega Issuer/Merchant ID + Edge Function.
-# Fase 2: automatización completa solo si el JSON GCP es válido.
+# Fase 1: Issuer ID + Edge Function (siempre).
+# Fase 2: Si hay JSON GCP válido en secrets → JWT activo + prueba.
 
 on:
   workflow_dispatch:
@@ -10,9 +9,10 @@ on:
     branches: [main]
     paths:
       - "content/google-wallet.json"
-      - "scripts/automate-google-wallet.mjs"
-      - "scripts/lib/google-wallet-api.mjs"
-      - "scripts/lib/google-wallet-deploy.mjs"
+      - "scripts/**/google-wallet*.mjs"
+      - "scripts/prepare-google-console.mjs"
+      - "scripts/wallet-google-ingest.mjs"
+      - "scripts/lib/read-google-sa.mjs"
       - ".github/workflows/setup-google-wallet.yml"
 
 permissions:
@@ -23,76 +23,70 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  setup:
+  prepare:
     runs-on: ubuntu-latest
     steps:
-      - name: Obtener código
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Node.js 20
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: npm
 
       - name: Instalar dependencias
         run: npm ci
 
-      - name: Desplegar IDs + Edge Function (siempre)
+      - name: Preparar consola + Supabase (Issuer ID)
         env:
           GOOGLE_PAY_MERCHANT_ID: BCR2DN5TR7J4FLAR
           GOOGLE_WALLET_ISSUER_ID: "3388000000023162431"
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          GH_PAGES_PAT: ${{ secrets.GH_PAGES_PAT }}
-          SKIP_GITHUB_SECRETS: "1"
-        run: |
-          set -euo pipefail
-          node scripts/automate-google-wallet.mjs --ids-only --skip-pages
-
-      - name: Automatización completa (requiere JSON GCP válido)
-        env:
-          GOOGLE_PAY_MERCHANT_ID: BCR2DN5TR7J4FLAR
-          GOOGLE_WALLET_ISSUER_ID: "3388000000023162431"
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          GOOGLE_WALLET_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_WALLET_SERVICE_ACCOUNT }}
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+          SKIP_GITHUB_SECRETS: "1"
+        run: node scripts/prepare-google-console.mjs
+
+      - name: Ingestar JSON si existe en secrets
+        env:
+          GOOGLE_PAY_MERCHANT_ID: BCR2DN5TR7J4FLAR
+          GOOGLE_WALLET_ISSUER_ID: "3388000000023162431"
+          GOOGLE_WALLET_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_WALLET_SERVICE_ACCOUNT }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_PAGES_PAT: ${{ secrets.GH_PAGES_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          SA_JSON=""
-          if [ -n "${GOOGLE_WALLET_SERVICE_ACCOUNT:-}" ]; then
-            SA_JSON="$GOOGLE_WALLET_SERVICE_ACCOUNT"
-          elif [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
+          SA_JSON="${GOOGLE_WALLET_SERVICE_ACCOUNT:-}"
+          if [ -z "$SA_JSON" ] && [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
             SA_JSON="$FIREBASE_SERVICE_ACCOUNT"
           fi
           if [ -z "$SA_JSON" ]; then
-            echo "::warning::Sin JSON de cuenta de servicio — botón Google Wallet pendiente"
-            echo "::warning::Crea GOOGLE_WALLET_SERVICE_ACCOUNT en GitHub Secrets con el .json de GCP"
+            echo "::notice::Pendiente: crea GOOGLE_WALLET_SERVICE_ACCOUNT con el JSON de GCP"
+            echo "::notice::Local: npm run wallet:google-ingest -- ./archivo.json"
+            node scripts/test-google-wallet.mjs || true
             exit 0
           fi
           printf '%s' "$SA_JSON" > /tmp/gcp-sa.json
           export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp-sa.json
           if ! node scripts/validate-google-service-account.mjs; then
-            echo "::warning::FIREBASE_SERVICE_ACCOUNT no es JSON válido (contenido tipo texto, no .json)"
-            echo "::warning::Reemplázalo: https://console.cloud.google.com/iam-admin/serviceaccounts"
-            echo "::warning::O ejecuta: npm run wallet:google-import-sa -- ./cuenta-servicio.json"
+            echo "::warning::El secret no es JSON válido — reemplázalo con el archivo .json descargado"
             rm -f /tmp/gcp-sa.json
             exit 0
           fi
-          unset GOOGLE_WALLET_SERVICE_ACCOUNT FIREBASE_SERVICE_ACCOUNT
-          export GH_PAGES_PAT="${{ secrets.GH_PAGES_PAT }}"
-          node scripts/automate-google-wallet.mjs --skip-pages
+          node scripts/wallet-google-ingest.mjs /tmp/gcp-sa.json
           rm -f /tmp/gcp-sa.json
 
       - name: Republicar GitHub Pages
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN || secrets.GH_PAGES_PAT }}
+          GH_TOKEN: ${{ secrets.GH_PAGES_PAT || secrets.GITHUB_TOKEN }}
         run: |
           gh workflow run "Publicar HTML en GitHub Pages" --repo lasucursaldelcafe-droid/WEb-mas-cafe || true
