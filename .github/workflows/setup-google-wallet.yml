@@ -49,6 +49,8 @@ jobs:
         run: node scripts/prepare-google-console.mjs
 
       - name: Provisionar JSON (reparar secret o crear clave IAM)
+        id: provision
+        continue-on-error: true
         env:
           GOOGLE_PAY_MERCHANT_ID: BCR2DN5TR7J4FLAR
           GOOGLE_WALLET_ISSUER_ID: "3388000000023162431"
@@ -66,6 +68,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SKIP_GITHUB_SECRETS: "0"
         run: node scripts/provision-google-wallet-sa.mjs
+
+      - name: Resumen si provisión falló
+        if: steps.provision.outcome == 'failure'
+        run: |
+          echo "::warning::Provisión SA falló — Issuer ID ya desplegado; falta JSON GCP o FIREBASE_TOKEN válido."
+          echo "→ Actions → Ingestar JSON Google Wallet (pegar JSON completo)"
+          echo "→ O renovar FIREBASE_TOKEN: npx firebase login:ci"
 
       - name: Republicar GitHub Pages
         env:

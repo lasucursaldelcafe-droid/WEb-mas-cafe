@@ -58,3 +58,8 @@ Login → **Añadir a Google Wallet**
 
 Secret: **GOOGLE_WALLET_SERVICE_ACCOUNT** = contenido del JSON (una línea, sin saltos rotos en `private_key`)  
 Luego: **Actions → Setup Google Wallet → Run workflow**
+
+## Reintento automático
+
+- **Actions → Reintentar Google Wallet** — diagnóstico + provisión (manual o cron diario 08:00 UTC)
+- Local: `npm run wallet:google-heal`

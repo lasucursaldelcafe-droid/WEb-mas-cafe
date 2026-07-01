@@ -4,7 +4,7 @@
  * 1. Validar credenciales (GoDaddy + GitHub)
  * 2. Build GitHub Pages + verificar enlaces
  * 3. Configurar dominio (GoDaddy DNS + GitHub Pages custom domain)
- * 4. Setup wallet Supabase (Auth + Postgres + Edge Functions)
+ * 4. Setup wallet Supabase + Google Wallet JWT (si hay credenciales GCP)
  * 5. Verificar dominio
  *
  * Uso (agente / CI):
@@ -65,7 +65,7 @@ if (!opts.dryRun && !opts.skipWallet) {
   try {
     run(
       "node scripts/setup-supabase-wallet.mjs",
-      "5/5 Setup wallet Supabase (Auth + Postgres + Edge Functions)",
+      "5/6 Setup wallet Supabase (Auth + Postgres + Edge Functions)",
     );
   } catch {
     console.log(
@@ -74,8 +74,16 @@ if (!opts.dryRun && !opts.skipWallet) {
         "  Workflow: Deploy wallet Supabase\n",
     );
   }
+  try {
+    run("node scripts/heal-google-wallet.mjs", "6/6 Google Wallet (JWT + configured)");
+  } catch {
+    console.log(
+      "\n⚠ Google Wallet JWT pendiente — falta JSON GCP o FIREBASE_TOKEN válido.\n" +
+        "  Actions → Ingestar JSON Google Wallet | npm run wallet:google-ingest -- ./archivo.json\n",
+    );
+  }
 } else {
-  console.log("\n▸ 5/5 Setup wallet Supabase — omitido (dry-run o --skip-wallet)\n");
+  console.log("\n▸ 5/6 Setup wallet Supabase — omitido (dry-run o --skip-wallet)\n");
 }
 
 if (!opts.dryRun) {
