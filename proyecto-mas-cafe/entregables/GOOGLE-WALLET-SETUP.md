@@ -1,6 +1,8 @@
 # Google Wallet — tarjeta de fidelización nativa (Android)
 
-La wallet web (`/wallet/`) ya funciona con QR y puntos. **Google Wallet** añade la tarjeta al teléfono Android (app Google Wallet), con saldo y QR sincronizados.
+La wallet web (`/wallet/`) usa **Supabase** (Auth + Postgres + Edge Functions). **Google Wallet** añade la tarjeta al teléfono Android, con saldo y QR sincronizados.
+
+**No usamos Firebase** para la wallet. Solo necesitas un proyecto **Google Cloud** (gratis para esta API) y la consola **Google Pay & Wallet**.
 
 **Costo:** Google Wallet API es **gratis**. No requiere Apple Developer ($99/año).
 
@@ -10,48 +12,65 @@ La wallet web (`/wallet/`) ya funciona con QR y puntos. **Google Wallet** añade
 
 | Dato | Dónde obtenerlo |
 |------|-----------------|
+| **Proyecto Google Cloud** | [Crear proyecto](https://console.cloud.google.com/projectcreate) |
 | **Issuer ID** (numérico) | [Google Pay & Wallet Console](https://pay.google.com/business/console) |
-| **Cuenta de servicio** (JSON) | [Google Cloud IAM](https://console.cloud.google.com/iam-admin/serviceaccounts?project=mas-cafe-c8413) |
-| Autorizar la cuenta en la consola | Pay Console → tu emisor → **Usuarios autorizados** → email de la service account |
+| **Cuenta de servicio** (JSON) | [IAM → Service accounts](https://console.cloud.google.com/iam-admin/serviceaccounts) |
+| Autorizar la cuenta en la consola | Pay Console → emisor → **Usuarios autorizados** |
 
-Proyecto Google Cloud recomendado: **mas-cafe-c8413** (el mismo de Firebase).
+---
+
+## Enlaces directos
+
+| Paso | Enlace |
+|------|--------|
+| Pay & Wallet Console (Issuer ID) | https://pay.google.com/business/console |
+| Crear proyecto Google Cloud | https://console.cloud.google.com/projectcreate |
+| Cuentas de servicio | https://console.cloud.google.com/iam-admin/serviceaccounts |
+| Activar Google Wallet API | https://console.cloud.google.com/apis/library/walletobjects.googleapis.com |
+| Credenciales | https://console.cloud.google.com/apis/credentials |
+
+Si ya tienes `project_id` en el JSON de la cuenta de servicio, añade `?project=TU-PROJECT-ID` a los enlaces de Cloud Console.
 
 ---
 
 ## Pasos manuales
 
-### 1. Crear emisor en Google Pay & Wallet Console
+### 1. Proyecto Google Cloud
 
-1. Abrir https://pay.google.com/business/console  
-2. Crear cuenta de negocio / emisor si no existe.  
-3. Copiar el **Issuer ID** (número largo, ej. `3388000000022883204`).
+1. Crear proyecto en https://console.cloud.google.com/projectcreate (ej. `mas-cafe-wallet`).  
+2. Anotar el **Project ID** (no el nombre visible).
 
-### 2. Cuenta de servicio en Google Cloud
+### 2. Cuenta de servicio
 
-1. Abrir https://console.cloud.google.com/iam-admin/serviceaccounts?project=mas-cafe-c8413  
-2. Usar la cuenta existente de Firebase Admin SDK **o** crear una nueva.  
-3. Keys → Add key → JSON → descargar.  
-4. En Pay Console, añadir el email (`...@...iam.gserviceaccount.com`) como **usuario autorizado**.
+1. IAM → Service accounts → **Create service account** (nombre: `wallet-issuer`).  
+2. Rol recomendado: **Editor** del proyecto (o permisos mínimos para Wallet API).  
+3. Keys → **Add key** → JSON → descargar.  
+4. El JSON incluye `project_id` — úsalo como `GOOGLE_CLOUD_PROJECT_ID` si quieres.
 
-### 3. Activar Google Wallet API
+### 3. Emisor en Google Pay & Wallet Console
 
-```bash
-# O abrir en consola:
-# https://console.cloud.google.com/apis/library/walletobjects.googleapis.com?project=mas-cafe-c8413
-```
+1. https://pay.google.com/business/console  
+2. Crear emisor / programa de loyalty.  
+3. Copiar **Issuer ID**.  
+4. **Usuarios autorizados** → añadir el email del JSON (`...@...iam.gserviceaccount.com`).
 
-El script `npm run wallet:google-setup` la activa automáticamente si tienes la clave JSON.
+### 4. Activar Google Wallet API
 
-### 4. Variables en `.env.local`
+Abrir https://console.cloud.google.com/apis/library/walletobjects.googleapis.com (selecciona tu proyecto) → **Enable**.
+
+O dejar que `npm run wallet:google-setup` la active con la cuenta de servicio.
+
+### 5. Variables en `.env.local`
 
 ```env
+GOOGLE_CLOUD_PROJECT_ID=mas-cafe-wallet
 GOOGLE_WALLET_ISSUER_ID=3388000000022883204
-GOOGLE_WALLET_SERVICE_ACCOUNT={"type":"service_account",...}
+GOOGLE_WALLET_SERVICE_ACCOUNT={"type":"service_account","project_id":"mas-cafe-wallet",...}
 ```
 
-> Puedes pegar el JSON completo en una sola línea, o reutilizar `FIREBASE_SERVICE_ACCOUNT` si es la misma clave.
+`GOOGLE_CLOUD_PROJECT_ID` es opcional si el JSON ya trae `project_id`.
 
-### 5. Ejecutar setup automático
+### 6. Setup automático
 
 ```bash
 npm run wallet:google-setup
@@ -59,45 +78,45 @@ npm run wallet:google-setup
 
 Esto:
 
-- Crea la **LoyaltyClass** `mas_cafe_loyalty` en Google Wallet API  
+- Activa **Wallet API** en tu proyecto Google Cloud  
+- Crea la **LoyaltyClass** `mas_cafe_loyalty`  
 - Sube secrets a **Supabase Edge Function**  
 - Sube secrets a **GitHub Actions**  
 - Redespliega la function `wallet`
 
-### 6. Republicar frontend
+### 7. Republicar frontend
 
 ```bash
 npm run build:github-pages
-# o disparar workflow «Publicar HTML en GitHub Pages»
 ```
 
-En `/wallet/` → pestaña **QR** aparece el botón **«Añadir a Google Wallet»**.
+En `/wallet/` → pestaña **QR** → botón **«Añadir a Google Wallet»**.
+
+---
+
+## Stack (recordatorio)
+
+| Capa | Tecnología |
+|------|------------|
+| Frontend | GitHub Pages — `/wallet/`, `/caja/` |
+| Backend | Supabase (Auth, Postgres, Edge Function `wallet`) |
+| Pase nativo Android | Google Wallet API (Google Cloud) |
 
 ---
 
 ## Aprobación de Google
 
-La clase queda en estado `UNDER_REVIEW` hasta que Google apruebe el emisor (normalmente **24–48 h**). Mientras tanto el botón puede fallar al guardar — la wallet web sigue funcionando.
+La clase queda en `UNDER_REVIEW` hasta que Google apruebe el emisor (~24–48 h). La wallet web con QR sigue funcionando mientras tanto.
 
 ---
 
-## Comandos útiles
+## Comandos
 
 | Comando | Qué hace |
 |---------|----------|
-| `npm run wallet:google-setup:dry` | Verifica env sin cambiar nada |
+| `npm run wallet:google-setup:dry` | Verifica `.env.local` sin cambios |
 | `npm run wallet:google-setup` | Configura API + secrets + deploy |
-| `npm run wallet:diagnose` | Comprueba Supabase + Google Wallet |
-
----
-
-## Cómo lo ve el cliente
-
-1. Registrarse en http://xn--mascaf-gva.com/wallet/  
-2. Pestaña **QR** → **Añadir a Google Wallet**  
-3. Iniciar sesión con cuenta Google en el móvil  
-4. La tarjeta queda en la app Google Wallet con puntos y QR `MC-XXXXXX`  
-5. Al sumar puntos en caja, el saldo se actualiza en el pase (PATCH automático)
+| `npm run wallet:diagnose` | Supabase + Google Wallet |
 
 ---
 
@@ -108,4 +127,4 @@ La clase queda en estado `UNDER_REVIEW` hasta que Google apruebe el emisor (norm
 | `GOOGLE_WALLET_ISSUER_ID` | ID del emisor |
 | `GOOGLE_WALLET_SERVICE_ACCOUNT` | JSON cuenta de servicio |
 
-Enlaces: [ENLACES-CONFIGURACION.md](../cuentas/ENLACES-CONFIGURACION.md)
+Enlaces generales: [ENLACES-CONFIGURACION.md](../cuentas/ENLACES-CONFIGURACION.md)

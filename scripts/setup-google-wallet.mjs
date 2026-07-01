@@ -4,7 +4,8 @@
  *
  * Requiere en .env.local:
  *   GOOGLE_WALLET_ISSUER_ID          — Google Pay & Wallet Console
- *   GOOGLE_WALLET_SERVICE_ACCOUNT    — JSON cuenta de servicio (o FIREBASE_SERVICE_ACCOUNT)
+ *   GOOGLE_WALLET_SERVICE_ACCOUNT    — JSON cuenta de servicio Google Cloud
+ *   GOOGLE_CLOUD_PROJECT_ID          — opcional si el JSON ya trae project_id
  *   SUPABASE_ACCESS_TOKEN + SUPABASE_PROJECT_REF  — subir secrets a Edge Function
  *
  * Uso: npm run wallet:google-setup
@@ -16,7 +17,7 @@ import {
   printGoogleWalletInstructions,
   resolveIssuerId,
   resolveGoogleWalletServiceAccount,
-  GOOGLE_WALLET_LINKS,
+  googleCloudConsoleLinks,
 } from "./lib/google-wallet-api.mjs";
 import { projectRefFromUrl } from "./lib/supabase-management-api.mjs";
 import { SUPABASE_URL } from "./wallet/supabase-shared.mjs";
@@ -34,18 +35,20 @@ console.log("══════════════════════�
 const issuerId = resolveIssuerId();
 const sa = resolveGoogleWalletServiceAccount();
 
+const links = googleCloudConsoleLinks();
+
 if (!issuerId) {
   console.error("✗ Falta GOOGLE_WALLET_ISSUER_ID en .env.local\n");
   printGoogleWalletInstructions("", sa?.client_email || "");
   console.log("\n  Obtén el Issuer ID en:");
-  console.log(`  ${GOOGLE_WALLET_LINKS.businessConsole}\n`);
+  console.log(`  ${links.businessConsole}\n`);
   process.exit(1);
 }
 
 if (!sa?.client_email) {
-  console.error("✗ Falta cuenta de servicio Google\n");
-  console.error("  Añade GOOGLE_WALLET_SERVICE_ACCOUNT (JSON) o FIREBASE_SERVICE_ACCOUNT");
-  console.error(`  Crear clave: ${GOOGLE_WALLET_LINKS.serviceAccounts}\n`);
+  console.error("✗ Falta cuenta de servicio Google Cloud\n");
+  console.error("  Añade GOOGLE_WALLET_SERVICE_ACCOUNT (JSON) en .env.local");
+  console.error(`  Crear cuenta: ${links.serviceAccounts}\n`);
   process.exit(1);
 }
 

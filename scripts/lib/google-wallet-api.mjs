@@ -1,30 +1,63 @@
 /**
- * Google Wallet API — setup de clase loyalty + secrets.
+ * Google Wallet API — setup de clase loyalty (independiente de Firebase).
+ * Backend wallet: Supabase Edge Functions.
  */
+import { readFileSync } from "fs";
 import { createSign } from "crypto";
 import { loadEnvLocal } from "./load-env-local.mjs";
 import { DOMAIN_PUNYCODE, GITHUB_PAGES_HOST } from "./domain-config.mjs";
-import { resolveServiceAccountJson, getAccessToken, FIREBASE_PROJECT } from "./firebase-setup-api.mjs";
-
-export const GOOGLE_WALLET_LINKS = {
-  businessConsole: "https://pay.google.com/business/console",
-  walletApi: `https://console.cloud.google.com/apis/library/walletobjects.googleapis.com?project=${FIREBASE_PROJECT}`,
-  serviceAccounts: `https://console.cloud.google.com/iam-admin/serviceaccounts?project=${FIREBASE_PROJECT}`,
-  credentials: `https://console.cloud.google.com/apis/credentials?project=${FIREBASE_PROJECT}`,
-};
 
 export const CLASS_SUFFIX = "mas_cafe_loyalty";
 export const LOGO_URI =
   "https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/images/brand/horizontal-azul.png";
 
 const WALLET_SCOPE = "https://www.googleapis.com/auth/wallet_object.issuer";
+const PLATFORM_SCOPE = "https://www.googleapis.com/auth/cloud-platform";
+
+export function resolveGoogleCloudProjectId() {
+  loadEnvLocal();
+  const explicit = process.env.GOOGLE_CLOUD_PROJECT_ID?.trim();
+  if (explicit) return explicit;
+  const sa = resolveGoogleWalletServiceAccount();
+  return sa?.project_id?.trim() || "";
+}
+
+export function googleCloudConsoleLinks(projectId = resolveGoogleCloudProjectId()) {
+  const q = projectId ? `?project=${encodeURIComponent(projectId)}` : "";
+  return {
+    businessConsole: "https://pay.google.com/business/console",
+    createProject: "https://console.cloud.google.com/projectcreate",
+    walletApi: `https://console.cloud.google.com/apis/library/walletobjects.googleapis.com${q}`,
+    serviceAccounts: `https://console.cloud.google.com/iam-admin/serviceaccounts${q}`,
+    credentials: `https://console.cloud.google.com/apis/credentials${q}`,
+    billing: projectId
+      ? `https://console.cloud.google.com/billing/linkedaccount?project=${encodeURIComponent(projectId)}`
+      : "https://console.cloud.google.com/billing",
+  };
+}
+
+/** @deprecated usa googleCloudConsoleLinks() */
+export const GOOGLE_WALLET_LINKS = googleCloudConsoleLinks();
 
 export function resolveGoogleWalletServiceAccount() {
   loadEnvLocal();
-  if (process.env.GOOGLE_WALLET_SERVICE_ACCOUNT?.trim()) {
-    return JSON.parse(process.env.GOOGLE_WALLET_SERVICE_ACCOUNT);
+  const raw = process.env.GOOGLE_WALLET_SERVICE_ACCOUNT?.trim();
+  if (raw) {
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
   }
-  return resolveServiceAccountJson();
+  const credPath = process.env.GOOGLE_APPLICATION_CREDENTIALS?.trim();
+  if (credPath) {
+    try {
+      return JSON.parse(readFileSync(credPath, "utf8"));
+    } catch {
+      return null;
+    }
+  }
+  return null;
 }
 
 export function resolveIssuerId() {
@@ -47,7 +80,7 @@ function signJwt(payload, privateKey) {
   return `${unsigned}.${signature}`;
 }
 
-async function getWalletAccessToken(credentials) {
+async function fetchGoogleAccessToken(credentials, scope) {
   const now = Math.floor(Date.now() / 1000);
   const assertion = signJwt(
     {
@@ -56,7 +89,7 @@ async function getWalletAccessToken(credentials) {
       aud: "https://oauth2.googleapis.com/token",
       iat: now,
       exp: now + 3600,
-      scope: WALLET_SCOPE,
+      scope,
     },
     credentials.private_key,
   );
@@ -70,19 +103,31 @@ async function getWalletAccessToken(credentials) {
     }),
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error_description || data.error || "OAuth falló");
+  if (!res.ok) throw new Error(data.error_description || data.error || "OAuth Google falló");
   return data.access_token;
 }
 
-export async function enableWalletApi(token, projectId = FIREBASE_PROJECT) {
-  const url = `https://serviceusage.googleapis.com/v1/projects/${projectId}/services/walletobjects.googleapis.com:enable`;
+async function getWalletAccessToken(credentials) {
+  return fetchGoogleAccessToken(credentials, WALLET_SCOPE);
+}
+
+async function getPlatformAccessToken(credentials) {
+  return fetchGoogleAccessToken(credentials, PLATFORM_SCOPE);
+}
+
+export async function enableWalletApi(token, projectId) {
+  const pid = projectId || resolveGoogleCloudProjectId();
+  if (!pid) {
+    return { ok: false, error: "Falta GOOGLE_CLOUD_PROJECT_ID o project_id en el JSON de la cuenta de servicio" };
+  }
+  const url = `https://serviceusage.googleapis.com/v1/projects/${pid}/services/walletobjects.googleapis.com:enable`;
   const res = await fetch(url, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
   });
-  if (res.ok || res.status === 409) return { ok: true };
+  if (res.ok || res.status === 409) return { ok: true, projectId: pid };
   const text = await res.text();
-  return { ok: false, error: text };
+  return { ok: false, error: text, projectId: pid };
 }
 
 export async function getLoyaltyClass(token, issuerId, brandName = "Más Café") {
@@ -128,11 +173,12 @@ export async function getLoyaltyClass(token, issuerId, brandName = "Más Café")
 
 export async function setupGoogleWalletClass(options = {}) {
   const issuerId = resolveIssuerId();
+  const links = googleCloudConsoleLinks();
   if (!issuerId) {
     return {
       ok: false,
       error: "Falta GOOGLE_WALLET_ISSUER_ID en .env.local",
-      links: GOOGLE_WALLET_LINKS,
+      links,
     };
   }
 
@@ -140,13 +186,17 @@ export async function setupGoogleWalletClass(options = {}) {
   if (!credentials?.client_email) {
     return {
       ok: false,
-      error: "Falta GOOGLE_WALLET_SERVICE_ACCOUNT o FIREBASE_SERVICE_ACCOUNT",
-      links: GOOGLE_WALLET_LINKS,
+      error: "Falta GOOGLE_WALLET_SERVICE_ACCOUNT (JSON de cuenta de servicio Google Cloud)",
+      links,
     };
   }
 
-  const platformToken = await getAccessToken(credentials);
-  await enableWalletApi(platformToken);
+  const projectId = credentials.project_id || resolveGoogleCloudProjectId();
+  const platformToken = await getPlatformAccessToken(credentials);
+  const apiEnable = await enableWalletApi(platformToken, projectId);
+  if (!apiEnable.ok) {
+    return { ok: false, error: apiEnable.error, links, projectId };
+  }
 
   const walletToken = await getWalletAccessToken(credentials);
   const brandName = options.brandName || "Más Café";
@@ -155,6 +205,7 @@ export async function setupGoogleWalletClass(options = {}) {
   return {
     ok: !loyalty.error,
     issuerId,
+    projectId: apiEnable.projectId || projectId,
     classId: classId(issuerId),
     serviceAccountEmail: credentials.client_email,
     loyalty,
@@ -163,16 +214,21 @@ export async function setupGoogleWalletClass(options = {}) {
       `http://${DOMAIN_PUNYCODE}`,
       `https://${GITHUB_PAGES_HOST}`,
     ],
-    links: GOOGLE_WALLET_LINKS,
+    links: googleCloudConsoleLinks(projectId),
     error: loyalty.error,
   };
 }
 
 export function printGoogleWalletInstructions(issuerId, serviceAccountEmail) {
-  console.log("\n── Pasos manuales en Google Pay & Wallet Console ──");
-  console.log(`  1. Abrir: ${GOOGLE_WALLET_LINKS.businessConsole}`);
+  const links = googleCloudConsoleLinks();
+  console.log("\n── Pasos en Google Pay & Wallet Console ──");
+  console.log(`  1. Abrir: ${links.businessConsole}`);
   console.log("  2. Crear cuenta emisor (si no existe) y copiar Issuer ID");
-  console.log(`  3. En «Usuarios autorizados» añadir: ${serviceAccountEmail}`);
+  console.log(`  3. En «Usuarios autorizados» añadir: ${serviceAccountEmail || "<email service account>"}`);
   console.log("  4. Esperar aprobación del emisor (puede tardar 24–48 h)");
   console.log(`  5. GOOGLE_WALLET_ISSUER_ID=${issuerId || "<tu issuer id>"}`);
+  console.log("\n── Google Cloud (sin Firebase) ──");
+  console.log(`  • Crear proyecto: ${links.createProject}`);
+  console.log(`  • Cuenta de servicio: ${links.serviceAccounts}`);
+  console.log(`  • Activar Wallet API: ${links.walletApi}`);
 }

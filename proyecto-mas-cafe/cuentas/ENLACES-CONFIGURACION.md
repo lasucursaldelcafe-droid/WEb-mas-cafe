@@ -123,24 +123,30 @@ Guía completa: [docs/DOMINIO-MASCAFE-COM.md](../../docs/DOMINIO-MASCAFE-COM.md)
 
 ---
 
-## Google Wallet (tarjeta nativa Android — gratis)
+## Google Wallet (tarjeta nativa Android — Google Cloud)
+
+> **No usa Firebase.** Backend wallet = Supabase. Google Wallet solo necesita un proyecto **Google Cloud** + Pay Console.
 
 Guía completa: [GOOGLE-WALLET-SETUP.md](../entregables/GOOGLE-WALLET-SETUP.md)
 
 | Qué configurar | Enlace |
 |----------------|--------|
 | Google Pay & Wallet Console (Issuer ID) | https://pay.google.com/business/console |
-| Google Wallet API | https://console.cloud.google.com/apis/library/walletobjects.googleapis.com?project=mas-cafe-c8413 |
-| Cuentas de servicio | https://console.cloud.google.com/iam-admin/serviceaccounts?project=mas-cafe-c8413 |
+| Crear proyecto Google Cloud | https://console.cloud.google.com/projectcreate |
+| Google Wallet API | https://console.cloud.google.com/apis/library/walletobjects.googleapis.com |
+| Cuentas de servicio | https://console.cloud.google.com/iam-admin/serviceaccounts |
 
-**Secrets adicionales en GitHub:**
+**Variables en `.env.local`:**
 
-| Secret | Para qué |
-|--------|----------|
+| Variable | Para qué |
+|----------|----------|
+| `GOOGLE_CLOUD_PROJECT_ID` | ID del proyecto Cloud (opcional si está en el JSON) |
 | `GOOGLE_WALLET_ISSUER_ID` | ID numérico del emisor |
 | `GOOGLE_WALLET_SERVICE_ACCOUNT` | JSON de la cuenta de servicio |
 
-**Setup automático:** `npm run wallet:google-setup` (requiere Issuer ID + JSON en `.env.local`)
+**Secrets en GitHub:** mismos nombres (`GOOGLE_WALLET_ISSUER_ID`, `GOOGLE_WALLET_SERVICE_ACCOUNT`).
+
+**Setup automático:** `npm run wallet:google-setup`
 
 ---
 
