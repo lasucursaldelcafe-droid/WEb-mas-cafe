@@ -11,6 +11,7 @@ import {
   SUPABASE_ANON_KEY,
   WALLET_CONFIGURED,
 } from "../../wallet/supabase-shared.mjs";
+import { walletPageUrl } from "../wallet-public-url.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -47,6 +48,7 @@ export function generateWalletPage() {
   const site = loadSite();
   const brand = site.brand?.name || "Más Café";
   const logo = "../images/brand/horizontal-azul.png";
+  const activationUrl = walletPageUrl();
 
   return `<!DOCTYPE html>
 <html lang="es">
@@ -78,7 +80,13 @@ export function generateWalletPage() {
           <h2 class="section">Programa de fidelización</h2>
           <p style="font-size:.88rem;color:var(--muted);margin-bottom:1rem">
             Regístrate o inicia sesión para ver tu saldo, QR en mostrador y canjear premios.
+            <a href="../fidelizacion/" style="color:var(--blue);font-weight:600">¿Primera vez? Mira cómo funciona →</a>
           </p>
+          <div class="auth-activation-qr" style="text-align:center;margin-bottom:1.25rem;padding:1rem;background:rgba(7,57,84,.04);border-radius:1rem">
+            <p style="font-size:.78rem;color:var(--muted);margin-bottom:.65rem">QR de activación (comparte en mostrador)</p>
+            <div id="wallet-activation-qr" style="display:inline-block"></div>
+            <p style="font-size:.72rem;color:var(--muted);margin-top:.5rem;max-width:14rem;margin-left:auto;margin-right:auto">Mismo enlace: ${escapeHtml(activationUrl)}</p>
+          </div>
           <div id="auth-msg" class="msg msg-error hidden" role="alert"></div>
           <div class="field">
             <label for="auth-name">Nombre (solo registro)</label>
@@ -183,8 +191,25 @@ export function generateWalletPage() {
       </section>
     </main>
 
-    <footer class="wallet-footer">${escapeHtml(brand)} · Fidelización digital</footer>
+    <footer class="wallet-footer">
+      ${escapeHtml(brand)} · <a href="../fidelizacion/" style="color:inherit;opacity:.85">Programa de fidelización</a>
+    </footer>
   </div>
+  <script>
+  (function(){
+    var url = ${JSON.stringify(activationUrl)};
+    function drawActivationQr(){
+      var box = document.getElementById("wallet-activation-qr");
+      if (!box || !window.QRCode) return;
+      box.innerHTML = "";
+      window.QRCode.toCanvas(url, { width: 120, margin: 1, color: { dark: "#073954", light: "#ffffff" } }, function(err, canvas) {
+        if (!err && canvas) box.appendChild(canvas);
+      });
+    }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", drawActivationQr);
+    else drawActivationQr();
+  })();
+  </script>
   <script type="module" src="./wallet-app.js"></script>
 </body>
 </html>`;

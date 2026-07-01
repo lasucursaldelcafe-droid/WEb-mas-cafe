@@ -10,6 +10,7 @@ import { brandAssetPath } from "../brand-logo.mjs";
 import { getEnabledRoutes } from "./routes.mjs";
 import { renderMenuBook, getMenuBookPagePaths } from "./menu-book.mjs";
 import { brandTitleHtml } from "./brand-title.mjs";
+import { loyaltyPromoSection, pageFidelizacion } from "./fidelizacion-page.mjs";
 
 function marqueeHtml(items) {
   const doubled = [...items, ...items];
@@ -81,6 +82,7 @@ export function pageHome() {
   const { img, href } = createPathHelpers(0);
   const featured = products.filter((p) => p.featured);
   const posts = blog.filter((p) => p.published).slice(0, 2);
+  const loyaltyPromo = loyaltyPromoSection(0, "dark");
 
   const body = `
   <section class="editorial-hero">
@@ -140,6 +142,7 @@ export function pageHome() {
       <p class="section-actions"><a class="text-link" href="${href("/blog")}">Ver todo el blog →</a></p>
     </div>
   </section>
+  ${loyaltyPromo.html}
   ${visitBand(href, brand)}`;
 
   return shell({
@@ -150,6 +153,7 @@ export function pageHome() {
     pageId: "home",
     heroArt: "/images/grafica/3.png",
     body,
+    extraHead: loyaltyPromo.extraScript,
   });
 }
 
@@ -384,6 +388,7 @@ export function pageContacto() {
   const { brand, pages } = site;
   const pc = pages.contacto;
   const { href } = createPathHelpers(1);
+  const loyaltyPromo = loyaltyPromoSection(1);
 
   const body = `
   <section class="page-hero">
@@ -417,6 +422,7 @@ export function pageContacto() {
       </form>
     </div>
   </section>
+  ${loyaltyPromo.html}
   ${visitBand(href, brand)}`;
 
   return shell({
@@ -426,6 +432,7 @@ export function pageContacto() {
     depth: 1,
     pageId: "contacto",
     body,
+    extraHead: loyaltyPromo.extraScript,
   });
 }
 
@@ -465,6 +472,7 @@ const BUILTIN_GENERATORS = {
   tienda: pageTienda,
   blog: pageBlog,
   contacto: pageContacto,
+  fidelizacion: pageFidelizacion,
 };
 
 export function buildSitePages() {

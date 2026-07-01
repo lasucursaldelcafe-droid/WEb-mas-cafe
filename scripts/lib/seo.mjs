@@ -221,6 +221,8 @@ const PUBLIC_SLUGS = [
   "tienda",
   "blog",
   "contacto",
+  "fidelizacion",
+  "wallet",
 ];
 
 export function generateSitemapXml(siteUrl = resolvePublicSiteUrl()) {
