@@ -51,14 +51,20 @@ jobs:
           GH_PAGES_PAT: ${{ secrets.GH_PAGES_PAT }}
         run: |
           set -euo pipefail
-          SA_JSON="${GOOGLE_WALLET_SERVICE_ACCOUNT:-$FIREBASE_SERVICE_ACCOUNT}"
+          SA_JSON=""
+          if [ -n "${GOOGLE_WALLET_SERVICE_ACCOUNT:-}" ]; then
+            SA_JSON="$GOOGLE_WALLET_SERVICE_ACCOUNT"
+          elif [ -n "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
+            SA_JSON="$FIREBASE_SERVICE_ACCOUNT"
+          fi
           if [ -z "$SA_JSON" ]; then
             echo "::error::Falta JSON de cuenta de servicio Google Cloud en GitHub Secrets"
             exit 1
           fi
           printf '%s' "$SA_JSON" > /tmp/gcp-sa.json
+          node -e "const s=require('fs').readFileSync('/tmp/gcp-sa.json','utf8'); const j=JSON.parse(s); if(!j.client_email) throw new Error('sin client_email'); console.log('✓ Service account:', j.client_email)"
           export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp-sa.json
-          export GOOGLE_WALLET_SERVICE_ACCOUNT="$SA_JSON"
+          unset GOOGLE_WALLET_SERVICE_ACCOUNT FIREBASE_SERVICE_ACCOUNT
           export GITHUB_TOKEN="${GITHUB_TOKEN:-$GH_PAGES_PAT}"
           node scripts/automate-google-wallet.mjs
           rm -f /tmp/gcp-sa.json

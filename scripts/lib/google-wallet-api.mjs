@@ -41,6 +41,15 @@ export const GOOGLE_WALLET_LINKS = googleCloudConsoleLinks();
 
 export function resolveGoogleWalletServiceAccount() {
   loadEnvLocal();
+  const credPath = process.env.GOOGLE_APPLICATION_CREDENTIALS?.trim();
+  if (credPath) {
+    try {
+      const parsed = JSON.parse(readFileSync(credPath, "utf8"));
+      if (parsed?.client_email) return parsed;
+    } catch {
+      /* continuar */
+    }
+  }
   const raw =
     process.env.GOOGLE_WALLET_SERVICE_ACCOUNT?.trim() ||
     process.env.FIREBASE_SERVICE_ACCOUNT?.trim();
@@ -48,14 +57,6 @@ export function resolveGoogleWalletServiceAccount() {
     try {
       const parsed = JSON.parse(raw);
       if (parsed?.client_email) return parsed;
-    } catch {
-      /* intentar archivo */
-    }
-  }
-  const credPath = process.env.GOOGLE_APPLICATION_CREDENTIALS?.trim();
-  if (credPath) {
-    try {
-      return JSON.parse(readFileSync(credPath, "utf8"));
     } catch {
       return null;
     }
