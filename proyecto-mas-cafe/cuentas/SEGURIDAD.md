@@ -20,12 +20,13 @@ Guía para guardar secretos **sin subirlos a Git** y para que Cursor / GitHub Ac
 | Tipo | Dónde | Quién lo usa | Para qué |
 |------|-------|--------------|----------|
 | Deploy sitio HTML | GitHub Secret `ADMIN_PUBLISH_KEY` | Workflow Pages | Publicar desde `/admin/` (PAT con `contents: write`; si falta, se usa `GH_PAGES_PAT`) |
-| Deploy Firebase + wallet backend | GitHub Secret `FIREBASE_SERVICE_ACCOUNT` (JSON) o `FIREBASE_TOKEN` | Workflows `setup-firebase-wallet`, `deploy-firebase` | Auth, Firestore, Functions automático |
+| **Wallet backend (activo)** | `SUPABASE_URL`, `SUPABASE_ANON_KEY` / `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY` / `SUPABASE_SECRET_KEY`, `SUPABASE_ACCESS_TOKEN`, `SUPABASE_PROJECT_REF` | Workflow `deploy-supabase-wallet`, build Pages | Auth, Postgres, Edge Functions |
+| Google Wallet nativo | `GOOGLE_WALLET_ISSUER_ID`, `GOOGLE_WALLET_SERVICE_ACCOUNT` (JSON GCP) | Workflow `setup-google-wallet`, secrets Supabase | JWT «Añadir a Google Wallet» |
 | DNS GoDaddy | `GODADDY_API_KEY` + `GODADDY_API_SECRET` | Workflows + `npm run domain:configure` | Automatizar mascafé.com |
 | GitHub Pages API | `GH_PAGES_PAT` (o `GITHUB_TOKEN` local) | Workflows dominio | Custom domain |
 | Desarrollo local / agente | `.env.local` (copiar de `.env.example`) | Cursor en tu máquina | Scripts npm |
 | Entrega al dueño | `CREDENCIALES.md` (copiar de plantilla) | Personas | Bloc de notas privado |
-| Wallet (futuro) | Firebase / Vercel env vars | Backend | Auth, Firestore, OTP |
+| Firebase (legacy) | `FIREBASE_TOKEN` — solo hosting espejo | `deploy-firebase` (desactivado) | **No** usar para wallet |
 
 **Panel Secrets:** https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/secrets/actions
 
@@ -44,8 +45,14 @@ Guía para guardar secretos **sin subirlos a Git** y para que Cursor / GitHub Ac
 | `GODADDY_API_SECRET` | Mismo panel (key + secret van juntos) | ☐ |
 | `GH_PAGES_PAT` | https://github.com/settings/tokens → `repo` + Pages | ☐ |
 | `ADMIN_PUBLISH_KEY` | PAT con `contents: write` en este repo (o deja vacío si `GH_PAGES_PAT` ya lo tiene) | ☐ |
-| `FIREBASE_SERVICE_ACCOUNT` | JSON cuenta de servicio Firebase (Admin + Service Usage) | ☐ |
-| `FIREBASE_TOKEN` | `npx firebase login:ci` (solo deploy parcial) | ☐ |
+| `SUPABASE_URL` | Supabase → Settings → API → Project URL | ☐ |
+| `SUPABASE_ANON_KEY` o `SUPABASE_PUBLISHABLE_KEY` | Clave pública (va en el build de `/wallet/`) | ☐ |
+| `SUPABASE_SERVICE_ROLE_KEY` o `SUPABASE_SECRET_KEY` | Clave servidor (solo CI, nunca en frontend) | ☐ |
+| `SUPABASE_ACCESS_TOKEN` | https://supabase.com/dashboard/account/tokens | ☐ |
+| `SUPABASE_PROJECT_REF` | Settings → General → Reference ID | ☐ |
+| `GOOGLE_WALLET_ISSUER_ID` | Pay Console (ya en `content/google-wallet.json`) | ☐ |
+| `GOOGLE_WALLET_SERVICE_ACCOUNT` | JSON descargado de GCP (cuenta de servicio Wallet) | ☐ |
+| `FIREBASE_SERVICE_ACCOUNT` | *(legacy — no usar para wallet)* | — |
 
 > **Importante:** GitHub no permite un secret llamado `GITHUB_PAT`. Usa `GH_PAGES_PAT`.
 
@@ -69,6 +76,7 @@ Rellena `CREDENCIALES.md` para la entrega final a Más Café. **No se sube a Git
 
 ```bash
 npm run validate:credentials   # GoDaddy + GitHub OK
+npm run validate:supabase      # Variables Supabase wallet
 npm run domain:configure       # Aplica DNS + custom domain si DNS listo
 npm run domain:verify          # Comprueba propagación
 ```
@@ -87,10 +95,12 @@ Con secrets configurados:
 | `Setup autónomo` | Tras deploy: valida credenciales + DNS |
 | `Configurar dominio mascafé.com` | GoDaddy DNS + custom domain (solo si DNS público listo) |
 | `npm run verify:links` | Comprueba rutas rotas |
-| `npm run wallet:setup` | Activa Auth + Firestore + Functions + seed |
-| `npm run setup:autonomous` | Pipeline completo local (incluye wallet si hay SA) |
+| `npm run wallet:setup` | Migraciones SQL + Edge Function + seed programa |
+| `Deploy wallet Supabase` | CI: backend wallet en Supabase |
+| `Setup Google Wallet` | Issuer + JWT nativo (si hay JSON GCP) |
+| `npm run setup:autonomous` | Pipeline completo (dominio + wallet Supabase) |
 
-**Aún necesito decisión humana para:** reglas de puntos, premios, términos legales, transferencia de repo a org Más Café, activar facturación Firebase si superan cuotas gratis.
+**Aún necesita decisión humana:** reglas de puntos, premios, términos legales, transferencia de repo a org Más Café, JSON GCP para Google Wallet nativo.
 
 ---
 

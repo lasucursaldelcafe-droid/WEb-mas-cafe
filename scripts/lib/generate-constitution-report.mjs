@@ -240,7 +240,8 @@ export function generateConstitutionReport() {
     ["Carpeta Drive (marca)", DRIVE_URL, "Fuente original de logotipos, ilustraciones y aplicaciones."],
     ["Dominio mascafé.com", `${DOMAIN_LIVE}/`, `Sitio en dominio propio (HTTP${httpsReady ? " + HTTPS" : ""}). Punycode: ${DOMAIN_PUNYCODE}.`],
     ["Google Search Console", "https://search.google.com/search-console?resource_id=sc-domain%3Axn--mascaf-gva.com", "Dominio verificado por DNS TXT — sitemap enviado."],
-    ["Firebase Hosting (respaldo)", "https://mas-cafe-c8413.web.app/", "Plataforma alternativa configurada en el repo. Mismo build HTML."],
+    ["Supabase (wallet API)", "https://oogzhvdsjkvmwscqrfyu.supabase.co", "Backend activo: Auth + Postgres + Edge Functions para /wallet/ y /caja/."],
+    ["Firebase Hosting (legacy)", "https://mas-cafe-c8413.web.app/", "Solo espejo HTML estático. No usar Cloud Functions (requiere Blaze)."],
     ["Instagram", brand.social.instagram, "Red social principal — tráfico y comunidad."],
     ["Facebook", brand.social.facebook, "Segunda red — eventos y alcance local."],
     ["WhatsApp", `https://wa.me/${brand.whatsapp}`, "Canal de conversión directa (pedidos, reservas, consultas)."],
@@ -560,7 +561,8 @@ export function generateConstitutionReport() {
           <tr><td><code>.github/workflows/</code></td><td>CI/CD</td><td>Deploy automático a GitHub Pages.</td></tr>
           <tr><td><code>/admin/</code></td><td>Panel privado</td><td>Lista desplegable de secciones, vista previa, publicación sin código.</td></tr>
           <tr><td><code>/informe/</code></td><td>Este documento</td><td>Constitución web regenerada en cada build.</td></tr>
-          <tr><td>Firebase (opcional)</td><td>Hosting espejo</td><td>Respaldo o pruebas en <code>mas-cafe-c8413.web.app</code>.</td></tr>
+          <tr><td>Supabase</td><td>Wallet backend</td><td>Auth, Postgres, Edge Function <code>wallet</code> — plan gratuito.</td></tr>
+          <tr><td>Firebase (legacy)</td><td>Hosting espejo</td><td>Solo HTML estático en <code>mas-cafe-c8413.web.app</code>.</td></tr>
         </tbody>
       </table>
     </section>
@@ -720,7 +722,7 @@ export function generateConstitutionReport() {
       <h2>10. Migración a ${escapeHtml(DOMAIN_URL)} (GoDaddy)</h2>
       <p>${escapeHtml(req.migracion?.intro || "")}</p>
       <div class="callout"><strong>Dominio con tilde:</strong> <strong>${escapeHtml(DOMAIN)}</strong> — en GitHub/DNS puede verse como <code>${escapeHtml(DOMAIN_PUNYCODE)}</code> (mismo dominio).</div>
-      <div class="callout warn"><strong>Importante:</strong> La wallet de fidelización <em>no puede</em> funcionar solo con GitHub Pages (HTML estático). Al activar puntos, el dominio debe apuntar a un hosting con backend (Firebase, Vercel, Render, etc.).</div>
+      <div class="callout warn"><strong>Importante:</strong> La UI de wallet vive en GitHub Pages (HTML estático), pero los puntos y el login requieren el backend <strong>Supabase</strong> (Edge Function). Sin <code>SUPABASE_URL</code> en el build, <code>/wallet/</code> queda en modo «no configurado».</div>
       <h3>Fases del plan</h3>
       <table>
         <thead><tr><th>Fase</th><th>Nombre</th><th>Descripción</th><th>Estado</th><th>Fecha objetivo</th></tr></thead>
@@ -748,7 +750,7 @@ export function generateConstitutionReport() {
     <section id="wallet">
       <h2>11. Wallet de fidelización — plan completo</h2>
       <p>${escapeHtml(req.wallet?.intro || "")}</p>
-      <div class="callout"><strong>Backend recomendado:</strong> ${fieldValue(req.wallet?.backendRecomendado, "Firebase Auth + Firestore o Convex")}. El sitio actual no tiene login de clientes ni base de datos de puntos — todo esto es desarrollo nuevo.</div>
+      <div class="callout"><strong>Backend activo:</strong> ${fieldValue(req.wallet?.backendRecomendado, "Supabase Auth + Postgres + Edge Functions")}. Rutas <code>/wallet/</code> y <code>/caja/</code> ya desplegadas; verificar con <code>npm run test:wallet</code>.</div>
 
       <h3>MVP mínimo (v1 obligatoria)</h3>
       <ul>${walletMvp}</ul>
@@ -801,7 +803,9 @@ export function generateConstitutionReport() {
           <tr><td>DNS GoDaddy</td><td>GitHub Secrets <code>GODADDY_API_KEY</code> + <code>GODADDY_API_SECRET</code></td><td><code>npm run domain:configure</code></td></tr>
           <tr><td>GitHub Pages API</td><td>Secret <code>GH_PAGES_PAT</code></td><td>Custom domain automático</td></tr>
           <tr><td>Deploy admin</td><td>Secret <code>ADMIN_PUBLISH_KEY</code></td><td>Publicar desde <code>/admin/</code></td></tr>
-          <tr><td>Firebase CI</td><td>Secret <code>FIREBASE_TOKEN</code></td><td>Deploy hosting respaldo</td></tr>
+          <tr><td>Wallet Supabase</td><td>Secrets <code>SUPABASE_*</code></td><td>Deploy backend + build <code>/wallet/</code></td></tr>
+          <tr><td>Google Wallet</td><td><code>GOOGLE_WALLET_SERVICE_ACCOUNT</code></td><td>Tarjeta nativa Android (JWT)</td></tr>
+          <tr><td>Firebase (legacy)</td><td>Secret <code>FIREBASE_TOKEN</code></td><td>Solo hosting espejo — no wallet</td></tr>
           <tr><td>Desarrollo local</td><td><code>.env.local</code> (gitignored)</td><td>Scripts en tu PC</td></tr>
           <tr><td>Entrega al dueño</td><td><code>CREDENCIALES.md</code> (gitignored)</td><td>Bloc privado — copiar desde plantilla</td></tr>
         </tbody>

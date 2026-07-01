@@ -86,7 +86,7 @@
       <p style="margin-top:.85rem;max-width:42rem;opacity:.9">Modelo oficial del sitio, inventario Drive → web, arquitectura, migración a <strong>https://www.mascafé.com</strong>, wallet de fidelización y checklist editable para la marca.</p>
       <div class="meta">
         <span>Versión 1.5.0</span>
-        <span>Generado: 2026-06-30 20:26 UTC</span>
+        <span>Generado: 2026-07-01 02:35 UTC</span>
         <span class="badge live">Sitio en línea OK</span>
       </div>
     </div>
@@ -122,8 +122,8 @@
       <h2>1. Estado actual del proyecto (auditoría GitHub)</h2>
       <div class="grid cols-2">
         <div class="card stat"><strong>7+1</strong><span>Páginas públicas + admin</span></div>
-        <div class="card stat"><strong>17</strong><span>Imágenes en producción</span></div>
-        <div class="card stat"><strong>189</strong><span>Activos en repositorio</span></div>
+        <div class="card stat"><strong>38</strong><span>Imágenes en producción</span></div>
+        <div class="card stat"><strong>209</strong><span>Activos en repositorio</span></div>
         <div class="card stat"><strong>HTTP 200</strong><span>Todas las rutas verificadas</span></div>
         <div class="card stat"><strong>3</strong><span>Fuentes Drive en catálogo</span></div>
         <div class="card stat"><strong>1</strong><span>Imágenes Drive con ID</span></div>
@@ -178,7 +178,8 @@
           <tr><td><code>.github/workflows/</code></td><td>CI/CD</td><td>Deploy automático a GitHub Pages.</td></tr>
           <tr><td><code>/admin/</code></td><td>Panel privado</td><td>Lista desplegable de secciones, vista previa, publicación sin código.</td></tr>
           <tr><td><code>/informe/</code></td><td>Este documento</td><td>Constitución web regenerada en cada build.</td></tr>
-          <tr><td>Firebase (opcional)</td><td>Hosting espejo</td><td>Respaldo o pruebas en <code>mas-cafe-c8413.web.app</code>.</td></tr>
+          <tr><td>Supabase</td><td>Wallet backend</td><td>Auth, Postgres, Edge Function <code>wallet</code> — plan gratuito.</td></tr>
+          <tr><td>Firebase (legacy)</td><td>Hosting espejo</td><td>Solo HTML estático en <code>mas-cafe-c8413.web.app</code>.</td></tr>
         </tbody>
       </table>
     </section>
@@ -346,7 +347,7 @@
           <tr><td><code>hero/</code></td><td>Fotos fachada e ilustración hero</td><td><span class="badge ref">No en HTML actual — reservado</span></td></tr>
         </tbody>
       </table>
-      <h3>Detalle por archivo (189 en repo · 17 en producción · 172 solo referencia)</h3>
+      <h3>Detalle por archivo (209 en repo · 38 en producción · 172 solo referencia)</h3>
       <table>
         <thead><tr><th>Archivo</th><th>Carpeta</th><th>Estado</th><th>Dónde / por qué</th></tr></thead>
         <tbody><tr>
@@ -1290,6 +1291,106 @@
         <td><span class="badge ref">Referencia</span></td>
         <td><span class="muted">Fotografías de fachada y hero — base visual para futuras versiones.</span></td>
       </tr><tr>
+        <td><code>/images/menu/pages/page-01.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-02.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-03.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-04.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-05.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-06.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-07.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-08.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-09.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-10.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-11.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-12.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-13.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-14.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-15.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-16.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-17.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-18.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-19.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
+        <td><code>/images/menu/pages/page-20.webp</code></td>
+        <td>menu</td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+      </tr><tr>
         <td><code>/images/products/caja-cafe.png</code></td>
         <td>products</td>
         <td><span class="badge ok">En sitio</span></td>
@@ -1350,11 +1451,17 @@
         <td><span class="field-empty">Dato / cuenta / enlace</span></td>
         <td class="muted"><span class="field-empty">—</span></td>
       </tr><tr>
-        <td>Proyecto Firebase / backend a nombre de Más Café</td>
-        <td><span class="badge ref">Pendiente</span></td>
+        <td>Proyecto Supabase (wallet) a nombre de Más Café</td>
+        <td><span class="badge ok">Listo</span></td>
         <td><span class="field-empty">Responsable</span></td>
-        <td><span class="field-empty">Dato / cuenta / enlace</span></td>
-        <td class="muted">Proyecto actual: mas-cafe-c8413</td>
+        <td>oogzhvdsjkvmwscqrfyu</td>
+        <td class="muted">Auth + Postgres + Edge Functions — plan gratuito</td>
+      </tr><tr>
+        <td>Proyecto Google Cloud mas-cafe-c8413 (solo Google Wallet / legacy hosting)</td>
+        <td><span class="badge ok">Listo</span></td>
+        <td><span class="field-empty">Responsable</span></td>
+        <td>mas-cafe-c8413</td>
+        <td class="muted">No usar Cloud Functions para wallet (requiere Blaze)</td>
       </tr><tr>
         <td>Cuenta de hosting (Vercel/Render) a nombre de Más Café</td>
         <td><span class="badge ref">Pendiente</span></td>
@@ -1388,7 +1495,7 @@
       <h2>10. Migración a https://www.mascafé.com (GoDaddy)</h2>
       <p>Hoy el sitio público vive en GitHub Pages (HTML estático). La wallet de fidelización requiere backend. El dominio www.mascafé.com apuntará al hosting con Node.js/API.</p>
       <div class="callout"><strong>Dominio con tilde:</strong> <strong>mascafé.com</strong> — en GitHub/DNS puede verse como <code>xn--mascaf-gva.com</code> (mismo dominio).</div>
-      <div class="callout warn"><strong>Importante:</strong> La wallet de fidelización <em>no puede</em> funcionar solo con GitHub Pages (HTML estático). Al activar puntos, el dominio debe apuntar a un hosting con backend (Firebase, Vercel, Render, etc.).</div>
+      <div class="callout warn"><strong>Importante:</strong> La UI de wallet vive en GitHub Pages (HTML estático), pero los puntos y el login requieren el backend <strong>Supabase</strong> (Edge Function). Sin <code>SUPABASE_URL</code> en el build, <code>/wallet/</code> queda en modo «no configurado».</div>
       <h3>Fases del plan</h3>
       <table>
         <thead><tr><th>Fase</th><th>Nombre</th><th>Descripción</th><th>Estado</th><th>Fecha objetivo</th></tr></thead>
@@ -1401,21 +1508,21 @@
       </tr><tr>
         <td><strong>Fase B</strong></td>
         <td>Backend</td>
-        <td>Firebase Auth + Firestore (o Convex) activado</td>
-        <td><span class="badge ref">Pendiente</span></td>
-        <td><span class="field-empty">Fecha</span></td>
+        <td>Supabase Auth + Postgres + Edge Functions (wallet)</td>
+        <td><span class="badge ok">Listo</span></td>
+        <td>2026-06-30</td>
       </tr><tr>
         <td><strong>Fase C</strong></td>
         <td>Wallet MVP</td>
         <td>Login cliente + saldo + sumar/restar + historial</td>
-        <td><span class="badge ref">Pendiente</span></td>
-        <td><span class="field-empty">Fecha</span></td>
+        <td><span class="badge ok">Listo</span></td>
+        <td>2026-06-30</td>
       </tr><tr>
         <td><strong>Fase D</strong></td>
         <td>Admin fidelización</td>
         <td>Panel dueños + modo caja en mostrador</td>
-        <td><span class="badge ref">Pendiente</span></td>
-        <td><span class="field-empty">Fecha</span></td>
+        <td><span class="badge ok">Listo</span></td>
+        <td>2026-06-30</td>
       </tr><tr>
         <td><strong>Fase E</strong></td>
         <td>Dominio</td>
@@ -1452,7 +1559,7 @@
     <section id="wallet">
       <h2>11. Wallet de fidelización — plan completo</h2>
       <p>Programa de fidelización con wallet digital, control de puntos y canje en mostrador. No puede vivir en HTML estático: requiere base de datos, login de clientes y reglas server-side.</p>
-      <div class="callout"><strong>Backend recomendado:</strong> Firebase Auth + Firestore (ya hay código parcial en el repo) o Convex. El sitio actual no tiene login de clientes ni base de datos de puntos — todo esto es desarrollo nuevo.</div>
+      <div class="callout"><strong>Backend activo:</strong> Supabase (Auth + Postgres + Edge Functions) — ya desplegado en oogzhvdsjkvmwscqrfyu.supabase.co. Rutas <code>/wallet/</code> y <code>/caja/</code> ya desplegadas; verificar con <code>npm run test:wallet</code>.</div>
 
       <h3>MVP mínimo (v1 obligatoria)</h3>
       <ul><li>Login cliente (teléfono OTP recomendado en Colombia)</li><li>Wallet con saldo visible</li><li>Historial de movimientos (ledger)</li><li>Admin: buscar cliente + sumar puntos por compra</li><li>Admin: 2–3 premios canjeables</li><li>Canje con código de un solo uso en mostrador</li><li>Deploy en hosting con backend (no GitHub Pages)</li><li>Dominio www.mascafé.com</li></ul>
@@ -1488,22 +1595,22 @@
       
     <table>
       <thead><tr><th>Regla</th><th>Valor acordado</th></tr></thead>
-      <tbody><tr><td>Puntos por cada $1.000 COP</td><td><span class="field-empty">Ej: 1</span></td></tr><tr><td>Mínimo de compra para sumar</td><td><span class="field-empty">Ej: $15.000 o «No»</span></td></tr><tr><td>Caducidad de puntos (meses)</td><td><span class="field-empty">Ej: 12 o «No caducan»</span></td></tr><tr><td>Canje parcial</td><td><span class="field-empty">Ej: 50 pts = $5.000 descuento</span></td></tr><tr><td>Puntos manuales permitidos</td><td><span class="field-empty">Ej: cumpleaños, compensación</span></td></tr><tr><td>Límite diario / anti-fraude</td><td><span class="field-empty">Ej: máx. 500 pts/día por cliente</span></td></tr><tr><td>Notas adicionales</td><td>Completar con los dueños de Más Café antes de programar.</td></tr></tbody>
+      <tbody><tr><td>Puntos por cada $1.000 COP</td><td>1</td></tr><tr><td>Mínimo de compra para sumar</td><td>$15.000</td></tr><tr><td>Caducidad de puntos (meses)</td><td>No caducan (v1)</td></tr><tr><td>Canje parcial</td><td>Canje total por premio</td></tr><tr><td>Puntos manuales permitidos</td><td>Solo vía caja con PIN</td></tr><tr><td>Límite diario / anti-fraude</td><td>500 pts/día por cliente</td></tr><tr><td>Notas adicionales</td><td>Reglas en content/wallet-program.json · backend Supabase oogzhvdsjkvmwscqrfyu</td></tr></tbody>
     </table>
     <h4 style="margin-top:1.25rem;font-family:var(--font-display);color:var(--blue-mid)">Premios canjeables</h4>
-    <ul><li class="field-empty">Por completar — ej: «Café filtro = 100 pts»</li></ul>
+    <ul><li>Café filtro gratis (100 pts)</li><li>$5.000 descuento (50 pts)</li><li>Postre de la casa (150 pts)</li></ul>
 
       <h3>Modelo de datos</h3>
       <ul><li><code>Customer</code> — usuario de la wallet</li><li><code>Wallet</code> — saldo actual de puntos</li><li><code>PointsLedger</code> — historial inmutable (suma, resta, quién, cuándo, por qué)</li><li><code>Reward</code> — premios canjeables</li><li><code>Redemption</code> — canje realizado</li><li><code>ProgramSettings</code> — reglas del programa</li><li><code>StaffUser</code> — baristas/caja (opcional v1)</li></ul>
 
       <h3>Pantallas para el cliente</h3>
-      <table><thead><tr><th>Pantalla</th><th>Descripción</th><th>Estado</th></tr></thead><tbody><tr><td><strong>Registro / login</strong></td><td>Entrar a la wallet</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Mi wallet</strong></td><td>Saldo, QR o código corto para mostrador</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Historial</strong></td><td>Movimientos con fecha y motivo</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Premios</strong></td><td>Catálogo de canjes</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Canjear</strong></td><td>Confirmación + código para validar en caja</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Mi perfil</strong></td><td>Datos y preferencias</td><td><span class="badge ref">Pendiente</span></td></tr></tbody></table>
+      <table><thead><tr><th>Pantalla</th><th>Descripción</th><th>Estado</th></tr></thead><tbody><tr><td><strong>Registro / login</strong></td><td>Entrar a la wallet</td><td><span class="badge ok">Listo</span></td></tr><tr><td><strong>Mi wallet</strong></td><td>Saldo, QR o código corto para mostrador</td><td><span class="badge ok">Listo</span></td></tr><tr><td><strong>Historial</strong></td><td>Movimientos con fecha y motivo</td><td><span class="badge ok">Listo</span></td></tr><tr><td><strong>Premios</strong></td><td>Catálogo de canjes</td><td><span class="badge ok">Listo</span></td></tr><tr><td><strong>Canjear</strong></td><td>Confirmación + código para validar en caja</td><td><span class="badge ok">Listo</span></td></tr><tr><td><strong>Mi perfil</strong></td><td>Datos y preferencias</td><td><span class="badge ok">Listo</span></td></tr></tbody></table>
 
       <h3>Módulos admin (dueños + staff)</h3>
-      <table><thead><tr><th>Módulo</th><th>Funciones</th><th>Estado</th></tr></thead><tbody><tr><td><strong>Programa de fidelización</strong></td><td>Reglas, premios, activar/desactivar</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Clientes</strong></td><td>Buscar por teléfono, ver saldo</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Ajuste manual de puntos</strong></td><td>Sumar/restar con motivo obligatorio</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Canjes pendientes</strong></td><td>Validar código en mostrador</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Reportes</strong></td><td>Puntos emitidos, canjeados, clientes activos</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Staff / caja</strong></td><td>Usuarios con permiso limitado (solo cargar puntos)</td><td><span class="badge ref">Pendiente</span></td></tr></tbody></table>
+      <table><thead><tr><th>Módulo</th><th>Funciones</th><th>Estado</th></tr></thead><tbody><tr><td><strong>Programa de fidelización</strong></td><td>Reglas, premios, activar/desactivar</td><td><span class="badge ok">Listo</span></td></tr><tr><td><strong>Clientes</strong></td><td>Buscar por teléfono, ver saldo</td><td><span class="badge ok">Listo</span></td></tr><tr><td><strong>Ajuste manual de puntos</strong></td><td>Sumar/restar con motivo obligatorio</td><td><span class="badge ok">Listo</span></td></tr><tr><td><strong>Canjes pendientes</strong></td><td>Validar código en mostrador</td><td><span class="badge ok">Listo</span></td></tr><tr><td><strong>Reportes</strong></td><td>Puntos emitidos, canjeados, clientes activos</td><td><span class="badge ref">Pendiente</span></td></tr><tr><td><strong>Staff / caja</strong></td><td>Usuarios con permiso limitado (solo cargar puntos)</td><td><span class="badge ok">Listo</span></td></tr></tbody></table>
 
       <h3>Operación en mostrador (caja)</h3>
-      <table><thead><tr><th>Operación en mostrador</th><th>Estado</th><th>Notas</th></tr></thead><tbody><tr><td>Tablet o móvil con modo caja</td><td><span class="badge ref">Pendiente</span></td><td><span class="field-empty">—</span></td></tr><tr><td>Buscar cliente por teléfono o QR</td><td><span class="badge ref">Pendiente</span></td><td><span class="field-empty">—</span></td></tr><tr><td>Registrar compra → sumar puntos automáticos</td><td><span class="badge ref">Pendiente</span></td><td><span class="field-empty">—</span></td></tr><tr><td>Validar canje con código de un solo uso</td><td><span class="badge ref">Pendiente</span></td><td><span class="field-empty">—</span></td></tr><tr><td>PIN o login staff (no cualquiera suma puntos)</td><td><span class="badge ref">Pendiente</span></td><td><span class="field-empty">—</span></td></tr></tbody></table>
+      <table><thead><tr><th>Operación en mostrador</th><th>Estado</th><th>Notas</th></tr></thead><tbody><tr><td>Tablet o móvil con modo caja</td><td><span class="badge ok">Listo</span></td><td>/caja/</td></tr><tr><td>Buscar cliente por teléfono o QR</td><td><span class="badge ok">Listo</span></td><td>ID MC- o correo</td></tr><tr><td>Registrar compra → sumar puntos automáticos</td><td><span class="badge ok">Listo</span></td><td>Monto COP → puntos auto</td></tr><tr><td>Validar canje con código de un solo uso</td><td><span class="badge ok">Listo</span></td><td>Código 6 caracteres, 30 min</td></tr><tr><td>PIN o login staff (no cualquiera suma puntos)</td><td><span class="badge ok">Listo</span></td><td>PIN inicial 123456</td></tr></tbody></table>
 
       <h3>Integraciones futuras</h3>
       <table>
@@ -1550,7 +1657,9 @@
           <tr><td>DNS GoDaddy</td><td>GitHub Secrets <code>GODADDY_API_KEY</code> + <code>GODADDY_API_SECRET</code></td><td><code>npm run domain:configure</code></td></tr>
           <tr><td>GitHub Pages API</td><td>Secret <code>GH_PAGES_PAT</code></td><td>Custom domain automático</td></tr>
           <tr><td>Deploy admin</td><td>Secret <code>ADMIN_PUBLISH_KEY</code></td><td>Publicar desde <code>/admin/</code></td></tr>
-          <tr><td>Firebase CI</td><td>Secret <code>FIREBASE_TOKEN</code></td><td>Deploy hosting respaldo</td></tr>
+          <tr><td>Wallet Supabase</td><td>Secrets <code>SUPABASE_*</code></td><td>Deploy backend + build <code>/wallet/</code></td></tr>
+          <tr><td>Google Wallet</td><td><code>GOOGLE_WALLET_SERVICE_ACCOUNT</code></td><td>Tarjeta nativa Android (JWT)</td></tr>
+          <tr><td>Firebase (legacy)</td><td>Secret <code>FIREBASE_TOKEN</code></td><td>Solo hosting espejo — no wallet</td></tr>
           <tr><td>Desarrollo local</td><td><code>.env.local</code> (gitignored)</td><td>Scripts en tu PC</td></tr>
           <tr><td>Entrega al dueño</td><td><code>CREDENCIALES.md</code> (gitignored)</td><td>Bloc privado — copiar desde plantilla</td></tr>
         </tbody>
@@ -1612,7 +1721,7 @@
         <td class="muted">Punycode: xn--mascaf-gva.com</td>
       </tr><tr>
         <td><span class="badge ok">Independencia</span></td>
-        <td>Cuentas GitHub, Firebase y hosting a nombre de Más Café</td>
+        <td>Cuentas GitHub, Supabase y hosting a nombre de Más Café</td>
         <td><span class="badge ref">Pendiente</span></td>
         <td><span class="field-empty">Responsable</span></td>
         <td><span class="field-empty">Fecha</span></td>
@@ -1696,7 +1805,7 @@
       <h2>14. Enlaces del ecosistema y por qué existen</h2>
       <table>
         <thead><tr><th>Enlace</th><th>URL</th><th>Motivo</th></tr></thead>
-        <tbody><tr><td>Sitio público (GitHub Pages)</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/</a></td><td>Hosting principal. Se actualiza con cada push a main.</td></tr><tr><td>Panel admin</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/</a></td><td>Edición visual: textos, colores, tipografías Drive, imágenes Drive, secciones, blog, menú. Publicación automática.</td></tr><tr><td>Admin (dominio)</td><td><a href="http://xn--mascaf-gva.com/admin/" target="_blank" rel="noopener">http://xn--mascaf-gva.com/admin/</a></td><td>Mismo panel en mascafé.com cuando el dominio está activo.</td></tr><tr><td>Documentación admin</td><td><a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/blob/main/docs/ADMIN.md" target="_blank" rel="noopener">https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/blob/main/docs/ADMIN.md</a></td><td>Guía de uso del panel para la marca.</td></tr><tr><td>Manifiesto Drive</td><td><a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/blob/main/content/drive-assets.json" target="_blank" rel="noopener">https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/blob/main/content/drive-assets.json</a></td><td>Catálogo de fuentes e imágenes sincronizables desde Drive.</td></tr><tr><td>Este informe</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/</a></td><td>Documento constitucional para la marca. No aparece en el menú del sitio.</td></tr><tr><td>Mockup Wallet (Apple + Google)</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/wallet/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/wallet/</a></td><td>Vista previa visual de la tarjeta de fidelización en iPhone y Android.</td></tr><tr><td>Repositorio GitHub</td><td><a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe" target="_blank" rel="noopener">https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe</a></td><td>Código fuente, historial de cambios y colaboración.</td></tr><tr><td>Carpeta Drive (marca)</td><td><a href="https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC" target="_blank" rel="noopener">https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC</a></td><td>Fuente original de logotipos, ilustraciones y aplicaciones.</td></tr><tr><td>Dominio mascafé.com</td><td><a href="http://xn--mascaf-gva.com/" target="_blank" rel="noopener">http://xn--mascaf-gva.com/</a></td><td>Sitio en dominio propio (HTTP). Punycode: xn--mascaf-gva.com.</td></tr><tr><td>Google Search Console</td><td><a href="https://search.google.com/search-console?resource_id=sc-domain%3Axn--mascaf-gva.com" target="_blank" rel="noopener">https://search.google.com/search-console?resource_id=sc-domain%3Axn--mascaf-gva.com</a></td><td>Dominio verificado por DNS TXT — sitemap enviado.</td></tr><tr><td>Firebase Hosting (respaldo)</td><td><a href="https://mas-cafe-c8413.web.app/" target="_blank" rel="noopener">https://mas-cafe-c8413.web.app/</a></td><td>Plataforma alternativa configurada en el repo. Mismo build HTML.</td></tr><tr><td>Instagram</td><td><a href="https://www.instagram.com/mascafecol315" target="_blank" rel="noopener">https://www.instagram.com/mascafecol315</a></td><td>Red social principal — tráfico y comunidad.</td></tr><tr><td>Facebook</td><td><a href="https://www.facebook.com/mascafecol" target="_blank" rel="noopener">https://www.facebook.com/mascafecol</a></td><td>Segunda red — eventos y alcance local.</td></tr><tr><td>WhatsApp</td><td><a href="https://wa.me/573156573897" target="_blank" rel="noopener">https://wa.me/573156573897</a></td><td>Canal de conversión directa (pedidos, reservas, consultas).</td></tr><tr><td>Google Maps</td><td><a href="https://maps.google.com/?q=Calle%205B%20%232-38-09%2C%20Barrio%20San%20Fernando%20Nuevo%2C%20Cali%2C%20Valle%20del%20Cauca%2C%20Colombia" target="_blank" rel="noopener">https://maps.google.com/?q=Calle%205B%20%232-38-09%2C%20Barrio%20San%20Fernando%20Nuevo%2C%20Cali%2C%20Valle%20del%20Cauca%2C%20Colombia</a></td><td>Navegación al local físico.</td></tr></tbody>
+        <tbody><tr><td>Sitio público (GitHub Pages)</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/</a></td><td>Hosting principal. Se actualiza con cada push a main.</td></tr><tr><td>Panel admin</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/</a></td><td>Edición visual: textos, colores, tipografías Drive, imágenes Drive, secciones, blog, menú. Publicación automática.</td></tr><tr><td>Admin (dominio)</td><td><a href="http://xn--mascaf-gva.com/admin/" target="_blank" rel="noopener">http://xn--mascaf-gva.com/admin/</a></td><td>Mismo panel en mascafé.com cuando el dominio está activo.</td></tr><tr><td>Documentación admin</td><td><a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/blob/main/docs/ADMIN.md" target="_blank" rel="noopener">https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/blob/main/docs/ADMIN.md</a></td><td>Guía de uso del panel para la marca.</td></tr><tr><td>Manifiesto Drive</td><td><a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/blob/main/content/drive-assets.json" target="_blank" rel="noopener">https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/blob/main/content/drive-assets.json</a></td><td>Catálogo de fuentes e imágenes sincronizables desde Drive.</td></tr><tr><td>Este informe</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/</a></td><td>Documento constitucional para la marca. No aparece en el menú del sitio.</td></tr><tr><td>Mockup Wallet (Apple + Google)</td><td><a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/wallet/" target="_blank" rel="noopener">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/wallet/</a></td><td>Vista previa visual de la tarjeta de fidelización en iPhone y Android.</td></tr><tr><td>Repositorio GitHub</td><td><a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe" target="_blank" rel="noopener">https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe</a></td><td>Código fuente, historial de cambios y colaboración.</td></tr><tr><td>Carpeta Drive (marca)</td><td><a href="https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC" target="_blank" rel="noopener">https://drive.google.com/drive/folders/153OUmu9lChpCk2NiiirUwI_Z5EDQQNtC</a></td><td>Fuente original de logotipos, ilustraciones y aplicaciones.</td></tr><tr><td>Dominio mascafé.com</td><td><a href="http://xn--mascaf-gva.com/" target="_blank" rel="noopener">http://xn--mascaf-gva.com/</a></td><td>Sitio en dominio propio (HTTP). Punycode: xn--mascaf-gva.com.</td></tr><tr><td>Google Search Console</td><td><a href="https://search.google.com/search-console?resource_id=sc-domain%3Axn--mascaf-gva.com" target="_blank" rel="noopener">https://search.google.com/search-console?resource_id=sc-domain%3Axn--mascaf-gva.com</a></td><td>Dominio verificado por DNS TXT — sitemap enviado.</td></tr><tr><td>Supabase (wallet API)</td><td><a href="https://oogzhvdsjkvmwscqrfyu.supabase.co" target="_blank" rel="noopener">https://oogzhvdsjkvmwscqrfyu.supabase.co</a></td><td>Backend activo: Auth + Postgres + Edge Functions para /wallet/ y /caja/.</td></tr><tr><td>Firebase Hosting (legacy)</td><td><a href="https://mas-cafe-c8413.web.app/" target="_blank" rel="noopener">https://mas-cafe-c8413.web.app/</a></td><td>Solo espejo HTML estático. No usar Cloud Functions (requiere Blaze).</td></tr><tr><td>Instagram</td><td><a href="https://www.instagram.com/mascafecol315" target="_blank" rel="noopener">https://www.instagram.com/mascafecol315</a></td><td>Red social principal — tráfico y comunidad.</td></tr><tr><td>Facebook</td><td><a href="https://www.facebook.com/mascafecol" target="_blank" rel="noopener">https://www.facebook.com/mascafecol</a></td><td>Segunda red — eventos y alcance local.</td></tr><tr><td>WhatsApp</td><td><a href="https://wa.me/573156573897" target="_blank" rel="noopener">https://wa.me/573156573897</a></td><td>Canal de conversión directa (pedidos, reservas, consultas).</td></tr><tr><td>Google Maps</td><td><a href="https://maps.google.com/?q=Calle%205B%20%232-38-09%2C%20Barrio%20San%20Fernando%20Nuevo%2C%20Cali%2C%20Valle%20del%20Cauca%2C%20Colombia" target="_blank" rel="noopener">https://maps.google.com/?q=Calle%205B%20%232-38-09%2C%20Barrio%20San%20Fernando%20Nuevo%2C%20Cali%2C%20Valle%20del%20Cauca%2C%20Colombia</a></td><td>Navegación al local físico.</td></tr></tbody>
       </table>
     </section>
 

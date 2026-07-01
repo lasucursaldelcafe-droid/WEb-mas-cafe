@@ -1,8 +1,10 @@
 # Wallet de fidelización — checklist gratis (paso a paso)
 
-Plan **sin costo inicial** para el MVP de puntos. Opciones de pago solo si superan límites gratuitos (SMS masivos, etc.).
+Plan **sin costo inicial** para el MVP de puntos. Backend en **Supabase** (tier gratis). Sin Firebase Blaze ni Cloud Functions.
 
-**Mockup visual (ya hecho):** https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/wallet/
+**Mockup visual:** https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/wallet/
+
+**Sitio en vivo:** `/wallet/` y `/caja/` en GitHub Pages (HTML) + API en Supabase Edge Functions.
 
 ---
 
@@ -10,14 +12,11 @@ Plan **sin costo inicial** para el MVP de puntos. Opciones de pago solo si super
 
 | Fase | Qué | Costo |
 |------|-----|-------|
-| Ahora | Sitio web + informe + mockup | **$0** (GitHub Pages) |
-| MVP wallet | Login + puntos + admin caja | **$0** con tier gratis Firebase/Vercel |
+| Ahora | Sitio web + informe + wallet UI | **$0** (GitHub Pages) |
+| MVP wallet | Login + puntos + admin caja | **$0** (Supabase gratis) |
 | Dominio | mascafé.com en GoDaddy | Ya pagado (dominio) |
-| SMS OTP Colombia | Firebase Phone Auth | Gratis hasta ~10k verificaciones/mes* |
-| Apple/Google Wallet nativo | Passes en cartera del teléfono | Requiere cuenta desarrollador ($)** |
-
-\* Ver cuotas actuales en Firebase.  
-\*\* Apple Developer $99/año; Google Wallet API gratis. El MVP puede ser **PWA web** sin passes nativos.
+| Login cliente | Email + contraseña (Supabase Auth) | **$0** |
+| Google Wallet nativo | Tarjeta en Android | **$0** API (requiere JSON GCP en secrets) |
 
 ---
 
@@ -25,70 +24,69 @@ Plan **sin costo inicial** para el MVP de puntos. Opciones de pago solo si super
 
 | Paso | Qué hacer | Dónde | Responsable | Estado |
 |------|-----------|-------|-------------|--------|
-| **0** | Aprobar reglas de negocio (puntos por $, premios, caducidad) | `content/informe-requisitos.json` → `wallet.reglasNegocio` | Dueños Más Café | ☐ |
-| **1** | Crear org GitHub **solo Más Café** (futuro) | https://github.com/organizations/plan | Dueño | ☐ |
-| **2** | Transferir o clonar repo a org Más Café | Repo → Settings → Transfer | Dueño + dev | ☐ |
-| **3** | Activar **Firebase Authentication** | [Auth console](https://console.firebase.google.com/project/mas-cafe-c8413/authentication) → Sign-in → Email y/o Phone | Dev | ☐ |
-| **4** | Activar **Firestore** (modo producción) | [Firestore](https://console.firebase.google.com/project/mas-cafe-c8413/firestore) → Crear base de datos | Dev | ☐ |
-| **5** | Reglas Firestore (solo usuario ve sus puntos) | Firestore → Rules | Dev (Cursor) | ☐ |
-| **6** | Habilitar **Phone Auth** solo si usan SMS | Auth → Phone → reCAPTCHA | Dev | ☐ |
-| **7** | (Opcional gratis) Login por **email link** en vez de SMS | Auth → Email link | Dev | ☐ |
-| **8** | Implementar MVP en código | Pedir a Cursor: «implementar wallet MVP» | Cursor | ☐ |
-| **9** | Deploy backend en **Vercel** (tier Hobby gratis) | https://vercel.com → Import repo | Dev | ☐ |
-| **10** | Variables en Vercel: Firebase config, `ADMIN_PUBLISH_KEY` | Vercel → Project → Environment Variables | Dev | ☐ |
-| **11** | Apuntar **www.mascafé.com** al hosting con API (no solo Pages) | GoDaddy DNS → CNAME a Vercel | Automático con `domain:configure` adaptado | ☐ |
-| **12** | Panel admin: buscar cliente + sumar puntos | `/admin/` ampliado | Cursor | ☐ |
-| **13** | Modo caja: tablet en mostrador | URL `/caja/` o `/admin/caja` | Cursor | ☐ |
-| **14** | 2–3 premios canjeables en Firestore | Admin programa fidelización | Dueños definen + Cursor | ☐ |
-| **15** | Términos y privacidad del programa | Página `/legal/wallet` | Dueños (texto) + Cursor | ☐ |
-| **16** | Probar flujo completo en móvil (PWA) | Chrome → Añadir a pantalla inicio | Dueños + caja | ☐ |
-| **17** | Secret `FIREBASE_SERVICE_ACCOUNT` en GitHub (CI) | GitHub Secrets | Dev | ☐ |
-| **18** | Anotar «wallet MVP en línea» | [REGISTRO-HECHO.md](../cuentas/REGISTRO-HECHO.md) | Cualquiera | ☐ |
+| **0** | Aprobar reglas de negocio | `content/wallet-program.json` | Dueños Más Café | ☐ |
+| **1** | Proyecto **Supabase** creado | https://supabase.com/dashboard | Dev | ☑ |
+| **2** | Secrets en GitHub: `SUPABASE_URL`, claves API, `SUPABASE_ACCESS_TOKEN`, `SUPABASE_PROJECT_REF` | [GitHub Secrets](https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/secrets/actions) | Dev | ☐ |
+| **3** | Deploy backend: workflow **Deploy wallet Supabase** o `npm run wallet:setup` | `.github/workflows/deploy-supabase-wallet.yml` | Dev / CI | ☐ |
+| **4** | Auth: Email habilitado (+ Google opcional) | Supabase → Authentication → Providers | Dev | ☐ |
+| **5** | Migración SQL + Edge Function `wallet` | `supabase/migrations/` + `supabase/functions/wallet/` | Automático con setup | ☐ |
+| **6** | Build sitio con claves públicas | `npm run build:github-pages` (inyecta `SUPABASE_URL` en `/wallet/`) | CI / Dev | ☐ |
+| **7** | Probar API | `npm run test:wallet` | Dev | ☐ |
+| **8** | Modo caja en mostrador | `/caja/` — cambiar PIN por defecto en admin | Dueños | ☐ |
+| **9** | Google Wallet nativo (opcional Android) | `npm run wallet:google-console` → descargar JSON GCP → `npm run wallet:google-ingest` | Dev | ☐ |
+| **10** | Secret `GOOGLE_WALLET_SERVICE_ACCOUNT` (JSON válido) | GitHub Secrets | Dev | ☐ |
+| **11** | Verificar JWT Google | `npm run test:google-wallet -- --strict` → `configured: true` | Dev | ☐ |
+| **12** | Probar flujo completo en móvil | Registro → puntos → QR → canje | Dueños + caja | ☐ |
+| **13** | Anotar «wallet MVP en línea» | [REGISTRO-HECHO.md](../cuentas/REGISTRO-HECHO.md) | Cualquiera | ☐ |
 
 ---
 
-## Decisiones que deben tomar los dueños (antes del paso 8)
+## Decisiones que deben tomar los dueños
 
 | Decisión | Opciones gratis recomendadas | Notas |
 |----------|------------------------------|-------|
-| Login cliente | Email mágico (link) o Google | Sin costo SMS |
-| Login cliente (Colombia) | Teléfono + Firebase Phone | Gratis con límites; luego puede costar |
-| Puntos por compra | Ej. 1 punto / $1.000 COP | Escribir en `reglasNegocio` |
-| Premios | Ej. café gratis = 50 puntos | Lista en JSON |
-| Quién opera caja | 1–2 personas con PIN staff | No todo el mundo suma puntos |
+| Login cliente | Email + contraseña o Google OAuth | Supabase Auth |
+| Puntos por compra | Ej. 1 punto / $1.000 COP | `content/wallet-program.json` |
+| Premios | Ej. café gratis = 100 puntos | Lista en JSON |
+| Quién opera caja | 1–2 personas con PIN staff | Cambiar PIN `123456` |
 | Caducidad puntos | 12 meses / nunca | Legal + operación |
 
 ---
 
-## Qué NO está incluido en «gratis»
+## Qué NO usar (errores frecuentes)
 
-| Ítem | Alternativa gratis |
-|------|-------------------|
-| Pass nativo Apple Wallet | PWA web con QR en pantalla |
-| Pass nativo Google Wallet | Igual — PWA primero |
-| SMS ilimitados | Email o WhatsApp manual (fase 2) |
-| POS integrado | Caja manual: buscar teléfono + monto |
-| App iOS/Android tienda | PWA; app nativa fase 3 |
-
----
-
-## Stack recomendado (costo $0 al inicio)
-
-```
-Cliente (móvil)  →  PWA Next.js en Vercel Hobby
-Auth             →  Firebase Auth (email o phone)
-Base de datos    →  Firestore (tier Spark)
-Admin / caja     →  Mismo sitio /admin + rol staff
-Dominio          →  www.mascafé.com → Vercel
-Sitio estático   →  GitHub Pages (hasta migrar todo a Vercel)
-```
+| ❌ Evitar | Por qué | ✅ Usar en su lugar |
+|----------|---------|---------------------|
+| Firebase Cloud Functions | Requiere plan **Blaze** (tarjeta) | Supabase Edge Functions |
+| `FIREBASE_SERVICE_ACCOUNT` para wallet | Obsoleto; JSON inválido en CI | `GOOGLE_WALLET_SERVICE_ACCOUNT` (solo Google Wallet) |
+| `npm run deploy:firebase` para wallet | Redirige a Supabase; no despliega Functions | `npm run deploy:wallet` |
+| Firestore para puntos | Código legacy en `functions/` | Postgres en Supabase |
 
 ---
 
-## Después de cada paso
+## Stack actual (costo $0 al inicio)
 
-1. Marca ☐ → ☑ en esta tabla o en [REGISTRO-HECHO.md](../cuentas/REGISTRO-HECHO.md).  
-2. En el chat: «listo paso 4 Firestore» — sin pegar contraseñas.  
-3. Cursor actualiza código y deploy.
+```
+Cliente (móvil)  →  PWA en GitHub Pages (/wallet/, /caja/)
+Auth             →  Supabase Auth (email, Google opcional)
+Base de datos    →  Supabase Postgres (tier gratis)
+API wallet       →  Supabase Edge Function /functions/v1/wallet
+Admin / caja     →  /admin/ + /caja/
+Google Wallet    →  JWT vía secrets Supabase (GCP mas-cafe-c8413)
+Dominio          →  www.mascafé.com → GitHub Pages (+ API Supabase)
+```
 
-**Seguridad:** [SEGURIDAD.md](../cuentas/SEGURIDAD.md)
+---
+
+## Comandos útiles
+
+```bash
+npm run wallet:diagnose          # Estado Supabase + Google Wallet
+npm run test:wallet              # API + HTML en vivo
+npm run wallet:setup             # Migraciones + Edge Function + seed
+npm run wallet:connect           # Subir secrets a GitHub + deploy
+npm run validate:supabase        # Comprobar variables locales
+```
+
+**Seguridad:** [SEGURIDAD.md](../cuentas/SEGURIDAD.md)  
+**Enlaces:** [ENLACES-CONFIGURACION.md](../cuentas/ENLACES-CONFIGURACION.md)

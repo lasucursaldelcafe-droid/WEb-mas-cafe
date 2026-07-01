@@ -5,7 +5,6 @@ import { readFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { loadSite, faviconHead } from "./shared.mjs";
-import { FIREBASE_CONFIG, FUNCTIONS_REGION } from "../../wallet/firebase-shared.mjs";
 import {
   SUPABASE_URL,
   SUPABASE_ANON_KEY,
@@ -29,14 +28,6 @@ window.SUPABASE_URL = ${JSON.stringify(SUPABASE_URL)};
 window.SUPABASE_ANON_KEY = ${JSON.stringify(SUPABASE_ANON_KEY)};
 window.WALLET_BACKEND = ${JSON.stringify(WALLET_CONFIGURED ? "supabase" : "unconfigured")};
 window.WALLET_GOOGLE_ENABLED = false;
-</script>`;
-}
-
-/** @deprecated Firebase — conservado solo por compatibilidad de build antiguo */
-function firebaseBootScript() {
-  return `<script>
-window.FIREBASE_CONFIG = ${JSON.stringify(FIREBASE_CONFIG, null, 2)};
-window.FIREBASE_FUNCTIONS_REGION = ${JSON.stringify(FUNCTIONS_REGION)};
 </script>`;
 }
 
