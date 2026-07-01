@@ -61,11 +61,15 @@ Formato sugerido por línea:
 - [ ] HTTPS certificado + Enforce HTTPS | `npm run domain:enable-https` | cert en estado «new» |
 
 ### Supabase (wallet — backend gratuito)
-- [ ] Proyecto creado | https://supabase.com/dashboard | |
-- [ ] Secrets en GitHub (5 claves) | npm run wallet:connect | |
-- [ ] Auth Email activo | Supabase → Authentication | |
-- [ ] Auth Google activo | Supabase → Providers → Google | |
-- [ ] Wallet en vivo | https://xn--mascaf-gva.com/wallet/ | |
+- [x] Proyecto creado | https://oogzhvdsjkvmwscqrfyu.supabase.co | 2026-07-01 |
+- [x] Secrets en GitHub (7 claves) | npm run wallet:connect | 2026-07-01 |
+- [x] Migraciones SQL + Edge Function wallet | supabase db push + deploy | 2026-07-01 |
+- [x] Programa fidelización sembrado (PIN 123456) | Postgres | 2026-07-01 |
+- [x] Auth Email + redirects (autoconfirm) | Management API | 2026-07-01 |
+- [ ] Auth Google | Requiere Client ID en Google Cloud + Supabase | |
+- [x] Wallet HTTP en mascafé.com | http://xn--mascaf-gva.com/wallet/ | 2026-07-01 |
+- [ ] HTTPS mascafé.com | npm run domain:enable-https | cert pendiente |
+- [ ] Prueba registro cliente en móvil | /wallet/ | |
 
 ### Firebase
 - [ ] Acceso consola mas-cafe-c8413 | https://console.firebase.google.com/project/mas-cafe-c8413 | |
