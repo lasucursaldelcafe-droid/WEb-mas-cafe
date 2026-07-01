@@ -1,16 +1,4 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js";
-
-const app = initializeApp(window.FIREBASE_CONFIG);
-const REGION = window.FIREBASE_FUNCTIONS_REGION || "us-central1";
-const functions = getFunctions(app, REGION);
-
-const callVerifyPin = httpsCallable(functions, "verifyStaffPinOnly");
-const callLookup = httpsCallable(functions, "lookupCustomer");
-const callPurchase = httpsCallable(functions, "registerPurchase");
-const callConfirm = httpsCallable(functions, "confirmRedemption");
-const callProgram = httpsCallable(functions, "getProgramStatus");
-const callEnsureProgram = httpsCallable(functions, "ensureProgram");
+import { walletCall, walletConfigured, walletConfigError } from "../wallet/wallet-api.mjs";
 
 const PIN_KEY = "mas-cafe-staff-pin";
 
@@ -55,11 +43,18 @@ function showPinGate() {
   $("#caja-app")?.classList.add("hidden");
 }
 
+async function api(action, payload = {}) {
+  return walletCall(action, payload);
+}
+
 async function initProgramHint() {
+  if (!walletConfigured()) {
+    $("#program-rules").textContent = walletConfigError();
+    return;
+  }
   try {
-    await callEnsureProgram();
-    const res = await callProgram();
-    const p = res.data;
+    await api("ensureProgram");
+    const p = await api("getProgramStatus");
     $("#program-rules").textContent =
       `${p.pointsPerThousandCop} pt / $1.000 · mínimo ${formatCop(p.minPurchaseCop)} · máx. ${p.maxPointsPerDay} pts/día`;
   } catch (_) {
@@ -74,15 +69,19 @@ $("#btn-unlock")?.addEventListener("click", async () => {
     showMsg(msg, "Ingresa el PIN de caja", "error");
     return;
   }
+  if (!walletConfigured()) {
+    showMsg(msg, walletConfigError(), "error");
+    return;
+  }
   setLoading($("#btn-unlock"), true);
   try {
-    await callVerifyPin({ staffPin: pin });
+    await api("verifyStaffPinOnly", { staffPin: pin });
     setPin(pin);
     showApp();
     $("#btn-lock")?.classList.remove("hidden");
     msg.classList.add("hidden");
   } catch (err) {
-    showMsg(msg, "PIN incorrecto", "error");
+    showMsg(msg, err.message || "PIN incorrecto", "error");
   } finally {
     setLoading($("#btn-unlock"), false);
   }
@@ -105,8 +104,7 @@ $("#btn-search")?.addEventListener("click", async () => {
   setLoading($("#btn-search"), true);
   msg.classList.add("hidden");
   try {
-    const res = await callLookup({ staffPin: getPin(), query });
-    const c = res.data;
+    const c = await api("lookupCustomer", { staffPin: getPin(), query });
     result.innerHTML = `
       <div class="result-box">
         <strong>${c.displayName}</strong><br/>
@@ -138,13 +136,12 @@ $("#btn-add-points")?.addEventListener("click", async () => {
   setLoading($("#btn-add-points"), true);
   msg.classList.add("hidden");
   try {
-    const res = await callPurchase({
+    const d = await api("registerPurchase", {
       staffPin: getPin(),
       memberId,
       amountCop,
       note: note || undefined,
     });
-    const d = res.data;
     result.innerHTML = `
       <div class="result-box">
         <strong>+${d.pointsAdded} puntos</strong> a ${d.displayName}<br/>
@@ -172,8 +169,7 @@ $("#btn-confirm-code")?.addEventListener("click", async () => {
   setLoading($("#btn-confirm-code"), true);
   msg.classList.add("hidden");
   try {
-    const res = await callConfirm({ staffPin: getPin(), code });
-    const d = res.data;
+    const d = await api("confirmRedemption", { staffPin: getPin(), code });
     result.innerHTML = `
       <div class="result-box">
         Canje confirmado: <strong>${d.rewardName}</strong><br/>

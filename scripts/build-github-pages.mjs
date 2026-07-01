@@ -85,7 +85,7 @@ writeFileSync(path.join(walletDir, "index.html"), generateWalletPage(), "utf8");
 writeFileSync(path.join(walletDir, "manifest.webmanifest"), generateWalletManifest(), "utf8");
 writeFileSync(path.join(cajaDir, "index.html"), generateCajaPage(), "utf8");
 
-for (const file of ["wallet.css", "wallet-app.js"]) {
+for (const file of ["wallet.css", "wallet-app.js", "wallet-api.mjs"]) {
   cpSync(path.join(root, "scripts/wallet", file), path.join(walletDir, file));
 }
 cpSync(path.join(root, "scripts/wallet/caja-app.js"), path.join(cajaDir, "caja-app.js"));

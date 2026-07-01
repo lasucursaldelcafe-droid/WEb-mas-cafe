@@ -1,51 +1,17 @@
-name: Publicar en Firebase (hosting + wallet backend)
+name: Publicar en Firebase (legacy — desactivado)
+
+# Firebase Cloud Functions requiere plan Blaze (facturación).
+# La wallet migró a Supabase. Usa deploy-supabase-wallet.yml
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
-env:
-  FIREBASE_PROJECT: mas-cafe-c8413
-
 jobs:
-  deploy:
+  deprecated:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-
     steps:
-      - name: Obtener código
-        uses: actions/checkout@v4
-
-      - name: Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: npm
-
-      - name: Instalar dependencias
-        run: npm ci
-
-      - name: Autenticar Workload Identity (opcional)
-        id: wif-auth
-        if: vars.WIF_PROVIDER != '' && vars.WIF_SERVICE_ACCOUNT != ''
-        uses: google-github-actions/auth@v2
-        with:
-          workload_identity_provider: ${{ vars.WIF_PROVIDER }}
-          service_account: ${{ vars.WIF_SERVICE_ACCOUNT }}
-          create_credentials_file: true
-
-      - name: Setup y deploy wallet (automático)
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.wif-auth.outputs.credentials_file_path }}
+      - name: Aviso
         run: |
-          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ] && [ -z "$FIREBASE_TOKEN" ] && [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
-            echo "::warning::Sin credenciales Firebase — omitiendo backend. Añade FIREBASE_SERVICE_ACCOUNT en Secrets."
-            exit 0
-          fi
-          node scripts/setup-firebase-wallet.mjs
+          echo "::warning::Este workflow está obsoleto."
+          echo "Usa «Deploy wallet Supabase» en su lugar."
+          echo "Firebase Spark (gratis) no permite Cloud Functions."

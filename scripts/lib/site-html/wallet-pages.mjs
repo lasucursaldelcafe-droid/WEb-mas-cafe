@@ -6,6 +6,11 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { loadSite, faviconHead } from "./shared.mjs";
 import { FIREBASE_CONFIG, FUNCTIONS_REGION } from "../../wallet/firebase-shared.mjs";
+import {
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY,
+  WALLET_CONFIGURED,
+} from "../../wallet/supabase-shared.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -17,11 +22,24 @@ function escapeHtml(s) {
     .replace(/"/g, "&quot;");
 }
 
+function supabaseBootScript() {
+  return `<script>
+window.SUPABASE_URL = ${JSON.stringify(SUPABASE_URL)};
+window.SUPABASE_ANON_KEY = ${JSON.stringify(SUPABASE_ANON_KEY)};
+window.WALLET_BACKEND = ${JSON.stringify(WALLET_CONFIGURED ? "supabase" : "unconfigured")};
+</script>`;
+}
+
+/** @deprecated Firebase — conservado solo por compatibilidad de build antiguo */
 function firebaseBootScript() {
   return `<script>
 window.FIREBASE_CONFIG = ${JSON.stringify(FIREBASE_CONFIG, null, 2)};
 window.FIREBASE_FUNCTIONS_REGION = ${JSON.stringify(FUNCTIONS_REGION)};
 </script>`;
+}
+
+function walletBootScript() {
+  return supabaseBootScript();
 }
 
 export function generateWalletPage() {
@@ -40,7 +58,7 @@ export function generateWalletPage() {
   ${faviconHead(1)}
   <link rel="stylesheet" href="./wallet.css"/>
   <link rel="manifest" href="./manifest.webmanifest"/>
-  ${firebaseBootScript()}
+  ${walletBootScript()}
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js" defer></script>
 </head>
 <body>
@@ -156,7 +174,7 @@ export function generateCajaPage() {
   <title>Modo caja · ${escapeHtml(brand)}</title>
   ${faviconHead(1)}
   <link rel="stylesheet" href="../wallet/wallet.css"/>
-  ${firebaseBootScript()}
+  ${walletBootScript()}
 </head>
 <body>
   <div class="caja-shell">

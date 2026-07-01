@@ -1,117 +1,14 @@
-name: Setup autónomo — Wallet Firebase
+name: Setup autónomo — Wallet Supabase (legacy Firebase desactivado)
 
-# Activa Auth, Firestore, Functions y despliega la wallet sin consola manual.
-#
-# Disparadores:
-#   - Manual: Actions → Setup autónomo — Wallet Firebase
-#   - Push a main (functions/, firestore, wallet-program)
-#   - Tras publicar GitHub Pages
-#   - repository_dispatch: firebase-wallet-setup
-#
-# Secret recomendado: FIREBASE_SERVICE_ACCOUNT (JSON cuenta de servicio)
-# Alternativa parcial: FIREBASE_TOKEN (solo deploy)
+# Reemplazado por deploy-supabase-wallet.yml
 
 on:
   workflow_dispatch:
-    inputs:
-      dry_run:
-        description: "Simular sin aplicar cambios"
-        type: boolean
-        default: false
-      skip_deploy:
-        description: "Solo Auth/Firestore API (sin deploy)"
-        type: boolean
-        default: false
-  repository_dispatch:
-    types: [firebase-wallet-setup]
-  push:
-    branches: [main]
-    paths:
-      - "functions/**"
-      - "firestore.rules"
-      - "firestore.indexes.json"
-      - "content/wallet-program.json"
-      - "scripts/setup-firebase-wallet.mjs"
-      - "scripts/wallet-diagnose.mjs"
-      - "scripts/lib/firebase-setup-api.mjs"
-      - "scripts/lib/firebase-permissions.mjs"
-      - "scripts/lib/google-console-links.mjs"
-      - ".github/workflows/setup-firebase-wallet.yml"
-  workflow_run:
-    workflows: ["Publicar HTML en GitHub Pages"]
-    types: [completed]
-    branches: [main]
-
-permissions:
-  contents: read
-  id-token: write
-
-concurrency:
-  group: setup-firebase-wallet
-  cancel-in-progress: false
-
-env:
-  FIREBASE_PROJECT: mas-cafe-c8413
 
 jobs:
-  setup-wallet:
-    if: |
-      github.event_name != 'workflow_run' ||
-      github.event.workflow_run.conclusion == 'success'
+  deprecated:
     runs-on: ubuntu-latest
     steps:
-      - name: Obtener código
-        uses: actions/checkout@v4
-
-      - name: Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: npm
-
-      - name: Instalar dependencias
-        run: npm ci
-
-      - name: Autenticar Workload Identity (opcional)
-        id: wif-auth
-        if: vars.WIF_PROVIDER != '' && vars.WIF_SERVICE_ACCOUNT != ''
-        uses: google-github-actions/auth@v2
-        with:
-          workload_identity_provider: ${{ vars.WIF_PROVIDER }}
-          service_account: ${{ vars.WIF_SERVICE_ACCOUNT }}
-          create_credentials_file: true
-
-      - name: Setup wallet Firebase (automático)
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.wif-auth.outputs.credentials_file_path }}
-          DRY_RUN: ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run == true) && '1' || '0' }}
-          SKIP_DEPLOY: ${{ (github.event_name == 'workflow_dispatch' && inputs.skip_deploy == true) && '1' || '0' }}
-        run: |
-          ARGS=""
-          if [ "$DRY_RUN" = "1" ]; then ARGS="$ARGS --dry-run"; fi
-          if [ "$SKIP_DEPLOY" = "1" ]; then ARGS="$ARGS --skip-deploy"; fi
-
-          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ] && [ -z "$FIREBASE_TOKEN" ] && [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
-            echo "::warning::Sin FIREBASE_SERVICE_ACCOUNT ni FIREBASE_TOKEN. Configura el secret en GitHub."
-            echo "La app /wallet/ está publicada pero el backend no se puede activar solo."
-            echo "https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/secrets/actions"
-            exit 0
-          fi
-
-          if [ -n "$FIREBASE_SERVICE_ACCOUNT" ] || [ -n "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
-            node scripts/wallet-diagnose.mjs --fix || true
-          fi
-
-          node scripts/setup-firebase-wallet.mjs $ARGS
-
-      - name: Verificar wallet en dominio
-        if: env.DRY_RUN != '1'
-        run: |
-          for URL in \
-            "http://xn--mascaf-gva.com/wallet/" \
-            "http://xn--mascaf-gva.com/caja/"; do
-            CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || echo "000")
-            echo "$URL → HTTP $CODE"
-          done
+      - run: |
+          echo "::warning::Wallet migrada a Supabase (plan gratuito)."
+          echo "Ejecuta el workflow «Deploy wallet Supabase»."

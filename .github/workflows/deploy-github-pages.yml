@@ -47,6 +47,8 @@ jobs:
         env:
           ADMIN_PUBLISH_KEY: ${{ secrets.ADMIN_PUBLISH_KEY }}
           GH_PAGES_PAT: ${{ secrets.GH_PAGES_PAT }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: node scripts/build-github-pages.mjs
 
       - name: Verificar panel admin
