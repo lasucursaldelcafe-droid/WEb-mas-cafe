@@ -45,6 +45,7 @@ yarn-error.log*
 # Google Wallet / GCP — JSON de cuenta de servicio (nunca en Git)
 /secrets/*.json
 !/secrets/*.example.json
+supabase/.temp-wallet-secrets.env
 
 # credenciales locales de entrega (nunca en Git)
 proyecto-mas-cafe/cuentas/CREDENCIALES.md

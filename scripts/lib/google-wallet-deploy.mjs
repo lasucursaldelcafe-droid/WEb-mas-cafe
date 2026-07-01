@@ -2,9 +2,36 @@
  * Deploy compartido: secrets Supabase/GitHub + Edge Function wallet.
  */
 import { execSync } from "child_process";
+import { writeFileSync, unlinkSync } from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import { projectRefFromUrl } from "./supabase-management-api.mjs";
 import { SUPABASE_URL } from "../wallet/supabase-shared.mjs";
 import { setGhSecret, resolveGhToken } from "./gh-secrets.mjs";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.join(__dirname, "../..");
+
+function setSupabaseSecretsFromEnv(envVars, projectRef, accessToken) {
+  const envPath = path.join(repoRoot, "supabase", ".temp-wallet-secrets.env");
+  const lines = Object.entries(envVars)
+    .filter(([, v]) => v != null && String(v).length > 0)
+    .map(([k, v]) => `${k}=${JSON.stringify(String(v))}`);
+  writeFileSync(envPath, `${lines.join("\n")}\n`, "utf8");
+  try {
+    execSync(`npx supabase secrets set --env-file "${envPath}" --project-ref ${projectRef}`, {
+      stdio: "inherit",
+      env: { ...process.env, SUPABASE_ACCESS_TOKEN: accessToken },
+    });
+    return true;
+  } finally {
+    try {
+      unlinkSync(envPath);
+    } catch {
+      /* ignore */
+    }
+  }
+}
 
 /** Solo Issuer/Merchant ID (sin cuenta de servicio — botón Wallet sigue desactivado). */
 export async function deployGoogleWalletIdsOnly({ issuerId, merchantId, dryRun = false }) {
@@ -68,14 +95,15 @@ export async function deployGoogleWalletSecrets({
   }
 
   if (accessToken && projectRef && issuerId && serviceAccount) {
-    const saJson = JSON.stringify(serviceAccount).replace(/'/g, "'\\''");
-    let secretCmd = `npx supabase secrets set GOOGLE_WALLET_ISSUER_ID="${issuerId}" GOOGLE_WALLET_SERVICE_ACCOUNT='${saJson}'`;
-    if (merchantId) secretCmd += ` GOOGLE_PAY_MERCHANT_ID="${merchantId}"`;
-    secretCmd += ` --project-ref ${projectRef}`;
-    execSync(secretCmd, {
-      stdio: "inherit",
-      env: { ...process.env, SUPABASE_ACCESS_TOKEN: accessToken },
-    });
+    setSupabaseSecretsFromEnv(
+      {
+        GOOGLE_WALLET_ISSUER_ID: issuerId,
+        GOOGLE_WALLET_SERVICE_ACCOUNT: JSON.stringify(serviceAccount),
+        ...(merchantId ? { GOOGLE_PAY_MERCHANT_ID: merchantId } : {}),
+      },
+      projectRef,
+      accessToken,
+    );
     results.supabase = true;
   }
 
