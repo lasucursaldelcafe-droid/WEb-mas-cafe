@@ -13,6 +13,7 @@ import { writeFileSync, mkdirSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
+import { generateKeyPairSync } from "crypto";
 import { loadEnvLocal } from "./lib/load-env-local.mjs";
 import { applyGoogleWalletConfigToEnv, resolveIssuerIdFromConfig, resolveMerchantIdFromConfig } from "./lib/google-wallet-config.mjs";
 import { DEFAULT_GOOGLE_WALLET_SA_PATH } from "./lib/google-wallet-sa-path.mjs";
@@ -111,17 +112,31 @@ function tryParseServiceAccount(raw) {
   return null;
 }
 
+function normalizeFirebaseToken(raw) {
+  if (!raw?.trim()) return "";
+  const trimmed = raw.trim();
+  if (trimmed.startsWith("{")) return trimmed;
+  return trimmed.replace(/\r?\n/g, "").replace(/\s+/g, "");
+}
+
 function resolveRawServiceAccountEnv() {
   for (const key of [
     "GOOGLE_WALLET_SERVICE_ACCOUNT",
     "FIREBASE_SERVICE_ACCOUNT",
+    "FIREBASE_TOKEN",
   ]) {
     const raw = process.env[key]?.trim();
     if (!raw) continue;
     console.log(`  ○ [parse] ${key} longitud=${raw.length}`);
+    if (key === "FIREBASE_SERVICE_ACCOUNT" && raw.length < 80 && raw.includes("@")) {
+      warn("parse", `${key} parece ser solo email — necesitas el JSON completo con private_key`);
+      continue;
+    }
     const parsed = tryParseServiceAccount(raw);
     if (parsed) return { account: parsed, source: key };
-    warn("parse", `${key} presente pero no es JSON válido`);
+    if (key !== "FIREBASE_TOKEN") {
+      warn("parse", `${key} presente pero no es JSON válido`);
+    }
   }
   return null;
 }
@@ -156,14 +171,45 @@ async function refreshFirebaseAccessToken(refreshToken) {
 }
 
 async function probeAccessToken(token) {
+  const clean = normalizeFirebaseToken(token);
+  if (!clean || clean.startsWith("{")) return false;
   const url = `https://iam.googleapis.com/v1/projects/${PROJECT_ID}/serviceAccounts/${encodeURIComponent(SA_EMAIL)}`;
   const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${clean}` },
   });
   return res.ok;
 }
 
-async function resolveGoogleAccessToken(firebaseToken) {
+async function testFirebaseCliToken(token) {
+  const clean = normalizeFirebaseToken(token);
+  if (!clean || clean.startsWith("{")) return false;
+  try {
+    execSync(`npx firebase projects:list --token "${clean.replace(/"/g, '\\"')}" --json`, {
+      stdio: "pipe",
+      timeout: 30_000,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function resolveGoogleAccessToken(firebaseTokenRaw) {
+  const firebaseToken = normalizeFirebaseToken(firebaseTokenRaw);
+  if (!firebaseToken) {
+    throw new Error("FIREBASE_TOKEN vacío");
+  }
+
+  if (firebaseToken.startsWith("{")) {
+    throw new Error("FIREBASE_TOKEN contiene JSON — muévelo a GOOGLE_WALLET_SERVICE_ACCOUNT");
+  }
+
+  if (await testFirebaseCliToken(firebaseToken)) {
+    log("firebase-cli", "FIREBASE_TOKEN válido para Firebase CLI");
+  } else {
+    warn("firebase-cli", "FIREBASE_TOKEN no pasa firebase projects:list (¿expirado?)");
+  }
+
   try {
     const access = await refreshFirebaseAccessToken(firebaseToken);
     log("oauth", "Access token desde refresh FIREBASE_TOKEN");
@@ -173,7 +219,7 @@ async function resolveGoogleAccessToken(firebaseToken) {
   }
 
   if (await probeAccessToken(firebaseToken)) {
-    log("oauth", "FIREBASE_TOKEN ya es access token válido");
+    log("oauth", "FIREBASE_TOKEN ya es access token válido (IAM)");
     return firebaseToken;
   }
 
@@ -191,7 +237,67 @@ async function resolveGoogleAccessToken(firebaseToken) {
     warn("oauth", `firebase-tools: ${err.message || err}`);
   }
 
-  throw new Error("No se pudo obtener access token de Google (renueva FIREBASE_TOKEN con npx firebase login:ci)");
+  throw new Error(
+    "FIREBASE_TOKEN inválido o expirado — ejecuta: npx firebase login:ci y actualiza el secret en GitHub",
+  );
+}
+
+function buildServiceAccountFromParts(privateKeyPem, privateKeyId) {
+  return {
+    type: "service_account",
+    project_id: PROJECT_ID,
+    private_key_id: privateKeyId,
+    private_key: privateKeyPem,
+    client_email: SA_EMAIL,
+    client_id: "",
+    auth_uri: "https://accounts.google.com/o/oauth2/auth",
+    token_uri: "https://oauth2.googleapis.com/token",
+    auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
+    client_x509_cert_url: `https://www.googleapis.com/robot/v1/metadata/x509/${encodeURIComponent(SA_EMAIL)}`,
+    universe_domain: "googleapis.com",
+  };
+}
+
+async function uploadServiceAccountPublicKey(accessToken) {
+  const { publicKey, privateKey } = generateKeyPairSync("rsa", {
+    modulusLength: 2048,
+    publicKeyEncoding: { type: "spki", format: "pem" },
+    privateKeyEncoding: { type: "pkcs8", format: "pem" },
+  });
+
+  const resource = `projects/${PROJECT_ID}/serviceAccounts/${SA_EMAIL}`;
+  const url = `https://iam.googleapis.com/v1/${encodeURI(resource)}/keys`;
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      publicKeyData: Buffer.from(publicKey).toString("base64"),
+      publicKeyType: "TYPE_X509_PEM_FILE",
+    }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error?.message || `IAM keys.upload HTTP ${res.status}`);
+  }
+
+  const keyId = String(data.name || "").split("/").pop();
+  if (!keyId) throw new Error("IAM upload sin key id");
+  return buildServiceAccountFromParts(privateKey, keyId);
+}
+
+async function provisionServiceAccountKey(accessToken) {
+  try {
+    return await createServiceAccountKey(accessToken);
+  } catch (createErr) {
+    warn("iam", `generateKey: ${createErr.message}`);
+    warn("iam", "Intentando upload de clave pública generada localmente…");
+    return uploadServiceAccountPublicKey(accessToken);
+  }
 }
 
 async function createServiceAccountKey(accessToken) {
@@ -253,7 +359,7 @@ async function main() {
     warn("iam", "Creando clave nueva en GCP (IAM API)…");
     try {
       const accessToken = await resolveGoogleAccessToken(firebaseToken);
-      sa = await createServiceAccountKey(accessToken);
+      sa = await provisionServiceAccountKey(accessToken);
       source = "IAM generateKey";
       log("iam", `Clave creada para ${sa.client_email}`);
     } catch (err) {
