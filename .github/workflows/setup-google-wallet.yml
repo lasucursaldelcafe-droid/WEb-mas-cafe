@@ -50,12 +50,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_PAGES_PAT: ${{ secrets.GH_PAGES_PAT }}
         run: |
-          if [ -z "$GOOGLE_WALLET_SERVICE_ACCOUNT" ] && [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+          set -euo pipefail
+          SA_JSON="${GOOGLE_WALLET_SERVICE_ACCOUNT:-$FIREBASE_SERVICE_ACCOUNT}"
+          if [ -z "$SA_JSON" ]; then
             echo "::error::Falta JSON de cuenta de servicio Google Cloud en GitHub Secrets"
             exit 1
           fi
+          printf '%s' "$SA_JSON" > /tmp/gcp-sa.json
+          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp-sa.json
+          export GOOGLE_WALLET_SERVICE_ACCOUNT="$SA_JSON"
           export GITHUB_TOKEN="${GITHUB_TOKEN:-$GH_PAGES_PAT}"
           node scripts/automate-google-wallet.mjs
+          rm -f /tmp/gcp-sa.json
 
       - name: Republicar GitHub Pages
         env:

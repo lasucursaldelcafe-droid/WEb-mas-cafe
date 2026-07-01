@@ -46,9 +46,10 @@ export function resolveGoogleWalletServiceAccount() {
     process.env.FIREBASE_SERVICE_ACCOUNT?.trim();
   if (raw) {
     try {
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      if (parsed?.client_email) return parsed;
     } catch {
-      return null;
+      /* intentar archivo */
     }
   }
   const credPath = process.env.GOOGLE_APPLICATION_CREDENTIALS?.trim();
