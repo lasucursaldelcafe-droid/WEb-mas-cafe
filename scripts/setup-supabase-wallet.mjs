@@ -148,6 +148,21 @@ run(`npx supabase link --project-ref ${projectRef}`, "supabase link");
 log("2/4", "Aplicando migraciones SQL…");
 run("npx supabase db push", "supabase db push");
 
+const gwIssuer = process.env.GOOGLE_WALLET_ISSUER_ID?.trim();
+const gwSa = process.env.GOOGLE_WALLET_SERVICE_ACCOUNT?.trim();
+if (gwIssuer && gwSa && accessToken && projectRef && !dryRun) {
+  log("2b", "Secrets Google Wallet en Supabase…");
+  try {
+    const escaped = gwSa.replace(/'/g, "'\\''");
+    run(
+      `npx supabase secrets set GOOGLE_WALLET_ISSUER_ID="${gwIssuer}" GOOGLE_WALLET_SERVICE_ACCOUNT='${escaped}' --project-ref ${projectRef}`,
+      "supabase secrets set (Google Wallet)",
+    );
+  } catch {
+    console.warn("  ⚠ No se pudieron subir secrets Google Wallet");
+  }
+}
+
 log("3/4", "Desplegando Edge Function wallet…");
 run("npx supabase functions deploy wallet --no-verify-jwt", "supabase functions deploy");
 

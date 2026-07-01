@@ -1,4 +1,9 @@
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import {
+  createSaveUrl,
+  googleWalletConfigured,
+  patchLoyaltyPoints,
+} from "./google-wallet.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -411,6 +416,11 @@ Deno.serve(async (req) => {
         });
         if (ledgerErr) throw new Error(ledgerErr.message);
 
+        const gwCfg = googleWalletConfigured();
+        if (gwCfg) {
+          await patchLoyaltyPoints(gwCfg, normalizedId, newBalance, tier).catch(() => {});
+        }
+
         return json({
           memberId: normalizedId,
           displayName: cust.display_name,
@@ -528,6 +538,14 @@ Deno.serve(async (req) => {
         });
         if (redeemErr) throw new Error(redeemErr.message);
 
+        const gwCfg = googleWalletConfigured();
+        if (gwCfg) {
+          const tier = getTier(walletRow.lifetime_points || 0, settings.tiers);
+          await patchLoyaltyPoints(gwCfg, customer.member_id, newBalance, tier).catch(
+            () => {},
+          );
+        }
+
         return json({
           code,
           rewardName: reward.name,
@@ -604,6 +622,53 @@ Deno.serve(async (req) => {
           .eq("id", 1);
         if (error) throw new Error(error.message);
         return json({ ok: true });
+      }
+
+      case "getGoogleWalletStatus": {
+        const cfg = googleWalletConfigured();
+        return json({ configured: !!cfg });
+      }
+
+      case "getGoogleWalletSaveUrl": {
+        const user = await getUserFromRequest(req, db);
+        if (!user) return fail("Inicia sesión primero", 401);
+
+        const cfg = googleWalletConfigured();
+        if (!cfg) {
+          return fail("Google Wallet no configurado en el servidor", 503);
+        }
+
+        const settings = (await getSettings(db)) || (await ensureProgram(db));
+
+        const { data: customer, error: custErr } = await db
+          .from("customers")
+          .select("*")
+          .eq("user_id", user.id)
+          .single();
+        if (custErr || !customer) {
+          return fail("Perfil no encontrado", 404);
+        }
+
+        const { data: walletRow } = await db
+          .from("wallets")
+          .select("*")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        const points = walletRow?.points || 0;
+        const tier =
+          walletRow?.tier ||
+          getTier(walletRow?.lifetime_points || 0, settings.tiers);
+
+        const { saveUrl, objectId: gwObjectId } = await createSaveUrl(cfg, {
+          memberId: customer.member_id,
+          displayName: customer.display_name,
+          points,
+          tier,
+          brandName: settings.brand_name || DEFAULT_PROGRAM.brandName,
+        });
+
+        return json({ saveUrl, objectId: gwObjectId });
       }
 
       default:

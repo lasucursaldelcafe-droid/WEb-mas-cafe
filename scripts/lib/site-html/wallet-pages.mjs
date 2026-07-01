@@ -131,6 +131,13 @@ export function generateWalletPage() {
             <p style="text-align:center;font-size:.82rem;color:var(--muted);margin-top:.5rem">
               También puedes dictar tu ID: <strong id="member-id-copy">—</strong>
             </p>
+            <div id="g-wallet-wrap" class="g-wallet-wrap hidden" aria-live="polite">
+              <p class="g-wallet-label">Android · guarda tu tarjeta en el teléfono</p>
+              <a id="g-wallet-link" href="#" target="_blank" rel="noopener noreferrer" class="g-wallet-btn" aria-label="Añadir a Google Wallet">
+                <img src="https://developers.google.com/static/wallet/images/branding/add-to-google-wallet-button.svg" alt="Añadir a Google Wallet" width="189" height="48"/>
+              </a>
+              <p id="g-wallet-msg" class="g-wallet-msg hidden" role="status"></p>
+            </div>
           </div>
         </div>
 

@@ -71,6 +71,14 @@ Formato sugerido por línea:
 - [ ] HTTPS mascafé.com | npm run domain:enable-https | cert pendiente |
 - [ ] Prueba registro cliente en móvil | /wallet/ | |
 
+### Google Wallet (tarjeta nativa Android — Google Cloud, no Firebase)
+- [x] Merchant ID BCR2DN5TR7J4FLAR | Pay Console | 2026-07-01 |
+- [x] Issuer ID 3388000000023162431 | Pay Console | 2026-07-01 |
+- [x] LoyaltyClass mas_cafe_loyalty creada | Pay Console | 2026-07-01 |
+- [ ] Secrets GOOGLE_WALLET_* en Supabase | workflow Setup Google Wallet | |
+- [ ] Botón «Añadir a Google Wallet» activo | /wallet/ pestaña QR | |
+- [ ] Emisor aprobado por Google (publicación) | UNDER_REVIEW → LIVE | 24–48 h |
+
 ### Firebase
 - [ ] Acceso consola mas-cafe-c8413 | https://console.firebase.google.com/project/mas-cafe-c8413 | |
 - [ ] FIREBASE_TOKEN renovado en GitHub Secrets | | |

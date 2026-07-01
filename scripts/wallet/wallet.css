@@ -174,3 +174,34 @@ h2.section {
 }
 
 .wallet-footer { text-align: center; font-size: .72rem; color: var(--muted); padding: 1rem; }
+
+.g-wallet-wrap {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+
+.g-wallet-label {
+  font-size: .78rem;
+  color: var(--muted);
+  margin-bottom: .65rem;
+}
+
+.g-wallet-btn {
+  display: inline-block;
+  line-height: 0;
+}
+
+.g-wallet-btn img {
+  height: 48px;
+  width: auto;
+}
+
+.g-wallet-msg {
+  font-size: .78rem;
+  margin-top: .5rem;
+}
+
+.g-wallet-msg.msg-ok { color: var(--ok); }
+.g-wallet-msg.msg-error { color: var(--warn); }

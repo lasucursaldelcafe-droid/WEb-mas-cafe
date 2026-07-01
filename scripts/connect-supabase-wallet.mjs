@@ -95,6 +95,13 @@ if (!ghToken) {
     SUPABASE_PROJECT_REF: projectRef,
   };
 
+  if (process.env.GOOGLE_WALLET_ISSUER_ID?.trim()) {
+    secrets.GOOGLE_WALLET_ISSUER_ID = process.env.GOOGLE_WALLET_ISSUER_ID.trim();
+  }
+  if (process.env.GOOGLE_WALLET_SERVICE_ACCOUNT?.trim()) {
+    secrets.GOOGLE_WALLET_SERVICE_ACCOUNT = process.env.GOOGLE_WALLET_SERVICE_ACCOUNT.trim();
+  }
+
   for (const [name, value] of Object.entries(secrets)) {
     try {
       execSync(`gh secret set ${name} --repo ${REPO}`, {

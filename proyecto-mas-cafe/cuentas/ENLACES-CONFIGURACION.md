@@ -114,11 +114,39 @@ Guía completa: [docs/DOMINIO-MASCAFE-COM.md](../../docs/DOMINIO-MASCAFE-COM.md)
 |---------|----------|
 | `npm run wallet:diagnose` | Verifica secrets y si responde la Edge Function |
 | `npm run wallet:setup` | Migraciones SQL + deploy function + seed programa |
+| `npm run wallet:google-setup` | Google Wallet API + secrets + botón «Añadir a Google Wallet» |
 
 **Wallet en vivo (frontend GitHub Pages):**
 
 - https://xn--mascaf-gva.com/wallet/
 - https://xn--mascaf-gva.com/caja/
+
+---
+
+## Google Wallet (tarjeta nativa Android — Google Cloud)
+
+> **No usa Firebase.** Backend wallet = Supabase. Google Wallet solo necesita un proyecto **Google Cloud** + Pay Console.
+
+Guía completa: [GOOGLE-WALLET-SETUP.md](../entregables/GOOGLE-WALLET-SETUP.md)
+
+| Qué configurar | Enlace |
+|----------------|--------|
+| Google Pay & Wallet Console (Issuer ID) | https://pay.google.com/business/console |
+| Crear proyecto Google Cloud | https://console.cloud.google.com/projectcreate |
+| Google Wallet API | https://console.cloud.google.com/apis/library/walletobjects.googleapis.com |
+| Cuentas de servicio | https://console.cloud.google.com/iam-admin/serviceaccounts |
+
+**Variables en `.env.local`:**
+
+| Variable | Para qué |
+|----------|----------|
+| `GOOGLE_CLOUD_PROJECT_ID` | ID del proyecto Cloud (opcional si está en el JSON) |
+| `GOOGLE_WALLET_ISSUER_ID` | ID numérico del emisor |
+| `GOOGLE_WALLET_SERVICE_ACCOUNT` | JSON de la cuenta de servicio |
+
+**Secrets en GitHub:** mismos nombres (`GOOGLE_WALLET_ISSUER_ID`, `GOOGLE_WALLET_SERVICE_ACCOUNT`).
+
+**Setup automático:** `npm run wallet:google-setup`
 
 ---
 
