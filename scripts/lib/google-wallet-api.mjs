@@ -2,11 +2,11 @@
  * Google Wallet API — setup de clase loyalty (independiente de Firebase).
  * Backend wallet: Supabase Edge Functions.
  */
-import { readFileSync } from "fs";
 import { createSign } from "crypto";
 import { loadEnvLocal } from "./load-env-local.mjs";
 import { DOMAIN_PUNYCODE, GITHUB_PAGES_HOST } from "./domain-config.mjs";
 import { applyGoogleWalletSaPathToEnv } from "./google-wallet-sa-path.mjs";
+import { readGoogleServiceAccount } from "./read-google-sa.mjs";
 
 export const CLASS_SUFFIX = "mas_cafe_loyalty";
 export const LOGO_URI =
@@ -43,27 +43,7 @@ export const GOOGLE_WALLET_LINKS = googleCloudConsoleLinks();
 export function resolveGoogleWalletServiceAccount() {
   loadEnvLocal();
   applyGoogleWalletSaPathToEnv();
-  const credPath = process.env.GOOGLE_APPLICATION_CREDENTIALS?.trim();
-  if (credPath) {
-    try {
-      const parsed = JSON.parse(readFileSync(credPath, "utf8"));
-      if (parsed?.client_email) return parsed;
-    } catch {
-      /* continuar */
-    }
-  }
-  const raw =
-    process.env.GOOGLE_WALLET_SERVICE_ACCOUNT?.trim() ||
-    process.env.FIREBASE_SERVICE_ACCOUNT?.trim();
-  if (raw) {
-    try {
-      const parsed = JSON.parse(raw);
-      if (parsed?.client_email) return parsed;
-    } catch {
-      return null;
-    }
-  }
-  return null;
+  return readGoogleServiceAccount()?.account ?? null;
 }
 
 export function resolveIssuerId() {
