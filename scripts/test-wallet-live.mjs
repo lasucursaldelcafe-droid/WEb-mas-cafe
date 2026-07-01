@@ -95,8 +95,8 @@ try {
 const localHtml = path.join(root, "gh-pages-site/wallet/index.html");
 if (existsSync(localHtml)) {
   const html = readFileSync(localHtml, "utf8");
-  if (html.includes("data-g-wallet")) pass("HTML botón Google Wallet", "gh-pages-site");
-  else fail("HTML botón Google Wallet", "falta data-g-wallet en build local");
+  if (html.includes("data-save-card")) pass("HTML guardar tarjeta", "gh-pages-site");
+  else fail("HTML guardar tarjeta", "falta data-save-card en build local");
   if (html.includes("SUPABASE_URL")) pass("HTML Supabase boot", "gh-pages-site");
   else fail("HTML Supabase boot", "sin SUPABASE_URL");
 } else if (localOnly) {
@@ -109,8 +109,8 @@ if (baseUrl && !localOnly) {
     const html = await res.text();
     if (res.ok) pass("HTTP wallet live", baseUrl);
     else fail("HTTP wallet live", `HTTP ${res.status}`);
-    if (html.includes("data-g-wallet")) pass("HTML botón en vivo");
-    else fail("HTML botón en vivo", "publicar main con últimos cambios");
+    if (html.includes("data-save-card")) pass("HTML guardar tarjeta en vivo");
+    else fail("HTML guardar tarjeta en vivo");
     if (html.includes("SUPABASE_URL")) pass("HTML Supabase en vivo");
     else fail("HTML Supabase en vivo");
   } catch (err) {

@@ -229,3 +229,66 @@ h2.section {
 
 .g-wallet-wrap--pass .g-wallet-msg.msg-ok { color: #bbf7d0; }
 .g-wallet-wrap--pass .g-wallet-msg.msg-error { color: #fde68a; }
+
+.save-card-wrap {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+
+.save-card-wrap--pass {
+  border-top-color: rgba(255, 255, 255, .2);
+  position: relative;
+  z-index: 1;
+}
+
+.save-card-wrap--pass .save-card-label {
+  color: rgba(246, 245, 239, .9);
+}
+
+.save-card-label {
+  font-size: .78rem;
+  color: var(--muted);
+  margin-bottom: .65rem;
+}
+
+.save-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  justify-content: center;
+}
+
+.btn-sm {
+  font-size: .8rem;
+  padding: .45rem .85rem;
+}
+
+.btn-light {
+  background: rgba(255, 255, 255, .95);
+  color: var(--blue);
+  border: none;
+  font-weight: 600;
+}
+
+.btn-ghost-light {
+  background: transparent;
+  color: rgba(246, 245, 239, .9);
+  border: 1px solid rgba(255, 255, 255, .35);
+}
+
+.save-card-msg {
+  font-size: .78rem;
+  margin-top: .6rem;
+}
+
+.save-card-msg.msg-ok { color: var(--ok); }
+.save-card-msg.msg-error { color: var(--warn); }
+
+.save-card-wrap--pass .save-card-msg.msg-ok { color: #bbf7d0; }
+.save-card-wrap--pass .save-card-msg.msg-error { color: #fde68a; }
+
+.g-wallet-native {
+  margin-top: .5rem;
+}

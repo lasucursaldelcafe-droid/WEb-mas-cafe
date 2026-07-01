@@ -115,12 +115,19 @@ export function generateWalletPage() {
             <p id="progress-label" style="font-size:.78rem;opacity:.9"></p>
             <div class="pass-progress-bar"><div class="pass-progress-fill" id="progress-fill" style="width:0"></div></div>
           </div>
-          <div class="g-wallet-wrap g-wallet-wrap--pass" data-g-wallet>
-            <p class="g-wallet-label">Guarda tu tarjeta en el teléfono</p>
-            <button type="button" class="g-wallet-btn" data-g-wallet-trigger aria-label="Añadir a Google Wallet">
-              <img src="https://developers.google.com/static/wallet/images/branding/add-to-google-wallet-button.svg" alt="Añadir a Google Wallet" width="189" height="48"/>
-            </button>
-            <p class="g-wallet-msg hidden" data-g-wallet-msg role="status"></p>
+          <div class="save-card-wrap save-card-wrap--pass" data-save-card>
+            <p class="save-card-label">Llévala en el teléfono</p>
+            <div class="save-card-actions">
+              <button type="button" class="btn btn-light btn-sm" data-save-install hidden>Instalar app</button>
+              <button type="button" class="btn btn-light btn-sm" data-save-image>Descargar tarjeta</button>
+              <button type="button" class="btn btn-ghost-light btn-sm" data-save-copy-id>Copiar ID</button>
+            </div>
+            <div class="g-wallet-native hidden" data-g-wallet>
+              <button type="button" class="g-wallet-btn" data-g-wallet-trigger aria-label="Añadir a Google Wallet">
+                <img src="https://developers.google.com/static/wallet/images/branding/add-to-google-wallet-button.svg" alt="Añadir a Google Wallet" width="189" height="48"/>
+              </button>
+            </div>
+            <p class="save-card-msg hidden" data-save-msg role="status"></p>
           </div>
         </div>
 
@@ -138,12 +145,20 @@ export function generateWalletPage() {
             <p style="text-align:center;font-size:.82rem;color:var(--muted);margin-top:.5rem">
               También puedes dictar tu ID: <strong id="member-id-copy">—</strong>
             </p>
-            <div class="g-wallet-wrap" data-g-wallet aria-live="polite">
-              <p class="g-wallet-label">Android · tarjeta nativa en Google Wallet</p>
-              <button type="button" class="g-wallet-btn" data-g-wallet-trigger aria-label="Añadir a Google Wallet">
-                <img src="https://developers.google.com/static/wallet/images/branding/add-to-google-wallet-button.svg" alt="Añadir a Google Wallet" width="189" height="48"/>
-              </button>
-              <p class="g-wallet-msg hidden" data-g-wallet-msg role="status"></p>
+            <div class="save-card-wrap" data-save-card>
+              <p class="save-card-label">Sin imprimir nada — guarda tu tarjeta</p>
+              <div class="save-card-actions">
+                <button type="button" class="btn btn-blue btn-sm" data-save-install hidden>Instalar en inicio</button>
+                <button type="button" class="btn btn-primary btn-sm" data-save-image>Descargar imagen con QR</button>
+                <button type="button" class="btn btn-ghost btn-sm" data-save-copy-id>Copiar ID</button>
+              </div>
+              <div class="g-wallet-native hidden" data-g-wallet>
+                <p class="save-card-label" style="margin-top:.75rem">O en Google Wallet (Android)</p>
+                <button type="button" class="g-wallet-btn" data-g-wallet-trigger aria-label="Añadir a Google Wallet">
+                  <img src="https://developers.google.com/static/wallet/images/branding/add-to-google-wallet-button.svg" alt="Añadir a Google Wallet" width="189" height="48"/>
+                </button>
+              </div>
+              <p class="save-card-msg hidden" data-save-msg role="status"></p>
             </div>
           </div>
         </div>

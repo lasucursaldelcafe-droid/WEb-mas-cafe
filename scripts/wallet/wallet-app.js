@@ -81,7 +81,7 @@ function renderWallet() {
   $("#progress-fill").style.width = `${pct}%`;
 
   renderQr(customer.memberId);
-  renderGoogleWallet();
+  renderSaveCard();
   renderLedger();
   renderRewards();
   renderPending();
@@ -98,85 +98,168 @@ function renderQr(memberId) {
       if (!err && canvas) box.appendChild(canvas);
     },
   );
-  renderGoogleWallet();
 }
 
 let googleWalletStatus = null;
+let deferredInstallPrompt = null;
 
-function isAndroid() {
-  return /Android/i.test(navigator.userAgent);
-}
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  $$("[data-save-install]").forEach((btn) => btn.classList.remove("hidden"));
+});
 
-function showWalletMsg(wrap, text, type = "error") {
-  const msg = wrap?.querySelector("[data-g-wallet-msg]");
+function showSaveMsg(wrap, text, type = "ok") {
+  const msg = wrap?.querySelector("[data-save-msg]");
   if (!msg) return;
   if (!text) {
     msg.classList.add("hidden");
     return;
   }
   msg.textContent = text;
-  msg.className = `g-wallet-msg msg-${type}`;
+  msg.className = `save-card-msg msg-${type}`;
   msg.classList.remove("hidden");
+}
+
+async function downloadCardImage() {
+  if (!walletData) return;
+  const { customer, wallet } = walletData;
+  const canvas = document.createElement("canvas");
+  canvas.width = 600;
+  canvas.height = 360;
+  const ctx = canvas.getContext("2d");
+  const grad = ctx.createLinearGradient(0, 0, 600, 360);
+  grad.addColorStop(0, "#073954");
+  grad.addColorStop(1, "#0d6e4a");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 600, 360);
+
+  ctx.fillStyle = "rgba(255,255,255,.15)";
+  ctx.font = "bold 14px system-ui,sans-serif";
+  ctx.fillText("MÁS CAFÉ · FIDELIZACIÓN", 32, 48);
+
+  ctx.fillStyle = "#f6f5ef";
+  ctx.font = "bold 52px system-ui,sans-serif";
+  ctx.fillText(`${wallet.points} pts`, 32, 110);
+
+  ctx.font = "22px system-ui,sans-serif";
+  ctx.fillText(customer.displayName, 32, 150);
+  ctx.fillStyle = "rgba(246,245,239,.85)";
+  ctx.font = "18px system-ui,sans-serif";
+  ctx.fillText(`Nivel: ${wallet.tier}`, 32, 178);
+  ctx.fillText(`ID: ${customer.memberId}`, 32, 204);
+
+  const qrCanvas = $("#qr-box canvas");
+  if (qrCanvas) {
+    ctx.drawImage(qrCanvas, 400, 100, 160, 160);
+    ctx.fillStyle = "rgba(246,245,239,.7)";
+    ctx.font = "12px system-ui,sans-serif";
+    ctx.fillText("Muestra en caja", 418, 280);
+  }
+
+  const link = document.createElement("a");
+  link.download = `mas-cafe-${customer.memberId}.png`;
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+
+async function copyMemberId(wrap) {
+  const id = walletData?.customer?.memberId;
+  if (!id) return;
+  try {
+    await navigator.clipboard.writeText(id);
+    showSaveMsg(wrap, "ID copiado al portapapeles", "ok");
+  } catch {
+    showSaveMsg(wrap, `Tu ID: ${id}`, "ok");
+  }
+}
+
+async function installPwa(wrap) {
+  if (!deferredInstallPrompt) {
+    showSaveMsg(
+      wrap,
+      "En el navegador: menú ⋮ → «Añadir a pantalla de inicio»",
+      "ok",
+    );
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  showSaveMsg(
+    wrap,
+    outcome === "accepted" ? "¡App instalada!" : "Puedes descargar la imagen con QR",
+    outcome === "accepted" ? "ok" : "error",
+  );
 }
 
 async function handleGoogleWalletClick(wrap, btn) {
   if (btn.disabled) return;
-
-  showWalletMsg(wrap, "Generando enlace…", "ok");
+  showSaveMsg(wrap, "Generando enlace…", "ok");
   btn.disabled = true;
-
   try {
     if (!googleWalletStatus) {
       googleWalletStatus = await api("getGoogleWalletStatus");
     }
     if (!googleWalletStatus?.configured) {
-      showWalletMsg(
-        wrap,
-        "Tarjeta en configuración. Mientras tanto usa el QR en caja.",
-        "error",
-      );
+      showSaveMsg(wrap, "Usa «Descargar tarjeta» o el QR en caja", "error");
       return;
     }
     const res = await api("getGoogleWalletSaveUrl");
     window.open(res.saveUrl, "_blank", "noopener,noreferrer");
-    showWalletMsg(wrap, "", "ok");
+    showSaveMsg(wrap, "", "ok");
   } catch (err) {
-    showWalletMsg(wrap, err.message || "No se pudo abrir Google Wallet", "error");
+    showSaveMsg(wrap, err.message || "No se pudo abrir Google Wallet", "error");
   } finally {
     btn.disabled = false;
   }
 }
 
-async function renderGoogleWallet() {
-  const wraps = $$("[data-g-wallet]");
+function bindSaveCard(wrap) {
+  if (wrap.dataset.bound === "1") return;
+  wrap.dataset.bound = "1";
+
+  wrap.querySelector("[data-save-image]")?.addEventListener("click", async () => {
+    try {
+      await downloadCardImage();
+      showSaveMsg(wrap, "Imagen guardada — ábrela en Fotos o Galería", "ok");
+    } catch {
+      showSaveMsg(wrap, "No se pudo crear la imagen", "error");
+    }
+  });
+
+  wrap.querySelector("[data-save-copy-id]")?.addEventListener("click", () => copyMemberId(wrap));
+
+  wrap.querySelector("[data-save-install]")?.addEventListener("click", () => installPwa(wrap));
+
+  const gwBtn = wrap.querySelector("[data-g-wallet-trigger]");
+  if (gwBtn) gwBtn.addEventListener("click", () => handleGoogleWalletClick(wrap, gwBtn));
+}
+
+async function renderSaveCard() {
+  const wraps = $$("[data-save-card]");
   if (!wraps.length) return;
 
   try {
     googleWalletStatus = await api("getGoogleWalletStatus");
   } catch {
-    googleWalletStatus = { configured: false, issuerConfigured: false };
+    googleWalletStatus = { configured: false };
   }
 
   for (const wrap of wraps) {
-    const btn = wrap.querySelector("[data-g-wallet-trigger]");
-    if (!btn) continue;
-
     wrap.classList.remove("hidden");
+    bindSaveCard(wrap);
 
-    if (!googleWalletStatus.configured) {
-      const hint = googleWalletStatus.issuerConfigured
-        ? "Pulsa para intentar añadir (activación en curso)"
-        : isAndroid()
-          ? "Pulsa para guardar en Google Wallet cuando esté activo"
-          : "Disponible en Android con Google Wallet";
-      showWalletMsg(wrap, hint, googleWalletStatus.issuerConfigured ? "ok" : "error");
+    const gwBlock = wrap.querySelector("[data-g-wallet]");
+    if (googleWalletStatus?.configured) {
+      gwBlock?.classList.remove("hidden");
     } else {
-      showWalletMsg(wrap, "", "ok");
+      gwBlock?.classList.add("hidden");
     }
 
-    if (btn.dataset.bound === "1") continue;
-    btn.dataset.bound = "1";
-    btn.addEventListener("click", () => handleGoogleWalletClick(wrap, btn));
+    if (deferredInstallPrompt) {
+      wrap.querySelector("[data-save-install]")?.classList.remove("hidden");
+    }
   }
 }
 
