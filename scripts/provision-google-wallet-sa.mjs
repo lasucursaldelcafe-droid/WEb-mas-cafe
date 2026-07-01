@@ -180,6 +180,23 @@ async function probeAccessToken(token) {
   return res.ok;
 }
 
+async function impersonateServiceAccountAccessToken(callerToken, scopes = [CLOUD_PLATFORM_SCOPE]) {
+  const clean = normalizeFirebaseToken(callerToken);
+  if (!clean || clean.startsWith("{")) return null;
+  const url = `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${encodeURIComponent(SA_EMAIL)}:generateAccessToken`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${clean}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ scope: scopes, lifetime: "3600s" }),
+  });
+  const data = await res.json();
+  if (!res.ok) return null;
+  return data.accessToken || null;
+}
+
 async function testFirebaseCliToken(token) {
   const clean = normalizeFirebaseToken(token);
   if (!clean || clean.startsWith("{")) return false;
@@ -210,6 +227,12 @@ async function resolveGoogleAccessToken(firebaseTokenRaw) {
     warn("firebase-cli", "FIREBASE_TOKEN no pasa firebase projects:list (¿expirado?)");
   }
 
+  const impersonated = await impersonateServiceAccountAccessToken(firebaseToken);
+  if (impersonated) {
+    log("oauth", "Access token por impersonación IAM");
+    return impersonated;
+  }
+
   try {
     const access = await refreshFirebaseAccessToken(firebaseToken);
     log("oauth", "Access token desde refresh FIREBASE_TOKEN");
@@ -228,7 +251,7 @@ async function resolveGoogleAccessToken(firebaseTokenRaw) {
     const require = createRequire(import.meta.url);
     const auth = require("firebase-tools/lib/auth");
     const scopes = require("firebase-tools/lib/scopes");
-    const tokens = await auth.refreshTokens(firebaseToken, [scopes.CLOUD_PLATFORM]);
+    const tokens = await auth.getAccessToken(firebaseToken, [scopes.CLOUD_PLATFORM]);
     if (tokens?.access_token) {
       log("oauth", "Access token vía firebase-tools");
       return tokens.access_token;
