@@ -1,0 +1,10 @@
+# Artefactos locales — Vercel genera gh-pages-site en el build
+gh-pages-site
+mas-cafe
+.next
+out
+node_modules/.cache
+supabase/.temp
+secrets/*.json
+!secrets/*.example
+*.tsbuildinfo

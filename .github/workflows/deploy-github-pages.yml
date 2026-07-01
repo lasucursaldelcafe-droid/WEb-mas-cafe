@@ -88,7 +88,7 @@ jobs:
           URL="${{ steps.deployment.outputs.page_url }}"
           echo "URL publicada: $URL"
           FAILED=0
-          for path in "" "cafe/" "menu/" "nosotros/" "tienda/" "blog/" "contacto/" "admin/" "wallet/" "caja/" "informe/" "informe/wallet/" "cotizacion-perpetuo/"; do
+          for path in "" "cafe/" "menu/" "nosotros/" "tienda/" "blog/" "contacto/" "fidelizacion/" "admin/" "wallet/" "caja/" "informe/" "informe/wallet/" "cotizacion-perpetuo/"; do
             CODE=$(curl -sL -o /dev/null -w "%{http_code}" "${URL}${path}")
             echo "${URL}${path} → HTTP $CODE"
             if [ "$CODE" != "200" ]; then FAILED=1; fi
