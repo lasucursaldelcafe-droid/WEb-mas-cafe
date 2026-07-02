@@ -213,7 +213,7 @@ export function pageFidelizacion() {
           <p class="label">Activación</p>
           <h2 class="section-title">${brandTitleHtml("Escanea y empieza")}</h2>
         </header>
-        <p style="font-size:.95rem;line-height:1.75;opacity:.85;margin-bottom:1.25rem">
+        <p class="text-body" style="opacity:.85;margin-bottom:1.25rem">
           Este QR abre la wallet digital de ${brand.name}. Desde ahí te registras con correo y contraseña
           (o con Google si está disponible). No necesitas instalar nada: funciona en el navegador del celular
           o en el computador.
@@ -240,7 +240,7 @@ export function pageFidelizacion() {
         <p class="section-intro">Inicia sesión en la wallet con tu correo. Verás saldo, historial, catálogo de canjes y tu código personal.</p>
       </header>
       <div class="fidel-card" style="max-width:40rem;margin:0 auto;text-align:center">
-        <p style="font-size:1.05rem;line-height:1.7;margin-bottom:1.25rem">
+        <p class="text-lead" style="margin-bottom:1.25rem">
           Abre <a href="${walletRel}"><strong>mi wallet</strong></a> en el navegador de tu PC o tablet.
           En la pestaña <strong>Historial</strong> ves cada movimiento; en <strong>Premios</strong> lo que puedes reclamar.
         </p>
@@ -256,7 +256,7 @@ export function pageFidelizacion() {
         <h2 class="section-title">${brandTitleHtml("Qué puedes reclamar")}</h2>
       </header>
       <div class="fidel-rewards">${rewardsHtml}</div>
-      <p style="text-align:center;margin-top:1.25rem;font-size:.88rem;opacity:.7">
+      <p class="text-caption-muted" style="text-align:center;margin-top:1.25rem">
         Premios sujetos a disponibilidad en tienda · Se canjean desde la pestaña Premios de tu wallet
       </p>
     </div>
@@ -269,12 +269,12 @@ export function pageFidelizacion() {
           <p class="label">En mostrador</p>
           <h2 class="section-title">${brandTitleHtml("Tu QR para dar en caja")}</h2>
         </header>
-        <p style="font-size:.95rem;line-height:1.75;opacity:.85">
+        <p class="text-body" style="opacity:.85">
           Después de registrarte, entra a <a href="${walletRel}">mi wallet</a> y abre la pestaña
           <strong>QR</strong>. Ahí aparece tu código único (también puedes dictar tu ID tipo <code>MC-000001</code>).
           El equipo en caja lo escanea o lo busca para sumarte puntos o validar un canje.
         </p>
-        <p style="font-size:.9rem;line-height:1.65;opacity:.75;margin-top:1rem">
+        <p class="text-caption" style="opacity:.75;margin-top:1rem">
           Tip: descarga la imagen con QR o instala la wallet en la pantalla de inicio para tenerla a mano.
         </p>
         <div class="fidel-cta-row">
@@ -283,11 +283,11 @@ export function pageFidelizacion() {
         </div>
       </div>
       <div class="fidel-card" style="text-align:center;padding:2rem">
-        <p style="font-size:.85rem;opacity:.7;margin-bottom:1rem">Vista en tu wallet — pestaña QR</p>
+        <p class="text-caption-muted" style="margin-bottom:1rem">Vista en tu wallet — pestaña QR</p>
         <div style="width:160px;height:160px;margin:0 auto 1rem;border-radius:.75rem;background:linear-gradient(135deg,var(--blue),#0d6e4a);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.9);font-size:.75rem;padding:1rem;line-height:1.4">
           Tu QR personal aparece aquí tras iniciar sesión
         </div>
-        <p style="font-size:.82rem;opacity:.75">ID de miembro · puntos · nivel</p>
+        <p class="text-caption-muted">ID de miembro · puntos · nivel</p>
       </div>
     </div>
   </section>

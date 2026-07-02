@@ -43,7 +43,7 @@ function visitBand(href, brand, img, pageId = "home") {
           <p class="cta-tagline">${ctaLine}</p>
           <h2>${brandTitleHtml("Te esperamos en Cali")}</h2>
           <p>${addressLinkHtml(brand, { className: "address-link address-link--on-dark" })}</p>
-          <p style="font-size:.88rem;margin-top:.5rem;opacity:.85">${brand.hours}</p>
+          <p class="text-meta" style="margin-top:.5rem">${brand.hours}</p>
           <div class="actions">
             <a class="btn btn-sage" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer" data-track="whatsapp">WhatsApp</a>
             <a class="btn btn-outline" href="${href("/contacto")}" data-track="contacto">Contacto</a>
@@ -109,7 +109,7 @@ function productCard(p, img) {
     <h3>${brandTitleHtml(p.name)}</h3>
     ${p.farm ? `<p class="meta">${p.farm}${p.altitude ? ` · ${p.altitude}` : ""}</p>` : ""}
     <p class="meta" style="margin-top:.4rem">${p.notes.join(" · ")}</p>
-    <p class="price">${price(p.price)}${p.weight ? ` <span style="font-size:.8rem;font-weight:400;opacity:.7">/ ${p.weight}</span>` : ""}</p>
+    <p class="price">${price(p.price)}${p.weight ? ` <span class="price-unit">/ ${p.weight}</span>` : ""}</p>
     ${p.subscription ? `<span class="badge">Suscripción</span>` : ""}
   </article>`;
 }
@@ -332,7 +332,7 @@ export function pageNosotros() {
       ${sectionHead("", pn.tagline, brand.story)}
       <div class="grid-2" style="margin-top:1.5rem">
         <div>
-          <p style="font-size:1.05rem;line-height:1.8;color:var(--charcoal)">${brand.about}</p>
+          <p class="text-lead">${brand.about}</p>
         </div>
         <img src="${img(brand.nosotrosImage)}" alt="Ambiente ${brand.name}" style="border-radius:1rem 2rem 1rem 2rem;width:100%;aspect-ratio:4/5;object-fit:cover;box-shadow:var(--shadow)"/>
       </div>
@@ -351,7 +351,7 @@ export function pageNosotros() {
       <div class="values">${brand.values.map((v) => `
       <div class="value">
         <h3>${brandTitleHtml(v.title)}</h3>
-        <p style="margin-top:.5rem;opacity:.75;line-height:1.65">${v.text}</p>
+        <p class="value-copy">${v.text}</p>
       </div>`).join("")}</div>
     </div>
   </section>
@@ -425,7 +425,7 @@ export function pageBlog() {
         <div>
           <p class="label">${post.category} · ${post.date}</p>
           <h2 style="margin-top:.5rem">${brandTitleHtml(post.title)}</h2>
-          <p style="margin-top:1rem;opacity:.75;font-size:1.05rem;line-height:1.7">${post.excerpt}</p>
+          <p class="text-lead-muted" style="margin-top:1rem">${post.excerpt}</p>
         </div>
       </article>`).join("")}
     </div>
@@ -461,13 +461,13 @@ export function pageContacto() {
       <div class="grid-2" style="align-items:start">
         <div class="contact-info">
           <img src="${img("/images/brand/visita.png")}" alt="Visítanos en Más Café" style="width:100%;border-radius:1.25rem 2rem 1.25rem 2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);aspect-ratio:16/10;object-fit:cover"/>
-          <h2 class="section-title" style="font-size:clamp(1.85rem,4vw,2.5rem)">${brandTitleHtml(pc.visitTitle)}</h2>
-          <p style="margin-top:1rem;line-height:1.8;color:var(--charcoal)">${addressLinkHtml(brand)}<br/><span style="font-size:.9rem;color:var(--brown)">${brand.hours}</span></p>
+          <h2 class="section-title section-title--contact">${brandTitleHtml(pc.visitTitle)}</h2>
+          <p class="text-lead" style="margin-top:1rem">${addressLinkHtml(brand)}<br/><span class="text-hours">${brand.hours}</span></p>
           <div class="actions" style="margin-top:1.25rem;display:flex;flex-wrap:wrap;gap:.65rem">
             <a class="btn btn-blue" href="${mapsUrl(brand)}" target="_blank" rel="noopener noreferrer" data-track="maps">Cómo llegar</a>
             <a class="btn btn-sage" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer" data-track="whatsapp">WhatsApp</a>
           </div>
-          <h2 style="margin-top:2rem;font-family:var(--font-display);font-size:1.5rem;color:var(--blue)">${brandTitleHtml(pc.writeTitle)}</h2>
+          <h2 class="contact-subtitle">${brandTitleHtml(pc.writeTitle)}</h2>
           <p style="margin-top:1rem;line-height:2.2">
             <a href="tel:${brand.phone.replace(/\s/g, "")}">${brand.phone}</a><br/>
             <a href="mailto:${brand.email}">${brand.email}</a>
@@ -516,7 +516,7 @@ export function pageCustom(route) {
   </section>
   <section>
     <div class="wrap" style="max-width:42rem;margin:0 auto">
-      <p style="font-size:1.05rem;line-height:1.8;opacity:.85">${pg.intro || pg.body || ""}</p>
+      <p class="text-lead-muted">${pg.intro || pg.body || ""}</p>
     </div>
   </section>
   ${visitBand(href, brand, img, route.id)}`;
