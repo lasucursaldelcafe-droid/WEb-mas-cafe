@@ -25,10 +25,6 @@ export function collectImagePaths() {
     "/images/brand/horizontal-azul.png",
     "/images/brand/favs.png",
     "/images/aplicaciones/Separadores.jpg",
-    "/images/grafica/1.png",
-    "/images/grafica/2.png",
-    "/images/grafica/3.png",
-    "/images/products/caja-cafe.png",
     "/images/decor/Recurso-4.svg",
     "/images/decor/Recurso-6.svg",
   ]);

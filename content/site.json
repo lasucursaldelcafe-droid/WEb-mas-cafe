@@ -42,7 +42,7 @@
     ],
     "story": "Comenzamos con una taza y la certeza de que los mejores momentos no se apuran. Ese gesto sencillo se convirtió en un espacio en Cali donde el café, la cocina y el servicio se cuidan con la misma atención.",
     "quote": "Busco un lugar tranquilo, con buen café y gente que te reciba de verdad.",
-    "nosotrosImage": "/images/brand/mood.png",
+    "nosotrosImage": "/images/brand/pausa.png",
     "nosotrosVideoUrl": ""
   },
   "theme": {
@@ -132,7 +132,7 @@
       "title": "Ambiente",
       "subtitle": "Sin prisa",
       "description": "Un espacio donde el tiempo baja y cada detalle está pensado para que te sientas a gusto desde que entras.",
-      "image": "/images/brand/pausa.png",
+      "image": "/images/aplicaciones/Rompetráfico.jpg",
       "layout": "left"
     },
     {
@@ -140,7 +140,7 @@
       "title": "Carta",
       "subtitle": "Café de especialidad",
       "description": "Microlotes colombianos con trazabilidad completa. Cada taza cuenta la historia de su origen y su productor.",
-      "image": "/images/brand/carta.png",
+      "image": "/images/aplicaciones/VASOS-CALIENTE-1.jpg",
       "layout": "right"
     },
     {
@@ -156,7 +156,7 @@
       "title": "Tiempo",
       "subtitle": "Para quedarse",
       "description": "Mesas amplias, luz natural y Wi‑Fi: un lugar para trabajar, conversar o simplemente desconectarse.",
-      "image": "/images/brand/visita.png",
+      "image": "/images/aplicaciones/fachada2.png",
       "layout": "right"
     }
   ],
@@ -190,7 +190,7 @@
       "roast": "Tostión media",
       "grind": "Grano",
       "notes": ["Chocolate", "Nuez", "Dulce"],
-      "image": "/images/products/caja-cafe.png",
+      "image": "/images/aplicaciones/CAJACAFE.png",
       "subscription": true,
       "featured": false
     },
@@ -205,7 +205,7 @@
       "roast": "Tostión clara",
       "grind": "Grano",
       "notes": ["Floral", "Bergamota", "Frutal"],
-      "image": "/images/products/caja-cafe.png",
+      "image": "/images/aplicaciones/cajaycinta.png",
       "subscription": false,
       "featured": true
     },
@@ -220,7 +220,7 @@
       "roast": "Tostión media",
       "grind": "Grano",
       "notes": ["Regalo", "Variedad", "15% dto."],
-      "image": "/images/products/caja-cafe.png",
+      "image": "/images/aplicaciones/bolsa-de-llevar2.jpg",
       "subscription": false,
       "featured": false
     }
@@ -267,7 +267,7 @@
       "excerpt": "No se trata de hacer menos: se trata de estar presente. Por qué dedicarle unos minutos a cada taza cambia el resto del día.",
       "date": "26 jun 2025",
       "category": "Marca",
-      "image": "/images/brand/mood.png",
+      "image": "/images/grafica/Recurso-11.png",
       "published": true
     },
     {
@@ -276,7 +276,7 @@
       "excerpt": "Guía para disfrutar nuestro café en cafetera de goteo, prensa francesa o pour over.",
       "date": "15 may 2025",
       "category": "Barismo",
-      "image": "/images/products/caja-cafe.png",
+      "image": "/images/aplicaciones/Termo.jpg",
       "published": true
     },
     {
@@ -285,7 +285,7 @@
       "excerpt": "La historia de Fda. Reyes Burbano y el microlote Caturra que llega a tu taza.",
       "date": "3 abr 2025",
       "category": "Origen",
-      "image": "/images/grafica/1.png",
+      "image": "/images/grafica/Recurso-12.png",
       "published": true
     },
     {
@@ -294,7 +294,7 @@
       "excerpt": "Los cafés extraordinarios deben ser absolutamente frescos. Te contamos cómo lo garantizamos.",
       "date": "11 feb 2025",
       "category": "Calidad",
-      "image": "/images/brand/carta.png",
+      "image": "/images/aplicaciones/VASOS-CALIENTES-2.jpg",
       "published": true
     }
   ],

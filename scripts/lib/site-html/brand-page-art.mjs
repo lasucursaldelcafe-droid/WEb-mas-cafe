@@ -1,6 +1,6 @@
 /**
- * Arte de marca por página: isotipo (+) y variantes de color desde Drive.
- * Cada subpágina usa combinaciones distintas para no repetir la misma composición.
+ * Arte de marca por página: isotipo (+), heroes, bandas Visítanos y fotos de contenido.
+ * Cada subpágina usa combinaciones distintas — sin repetir la misma foto en hero + cuerpo + banda.
  */
 export const PAGE_BRAND_ART = {
   home: {
@@ -8,7 +8,8 @@ export const PAGE_BRAND_ART = {
     watermarkB: "/images/decor/1.svg",
     wmApos: "88% 4%",
     wmBpos: "6% 78%",
-    visitArt: "/images/brand/visita.png",
+    heroArt: "/images/grafica/3.png",
+    visitArt: "/images/aplicaciones/fachada2.png",
     visitDeco: "/images/brand/descriptor-cafe.png",
     visitTone: "ocean",
   },
@@ -17,7 +18,9 @@ export const PAGE_BRAND_ART = {
     watermarkB: "/images/decor/2.svg",
     wmApos: "90% 12%",
     wmBpos: "8% 85%",
-    visitArt: "/images/brand/pausa.png",
+    heroArt: "/images/grafica/Recurso-14.png",
+    brewImage: "/images/aplicaciones/VASOS-CALIENTESopción2.jpg",
+    visitArt: "/images/aplicaciones/Rompetráfico.jpg",
     visitDeco: "/images/brand/descriptor-caramelo.png",
     visitTone: "warm",
   },
@@ -26,7 +29,7 @@ export const PAGE_BRAND_ART = {
     watermarkB: "/images/decor/3.svg",
     wmApos: "85% 8%",
     wmBpos: "10% 80%",
-    visitArt: "/images/brand/carta.png",
+    visitArt: "/images/aplicaciones/VASOS-CALIENTE-1.jpg",
     visitDeco: "/images/brand/descriptor-crema.png",
     visitTone: "sage",
   },
@@ -35,6 +38,8 @@ export const PAGE_BRAND_ART = {
     watermarkB: "/images/decor/Recurso-55.svg",
     wmApos: "92% 15%",
     wmBpos: "5% 70%",
+    heroArt: "/images/grafica/Recurso-20.png",
+    videoPoster: "/images/brand/horno.png",
     visitArt: "/images/brand/mood.png",
     visitDeco: "/images/brand/descriptor-cafe.png",
     visitTone: "earth",
@@ -44,7 +49,8 @@ export const PAGE_BRAND_ART = {
     watermarkB: "/images/decor/Recurso-10.svg",
     wmApos: "87% 6%",
     wmBpos: "12% 88%",
-    visitArt: "/images/brand/horno.png",
+    heroArt: "/images/grafica/Recurso-25.png",
+    visitArt: "/images/aplicaciones/bolsa-de-llevar.jpg",
     visitDeco: "/images/brand/descriptor-azul.png",
     visitTone: "caramel",
   },
@@ -53,7 +59,8 @@ export const PAGE_BRAND_ART = {
     watermarkB: "/images/decor/Recurso-18.svg",
     wmApos: "90% 10%",
     wmBpos: "7% 75%",
-    visitArt: "/images/brand/carta.png",
+    heroArt: "/images/grafica/Recurso-18.png",
+    visitArt: "/images/aplicaciones/Agenda.jpg",
     visitDeco: "/images/brand/descriptor-caramelo.png",
     visitTone: "forest",
   },
@@ -62,7 +69,9 @@ export const PAGE_BRAND_ART = {
     watermarkB: "/images/decor/Recurso-25.svg",
     wmApos: "86% 5%",
     wmBpos: "4% 82%",
-    visitArt: "/images/brand/visita.png",
+    heroArt: "/images/grafica/2.png",
+    contactImage: "/images/brand/visita.png",
+    visitArt: "/images/aplicaciones/Termo.jpg",
     visitDeco: "/images/brand/icon-mark.png",
     visitTone: "ocean",
   },
@@ -71,13 +80,25 @@ export const PAGE_BRAND_ART = {
     watermarkB: "/images/decor/Recurso-42.svg",
     wmApos: "88% 14%",
     wmBpos: "9% 72%",
-    visitArt: "/images/brand/pausa.png",
+    heroArt: "/images/grafica/Recurso-30.png",
+    visitArt: "/images/aplicaciones/Totebag1v2.jpg",
     visitDeco: "/images/brand/descriptor-crema.png",
     visitTone: "sage",
   },
 };
 
 const DEFAULT_ART = PAGE_BRAND_ART.home;
+
+const ART_IMAGE_KEYS = [
+  "watermarkA",
+  "watermarkB",
+  "heroArt",
+  "brewImage",
+  "contactImage",
+  "videoPoster",
+  "visitArt",
+  "visitDeco",
+];
 
 export function getPageBrandArt(pageId) {
   return PAGE_BRAND_ART[pageId] ?? DEFAULT_ART;
@@ -87,7 +108,7 @@ export function getPageBrandArt(pageId) {
 export function collectBrandPageArtPaths() {
   const paths = new Set();
   for (const art of Object.values(PAGE_BRAND_ART)) {
-    for (const key of ["watermarkA", "watermarkB", "visitArt", "visitDeco"]) {
+    for (const key of ART_IMAGE_KEYS) {
       if (art[key]) paths.add(art[key]);
     }
   }
