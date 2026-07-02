@@ -3,6 +3,9 @@ import { loadDriveAssets, resolveMenuBookPages } from "../drive-assets.mjs";
 /** Proporción real de las páginas del menú (792×1224 px) */
 const MENU_PAGE_RATIO = "792 / 1224";
 
+/** Página inicial del flipbook (índice 0 = página 1). Por defecto: página 2. */
+export const MENU_BOOK_START_PAGE = 1;
+
 export function menuBookStyles() {
   return `
     .menu-book-section{
@@ -24,9 +27,7 @@ export function menuBookStyles() {
     .menu-book-hint{
       text-align:center;font-size:.84rem;color:rgba(43,43,43,.55);
       margin-top:1rem;font-style:italic;line-height:1.65;
-      transition:transform .4s cubic-bezier(.22,1,.36,1),color .25s ease;
     }
-    .menu-book-hint:hover{transform:translateY(-1px);color:rgba(43,43,43,.68)}
     .menu-book-ui{
       display:flex;align-items:center;justify-content:center;gap:1rem;
       margin-top:1.35rem;flex-wrap:wrap;
@@ -46,23 +47,8 @@ export function menuBookStyles() {
     }
     .menu-book-viewport{
       position:relative;margin:0 auto;
-      perspective:2200px;
       touch-action:pan-y;
-    }
-    .menu-book-viewport.menu-book-loading .menu-book-spread,
-    .menu-book-viewport.menu-book-loading .menu-book-mobile{
-      opacity:.92;
-    }
-    .menu-book-viewport.menu-book-loading .menu-book-page-slot.right:not(.blank)::after,
-    .menu-book-viewport.menu-book-loading .menu-book-mobile::after{
-      content:"";position:absolute;inset:0;z-index:5;pointer-events:none;
-      background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);
-      background-size:220% 100%;
-      animation:menu-book-shimmer 1.35s ease-in-out infinite;
-    }
-    @keyframes menu-book-shimmer{
-      0%{background-position:120% 0}
-      100%{background-position:-120% 0}
+      min-height:min(72vw,520px);
     }
     .menu-book-spread{
       position:relative;display:grid;grid-template-columns:1fr 1fr;
@@ -93,24 +79,7 @@ export function menuBookStyles() {
       position:absolute;inset:0;width:100%;height:100%;
       display:block;object-fit:cover;object-position:center;
     }
-    .menu-book-flipper{
-      position:absolute;top:0;right:0;width:50%;height:100%;
-      transform-style:preserve-3d;transform-origin:left center;
-      transition:transform .65s cubic-bezier(.45,.05,.25,1);
-      z-index:6;pointer-events:none;
-    }
-    .menu-book-flipper.flipping-forward{transform:rotateY(-180deg)}
-    .menu-book-flipper.flipping-back{transform:rotateY(180deg)}
-    .menu-book-flip-face{
-      position:absolute;inset:0;backface-visibility:hidden;
-      overflow:hidden;border-radius:0 1rem 1rem 0;
-      box-shadow:-8px 0 24px rgba(7,57,84,.12);
-    }
-    .menu-book-flip-face img{
-      position:absolute;inset:0;width:100%;height:100%;
-      display:block;object-fit:cover;object-position:center;
-    }
-    .menu-book-flip-face.back{transform:rotateY(180deg)}
+    .menu-book-flipper{display:none}
     .menu-book-hotzones{
       position:absolute;inset:0;z-index:8;pointer-events:none;
     }
@@ -133,51 +102,19 @@ export function menuBookStyles() {
       width:100%;
       box-shadow:0 24px 60px rgba(7,57,84,.18);
       background:#fff;
-      perspective:1600px;
       -webkit-tap-highlight-color:transparent;
     }
     .menu-book-mobile-stack{
       position:relative;width:100%;aspect-ratio:${MENU_PAGE_RATIO};
-      transform-style:preserve-3d;
     }
-    .menu-book-mobile-under,
     .menu-book-mobile-current{
       position:absolute;inset:0;background:#fff;
     }
-    .menu-book-mobile-under{z-index:1}
-    .menu-book-mobile-current{z-index:2}
-    .menu-book-mobile-under img,
     .menu-book-mobile-current img{
       position:absolute;inset:0;width:100%;height:100%;
       display:block;object-fit:cover;object-position:center;
     }
-    .menu-book-mobile-flipper{
-      position:absolute;inset:0;transform-style:preserve-3d;
-      transform-origin:left center;z-index:3;pointer-events:none;
-      transition:transform .58s cubic-bezier(.42,.02,.25,1);
-      transform:rotateY(0deg);
-    }
-    .menu-book-mobile-flipper.flipping-forward{transform:rotateY(-180deg)}
-    .menu-book-mobile-flipper.flipping-back-from{
-      transform-origin:right center;transform:rotateY(180deg);
-    }
-    .menu-book-mobile-flipper.flipping-back-from:not(.flipping-back-to){transition:none}
-    .menu-book-mobile-flipper.flipping-back-from.flipping-back-to{
-      transform:rotateY(0deg);
-    }
-    .menu-book-mobile-face{
-      position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;
-      background:#fff;border-radius:1rem;
-      box-shadow:-8px 0 28px rgba(7,57,84,.14);
-    }
-    .menu-book-mobile-face.back{transform:rotateY(180deg)}
-    .menu-book-mobile-face img{
-      position:absolute;inset:0;width:100%;height:100%;
-      display:block;object-fit:cover;object-position:center;
-    }
-    .menu-book-mobile.menu-book-mobile-animating .menu-book-mobile-current{
-      visibility:hidden;
-    }
+    .menu-book-mobile-flipper{display:none}
     .menu-book-mobile .menu-book-hotzones button[data-book-prev]{left:0}
     .menu-book-mobile .menu-book-hotzones button[data-book-next]{right:0}
     .menu-book-footer{
@@ -197,7 +134,6 @@ export function menuBookStyles() {
     @media(max-width:767px){
       .menu-book-spread{display:none}
       .menu-book-mobile{display:block}
-      .menu-book-flipper{display:none}
       .menu-book-hint{font-size:.82rem}
       .menu-book-counter{font-size:.82rem}
       .menu-book-btn:active:not(:disabled){
@@ -205,12 +141,6 @@ export function menuBookStyles() {
         box-shadow:0 4px 18px rgba(7,57,84,.08);
         background:var(--cream);
       }
-    }
-    @media(prefers-reduced-motion:reduce){
-      .menu-book-flipper{transition:none}
-      .menu-book-mobile-flipper{transition:none}
-      .menu-book-viewport.menu-book-loading .menu-book-page-slot.right::after,
-      .menu-book-viewport.menu-book-loading .menu-book-mobile::after{animation:none;display:none}
     }
   `;
 }
@@ -227,99 +157,23 @@ export function menuBookScript() {
       var spreadEl=root.querySelector('.menu-book-spread');
       var mobileEl=root.querySelector('.menu-book-mobile');
       var mobileCurrentImg=mobileEl?mobileEl.querySelector('.menu-book-mobile-current img'):null;
-      var mobileUnderImg=mobileEl?mobileEl.querySelector('.menu-book-mobile-under img'):null;
-      var mobileFlipper=mobileEl?mobileEl.querySelector('.menu-book-mobile-flipper'):null;
-      var mobileFlipFront=mobileFlipper?mobileFlipper.querySelector('.menu-book-mobile-face.front img'):null;
-      var mobileFlipBack=mobileFlipper?mobileFlipper.querySelector('.menu-book-mobile-face.back img'):null;
       var leftSlot=root.querySelector('.menu-book-page-slot.left');
       var rightSlot=root.querySelector('.menu-book-page-slot.right');
-      var flipper=root.querySelector('.menu-book-flipper');
-      var flipFront=flipper?flipper.querySelector('.menu-book-flip-face.front img'):null;
-      var flipBack=flipper?flipper.querySelector('.menu-book-flip-face.back img'):null;
       var counter=stage.querySelector('.menu-book-counter');
       var navPrev=stage.querySelectorAll('[data-book-prev]');
       var navNext=stage.querySelectorAll('[data-book-next]');
-      var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var mobile=window.matchMedia('(max-width: 767px)').matches;
 
-      var spread=0;
-      var page=0;
-      var busy=false;
+      var startPage=parseInt(root.getAttribute('data-initial-page')||'${MENU_BOOK_START_PAGE}',10);
+      if(isNaN(startPage)||startPage<0)startPage=0;
+      if(startPage>=pages.length)startPage=pages.length-1;
+      var startSpread=parseInt(root.getAttribute('data-initial-spread')||'1',10);
+      if(isNaN(startSpread)||startSpread<0)startSpread=0;
+
+      var spread=startPage>0?startSpread:0;
+      var page=startPage;
       var touchX=0;
       var pageReady={};
-      var inView=true;
-      var autoplayTimer=null;
-      var autoplayPaused=false;
-      var autoplayResumeTimer=null;
-      var AUTOPLAY_MS=parseInt(root.getAttribute('data-autoplay-ms')||'4200',10)||4200;
-      var AUTOPLAY_START_MS=parseInt(root.getAttribute('data-autoplay-start-ms')||'1600',10)||1600;
-      var AUTOPLAY_RESUME_MS=12000;
-
-      function clearAutoplay(){
-        if(autoplayTimer){window.clearTimeout(autoplayTimer);autoplayTimer=null;}
-      }
-
-      function clearAutoplayResume(){
-        if(autoplayResumeTimer){window.clearTimeout(autoplayResumeTimer);autoplayResumeTimer=null;}
-      }
-
-      function isAtEnd(){
-        if(mobile)return page>=pages.length-1;
-        return spread>=spreadsCount()-1;
-      }
-
-      function canAutoplay(){
-        if(reduced||autoplayPaused||busy||document.hidden||!inView)return false;
-        return true;
-      }
-
-      function scheduleAutoplay(delay){
-        clearAutoplay();
-        if(!canAutoplay())return;
-        autoplayTimer=window.setTimeout(function(){
-          autoplayTimer=null;
-          if(!canAutoplay())return;
-          if(isAtEnd()){
-            if(mobile){
-              page=0;
-              renderMobile(function(){scheduleAutoplay(AUTOPLAY_MS);});
-            }else{
-              spread=0;
-              renderSpread(function(){scheduleAutoplay(AUTOPLAY_MS);});
-            }
-            return;
-          }
-          goNext(true);
-          scheduleAutoplay(AUTOPLAY_MS);
-        },typeof delay==='number'?delay:AUTOPLAY_MS);
-      }
-
-      function startAutoplay(){
-        if(reduced)return;
-        clearAutoplay();
-        autoplayTimer=window.setTimeout(function(){
-          autoplayTimer=null;
-          scheduleAutoplay(AUTOPLAY_MS);
-        },AUTOPLAY_START_MS);
-      }
-
-      function pauseAutoplay(){
-        autoplayPaused=true;
-        clearAutoplay();
-        clearAutoplayResume();
-        autoplayResumeTimer=window.setTimeout(function(){
-          autoplayPaused=false;
-          scheduleAutoplay(AUTOPLAY_MS);
-        },AUTOPLAY_RESUME_MS);
-      }
-
-      function userTookControl(){
-        pauseAutoplay();
-      }
-
-      function markReady(){
-        root.classList.remove('menu-book-loading');
-      }
 
       function loadPage(idx,cb){
         if(idx<0||idx>=pages.length){if(cb)cb();return;}
@@ -352,21 +206,9 @@ export function menuBookScript() {
         if(pending===0&&cb)cb();
       }
 
-      function preloadAllPages(){
-        for(var i=0;i<pages.length;i++)loadPage(i);
-      }
-
-      function watchImageLoad(imgEl,onReady){
-        if(!imgEl||!imgEl.src){
-          if(onReady)onReady();
-          return;
-        }
-        if(imgEl.complete&&imgEl.naturalWidth>0){
-          if(onReady)onReady();
-          return;
-        }
-        imgEl.addEventListener('load',function(){if(onReady)onReady();},{once:true});
-        imgEl.addEventListener('error',function(){if(onReady)onReady();},{once:true});
+      function markDomReady(el,idx){
+        if(!el||!el.src||idx<0)return;
+        if(el.complete&&el.naturalWidth>0)pageReady[idx]=true;
       }
 
       function spreadsCount(){
@@ -381,25 +223,6 @@ export function menuBookScript() {
         return {left:left,right:right};
       }
 
-      function setImg(el,idx,cb){
-        if(!el){if(cb)cb();return;}
-        if(idx<0||idx>=pages.length){
-          el.removeAttribute('src');
-          el.alt='';
-          if(cb)cb();
-          return;
-        }
-        loadPage(idx,function(){
-          if(el.src!==pages[idx])el.src=pages[idx];
-          el.alt='Página '+(idx+1)+' del menú';
-          el.loading='eager';
-          el.decoding='async';
-          if(el.complete&&el.naturalWidth>0){if(cb)cb();return;}
-          el.addEventListener('load',function(){if(cb)cb();},{once:true});
-          el.addEventListener('error',function(){if(cb)cb();},{once:true});
-        });
-      }
-
       function assignImg(el,idx){
         if(!el)return;
         if(idx<0||idx>=pages.length){
@@ -407,17 +230,18 @@ export function menuBookScript() {
           el.alt='';
           return;
         }
-        el.src=pages[idx];
+        if(el.src!==pages[idx])el.src=pages[idx];
         el.alt='Página '+(idx+1)+' del menú';
         el.loading='eager';
-        el.decoding='async';
+        el.decoding='sync';
+        if(el.complete&&el.naturalWidth>0)pageReady[idx]=true;
       }
 
       function setBlank(slot,blank){
         if(!slot)return;
         slot.classList.toggle('blank',!!blank);
         var img=slot.querySelector('img');
-        if(blank&&img){img.removeAttribute('src');}
+        if(blank&&img){img.removeAttribute('src');img.alt='';}
       }
 
       function updateCounter(){
@@ -444,134 +268,25 @@ export function menuBookScript() {
         var s=spreadPages(spread);
         setBlank(leftSlot,s.left<0);
         setBlank(rightSlot,s.right<0);
-        var leftDone=s.left<0;
-        var rightDone=s.right<0;
-        function done(){
-          if(leftDone&&rightDone){
-            updateCounter();
-            updateButtons();
-            if(cb)cb();
-          }
-        }
-        if(s.left>=0){
-          setImg(leftSlot&&leftSlot.querySelector('img'),s.left,function(){leftDone=true;done();});
-        }
-        if(s.right>=0){
-          setImg(rightSlot&&rightSlot.querySelector('img'),s.right,function(){rightDone=true;done();});
-        }
-        if(s.left<0&&s.right<0)done();
+        if(s.left>=0)assignImg(leftSlot&&leftSlot.querySelector('img'),s.left);
+        if(s.right>=0)assignImg(rightSlot&&rightSlot.querySelector('img'),s.right);
+        updateCounter();
+        updateButtons();
+        if(cb)cb();
       }
 
       function renderMobile(cb){
         if(!mobileCurrentImg){if(cb)cb();return;}
-        setImg(mobileCurrentImg,page,function(){
-          if(mobileUnderImg){
-            mobileUnderImg.removeAttribute('src');
-            mobileUnderImg.alt='';
-          }
-          updateCounter();
-          updateButtons();
-          if(cb)cb();
-        });
-      }
-
-      function finishMobileFlip(cb){
-        if(mobileFlipper)mobileFlipper.className='menu-book-mobile-flipper';
-        if(mobileEl)mobileEl.classList.remove('menu-book-mobile-animating');
-        busy=false;
+        assignImg(mobileCurrentImg,page);
+        updateCounter();
+        updateButtons();
         if(cb)cb();
       }
 
-      function animateMobileFlip(dir,cb){
-        if(!mobileFlipper||!mobileCurrentImg||reduced){
-          if(cb)cb();
-          return;
-        }
-        var target=dir>0?page+1:page-1;
-        if(target<0||target>=pages.length)return;
-        loadPages([page,target],function(){
-          busy=true;
-          mobileEl.classList.add('menu-book-mobile-animating');
-          if(dir>0){
-            assignImg(mobileUnderImg,target);
-            assignImg(mobileFlipFront,page);
-            assignImg(mobileFlipBack,target);
-            mobileFlipper.className='menu-book-mobile-flipper flipping-forward';
-            window.setTimeout(function(){finishMobileFlip(cb);},580);
-          }else{
-            assignImg(mobileUnderImg,target);
-            assignImg(mobileFlipFront,target);
-            assignImg(mobileFlipBack,page);
-            mobileFlipper.className='menu-book-mobile-flipper flipping-back-from';
-            void mobileFlipper.offsetHeight;
-            mobileFlipper.className='menu-book-mobile-flipper flipping-back-from flipping-back-to';
-            window.setTimeout(function(){finishMobileFlip(cb);},580);
-          }
-        });
-      }
-
-      function render(){
+      function render(cb){
         mobile=window.matchMedia('(max-width: 767px)').matches;
-        if(mobile)renderMobile();
-        else renderSpread();
-      }
-
-      function animateFlip(dir,cb){
-        if(!flipper||reduced||mobile){
-          if(cb)cb();
-          return;
-        }
-        var s=spreadPages(spread);
-        var next=dir>0?spreadPages(spread+1):spreadPages(spread-1);
-        var frontIdx=dir>0?s.right:(next.right>=0?next.right:next.left);
-        var backIdx=dir>0?(next.right>=0?next.right:next.left):(s.left>=0?s.left:s.right);
-        loadPages([frontIdx,backIdx],function(){
-          assignImg(flipFront,frontIdx);
-          assignImg(flipBack,backIdx);
-          flipper.className='menu-book-flipper '+(dir>0?'flipping-forward':'flipping-back');
-          busy=true;
-          window.setTimeout(function(){
-            flipper.className='menu-book-flipper';
-            busy=false;
-            if(cb)cb();
-          }, reduced?0:650);
-        });
-      }
-
-      function goNext(fromAutoplay){
-        if(busy)return;
-        if(!fromAutoplay)userTookControl();
-        if(mobile){
-          if(page>=pages.length-1)return;
-          animateMobileFlip(1,function(){
-            page+=1;
-            renderMobile();
-          });
-          return;
-        }
-        if(spread>=spreadsCount()-1)return;
-        animateFlip(1,function(){
-          spread+=1;
-          renderSpread(prefetchAround);
-        });
-      }
-
-      function goPrev(fromAutoplay){
-        if(busy)return;
-        if(!fromAutoplay)userTookControl();
-        if(mobile){
-          if(page<=0)return;
-          animateMobileFlip(-1,function(){
-            page-=1;
-            renderMobile();
-          });
-          return;
-        }
-        if(spread<=0)return;
-        animateFlip(-1,function(){
-          spread-=1;
-          renderSpread(prefetchAround);
-        });
+        if(mobile)renderMobile(cb);
+        else renderSpread(cb);
       }
 
       function prefetchAround(){
@@ -580,47 +295,57 @@ export function menuBookScript() {
         }else{
           var s=spreadPages(spread);
           var next=spreadPages(spread+1);
-          loadPages([s.left,s.right,next.left,next.right]);
+          var prev=spreadPages(spread-1);
+          loadPages([s.left,s.right,next.left,next.right,prev.left,prev.right]);
         }
       }
 
+      function goNext(){
+        if(mobile){
+          if(page>=pages.length-1)return;
+          page+=1;
+          renderMobile(prefetchAround);
+          return;
+        }
+        if(spread>=spreadsCount()-1)return;
+        spread+=1;
+        renderSpread(prefetchAround);
+      }
+
+      function goPrev(){
+        if(mobile){
+          if(page<=0)return;
+          page-=1;
+          renderMobile(prefetchAround);
+          return;
+        }
+        if(spread<=0)return;
+        spread-=1;
+        renderSpread(prefetchAround);
+      }
+
       navNext.forEach(function(el){
-        el.addEventListener('click',function(){goNext(false);});
+        el.addEventListener('click',function(){goNext();});
       });
       navPrev.forEach(function(el){
-        el.addEventListener('click',function(){goPrev(false);});
+        el.addEventListener('click',function(){goPrev();});
       });
 
       root.addEventListener('keydown',function(e){
-        if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();goNext(false);}
-        if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();goPrev(false);}
+        if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();goNext();}
+        if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();goPrev();}
       });
 
       root.addEventListener('touchstart',function(e){
         touchX=e.changedTouches[0].clientX;
-        userTookControl();
       },{passive:true});
 
       root.addEventListener('touchend',function(e){
         var dx=e.changedTouches[0].clientX-touchX;
         if(Math.abs(dx)<40)return;
-        if(dx<0)goNext(false);
-        else goPrev(false);
+        if(dx<0)goNext();
+        else goPrev();
       },{passive:true});
-
-      if('IntersectionObserver' in window){
-        var observer=new IntersectionObserver(function(entries){
-          inView=!!(entries[0]&&entries[0].isIntersecting);
-          if(inView&&!autoplayPaused&&!reduced)scheduleAutoplay(AUTOPLAY_MS);
-          else clearAutoplay();
-        },{threshold:0.3});
-        observer.observe(root);
-      }
-
-      document.addEventListener('visibilitychange',function(){
-        if(document.hidden)clearAutoplay();
-        else if(!autoplayPaused&&!reduced)scheduleAutoplay(AUTOPLAY_MS);
-      });
 
       window.addEventListener('resize',function(){
         var wasMobile=mobile;
@@ -628,18 +353,34 @@ export function menuBookScript() {
         if(wasMobile!==mobile)render();
       });
 
-      root.classList.add('menu-book-loading');
-      loadPage(0,function(){
-        render();
-        var firstVisible=mobile?mobileCurrentImg:(rightSlot&&rightSlot.querySelector('img'));
-        watchImageLoad(firstVisible,function(){
-          markReady();
-          preloadAllPages();
-          prefetchAround();
-        });
-      });
+      markDomReady(mobileCurrentImg,startPage);
+      if(leftSlot)markDomReady(leftSlot.querySelector('img'),spreadPages(spread).left);
+      if(rightSlot)markDomReady(rightSlot.querySelector('img'),spreadPages(spread).right);
+
+      page=startPage;
+      spread=startPage>0?startSpread:0;
+      render(prefetchAround);
     })();
   `;
+}
+
+function initialSpreadForPage(pageIndex) {
+  if (pageIndex <= 0) return 0;
+  return 1;
+}
+
+function initialCounterLabel(pageIndex, pageCount, spreadIndex, pages) {
+  if (pageCount <= 1) return `1 / ${pageCount}`;
+  const s =
+    spreadIndex === 0
+      ? { left: -1, right: 0 }
+      : { left: 2 * spreadIndex - 1, right: Math.min(2 * spreadIndex, pageCount - 1) };
+  const mobile = `${pageIndex + 1} / ${pageCount}`;
+  const parts = [];
+  if (s.left >= 0) parts.push(s.left + 1);
+  if (s.right >= 0 && s.right !== s.left) parts.push(s.right + 1);
+  const desktop = parts.length ? `Pág. ${parts.join(" · ")} / ${pageCount}` : mobile;
+  return { mobile, desktop };
 }
 
 export function renderMenuBook({ img, pages, disclaimer }) {
@@ -654,18 +395,28 @@ export function renderMenuBook({ img, pages, disclaimer }) {
 
   const pageUrls = pages.map((p) => img(p));
   const dataPages = JSON.stringify(pageUrls).replace(/</g, "\\u003c");
+  const startPage = Math.min(MENU_BOOK_START_PAGE, pages.length - 1);
+  const startSpread = initialSpreadForPage(startPage);
+  const s = startSpread === 0 ? { left: -1, right: 0 } : { left: startPage, right: Math.min(startPage + 1, pages.length - 1) };
+  const labels = initialCounterLabel(startPage, pages.length, startSpread, pages);
+
+  const leftBlank = s.left < 0;
+  const rightBlank = s.right < 0;
+  const leftImg = !leftBlank ? pageUrls[s.left] : "";
+  const rightImg = !rightBlank ? pageUrls[s.right] : "";
+  const mobileImg = pageUrls[startPage];
 
   return `
   <div class="menu-book-section">
     <style>${menuBookStyles()}</style>
     <div class="menu-book-stage">
-      <div class="menu-book-viewport menu-book-loading" id="menu-book" data-pages='${dataPages}' data-autoplay-ms="0" data-autoplay-start-ms="0" tabindex="0" aria-label="Menú digital interactivo">
+      <div class="menu-book-viewport" id="menu-book" data-pages='${dataPages}' data-initial-page="${startPage}" data-initial-spread="${startSpread}" tabindex="0" aria-label="Menú digital interactivo">
         <div class="menu-book-spread" aria-hidden="false">
-          <div class="menu-book-page-slot left blank"><img alt="" loading="eager" decoding="async"/></div>
-          <div class="menu-book-page-slot right"><img src="${pageUrls[0]}" alt="Página 1 del menú" loading="eager" fetchpriority="high" decoding="async"/></div>
-          <div class="menu-book-flipper" aria-hidden="true">
-            <div class="menu-book-flip-face front"><img alt=""/></div>
-            <div class="menu-book-flip-face back"><img alt=""/></div>
+          <div class="menu-book-page-slot left${leftBlank ? " blank" : ""}">
+            <img src="${leftImg}" alt="${leftBlank ? "" : `Página ${s.left + 1} del menú`}" loading="eager" fetchpriority="high" decoding="sync"${leftBlank ? ' style="display:none"' : ""}/>
+          </div>
+          <div class="menu-book-page-slot right${rightBlank ? " blank" : ""}">
+            <img src="${rightImg}" alt="${rightBlank ? "" : `Página ${s.right + 1} del menú`}" loading="eager" fetchpriority="high" decoding="sync"${rightBlank ? ' style="display:none"' : ""}/>
           </div>
           <div class="menu-book-hotzones" aria-hidden="true">
             <button type="button" data-book-prev aria-label="Página anterior"></button>
@@ -674,13 +425,8 @@ export function renderMenuBook({ img, pages, disclaimer }) {
         </div>
         <div class="menu-book-mobile">
           <div class="menu-book-mobile-stack">
-            <div class="menu-book-mobile-under" aria-hidden="true"><img alt="" decoding="async"/></div>
             <div class="menu-book-mobile-current">
-              <img src="${pageUrls[0]}" alt="Página 1 del menú" loading="eager" fetchpriority="high" decoding="async"/>
-            </div>
-            <div class="menu-book-mobile-flipper" aria-hidden="true">
-              <div class="menu-book-mobile-face front"><img alt="" decoding="async"/></div>
-              <div class="menu-book-mobile-face back"><img alt="" decoding="async"/></div>
+              <img src="${mobileImg}" alt="Página ${startPage + 1} del menú" loading="eager" fetchpriority="high" decoding="sync"/>
             </div>
           </div>
           <div class="menu-book-hotzones">
@@ -691,10 +437,10 @@ export function renderMenuBook({ img, pages, disclaimer }) {
       </div>
       <div class="menu-book-ui">
         <button type="button" class="menu-book-btn" data-book-prev aria-label="Página anterior">‹</button>
-        <span class="menu-book-counter">1 / ${pages.length}</span>
+        <span class="menu-book-counter" data-counter-mobile="${labels.mobile}" data-counter-desktop="${labels.desktop}">${labels.mobile}</span>
         <button type="button" class="menu-book-btn" data-book-next aria-label="Página siguiente">›</button>
       </div>
-      <p class="menu-book-hint">Usa las flechas o toca los bordes izquierdo y derecho para pasar página. En escritorio verás dos páginas a la vez.</p>
+      <p class="menu-book-hint">Usa las flechas o toca los bordes izquierdo y derecho para pasar página. Sin animación — cambio instantáneo.</p>
       ${disclaimer ? `<div class="menu-book-footer"><p>${disclaimer}</p></div>` : ""}
     </div>
   </div>
