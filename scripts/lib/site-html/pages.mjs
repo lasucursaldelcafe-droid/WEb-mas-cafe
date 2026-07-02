@@ -8,7 +8,7 @@ import {
 } from "./shared.mjs";
 import { brandAssetPath } from "../brand-logo.mjs";
 import { getEnabledRoutes } from "./routes.mjs";
-import { renderMenuBook, getMenuBookPagePaths } from "./menu-book.mjs";
+import { renderMenuBook, getMenuBookPagePaths, MENU_BOOK_START_PAGE } from "./menu-book.mjs";
 import { brandTitleHtml } from "./brand-title.mjs";
 import { loyaltyPromoSection, pageFidelizacion } from "./fidelizacion-page.mjs";
 import { getPageBrandArt } from "./brand-page-art.mjs";
@@ -273,10 +273,18 @@ export function pageMenu() {
   const pm = pages.menu;
   const { href, img } = createPathHelpers(1);
   const bookPages = getMenuBookPagePaths();
+  const startIdx = Math.min(MENU_BOOK_START_PAGE, Math.max(0, bookPages.length - 1));
   const extraHead = bookPages.length
-    ? bookPages
-        .slice(0, 8)
-        .map((p) => `<link rel="preload" as="image" href="${img(p)}"/>`)
+    ? [...new Set([
+        startIdx,
+        startIdx + 1,
+        startIdx - 1,
+        0,
+        ...bookPages.map((_, i) => i),
+      ])]
+        .filter((i) => i >= 0 && i < bookPages.length)
+        .slice(0, 10)
+        .map((i) => `<link rel="preload" as="image" href="${img(bookPages[i])}"/>`)
         .join("")
     : "";
 
