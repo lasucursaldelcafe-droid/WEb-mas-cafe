@@ -42,7 +42,8 @@
     ],
     "story": "Comenzamos con una taza y la certeza de que los mejores momentos no se apuran. Ese gesto sencillo se convirtió en un espacio en Cali donde el café, la cocina y el servicio se cuidan con la misma atención.",
     "quote": "Busco un lugar tranquilo, con buen café y gente que te reciba de verdad.",
-    "nosotrosImage": "/images/brand/mood.png"
+    "nosotrosImage": "/images/brand/mood.png",
+    "nosotrosVideoUrl": ""
   },
   "theme": {
     "cream": "#f6f5ef",

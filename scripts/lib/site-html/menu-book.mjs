@@ -112,15 +112,18 @@ export function menuBookStyles() {
     }
     .menu-book-flip-face.back{transform:rotateY(180deg)}
     .menu-book-hotzones{
-      position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;
-      z-index:8;
+      position:absolute;inset:0;z-index:8;pointer-events:none;
     }
     .menu-book-hotzones button{
       appearance:none;border:0;background:transparent;cursor:pointer;
+      position:absolute;top:0;bottom:0;width:18%;max-width:5.5rem;
+      pointer-events:auto;
       -webkit-tap-highlight-color:transparent;
       -webkit-touch-callout:none;
       user-select:none;
     }
+    .menu-book-hotzones button[data-book-prev]{left:0}
+    .menu-book-hotzones button[data-book-next]{right:0}
     .menu-book-hotzones button:active{background:transparent!important}
     .menu-book-hotzones button:focus-visible{
       outline:2px solid var(--sage);outline-offset:-4px;
@@ -175,7 +178,8 @@ export function menuBookStyles() {
     .menu-book-mobile.menu-book-mobile-animating .menu-book-mobile-current{
       visibility:hidden;
     }
-    .menu-book-mobile .menu-book-hotzones{grid-template-columns:1fr 1fr}
+    .menu-book-mobile .menu-book-hotzones button[data-book-prev]{left:0}
+    .menu-book-mobile .menu-book-hotzones button[data-book-next]{right:0}
     .menu-book-footer{
       text-align:center;
       padding:clamp(2rem,4vw,2.5rem) clamp(1.15rem,4vw,1.5rem) clamp(2.75rem,7vw,4rem);
@@ -564,8 +568,10 @@ export function menuBookScript() {
           return;
         }
         if(spread<=0)return;
-        spread-=1;
-        renderSpread();
+        animateFlip(-1,function(){
+          spread-=1;
+          renderSpread(prefetchAround);
+        });
       }
 
       function prefetchAround(){
@@ -630,7 +636,6 @@ export function menuBookScript() {
           markReady();
           preloadAllPages();
           prefetchAround();
-          startAutoplay();
         });
       });
     })();
@@ -654,7 +659,7 @@ export function renderMenuBook({ img, pages, disclaimer }) {
   <div class="menu-book-section">
     <style>${menuBookStyles()}</style>
     <div class="menu-book-stage">
-      <div class="menu-book-viewport menu-book-loading" id="menu-book" data-pages='${dataPages}' data-autoplay-ms="4200" data-autoplay-start-ms="1600" tabindex="0" aria-label="Menú digital interactivo">
+      <div class="menu-book-viewport menu-book-loading" id="menu-book" data-pages='${dataPages}' data-autoplay-ms="0" data-autoplay-start-ms="0" tabindex="0" aria-label="Menú digital interactivo">
         <div class="menu-book-spread" aria-hidden="false">
           <div class="menu-book-page-slot left blank"><img alt="" loading="eager" decoding="async"/></div>
           <div class="menu-book-page-slot right"><img src="${pageUrls[0]}" alt="Página 1 del menú" loading="eager" fetchpriority="high" decoding="async"/></div>
@@ -689,7 +694,7 @@ export function renderMenuBook({ img, pages, disclaimer }) {
         <span class="menu-book-counter">1 / ${pages.length}</span>
         <button type="button" class="menu-book-btn" data-book-next aria-label="Página siguiente">›</button>
       </div>
-      <p class="menu-book-hint">El menú avanza solo al abrir. Desliza o toca los lados para pasar página como un libro</p>
+      <p class="menu-book-hint">Usa las flechas o toca los bordes izquierdo y derecho para pasar página. En escritorio verás dos páginas a la vez.</p>
       ${disclaimer ? `<div class="menu-book-footer"><p>${disclaimer}</p></div>` : ""}
     </div>
   </div>

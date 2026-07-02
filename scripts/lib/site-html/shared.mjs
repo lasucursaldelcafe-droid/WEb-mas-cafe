@@ -94,6 +94,20 @@ export function siteStyles() {
       font-family:var(--font-body);
       background:var(--cream);color:var(--charcoal);line-height:1.65;
       min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;
+      position:relative;
+    }
+    body::before{
+      content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+      background-color:var(--cream);
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='%23073954' fill-opacity='.028'%3E%3Cpath d='M48 28c12-8 28-4 36 8s4 28-8 36-28 4-36-8-4-28 8-36z'/%3E%3Cpath d='M112 92c10-7 24-3 31 7s3 24-7 31-24 3-31-7-3-24 7-31z'/%3E%3Cpath d='M28 108c8-12 24-14 36-6s14 24 6 36-24 14-36 6-14-24-6-36z'/%3E%3C/g%3E%3C/svg%3E");
+      background-size:160px 160px;
+    }
+    body::after{
+      content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+      background:
+        radial-gradient(ellipse 55% 40% at 92% 8%,rgba(176,122,58,.06),transparent 55%),
+        radial-gradient(ellipse 45% 35% at 4% 88%,rgba(7,57,84,.05),transparent 50%);
     }
     main{flex:1}
     #main.page-content{
@@ -277,6 +291,13 @@ export function siteStyles() {
       font-size:clamp(1.85rem,4vw,2.65rem);line-height:1.08;margin-top:.5rem;
       font-weight:500;
     }
+    .page-hero--feature h1{
+      font-size:clamp(2.35rem,5.8vw,3.75rem);
+      line-height:1.02;letter-spacing:-.02em;
+    }
+    .page-hero--feature .tagline{
+      font-size:clamp(1.35rem,3vw,1.85rem);
+    }
     .page-hero .tagline{
       font-family:var(--font-accent);
       font-size:clamp(1.2rem,2.8vw,1.65rem);color:var(--sage);
@@ -327,6 +348,8 @@ export function siteStyles() {
     section.dark{background:var(--blue);color:var(--cream)}
     section.dark h2{color:var(--cream)}
     section.dark .label{color:var(--sage)}
+    .on-light .label,.section-intro,.value p,.exp-copy p{color:var(--charcoal)}
+    .on-light .accent-num,.steps .num{color:var(--brown)}
     h2{
       font-family:var(--font-display);
       font-size:clamp(1.65rem,3.5vw,2.35rem);color:var(--blue);line-height:1.12;
@@ -471,7 +494,94 @@ export function siteStyles() {
       max-width:38rem;margin:0 auto;line-height:1.45;
     }
 
-    /* ── CTA band ── */
+    /* ── CTA band / Visítanos ── */
+    .visit-band{padding:clamp(2.5rem,6vw,4rem) 0}
+    .visit-band-inner{
+      position:relative;overflow:hidden;border-radius:2rem;
+      background:linear-gradient(135deg,var(--blue) 0%,var(--blue-mid) 55%,#0d5a42 100%);
+      color:var(--cream);
+      display:grid;gap:0;align-items:stretch;
+      box-shadow:0 28px 70px rgba(7,57,84,.22);
+    }
+    @media(min-width:768px){
+      .visit-band-inner{grid-template-columns:1.05fr 1fr;min-height:22rem}
+    }
+    .visit-band-art{
+      position:relative;min-height:14rem;overflow:hidden;
+    }
+    .visit-band-art img{
+      position:absolute;inset:0;width:100%;height:100%;
+      object-fit:cover;object-position:center;
+      opacity:.92;
+    }
+    .visit-band-art::after{
+      content:"";position:absolute;inset:0;
+      background:linear-gradient(90deg,transparent 0%,rgba(7,57,84,.55) 100%);
+    }
+    @media(max-width:767px){
+      .visit-band-art::after{
+        background:linear-gradient(180deg,transparent 30%,rgba(7,57,84,.75) 100%);
+      }
+    }
+    .visit-band-copy{
+      position:relative;z-index:1;padding:clamp(2rem,5vw,3rem);
+      display:flex;flex-direction:column;justify-content:center;
+    }
+    .visit-band-copy .cta-tagline{
+      font-family:var(--font-accent);
+      font-size:clamp(1.35rem,3vw,1.85rem);color:var(--sage);margin-bottom:.35rem;
+    }
+    .visit-band-copy h2{
+      font-family:var(--font-display);color:var(--cream);
+      font-size:clamp(1.85rem,4vw,2.65rem);line-height:1.06;font-weight:500;
+    }
+    .visit-band-copy p{opacity:.88;line-height:1.75}
+    .visit-band-copy .actions{margin-top:1.35rem;display:flex;flex-wrap:wrap;gap:.65rem}
+    .visit-band-deco{
+      position:absolute;right:1rem;bottom:1rem;width:5rem;height:5rem;
+      opacity:.12;pointer-events:none;z-index:2;
+    }
+
+    /* ── Video placeholder (Quiénes somos) ── */
+    .video-block{margin:0}
+    .video-block-frame{
+      position:relative;border-radius:1.5rem 2.5rem 1.5rem 2.5rem;
+      overflow:hidden;aspect-ratio:16/9;background:var(--blue);
+      box-shadow:var(--shadow);
+    }
+    .video-block-frame img,.video-block-frame video,.video-block-frame iframe{
+      width:100%;height:100%;display:block;object-fit:cover;border:0;
+    }
+    .video-block-placeholder{
+      position:absolute;inset:0;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;gap:.75rem;
+      background:linear-gradient(145deg,var(--blue-mid),var(--blue));
+      color:var(--cream);text-align:center;padding:2rem;
+    }
+    .video-block-placeholder .play-icon{
+      width:4rem;height:4rem;border-radius:50%;
+      border:2px solid rgba(246,245,239,.45);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.35rem;padding-left:.2rem;
+    }
+    .video-block-placeholder p{font-size:.9rem;opacity:.8;max-width:22rem;line-height:1.6}
+
+    /* ── Separador de marca ── */
+    .brand-separator{
+      padding:0;margin:0;line-height:0;overflow:hidden;
+      opacity:.55;max-height:3.5rem;
+    }
+    .brand-separator img{width:100%;height:auto;object-fit:cover;object-position:center}
+
+    /* ── Patrón decorativo en secciones ── */
+    .section-with-pattern{position:relative;overflow:hidden}
+    .section-with-pattern::before{
+      content:"";position:absolute;top:-2rem;right:-3rem;width:14rem;height:14rem;
+      background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23073954' fill-opacity='.04' d='M20 50c0-16 13-30 30-30s30 14 30 30-13 30-30 30S20 66 20 50z'/%3E%3C/svg%3E") center/contain no-repeat;
+      pointer-events:none;
+    }
+
+    /* ── CTA band (legacy inline) ── */
     .cta{
       background:linear-gradient(145deg,var(--blue-mid),var(--blue));
       color:var(--cream);border-radius:2rem;padding:clamp(2.5rem,6vw,3.5rem) 2rem;text-align:center;
@@ -499,7 +609,7 @@ export function siteStyles() {
     .steps li{display:flex;gap:1rem;align-items:flex-start}
     .steps .num{
       font-family:var(--font-display);font-size:1.65rem;
-      color:var(--sage);min-width:2.5rem;line-height:1;
+      color:var(--brown);min-width:2.5rem;line-height:1;
     }
     .contact-form{
       background:var(--cream-dark);border:1px solid rgba(7,57,84,.08);

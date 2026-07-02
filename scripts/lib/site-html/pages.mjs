@@ -22,24 +22,57 @@ function marqueeHtml(items) {
     .join("");
 }
 
-function visitBand(href, brand) {
+function visitBand(href, brand, img) {
   const ctaLine = brand.visitLine || "San Fernando Nuevo · Cali";
+  const art = img ? img("/images/brand/visita.png") : "/images/brand/visita.png";
   return `
-  <section>
+  <section class="visit-band">
     <div class="wrap">
-      <div class="cta">
-        <p class="cta-tagline">${ctaLine}</p>
-        <h2>${brandTitleHtml("Te esperamos en Cali")}</h2>
-        <p>${addressLinkHtml(brand, { className: "address-link address-link--on-dark" })}</p>
-        <p style="font-size:.88rem;margin-top:.5rem;opacity:.8">${brand.hours}</p>
-        <div class="cta actions">
-          <a class="btn btn-sage" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer" data-track="whatsapp">WhatsApp</a>
-          <a class="btn btn-outline" href="${href("/contacto")}" data-track="contacto">Contacto</a>
-          <a class="btn btn-outline" href="${mapsUrl(brand)}" target="_blank" rel="noopener noreferrer" data-track="maps">Cómo llegar</a>
+      <div class="visit-band-inner">
+        <div class="visit-band-art" aria-hidden="true">
+          <img src="${art}" alt="" loading="lazy"/>
+        </div>
+        <div class="visit-band-copy">
+          <img class="visit-band-deco" src="${img ? img("/images/brand/icon-mark.png") : "/images/brand/icon-mark.png"}" alt="" aria-hidden="true"/>
+          <p class="cta-tagline">${ctaLine}</p>
+          <h2>${brandTitleHtml("Te esperamos en Cali")}</h2>
+          <p>${addressLinkHtml(brand, { className: "address-link address-link--on-dark" })}</p>
+          <p style="font-size:.88rem;margin-top:.5rem;opacity:.85">${brand.hours}</p>
+          <div class="actions">
+            <a class="btn btn-sage" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer" data-track="whatsapp">WhatsApp</a>
+            <a class="btn btn-outline" href="${href("/contacto")}" data-track="contacto">Contacto</a>
+            <a class="btn btn-outline" href="${mapsUrl(brand)}" target="_blank" rel="noopener noreferrer" data-track="maps">Cómo llegar</a>
+          </div>
         </div>
       </div>
     </div>
   </section>`;
+}
+
+function brandSeparator(img) {
+  return `
+  <div class="brand-separator" aria-hidden="true">
+    <img src="${img("/images/aplicaciones/Separadores.jpg")}" alt="" loading="lazy"/>
+  </div>`;
+}
+
+function videoBlock(img, videoUrl = "") {
+  if (videoUrl?.trim()) {
+    const embed = videoUrl.includes("youtube") || videoUrl.includes("youtu.be")
+      ? `<iframe src="${videoUrl}" title="Video Quiénes somos" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>`
+      : `<video src="${videoUrl}" controls playsinline preload="metadata"></video>`;
+    return `<div class="video-block"><div class="video-block-frame">${embed}</div></div>`;
+  }
+  return `
+  <div class="video-block">
+    <div class="video-block-frame">
+      <img src="${img("/images/brand/mood.png")}" alt="Ambiente Más Café" loading="lazy"/>
+      <div class="video-block-placeholder">
+        <span class="play-icon" aria-hidden="true">▶</span>
+        <p>Próximamente: video de nuestra historia. El espacio está listo para incrustar YouTube o Vimeo.</p>
+      </div>
+    </div>
+  </div>`;
 }
 
 function sectionHead(label, title, intro = "") {
@@ -66,7 +99,7 @@ function productCard(p, img) {
   return `
   <article class="product">
     ${p.image ? `<div class="product-img"><img src="${img(p.image)}" alt="${p.name}" loading="lazy"/></div>` : ""}
-    <p class="label" style="color:var(--sage)">${p.variety} · ${p.region}</p>
+    <p class="label" style="color:var(--brown)">${p.variety} · ${p.region}</p>
     <h3>${brandTitleHtml(p.name)}</h3>
     ${p.farm ? `<p class="meta">${p.farm}${p.altitude ? ` · ${p.altitude}` : ""}</p>` : ""}
     <p class="meta" style="margin-top:.4rem">${p.notes.join(" · ")}</p>
@@ -102,7 +135,7 @@ export function pageHome() {
           <a class="btn btn-outline" href="${href("/nosotros")}">Conócenos</a>
         </div>
         <div class="brand-note">
-          <img src="${img(brandAssetPath("horizontalAzul"))}" alt="${brand.name}" style="height:1.75rem;width:auto"/>
+          <img src="${img("/images/brand/favs.png")}" alt="${brand.name}" style="width:2.75rem;height:2.75rem;object-fit:contain"/>
           <p>San Fernando Nuevo · Cali</p>
         </div>
       </div>
@@ -111,13 +144,15 @@ export function pageHome() {
   <div class="marquee" aria-hidden="true">
     <div class="marquee-track">${marqueeHtml(marquee)}</div>
   </div>
-  <section>
+  ${brandSeparator(img)}
+  <section class="section-with-pattern on-light">
     <div class="wrap">
       ${sectionHead(ph.experiencesLabel, ph.experiencesTitle)}
       <div class="exp-list">${experiences.map((e, i) => experienceRow(e, img, i % 2 === 1)).join("")}</div>
       <p class="section-actions"><a class="text-link" href="${href("/nosotros")}">Sobre nosotros →</a></p>
     </div>
   </section>
+  ${brandSeparator(img)}
   <section class="dark">
     <div class="wrap">
       ${sectionHead(ph.productsLabel, ph.productsTitle)}
@@ -143,7 +178,7 @@ export function pageHome() {
     </div>
   </section>
   ${loyaltyPromo.html}
-  ${visitBand(href, brand)}`;
+  ${visitBand(href, brand, img)}`;
 
   return shell({
     title: "Café de especialidad colombiano",
@@ -187,7 +222,7 @@ export function pageCafe() {
       <p class="section-actions" style="text-align:center"><a class="btn btn-blue" href="${href("/tienda")}" data-track="tienda">Ver catálogo completo</a></p>
     </div>
   </section>
-  ${visitBand(href, brand)}`;
+  ${visitBand(href, brand, img)}`;
 
   return shell({
     title: "Café de especialidad",
@@ -248,10 +283,11 @@ export function pageMenu() {
         <p class="intro">${pm.intro || brand.purpose}</p>
       </div>
     </div>
+    ${brandSeparator(img)}
     ${renderMenuBook({ img, pages: bookPages, disclaimer: pm.disclaimer })}
     ${bookPages.length ? "" : `${renderTextMenuFallback(menu)}<div class="menu-footer wrap"><p>${pm.disclaimer}</p></div>`}
   </section>
-  ${visitBand(href, brand)}`;
+  ${visitBand(href, brand, img)}`;
 
   return shell({
     title: "Menú",
@@ -271,22 +307,31 @@ export function pageNosotros() {
   const { img, href } = createPathHelpers(1);
 
   const body = `
-  <section class="page-hero" style="--hero-art:url('${img("/images/grafica/3.png")}')">
+  <section class="page-hero page-hero--feature" style="--hero-art:url('${img("/images/grafica/3.png")}')">
     <div class="wrap inner">
       <p class="tagline">${pn.tagline}</p>
       <h1>${brandTitleHtml(pn.headline)}</h1>
     </div>
   </section>
-  <section>
-    <div class="wrap grid-2">
-      <div>
-        <p style="font-size:1.08rem;margin-bottom:1rem;line-height:1.75">${brand.story}</p>
-        <p style="opacity:.8;line-height:1.7">${brand.about}</p>
+  <section class="on-light section-with-pattern">
+    <div class="wrap">
+      ${sectionHead("", pn.tagline, brand.story)}
+      <div class="grid-2" style="margin-top:1.5rem">
+        <div>
+          <p style="font-size:1.05rem;line-height:1.8;color:var(--charcoal)">${brand.about}</p>
+        </div>
+        <img src="${img(brand.nosotrosImage)}" alt="Ambiente ${brand.name}" style="border-radius:1rem 2rem 1rem 2rem;width:100%;aspect-ratio:4/5;object-fit:cover;box-shadow:var(--shadow)"/>
       </div>
-      <img src="${img(brand.nosotrosImage)}" alt="Ambiente ${brand.name}" style="border-radius:1rem 2rem 1rem 2rem;width:100%;aspect-ratio:4/5;object-fit:cover;box-shadow:var(--shadow)"/>
     </div>
   </section>
-  <section class="alt">
+  ${brandSeparator(img)}
+  <section class="alt on-light">
+    <div class="wrap">
+      ${sectionHead("Nuestra historia", "Conoce el espacio")}
+      ${videoBlock(img, brand.nosotrosVideoUrl || "")}
+    </div>
+  </section>
+  <section class="on-light">
     <div class="wrap">
       ${sectionHead(pn.valuesLabel, pn.valuesTitle)}
       <div class="values">${brand.values.map((v) => `
@@ -301,7 +346,7 @@ export function pageNosotros() {
       <p>&ldquo;${brand.quote}&rdquo;</p>
     </div>
   </section>
-  ${visitBand(href, brand)}`;
+  ${visitBand(href, brand, img)}`;
 
   return shell({
     title: "Nosotros",
@@ -332,7 +377,7 @@ export function pageTienda() {
       <p class="section-actions" style="text-align:center"><a class="btn btn-green" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer">Pedir por WhatsApp</a></p>
     </div>
   </section>
-  ${visitBand(href, brand)}`;
+  ${visitBand(href, brand, img)}`;
 
   return shell({
     title: "Tienda online",
@@ -371,7 +416,7 @@ export function pageBlog() {
       </article>`).join("")}
     </div>
   </section>
-  ${visitBand(href, brand)}`;
+  ${visitBand(href, brand, img)}`;
 
   return shell({
     title: "Blog",
@@ -387,43 +432,49 @@ export function pageContacto() {
   const site = loadSite();
   const { brand, pages } = site;
   const pc = pages.contacto;
-  const { href } = createPathHelpers(1);
+  const { href, img } = createPathHelpers(1);
   const loyaltyPromo = loyaltyPromoSection(1);
 
   const body = `
-  <section class="page-hero">
+  <section class="page-hero page-hero--feature" style="--hero-art:url('${img("/images/grafica/2.png")}')">
     <div class="wrap inner">
       <p class="tagline">${pc.tagline}</p>
       <h1>${brandTitleHtml(pc.headline)}</h1>
     </div>
   </section>
-  <section>
-    <div class="wrap grid-2">
-      <div class="contact-info">
-        <h2>${brandTitleHtml(pc.visitTitle)}</h2>
-        <p style="margin-top:1rem;line-height:1.8">${addressLinkHtml(brand)}<br/><span style="font-size:.9rem;opacity:.7">${brand.hours}</span></p>
-        <h2 style="margin-top:2rem">${brandTitleHtml(pc.writeTitle)}</h2>
-        <p style="margin-top:1rem;line-height:2.2">
-          <a href="tel:${brand.phone.replace(/\s/g, "")}">${brand.phone}</a><br/>
-          <a href="mailto:${brand.email}">${brand.email}</a><br/>
-          <a href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-        </p>
-        <div class="social-links">
-          <a href="${brand.social.instagram}" target="_blank" rel="noopener noreferrer">Instagram</a>
-          <a href="${brand.social.facebook}" target="_blank" rel="noopener noreferrer">Facebook</a>
+  <section class="on-light section-with-pattern">
+    <div class="wrap">
+      <div class="grid-2" style="align-items:start">
+        <div class="contact-info">
+          <img src="${img("/images/brand/visita.png")}" alt="Visítanos en Más Café" style="width:100%;border-radius:1.25rem 2rem 1.25rem 2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);aspect-ratio:16/10;object-fit:cover"/>
+          <h2 class="section-title" style="font-size:clamp(1.85rem,4vw,2.5rem)">${brandTitleHtml(pc.visitTitle)}</h2>
+          <p style="margin-top:1rem;line-height:1.8;color:var(--charcoal)">${addressLinkHtml(brand)}<br/><span style="font-size:.9rem;color:var(--brown)">${brand.hours}</span></p>
+          <div class="actions" style="margin-top:1.25rem;display:flex;flex-wrap:wrap;gap:.65rem">
+            <a class="btn btn-blue" href="${mapsUrl(brand)}" target="_blank" rel="noopener noreferrer" data-track="maps">Cómo llegar</a>
+            <a class="btn btn-sage" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer" data-track="whatsapp">WhatsApp</a>
+          </div>
+          <h2 style="margin-top:2rem;font-family:var(--font-display);font-size:1.5rem;color:var(--blue)">${brandTitleHtml(pc.writeTitle)}</h2>
+          <p style="margin-top:1rem;line-height:2.2">
+            <a href="tel:${brand.phone.replace(/\s/g, "")}">${brand.phone}</a><br/>
+            <a href="mailto:${brand.email}">${brand.email}</a>
+          </p>
+          <div class="social-links">
+            <a href="${brand.social.instagram}" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="${brand.social.facebook}" target="_blank" rel="noopener noreferrer">Facebook</a>
+          </div>
         </div>
+        <form class="contact-form" action="https://wa.me/${brand.whatsapp}" method="get" target="_blank" rel="noopener noreferrer">
+          <h2 style="font-family:var(--font-display);color:var(--blue)">${brandTitleHtml(pc.formTitle)}</h2>
+          <label>Nombre<input type="text" name="text" placeholder="Tu nombre" required/></label>
+          <label>Email<input type="email" placeholder="tu@email.com"/></label>
+          <label>Mensaje<textarea placeholder="¿En qué podemos ayudarte?"></textarea></label>
+          <button type="submit" class="btn btn-blue" style="width:100%">Enviar por WhatsApp</button>
+        </form>
       </div>
-      <form class="contact-form" action="https://wa.me/${brand.whatsapp}" method="get" target="_blank" rel="noopener noreferrer">
-        <h2>${brandTitleHtml(pc.formTitle)}</h2>
-        <label>Nombre<input type="text" name="text" placeholder="Tu nombre" required/></label>
-        <label>Email<input type="email" placeholder="tu@email.com"/></label>
-        <label>Mensaje<textarea placeholder="¿En qué podemos ayudarte?"></textarea></label>
-        <button type="submit" class="btn btn-blue" style="width:100%">Enviar por WhatsApp</button>
-      </form>
     </div>
   </section>
   ${loyaltyPromo.html}
-  ${visitBand(href, brand)}`;
+  ${visitBand(href, brand, img)}`;
 
   return shell({
     title: "Contacto",
@@ -454,7 +505,7 @@ export function pageCustom(route) {
       <p style="font-size:1.05rem;line-height:1.8;opacity:.85">${pg.intro || pg.body || ""}</p>
     </div>
   </section>
-  ${visitBand(href, brand)}`;
+  ${visitBand(href, brand, img)}`;
 
   return shell({
     title: route.label,
