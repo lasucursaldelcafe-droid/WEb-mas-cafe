@@ -3,6 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { brandThemeCss, fontFaces } from "./brand.mjs";
 import { getNavRoutes } from "./routes.mjs";
+import { getPageBrandArt } from "./brand-page-art.mjs";
 import { formatPageTitle, seoHead, escapeMeta, loadSeoSettings } from "../seo.mjs";
 import { brandAssetPath } from "../brand-logo.mjs";
 import {
@@ -99,15 +100,17 @@ export function siteStyles() {
     body::before{
       content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
       background-color:var(--cream);
-      background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='%23073954' fill-opacity='.028'%3E%3Cpath d='M48 28c12-8 28-4 36 8s4 28-8 36-28 4-36-8-4-28 8-36z'/%3E%3Cpath d='M112 92c10-7 24-3 31 7s3 24-7 31-24 3-31-7-3-24 7-31z'/%3E%3Cpath d='M28 108c8-12 24-14 36-6s14 24 6 36-24 14-36 6-14-24-6-36z'/%3E%3C/g%3E%3C/svg%3E");
-      background-size:160px 160px;
+      background-image:var(--page-wm-a,none),var(--page-wm-b,none);
+      background-repeat:no-repeat,no-repeat;
+      background-size:min(38vw,260px),min(26vw,170px);
+      background-position:var(--page-wm-a-pos,92% 6%),var(--page-wm-b-pos,5% 84%);
+      opacity:.085;
     }
     body::after{
       content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
       background:
-        radial-gradient(ellipse 55% 40% at 92% 8%,rgba(176,122,58,.06),transparent 55%),
-        radial-gradient(ellipse 45% 35% at 4% 88%,rgba(7,57,84,.05),transparent 50%);
+        radial-gradient(ellipse 40% 32% at 95% 8%,rgba(176,122,58,.04),transparent 55%),
+        radial-gradient(ellipse 35% 28% at 3% 92%,rgba(7,57,84,.035),transparent 50%);
     }
     main{flex:1}
     #main.page-content{
@@ -182,8 +185,11 @@ export function siteStyles() {
       color:rgba(246,245,239,.85);width:2.75rem;height:2.75rem;border-radius:50%;
       font-size:1.1rem;cursor:pointer;transition:border-color .3s,color .3s;
     }
-    header.scrolled .nav-toggle,header.inner-page .nav-toggle{
+    header.scrolled .nav-toggle,header.inner-page.scrolled .nav-toggle{
       border-color:rgba(7,57,84,.15);color:var(--blue);
+    }
+    header.inner-page:not(.scrolled) .nav-toggle{
+      border-color:rgba(246,245,239,.35);color:rgba(246,245,239,.92);
     }
     nav.site-nav{display:flex;align-items:center;gap:clamp(1rem,2.5vw,2rem)}
     nav.site-nav a{
@@ -198,7 +204,8 @@ export function siteStyles() {
     header.inner-page:not(.scrolled) nav.site-nav a:not(.nav-cta){color:rgba(246,245,239,.85)}
     header.inner-page:not(.scrolled) nav.site-nav a:not(.nav-cta):hover{color:var(--sage);transform:translateY(-2px)}
     nav.site-nav a.active{font-weight:600}
-    header.scrolled nav.site-nav a.active,header.inner-page nav.site-nav a.active{color:var(--blue)}
+    header.scrolled nav.site-nav a.active,header.inner-page.scrolled nav.site-nav a.active{color:var(--blue)}
+    header.inner-page:not(.scrolled) nav.site-nav a.active{color:var(--cream)}
     header:not(.scrolled):not(.inner-page) nav.site-nav a.active{color:var(--cream)}
     nav.site-nav a.nav-cta{
       font-size:.78rem;font-weight:700;letter-spacing:.04em;
@@ -503,6 +510,21 @@ export function siteStyles() {
       display:grid;gap:0;align-items:stretch;
       box-shadow:0 28px 70px rgba(7,57,84,.22);
     }
+    .visit-band-inner.visit-tone-warm{
+      background:linear-gradient(135deg,#5f3314 0%,var(--brown) 45%,var(--blue-mid) 100%);
+    }
+    .visit-band-inner.visit-tone-sage{
+      background:linear-gradient(135deg,var(--blue) 0%,#2d5a4a 50%,#4a5c38 100%);
+    }
+    .visit-band-inner.visit-tone-earth{
+      background:linear-gradient(135deg,#3e301a 0%,var(--brown) 40%,var(--blue) 100%);
+    }
+    .visit-band-inner.visit-tone-caramel{
+      background:linear-gradient(135deg,var(--brown) 0%,#8a5516 45%,var(--blue-mid) 100%);
+    }
+    .visit-band-inner.visit-tone-forest{
+      background:linear-gradient(135deg,#083c35 0%,var(--blue-mid) 50%,#1a4337 100%);
+    }
     @media(min-width:768px){
       .visit-band-inner{grid-template-columns:1.05fr 1fr;min-height:22rem}
     }
@@ -538,8 +560,12 @@ export function siteStyles() {
     .visit-band-copy p{opacity:.88;line-height:1.75}
     .visit-band-copy .actions{margin-top:1.35rem;display:flex;flex-wrap:wrap;gap:.65rem}
     .visit-band-deco{
-      position:absolute;right:1rem;bottom:1rem;width:5rem;height:5rem;
-      opacity:.12;pointer-events:none;z-index:2;
+      position:absolute;right:1.25rem;bottom:1.25rem;width:clamp(4rem,12vw,6.5rem);height:auto;
+      opacity:.18;pointer-events:none;z-index:2;object-fit:contain;
+    }
+    .visit-band-plus{
+      position:absolute;left:1rem;top:1rem;width:clamp(2.5rem,8vw,4rem);height:auto;
+      opacity:.14;pointer-events:none;z-index:2;
     }
 
     /* ── Video placeholder (Quiénes somos) ── */
@@ -576,9 +602,9 @@ export function siteStyles() {
     /* ── Patrón decorativo en secciones ── */
     .section-with-pattern{position:relative;overflow:hidden}
     .section-with-pattern::before{
-      content:"";position:absolute;top:-2rem;right:-3rem;width:14rem;height:14rem;
-      background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23073954' fill-opacity='.04' d='M20 50c0-16 13-30 30-30s30 14 30 30-13 30-30 30S20 66 20 50z'/%3E%3C/svg%3E") center/contain no-repeat;
-      pointer-events:none;
+      content:"";position:absolute;top:-1rem;right:-2rem;width:11rem;height:11rem;
+      background:var(--page-wm-a,none) center/contain no-repeat;
+      opacity:.06;pointer-events:none;
     }
 
     /* ── CTA band (legacy inline) ── */
@@ -1108,6 +1134,18 @@ export function shell({
 
   const overlayLinks = nav.map((n) => `<a href="${href(n.route)}">${n.label}</a>`).join("");
 
+  const pageArt = getPageBrandArt(pageId);
+  const wmA = pageArt.watermarkA ? img(pageArt.watermarkA) : "";
+  const wmB = pageArt.watermarkB ? img(pageArt.watermarkB) : "";
+  const bodyStyle = [
+    wmA ? `--page-wm-a:url('${wmA}')` : "",
+    wmB ? `--page-wm-b:url('${wmB}')` : "",
+    pageArt.wmApos ? `--page-wm-a-pos:${pageArt.wmApos}` : "",
+    pageArt.wmBpos ? `--page-wm-b-pos:${pageArt.wmBpos}` : "",
+  ]
+    .filter(Boolean)
+    .join(";");
+
   return `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1122,7 +1160,7 @@ export function shell({
   <style>${siteStyles()}</style>
   <style>:root{${heroVar}}</style>${extraHead}
 </head>
-<body>
+<body class="page-${pageId}"${bodyStyle ? ` style="${bodyStyle}"` : ""}>
   <a class="skip-link" href="#main">Saltar al contenido</a>
   <header class="site-header${isHome ? "" : " inner-page"}" id="site-header">
     <div class="wrap">

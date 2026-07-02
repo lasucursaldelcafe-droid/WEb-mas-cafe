@@ -32,7 +32,7 @@ const DOMAIN_LIVE = settings.seo?.siteUrl || `http://${settings.customDomainPuny
 const DOMAIN_PUNYCODE = settings.customDomainPunycode || "xn--mascaf-gva.com";
 const GODADDY_DNS_URL = `https://dcc.godaddy.com/control/dnsmanagement?domainName=${DOMAIN_PUNYCODE}`;
 
-const REPORT_VERSION = "1.5.0";
+const REPORT_VERSION = "1.6.0";
 const REQUISITOS_PATH = path.join(root, "content/informe-requisitos.json");
 
 function escapeHtml(s) {
@@ -72,7 +72,15 @@ function imageUsageMap() {
 
   register("/images/brand/horizontal-crema.png", "Header / Footer", "Logo sobre fondos oscuros (azul). Legibilidad en navegación fija.");
   register("/images/brand/horizontal-azul.png", "Header (scroll)", "Logo sobre fondo crema al desplazarse. Contraste de marca.");
-  register("/images/brand/favs.png", "Inicio (hero)", "Isotipo de apoyo bajo el titular. Refuerzo de identidad sin saturar.");
+  register("/images/brand/icon-mark.png", "Fondo de página (isotipo +)", "Marca de agua con el signo más en café. Variante marrón por página.");
+  register("/images/brand/descriptor-cafe.png", "Fondo / Visítanos", "Descriptor isotipo en tono café desde el manual de marca.");
+  register("/images/brand/descriptor-caramelo.png", "Café / Tienda / Blog", "Isotipo en caramelo — variante de color por subpágina.");
+  register("/images/brand/descriptor-azul.png", "Menú / Fidelización", "Isotipo en azul marca.");
+  register("/images/brand/descriptor-crema.png", "Blog / Menú", "Isotipo en crema para contraste sobre fondos oscuros.");
+  register("/images/decor/1.svg", "Inicio (fondo)", "Composición gráfica del manual (+ multicolor). Marca de agua sutil.");
+  register("/images/decor/2.svg", "Café (fondo)", "Segunda variante gráfica Drive — distinta por subpágina.");
+  register("/images/decor/3.svg", "Menú (fondo)", "Tercera variante gráfica del pack de marca.");
+  register("/images/aplicaciones/Separadores.jpg", "Separadores entre secciones", "Patrón oficial entre bloques editoriales.");
   register("/images/grafica/3.png", "Inicio (hero)", "Ilustración de marca detrás del texto, baja opacidad. Humaniza sin competir con el mensaje.");
   register("/images/grafica/2.png", "Café (hero)", "Arte decorativo del hero. Conecta la página con el personaje gráfico del manual.");
   register("/images/decor/Recurso-4.svg", "Inicio (hero)", "Forma orgánica decorativa. Ritmo visual de la guía de marca.");
@@ -254,6 +262,14 @@ export function generateConstitutionReport() {
     .join("");
 
   const changelog = [
+    { date: "2026-07-02", note: "Informe v1.6 — isotipo (+) como marca de agua por subpágina; Visítanos con ilustración, descriptor y gradiente distintos; botón menú móvil visible en subcarpetas." },
+    { date: "2026-07-02", note: "Diseño: descriptors de marca (café, caramelo, azul, crema) y gráficas Drive (decor/) en fondo — sin patrón genérico." },
+    { date: "2026-07-02", note: "Fix deploy: Separadores.jpg incluido en build GitHub Pages." },
+    { date: "2026-07-02", note: "CI: workflow Vercel opcional cuando no hay secrets." },
+    { date: "2026-07-02", note: "Revisión web (#76): marca de agua, contraste café, menú flipbook, tipografía Nosotros, video placeholder, banda Visítanos, Separadores." },
+    { date: "2026-07-01", note: "Wallet migrada a Supabase; automatización Google Wallet (issuer + ingesta JSON)." },
+    { date: "2026-06-30", note: "Menú digital flipbook: carga completa, volteo móvil, tipografía Pergamino, sin autoplay intrusivo." },
+    { date: "2026-06-30", note: "Ampersand Marydale en títulos; dirección enlazada a Google Maps en todo el sitio." },
     { date: "2026-06-30", note: "Informe v1.5 — panel admin documentado (nav desplegable, tipografías/imágenes Drive, analytics, informe embebido)." },
     { date: "2026-06-30", note: "Admin: lista desplegable de secciones — más espacio horizontal en el dashboard." },
     { date: "2026-06-30", note: "Admin: tipografías por rol e imágenes desde Drive (content/drive-assets.json + npm run drive:sync-assets)." },
@@ -639,7 +655,9 @@ export function generateConstitutionReport() {
         <li><strong>Tipografías (editables en admin):</strong> títulos → <strong>${escapeHtml(typography.display)}</strong>, cuerpo → <strong>${escapeHtml(typography.body)}</strong>, acento → <strong>${escapeHtml(typography.accent)}</strong>. Solo fuentes listadas en <code>content/drive-assets.json</code>.</li>
         <li><strong>Tagline de marca:</strong> «${escapeHtml(brand.tagline)}» — solo en hero de inicio.</li>
         <li><strong>Descriptor:</strong> «${escapeHtml(brand.descriptor)}» — solo en hero de inicio.</li>
-        <li><strong>CTA visita:</strong> «${escapeHtml(brand.visitLine || "San Fernando Nuevo")}» — banda final de cada página.</li>
+        <li><strong>CTA visita:</strong> «${escapeHtml(brand.visitLine || "San Fernando Nuevo")}» — banda final de cada página, con ilustración y gradiente distintos por ruta.</li>
+        <li><strong>Isotipo (+) en fondo:</strong> cada subpágina usa el signo más de marca (marrón <code>icon-mark.png</code> o descriptors de color) más una gráfica del pack Drive (<code>decor/</code>). Sin patrón genérico repetido.</li>
+        <li><strong>Configuración por página:</strong> <code>scripts/lib/site-html/brand-page-art.mjs</code> — mapea café, menú, nosotros, tienda, blog, contacto y fidelización a assets distintos.</li>
       </ul>
     </section>
 
