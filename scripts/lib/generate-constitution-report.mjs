@@ -32,7 +32,7 @@ const DOMAIN_LIVE = settings.seo?.siteUrl || `http://${settings.customDomainPuny
 const DOMAIN_PUNYCODE = settings.customDomainPunycode || "xn--mascaf-gva.com";
 const GODADDY_DNS_URL = `https://dcc.godaddy.com/control/dnsmanagement?domainName=${DOMAIN_PUNYCODE}`;
 
-const REPORT_VERSION = "1.6.0";
+const REPORT_VERSION = "1.7.0";
 const REQUISITOS_PATH = path.join(root, "content/informe-requisitos.json");
 
 function escapeHtml(s) {
@@ -262,7 +262,8 @@ export function generateConstitutionReport() {
     .join("");
 
   const changelog = [
-    { date: "2026-07-02", note: "Informe v1.6 — isotipo (+) como marca de agua por subpágina; Visítanos con ilustración, descriptor y gradiente distintos; botón menú móvil visible en subcarpetas." },
+    { date: "2026-07-02", note: "Informe v1.7 — escala tipográfica unificada (brand-typography.mjs): Playfair títulos, Satoshi cuerpo/UI, Marydale acentos; sin font-size inline dispersos." },
+    { date: "2026-07-02", note: "Menú flipbook: carga inmediata en página 2, sin animación 3D ni pantalla en blanco inicial." },
     { date: "2026-07-02", note: "Diseño: descriptors de marca (café, caramelo, azul, crema) y gráficas Drive (decor/) en fondo — sin patrón genérico." },
     { date: "2026-07-02", note: "Fix deploy: Separadores.jpg incluido en build GitHub Pages." },
     { date: "2026-07-02", note: "CI: workflow Vercel opcional cuando no hay secrets." },
@@ -653,12 +654,27 @@ export function generateConstitutionReport() {
       </div>
       <ul>
         <li><strong>Tipografías (editables en admin):</strong> títulos → <strong>${escapeHtml(typography.display)}</strong>, cuerpo → <strong>${escapeHtml(typography.body)}</strong>, acento → <strong>${escapeHtml(typography.accent)}</strong>. Solo fuentes listadas en <code>content/drive-assets.json</code>.</li>
+        <li><strong>Escala tipográfica web (v1.7):</strong> una sola escala en <code>scripts/lib/site-html/brand-typography.mjs</code> — variables CSS <code>--text-xs</code> … <code>--heading-xl</code>, clases <code>.text-lead</code>, <code>.text-caption</code>, <code>.section-title</code>. Evita tamaños sueltos (.78rem, .82rem, 1.05rem…) que desordenaban Nosotros, contacto y footer.</li>
+        <li><strong>Roles según manual:</strong> ${escapeHtml(typography.display)} en h1/h2/h3 y precios de menú; ${escapeHtml(typography.body)} en párrafos, formularios y UI; ${escapeHtml(typography.accent)} en taglines, citas y «&» en títulos (<code>brand-title.mjs</code>).</li>
         <li><strong>Tagline de marca:</strong> «${escapeHtml(brand.tagline)}» — solo en hero de inicio.</li>
         <li><strong>Descriptor:</strong> «${escapeHtml(brand.descriptor)}» — solo en hero de inicio.</li>
         <li><strong>CTA visita:</strong> «${escapeHtml(brand.visitLine || "San Fernando Nuevo")}» — banda final de cada página, con ilustración y gradiente distintos por ruta.</li>
         <li><strong>Isotipo (+) en fondo:</strong> cada subpágina usa el signo más de marca (marrón <code>icon-mark.png</code> o descriptors de color) más una gráfica del pack Drive (<code>decor/</code>). Sin patrón genérico repetido.</li>
         <li><strong>Configuración por página:</strong> <code>scripts/lib/site-html/brand-page-art.mjs</code> — mapea café, menú, nosotros, tienda, blog, contacto y fidelización a assets distintos.</li>
       </ul>
+      <h3>Escala tipográfica (referencia)</h3>
+      <table>
+        <thead><tr><th>Token CSS</th><th>Uso</th><th>Fuente</th></tr></thead>
+        <tbody>
+          <tr><td><code>--heading-xl</code> / <code>--heading-lg</code></td><td>Hero inicio y páginas feature</td><td>${escapeHtml(typography.display)}</td></tr>
+          <tr><td><code>--heading-md</code> / <code>--section-title</code></td><td>Títulos de sección y page-hero</td><td>${escapeHtml(typography.display)}</td></tr>
+          <tr><td><code>--heading-sm</code></td><td>h2 genéricos</td><td>${escapeHtml(typography.display)}</td></tr>
+          <tr><td><code>--text-md</code> / <code>.text-lead</code></td><td>Párrafos destacados (Nosotros, blog, páginas custom)</td><td>${escapeHtml(typography.body)}</td></tr>
+          <tr><td><code>--text-sm</code> / <code>.text-caption</code></td><td>Intro de sección, meta, horarios</td><td>${escapeHtml(typography.body)}</td></tr>
+          <tr><td><code>--text-2xs</code> / <code>.label</code></td><td>Etiquetas uppercase (marquee, categorías menú)</td><td>${escapeHtml(typography.body)}</td></tr>
+          <tr><td><code>--tagline-*</code> / <code>--quote</code></td><td>Taglines hero y citas</td><td>${escapeHtml(typography.accent)}</td></tr>
+        </tbody>
+      </table>
     </section>
 
     <section id="activos">

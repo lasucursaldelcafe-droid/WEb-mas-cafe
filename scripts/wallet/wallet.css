@@ -9,17 +9,33 @@
   --warn: #b45309;
   --ok: #15803d;
   --radius: 1rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --leading-body: 1.65;
+  --leading-relaxed: 1.75;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: var(--text-base);
   background: linear-gradient(165deg, var(--cream) 0%, #eef2f0 100%);
   color: var(--charcoal);
   min-height: 100vh;
-  line-height: 1.5;
+  line-height: var(--leading-body);
 }
+
+.wallet-text-intro { font-size: var(--text-sm); color: var(--muted); margin-bottom: 1rem; line-height: var(--leading-relaxed); }
+.wallet-text-fine { font-size: var(--text-xs); color: var(--muted); }
+.wallet-text-fine-spaced { font-size: var(--text-xs); color: var(--muted); margin-bottom: 0.65rem; }
+.wallet-text-fine-center { font-size: var(--text-xs); color: var(--muted); margin-top: 0.5rem; text-align: center; max-width: 14rem; margin-left: auto; margin-right: auto; }
+.wallet-text-caption { font-size: var(--text-sm); color: var(--muted); }
+.wallet-text-caption-center { font-size: var(--text-sm); color: var(--muted); margin-top: 0.5rem; text-align: center; }
+.wallet-text-body-muted { font-size: var(--text-sm); color: var(--muted); margin-bottom: 1rem; }
+.wallet-text-progress { font-size: var(--text-xs); opacity: 0.9; }
+.wallet-text-reward { font-size: var(--text-sm); margin-bottom: 0.35rem; }
 
 .wallet-shell {
   max-width: 28rem;
@@ -43,7 +59,7 @@ body {
   gap: .55rem;
   font-weight: 700;
   color: var(--blue);
-  font-size: .95rem;
+  font-size: var(--text-base);
 }
 
 .wallet-brand img { height: 1.75rem; width: auto; }
@@ -75,7 +91,7 @@ body {
   pointer-events: none;
 }
 
-.pass-label { font-size: .72rem; opacity: .85; text-transform: uppercase; letter-spacing: .12em; }
+.pass-label { font-size: var(--text-xs); opacity: .85; text-transform: uppercase; letter-spacing: .12em; }
 .pass-points { font-size: 2.6rem; font-weight: 800; line-height: 1.1; margin: .15rem 0 .75rem; }
 .pass-points small { font-size: 1rem; font-weight: 600; opacity: .85; }
 .pass-meta { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; font-size: .78rem; }

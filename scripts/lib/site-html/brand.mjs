@@ -5,6 +5,7 @@ import {
   loadDriveAssets,
   resolveTypography,
 } from "../drive-assets.mjs";
+import { brandTypographyCss } from "./brand-typography.mjs";
 
 export const BRAND = {
   cream: "#f6f5ef",
@@ -34,7 +35,8 @@ export function brandThemeCss(site) {
     --font-body:"${fonts.body}",system-ui,sans-serif;
     --font-accent:"${fonts.accent}",cursive;
     --organic-shadow:0 24px 80px -20px rgba(7,57,84,.18);
-  }`;
+  }
+  ${brandTypographyCss()}`;
 }
 
 export function fontFaces(depth, site = {}) {

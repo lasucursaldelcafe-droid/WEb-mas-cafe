@@ -69,14 +69,14 @@ export function generateWalletPage() {
       <section id="view-auth">
         <div class="card">
           <h2 class="section">Programa de fidelización</h2>
-          <p style="font-size:.88rem;color:var(--muted);margin-bottom:1rem">
+          <p class="wallet-text-intro">
             Regístrate o inicia sesión para ver tu saldo, QR en mostrador y canjear premios.
             <a href="../fidelizacion/" style="color:var(--blue);font-weight:600">¿Primera vez? Mira cómo funciona →</a>
           </p>
           <div class="auth-activation-qr" style="text-align:center;margin-bottom:1.25rem;padding:1rem;background:rgba(7,57,84,.04);border-radius:1rem">
-            <p style="font-size:.78rem;color:var(--muted);margin-bottom:.65rem">QR de activación (comparte en mostrador)</p>
+            <p class="wallet-text-fine-spaced">QR de activación (comparte en mostrador)</p>
             <div id="wallet-activation-qr" style="display:inline-block"></div>
-            <p style="font-size:.72rem;color:var(--muted);margin-top:.5rem;max-width:14rem;margin-left:auto;margin-right:auto">Mismo enlace: ${escapeHtml(activationUrl)}</p>
+            <p class="wallet-text-fine-center">Mismo enlace: ${escapeHtml(activationUrl)}</p>
           </div>
           <div id="auth-msg" class="msg msg-error hidden" role="alert"></div>
           <div class="field">
@@ -99,7 +99,7 @@ export function generateWalletPage() {
 
       <section id="view-app" class="hidden">
         <div id="app-msg" class="msg msg-error hidden" role="alert"></div>
-        <p id="program-hint" style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem"></p>
+        <p id="program-hint" class="wallet-text-fine" style="margin-bottom:.75rem"></p>
 
         <div class="card pass-card">
           <p class="pass-label">Puntos disponibles</p>
@@ -111,7 +111,7 @@ export function generateWalletPage() {
             <div><span>Correo</span><strong id="member-email">—</strong></div>
           </div>
           <div class="pass-progress">
-            <p id="progress-label" style="font-size:.78rem;opacity:.9"></p>
+            <p id="progress-label" class="wallet-text-progress"></p>
             <div class="pass-progress-bar"><div class="pass-progress-fill" id="progress-fill" style="width:0"></div></div>
           </div>
           <div class="save-card-wrap save-card-wrap--pass" data-save-card>
@@ -141,7 +141,7 @@ export function generateWalletPage() {
           <div class="card">
             <h2 class="section">Muestra este QR en caja</h2>
             <div class="qr-wrap" id="qr-box"></div>
-            <p style="text-align:center;font-size:.82rem;color:var(--muted);margin-top:.5rem">
+            <p class="wallet-text-caption-center">
               También puedes dictar tu ID: <strong id="member-id-copy">—</strong>
             </p>
             <div class="save-card-wrap" data-save-card>
@@ -173,9 +173,9 @@ export function generateWalletPage() {
         <div data-panel="canje" class="hidden">
           <div class="card hidden" id="pending-box">
             <h2 class="section">Código activo</h2>
-            <p style="font-size:.85rem;margin-bottom:.35rem" id="pending-reward"></p>
+            <p class="wallet-text-reward" id="pending-reward"></p>
             <div class="code-box"><span class="code" id="pending-code"></span></div>
-            <p style="font-size:.78rem;color:var(--muted)">Válido 30 minutos en mostrador</p>
+            <p class="wallet-text-fine">Válido 30 minutos en mostrador</p>
           </div>
           <div id="redeem-msg" class="msg msg-error hidden" role="alert"></div>
         </div>
@@ -233,7 +233,7 @@ export function generateCajaPage() {
 
     <section id="pin-gate" class="pin-gate card">
       <h2 class="section">PIN de mostrador</h2>
-      <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">
+      <p class="wallet-text-body-muted">
         Solo personal autorizado. PIN inicial: <code>123456</code> (cámbialo desde admin).
       </p>
       <div id="pin-msg" class="msg msg-error hidden" role="alert"></div>
@@ -245,7 +245,7 @@ export function generateCajaPage() {
     </section>
 
     <section id="caja-app" class="hidden">
-      <p id="program-rules" style="font-size:.78rem;color:var(--muted);margin-bottom:1rem"></p>
+      <p id="program-rules" class="wallet-text-fine" style="margin-bottom:1rem"></p>
       <div class="caja-grid caja-grid-2">
         <div class="card">
           <h2 class="section">Buscar cliente</h2>

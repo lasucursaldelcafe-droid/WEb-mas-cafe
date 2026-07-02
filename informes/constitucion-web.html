@@ -85,8 +85,8 @@
       <h1>Constitución Web — Más Café</h1>
       <p style="margin-top:.85rem;max-width:42rem;opacity:.9">Modelo oficial del sitio, inventario Drive → web, arquitectura, migración a <strong>https://www.mascafé.com</strong>, wallet de fidelización y checklist editable para la marca.</p>
       <div class="meta">
-        <span>Versión 1.5.0</span>
-        <span>Generado: 2026-07-01 02:35 UTC</span>
+        <span>Versión 1.7.0</span>
+        <span>Generado: 2026-07-02 19:28 UTC</span>
         <span class="badge live">Sitio en línea OK</span>
       </div>
     </div>
@@ -122,7 +122,7 @@
       <h2>1. Estado actual del proyecto (auditoría GitHub)</h2>
       <div class="grid cols-2">
         <div class="card stat"><strong>7+1</strong><span>Páginas públicas + admin</span></div>
-        <div class="card stat"><strong>38</strong><span>Imágenes en producción</span></div>
+        <div class="card stat"><strong>51</strong><span>Imágenes en producción</span></div>
         <div class="card stat"><strong>209</strong><span>Activos en repositorio</span></div>
         <div class="card stat"><strong>HTTP 200</strong><span>Todas las rutas verificadas</span></div>
         <div class="card stat"><strong>3</strong><span>Fuentes Drive en catálogo</span></div>
@@ -254,10 +254,27 @@
       </div>
       <ul>
         <li><strong>Tipografías (editables en admin):</strong> títulos → <strong>Playfair Display</strong>, cuerpo → <strong>Satoshi</strong>, acento → <strong>Marydale</strong>. Solo fuentes listadas en <code>content/drive-assets.json</code>.</li>
+        <li><strong>Escala tipográfica web (v1.7):</strong> una sola escala en <code>scripts/lib/site-html/brand-typography.mjs</code> — variables CSS <code>--text-xs</code> … <code>--heading-xl</code>, clases <code>.text-lead</code>, <code>.text-caption</code>, <code>.section-title</code>. Evita tamaños sueltos (.78rem, .82rem, 1.05rem…) que desordenaban Nosotros, contacto y footer.</li>
+        <li><strong>Roles según manual:</strong> Playfair Display en h1/h2/h3 y precios de menú; Satoshi en párrafos, formularios y UI; Marydale en taglines, citas y «&» en títulos (<code>brand-title.mjs</code>).</li>
         <li><strong>Tagline de marca:</strong> «Pausa con intención» — solo en hero de inicio.</li>
         <li><strong>Descriptor:</strong> «Nuestra historia comenzó con un café» — solo en hero de inicio.</li>
-        <li><strong>CTA visita:</strong> «San Fernando Nuevo» — banda final de cada página.</li>
+        <li><strong>CTA visita:</strong> «San Fernando Nuevo» — banda final de cada página, con ilustración y gradiente distintos por ruta.</li>
+        <li><strong>Isotipo (+) en fondo:</strong> cada subpágina usa el signo más de marca (marrón <code>icon-mark.png</code> o descriptors de color) más una gráfica del pack Drive (<code>decor/</code>). Sin patrón genérico repetido.</li>
+        <li><strong>Configuración por página:</strong> <code>scripts/lib/site-html/brand-page-art.mjs</code> — mapea café, menú, nosotros, tienda, blog, contacto y fidelización a assets distintos.</li>
       </ul>
+      <h3>Escala tipográfica (referencia)</h3>
+      <table>
+        <thead><tr><th>Token CSS</th><th>Uso</th><th>Fuente</th></tr></thead>
+        <tbody>
+          <tr><td><code>--heading-xl</code> / <code>--heading-lg</code></td><td>Hero inicio y páginas feature</td><td>Playfair Display</td></tr>
+          <tr><td><code>--heading-md</code> / <code>--section-title</code></td><td>Títulos de sección y page-hero</td><td>Playfair Display</td></tr>
+          <tr><td><code>--heading-sm</code></td><td>h2 genéricos</td><td>Playfair Display</td></tr>
+          <tr><td><code>--text-md</code> / <code>.text-lead</code></td><td>Párrafos destacados (Nosotros, blog, páginas custom)</td><td>Satoshi</td></tr>
+          <tr><td><code>--text-sm</code> / <code>.text-caption</code></td><td>Intro de sección, meta, horarios</td><td>Satoshi</td></tr>
+          <tr><td><code>--text-2xs</code> / <code>.label</code></td><td>Etiquetas uppercase (marquee, categorías menú)</td><td>Satoshi</td></tr>
+          <tr><td><code>--tagline-*</code> / <code>--quote</code></td><td>Taglines hero y citas</td><td>Marydale</td></tr>
+        </tbody>
+      </table>
     </section>
 
     <section id="activos">
@@ -347,7 +364,7 @@
           <tr><td><code>hero/</code></td><td>Fotos fachada e ilustración hero</td><td><span class="badge ref">No en HTML actual — reservado</span></td></tr>
         </tbody>
       </table>
-      <h3>Detalle por archivo (209 en repo · 38 en producción · 172 solo referencia)</h3>
+      <h3>Detalle por archivo (209 en repo · 51 en producción · 159 solo referencia)</h3>
       <table>
         <thead><tr><th>Archivo</th><th>Carpeta</th><th>Estado</th><th>Dónde / por qué</th></tr></thead>
         <tbody><tr>
@@ -398,8 +415,8 @@
       </tr><tr>
         <td><code>/images/aplicaciones/Separadores.jpg</code></td>
         <td>aplicaciones</td>
-        <td><span class="badge ref">Referencia</span></td>
-        <td><span class="muted">Mockups de papelería, uniformes, empaque y señalética — referencia de aplicaciones.</span></td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Separadores entre secciones</strong><br/><span class="muted">Patrón oficial entre bloques editoriales.</span></td>
       </tr><tr>
         <td><code>/images/aplicaciones/Termo.jpg</code></td>
         <td>aplicaciones</td>
@@ -488,8 +505,8 @@
       </tr><tr>
         <td><code>/images/brand/descriptor-azul.png</code></td>
         <td>brand</td>
-        <td><span class="badge ref">Referencia</span></td>
-        <td><span class="muted">Manual de marca — logotipos, descriptors, ilustraciones de experiencia y mood.</span></td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Menú / Fidelización</strong><br/><span class="muted">Isotipo en azul marca.</span></td>
       </tr><tr>
         <td><code>/images/brand/descriptor-blanco.png</code></td>
         <td>brand</td>
@@ -498,18 +515,18 @@
       </tr><tr>
         <td><code>/images/brand/descriptor-cafe.png</code></td>
         <td>brand</td>
-        <td><span class="badge ref">Referencia</span></td>
-        <td><span class="muted">Manual de marca — logotipos, descriptors, ilustraciones de experiencia y mood.</span></td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Fondo / Visítanos</strong><br/><span class="muted">Descriptor isotipo en tono café desde el manual de marca.</span></td>
       </tr><tr>
         <td><code>/images/brand/descriptor-caramelo.png</code></td>
         <td>brand</td>
-        <td><span class="badge ref">Referencia</span></td>
-        <td><span class="muted">Manual de marca — logotipos, descriptors, ilustraciones de experiencia y mood.</span></td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Café / Tienda / Blog</strong><br/><span class="muted">Isotipo en caramelo — variante de color por subpágina.</span></td>
       </tr><tr>
         <td><code>/images/brand/descriptor-crema.png</code></td>
         <td>brand</td>
-        <td><span class="badge ref">Referencia</span></td>
-        <td><span class="muted">Manual de marca — logotipos, descriptors, ilustraciones de experiencia y mood.</span></td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Blog / Menú</strong><br/><span class="muted">Isotipo en crema para contraste sobre fondos oscuros.</span></td>
       </tr><tr>
         <td><code>/images/brand/descriptor-negro.png</code></td>
         <td>brand</td>
@@ -519,7 +536,7 @@
         <td><code>/images/brand/favs.png</code></td>
         <td>brand</td>
         <td><span class="badge ok">En sitio</span></td>
-        <td><strong>Inicio (hero)</strong><br/><span class="muted">Isotipo de apoyo bajo el titular. Refuerzo de identidad sin saturar.</span><hr class='mini'/><strong>Favicon / pestaña</strong><br/><span class="muted">Derivado del isotipo para reconocimiento en el navegador.</span></td>
+        <td><strong>Favicon / pestaña</strong><br/><span class="muted">Derivado del isotipo para reconocimiento en el navegador.</span></td>
       </tr><tr>
         <td><code>/images/brand/horizontal-azul.png</code></td>
         <td>brand</td>
@@ -539,7 +556,7 @@
         <td><code>/images/brand/icon-mark.png</code></td>
         <td>brand</td>
         <td><span class="badge ok">En sitio</span></td>
-        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
+        <td><strong>Fondo de página (isotipo +)</strong><br/><span class="muted">Marca de agua con el signo más en café. Variante marrón por página.</span></td>
       </tr><tr>
         <td><code>/images/brand/logo-og.jpg</code></td>
         <td>brand</td>
@@ -578,23 +595,23 @@
       </tr><tr>
         <td><code>/images/decor/1.svg</code></td>
         <td>decor</td>
-        <td><span class="badge ref">Referencia</span></td>
-        <td><span class="muted">Formas orgánicas SVG del sistema visual.</span></td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Inicio (fondo)</strong><br/><span class="muted">Composición gráfica del manual (+ multicolor). Marca de agua sutil.</span></td>
       </tr><tr>
         <td><code>/images/decor/2.svg</code></td>
         <td>decor</td>
-        <td><span class="badge ref">Referencia</span></td>
-        <td><span class="muted">Formas orgánicas SVG del sistema visual.</span></td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Café (fondo)</strong><br/><span class="muted">Segunda variante gráfica Drive — distinta por subpágina.</span></td>
       </tr><tr>
         <td><code>/images/decor/3.svg</code></td>
         <td>decor</td>
-        <td><span class="badge ref">Referencia</span></td>
-        <td><span class="muted">Formas orgánicas SVG del sistema visual.</span></td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Menú (fondo)</strong><br/><span class="muted">Tercera variante gráfica del pack de marca.</span></td>
       </tr><tr>
         <td><code>/images/decor/Recurso-10.svg</code></td>
         <td>decor</td>
-        <td><span class="badge ref">Referencia</span></td>
-        <td><span class="muted">Formas orgánicas SVG del sistema visual.</span></td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
       </tr><tr>
         <td><code>/images/decor/Recurso-11.svg</code></td>
         <td>decor</td>
@@ -633,8 +650,8 @@
       </tr><tr>
         <td><code>/images/decor/Recurso-18.svg</code></td>
         <td>decor</td>
-        <td><span class="badge ref">Referencia</span></td>
-        <td><span class="muted">Formas orgánicas SVG del sistema visual.</span></td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
       </tr><tr>
         <td><code>/images/decor/Recurso-19.svg</code></td>
         <td>decor</td>
@@ -668,8 +685,8 @@
       </tr><tr>
         <td><code>/images/decor/Recurso-25.svg</code></td>
         <td>decor</td>
-        <td><span class="badge ref">Referencia</span></td>
-        <td><span class="muted">Formas orgánicas SVG del sistema visual.</span></td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
       </tr><tr>
         <td><code>/images/decor/Recurso-26.svg</code></td>
         <td>decor</td>
@@ -753,8 +770,8 @@
       </tr><tr>
         <td><code>/images/decor/Recurso-42.svg</code></td>
         <td>decor</td>
-        <td><span class="badge ref">Referencia</span></td>
-        <td><span class="muted">Formas orgánicas SVG del sistema visual.</span></td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
       </tr><tr>
         <td><code>/images/decor/Recurso-43.svg</code></td>
         <td>decor</td>
@@ -823,8 +840,8 @@
       </tr><tr>
         <td><code>/images/decor/Recurso-55.svg</code></td>
         <td>decor</td>
-        <td><span class="badge ref">Referencia</span></td>
-        <td><span class="muted">Formas orgánicas SVG del sistema visual.</span></td>
+        <td><span class="badge ok">En sitio</span></td>
+        <td><strong>Build de producción</strong><br/><span class="muted">Copiado al sitio publicado.</span></td>
       </tr><tr>
         <td><code>/images/decor/Recurso-56.svg</code></td>
         <td>decor</td>
@@ -1831,7 +1848,7 @@
 
     <section id="changelog">
       <h2>16. Historial de entregas (se actualiza con cada cambio)</h2>
-      <ul><li><time>2026-06-30</time> — Informe v1.5 — panel admin documentado (nav desplegable, tipografías/imágenes Drive, analytics, informe embebido).</li><li><time>2026-06-30</time> — Admin: lista desplegable de secciones — más espacio horizontal en el dashboard.</li><li><time>2026-06-30</time> — Admin: tipografías por rol e imágenes desde Drive (content/drive-assets.json + npm run drive:sync-assets).</li><li><time>2026-06-30</time> — Analytics: clics locales, pageviews y soporte Google Analytics 4 en panel Análisis.</li><li><time>2026-06-30</time> — Admin: login en HTTP, publicación vía PAT, acceso al informe constitucional desde el panel.</li><li><time>2026-06-30</time> — Seguridad y credenciales (SEGURIDAD.md) + checklist wallet gratis paso a paso.</li><li><time>2026-06-30</time> — DNS GoDaddy + dominio mascafé.com en HTTP — HTTPS pendiente de certificado.</li><li><time>2026-06-27</time> — Informe v1.3 — mockup visual Apple Wallet + Google Wallet en /informe/wallet/.</li><li><time>2026-06-27</time> — Automatización DNS dominio mascafé.com (npm run domain:configure).</li><li><time>2026-06-27</time> — Carpeta proyecto-mas-cafe/ — entrega, enlaces de cuentas, REGISTRO-HECHO y plantilla CREDENCIALES.</li><li><time>2026-06-27</time> — Informe v1.1 — wallet de fidelización, migración mascafé.com, checklist editable en content/informe-requisitos.json.</li><li><time>2026-06-27</time> — Informe constitucional v1.0 — paleta crema, textos sin repetición, auditoría de activos Drive.</li><li><time>2026-06-27</time> — Favicon del logo en todas las páginas.</li><li><time>2026-06-27</time> — Rediseño móvil editorial y vista previa admin en todos los paneles.</li><li><time>2026-06-26</time> — Sitio multipágina HTML estático + panel admin + GitHub Actions.</li></ul>
+      <ul><li><time>2026-07-02</time> — Informe v1.7 — escala tipográfica unificada (brand-typography.mjs): Playfair títulos, Satoshi cuerpo/UI, Marydale acentos; sin font-size inline dispersos.</li><li><time>2026-07-02</time> — Menú flipbook: carga inmediata en página 2, sin animación 3D ni pantalla en blanco inicial.</li><li><time>2026-07-02</time> — Diseño: descriptors de marca (café, caramelo, azul, crema) y gráficas Drive (decor/) en fondo — sin patrón genérico.</li><li><time>2026-07-02</time> — Fix deploy: Separadores.jpg incluido en build GitHub Pages.</li><li><time>2026-07-02</time> — CI: workflow Vercel opcional cuando no hay secrets.</li><li><time>2026-07-02</time> — Revisión web (#76): marca de agua, contraste café, menú flipbook, tipografía Nosotros, video placeholder, banda Visítanos, Separadores.</li><li><time>2026-07-01</time> — Wallet migrada a Supabase; automatización Google Wallet (issuer + ingesta JSON).</li><li><time>2026-06-30</time> — Menú digital flipbook: carga completa, volteo móvil, tipografía Pergamino, sin autoplay intrusivo.</li><li><time>2026-06-30</time> — Ampersand Marydale en títulos; dirección enlazada a Google Maps en todo el sitio.</li><li><time>2026-06-30</time> — Informe v1.5 — panel admin documentado (nav desplegable, tipografías/imágenes Drive, analytics, informe embebido).</li><li><time>2026-06-30</time> — Admin: lista desplegable de secciones — más espacio horizontal en el dashboard.</li><li><time>2026-06-30</time> — Admin: tipografías por rol e imágenes desde Drive (content/drive-assets.json + npm run drive:sync-assets).</li><li><time>2026-06-30</time> — Analytics: clics locales, pageviews y soporte Google Analytics 4 en panel Análisis.</li><li><time>2026-06-30</time> — Admin: login en HTTP, publicación vía PAT, acceso al informe constitucional desde el panel.</li><li><time>2026-06-30</time> — Seguridad y credenciales (SEGURIDAD.md) + checklist wallet gratis paso a paso.</li><li><time>2026-06-30</time> — DNS GoDaddy + dominio mascafé.com en HTTP — HTTPS pendiente de certificado.</li><li><time>2026-06-27</time> — Informe v1.3 — mockup visual Apple Wallet + Google Wallet en /informe/wallet/.</li><li><time>2026-06-27</time> — Automatización DNS dominio mascafé.com (npm run domain:configure).</li><li><time>2026-06-27</time> — Carpeta proyecto-mas-cafe/ — entrega, enlaces de cuentas, REGISTRO-HECHO y plantilla CREDENCIALES.</li><li><time>2026-06-27</time> — Informe v1.1 — wallet de fidelización, migración mascafé.com, checklist editable en content/informe-requisitos.json.</li><li><time>2026-06-27</time> — Informe constitucional v1.0 — paleta crema, textos sin repetición, auditoría de activos Drive.</li><li><time>2026-06-27</time> — Favicon del logo en todas las páginas.</li><li><time>2026-06-27</time> — Rediseño móvil editorial y vista previa admin en todos los paneles.</li><li><time>2026-06-26</time> — Sitio multipágina HTML estático + panel admin + GitHub Actions.</li></ul>
       <p class="muted" style="margin-top:1rem">Próxima actualización automática al ejecutar <code>npm run build:github-pages</code> tras cambios en el repositorio.</p>
     </section>
 
@@ -1839,7 +1856,7 @@
 
   <footer>
     <div class="wrap">
-      <p><strong>Más Café</strong> — Constitución Web v1.5.0</p>
+      <p><strong>Más Café</strong> — Constitución Web v1.7.0</p>
       <p style="margin-top:.5rem;opacity:.8">Repositorio: <a href="https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe">https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe</a> · Sitio: <a href="https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/">https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/</a></p>
       <p style="margin-top:.35rem;opacity:.6;font-size:.78rem">Documento para la marca. No enlazado desde el menú público.</p>
     </div>

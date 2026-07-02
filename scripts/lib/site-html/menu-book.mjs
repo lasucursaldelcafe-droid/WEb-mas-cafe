@@ -25,8 +25,8 @@ export function menuBookStyles() {
       padding-right:clamp(1.15rem,4vw,1.5rem);
     }
     .menu-book-hint{
-      text-align:center;font-size:.84rem;color:rgba(43,43,43,.55);
-      margin-top:1rem;font-style:italic;line-height:1.65;
+      text-align:center;font-size:var(--text-sm);color:rgba(43,43,43,.55);
+      margin-top:1rem;font-style:italic;line-height:var(--leading-body);
     }
     .menu-book-ui{
       display:flex;align-items:center;justify-content:center;gap:1rem;
@@ -34,7 +34,7 @@ export function menuBookStyles() {
     }
     .menu-book-btn{
       width:2.75rem;height:2.75rem;border-radius:999px;border:1px solid rgba(7,57,84,.15);
-      background:var(--cream);color:var(--blue);font-size:1.5rem;line-height:1;
+      background:var(--cream);color:var(--blue);font-size:var(--text-lg);line-height:1;
       cursor:pointer;transition:transform .15s,background .15s,box-shadow .15s;
       box-shadow:0 4px 18px rgba(7,57,84,.08);
       -webkit-tap-highlight-color:transparent;
@@ -42,7 +42,7 @@ export function menuBookStyles() {
     .menu-book-btn:hover:not(:disabled){transform:translateY(-2px);background:#fff}
     .menu-book-btn:disabled{opacity:.35;cursor:not-allowed}
     .menu-book-counter{
-      min-width:5.5rem;text-align:center;font-size:.88rem;color:var(--blue);
+      min-width:5.5rem;text-align:center;font-size:var(--text-sm);color:var(--blue);
       font-variant-numeric:tabular-nums;letter-spacing:.04em;font-weight:500;
     }
     .menu-book-viewport{
@@ -123,19 +123,19 @@ export function menuBookStyles() {
       margin-top:.75rem;
     }
     .menu-book-footer p{
-      font-size:clamp(.82rem,1.05vw,.92rem);letter-spacing:.05em;
-      color:rgba(43,43,43,.45);font-style:italic;line-height:1.65;
+      font-size:var(--text-sm);letter-spacing:var(--tracking-wide);
+      color:rgba(43,43,43,.45);font-style:italic;line-height:var(--leading-body);
     }
     @media(min-width:768px){
       .menu-book-ui{margin-top:1.5rem}
-      .menu-book-hint{font-size:.92rem;margin-top:1.25rem;line-height:1.7}
-      .menu-book-counter{font-size:.95rem}
+      .menu-book-hint{font-size:var(--text-base);margin-top:1.25rem;line-height:var(--leading-relaxed)}
+      .menu-book-counter{font-size:var(--text-base)}
     }
     @media(max-width:767px){
       .menu-book-spread{display:none}
       .menu-book-mobile{display:block}
-      .menu-book-hint{font-size:.82rem}
-      .menu-book-counter{font-size:.82rem}
+      .menu-book-hint{font-size:var(--text-sm)}
+      .menu-book-counter{font-size:var(--text-sm)}
       .menu-book-btn:active:not(:disabled){
         transform:none;
         box-shadow:0 4px 18px rgba(7,57,84,.08);
