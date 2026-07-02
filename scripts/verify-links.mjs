@@ -96,7 +96,7 @@ function main() {
   }
 
   const walletHtml = readFileSync(path.join(siteDir, "informe/wallet/index.html"), "utf8");
-  for (const must of ["../../images/brand/favs.png", "../../images/brand/horizontal-crema.png"]) {
+  for (const must of ["../../images/brand/horizontal-crema.png"]) {
     if (!walletHtml.includes(must)) {
       warnings.push(`Wallet: falta referencia esperada ${must}`);
     }

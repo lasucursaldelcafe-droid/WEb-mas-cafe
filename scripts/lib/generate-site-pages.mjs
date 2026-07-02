@@ -23,6 +23,7 @@ export function collectImagePaths() {
     "/images/brand/horizontal-crema.png",
     "/images/brand/horizontal-azul.png",
     "/images/brand/favs.png",
+    "/images/aplicaciones/Separadores.jpg",
     "/images/grafica/1.png",
     "/images/grafica/2.png",
     "/images/grafica/3.png",
