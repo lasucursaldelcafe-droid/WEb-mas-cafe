@@ -62,7 +62,7 @@ function brandSeparator(img) {
   </div>`;
 }
 
-function videoBlock(img, videoUrl = "") {
+function videoBlock(img, videoUrl = "", poster = "/images/brand/mood.png") {
   if (videoUrl?.trim()) {
     const embed = videoUrl.includes("youtube") || videoUrl.includes("youtu.be")
       ? `<iframe src="${videoUrl}" title="Video Quiénes somos" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>`
@@ -72,7 +72,7 @@ function videoBlock(img, videoUrl = "") {
   return `
   <div class="video-block">
     <div class="video-block-frame">
-      <img src="${img("/images/brand/mood.png")}" alt="Ambiente Más Café" loading="lazy"/>
+      <img src="${img(poster)}" alt="Ambiente Más Café" loading="lazy"/>
       <div class="video-block-placeholder">
         <span class="play-icon" aria-hidden="true">▶</span>
         <p>Próximamente: video de nuestra historia. El espacio está listo para incrustar YouTube o Vimeo.</p>
@@ -118,6 +118,7 @@ export function pageHome() {
   const site = loadSite();
   const { brand, experiences, products, marquee, blog, pages } = site;
   const ph = pages.home;
+  const art = getPageBrandArt("home");
   const { img, href } = createPathHelpers(0);
   const featured = products.filter((p) => p.featured);
   const posts = blog.filter((p) => p.published).slice(0, 2);
@@ -192,7 +193,7 @@ export function pageHome() {
       "Más Café — tostadores de café de especialidad en Cali, Colombia. Menú, tienda online y hospitalidad en San Fernando Nuevo.",
     depth: 0,
     pageId: "home",
-    heroArt: "/images/grafica/3.png",
+    heroArt: art.heroArt,
     body,
     extraHead: loyaltyPromo.extraScript,
   });
@@ -202,11 +203,12 @@ export function pageCafe() {
   const site = loadSite();
   const { brand, products, brewGuide, pages } = site;
   const pc = pages.cafe;
+  const art = getPageBrandArt("cafe");
   const { img, href } = createPathHelpers(1);
   const featured = products.filter((p) => p.featured);
 
   const body = `
-  <section class="page-hero" style="--hero-art:url('${img("/images/grafica/2.png")}')">
+  <section class="page-hero" style="--hero-art:url('${img(art.heroArt)}')">
     <div class="wrap inner">
       <p class="tagline">${pc.tagline}</p>
       <h1>${brandTitleHtml(pc.headline)}</h1>
@@ -216,7 +218,7 @@ export function pageCafe() {
     <div class="wrap">
       <div class="grid-2">
         <div class="product-img" style="border-radius:var(--radius);padding:2rem">
-          <img src="${img("/images/products/caja-cafe.png")}" alt="Empaque Más Café"/>
+          <img src="${img(art.brewImage || "/images/products/caja-cafe.png")}" alt="Empaque Más Café"/>
         </div>
         <div>
           <h2>${brandTitleHtml(pc.brewTitle)}</h2>
@@ -318,10 +320,11 @@ export function pageNosotros() {
   const site = loadSite();
   const { brand, pages } = site;
   const pn = pages.nosotros;
+  const art = getPageBrandArt("nosotros");
   const { img, href } = createPathHelpers(1);
 
   const body = `
-  <section class="page-hero page-hero--feature" style="--hero-art:url('${img("/images/grafica/3.png")}')">
+  <section class="page-hero page-hero--feature" style="--hero-art:url('${img(art.heroArt)}')">
     <div class="wrap inner">
       <p class="tagline">${pn.tagline}</p>
       <h1>${brandTitleHtml(pn.headline)}</h1>
@@ -342,7 +345,7 @@ export function pageNosotros() {
   <section class="alt on-light">
     <div class="wrap">
       ${sectionHead("Nuestra historia", "Conoce el espacio")}
-      ${videoBlock(img, brand.nosotrosVideoUrl || "")}
+      ${videoBlock(img, brand.nosotrosVideoUrl || "", art.videoPoster)}
     </div>
   </section>
   <section class="on-light">
@@ -376,10 +379,11 @@ export function pageTienda() {
   const site = loadSite();
   const { brand, products, pages } = site;
   const pt = pages.tienda;
+  const art = getPageBrandArt("tienda");
   const { img, href } = createPathHelpers(1);
 
   const body = `
-  <section class="page-hero">
+  <section class="page-hero" style="--hero-art:url('${img(art.heroArt)}')">
     <div class="wrap inner">
       <p class="tagline">${pt.tagline}</p>
       <h1>${brandTitleHtml(pt.headline)}</h1>
@@ -446,11 +450,12 @@ export function pageContacto() {
   const site = loadSite();
   const { brand, pages } = site;
   const pc = pages.contacto;
+  const art = getPageBrandArt("contacto");
   const { href, img } = createPathHelpers(1);
   const loyaltyPromo = loyaltyPromoSection(1);
 
   const body = `
-  <section class="page-hero page-hero--feature" style="--hero-art:url('${img("/images/grafica/2.png")}')">
+  <section class="page-hero page-hero--feature" style="--hero-art:url('${img(art.heroArt)}')">
     <div class="wrap inner">
       <p class="tagline">${pc.tagline}</p>
       <h1>${brandTitleHtml(pc.headline)}</h1>
@@ -460,7 +465,7 @@ export function pageContacto() {
     <div class="wrap">
       <div class="grid-2" style="align-items:start">
         <div class="contact-info">
-          <img src="${img("/images/brand/visita.png")}" alt="Visítanos en Más Café" style="width:100%;border-radius:1.25rem 2rem 1.25rem 2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);aspect-ratio:16/10;object-fit:cover"/>
+          <img src="${img(art.contactImage || "/images/brand/visita.png")}" alt="Visítanos en Más Café" style="width:100%;border-radius:1.25rem 2rem 1.25rem 2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);aspect-ratio:16/10;object-fit:cover"/>
           <h2 class="section-title section-title--contact">${brandTitleHtml(pc.visitTitle)}</h2>
           <p class="text-lead" style="margin-top:1rem">${addressLinkHtml(brand)}<br/><span class="text-hours">${brand.hours}</span></p>
           <div class="actions" style="margin-top:1.25rem;display:flex;flex-wrap:wrap;gap:.65rem">
