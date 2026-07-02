@@ -32,7 +32,7 @@ const DOMAIN_LIVE = settings.seo?.siteUrl || `http://${settings.customDomainPuny
 const DOMAIN_PUNYCODE = settings.customDomainPunycode || "xn--mascaf-gva.com";
 const GODADDY_DNS_URL = `https://dcc.godaddy.com/control/dnsmanagement?domainName=${DOMAIN_PUNYCODE}`;
 
-const REPORT_VERSION = "1.7.1";
+const REPORT_VERSION = "1.7.2";
 const REQUISITOS_PATH = path.join(root, "content/informe-requisitos.json");
 
 function escapeHtml(s) {
@@ -262,6 +262,7 @@ export function generateConstitutionReport() {
     .join("");
 
   const changelog = [
+    { date: "2026-07-02", note: "Bandas Visítanos y experiencias: solo fotos de ambiente (brand/), no mockups de aplicaciones; heroes siguen con gráficas únicas por página." },
     { date: "2026-07-02", note: "Informe v1.7.1 — diversificación de imágenes: aplicaciones Drive y gráficas únicas por página; sin repetir hero + banda Visítanos + cuerpo." },
     { date: "2026-07-02", note: "Informe v1.7 — escala tipográfica unificada (brand-typography.mjs): Playfair títulos, Satoshi cuerpo/UI, Marydale acentos; sin font-size inline dispersos." },
     { date: "2026-07-02", note: "Menú flipbook: carga inmediata en página 2, sin animación 3D ni pantalla en blanco inicial." },

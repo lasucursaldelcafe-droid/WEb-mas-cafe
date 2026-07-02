@@ -1,6 +1,6 @@
 /**
  * Arte de marca por página: isotipo (+), heroes, bandas Visítanos y fotos de contenido.
- * Cada subpágina usa combinaciones distintas — sin repetir la misma foto en hero + cuerpo + banda.
+ * Bandas y cuerpo usan fotos de ambiente (brand/). Mockups de aplicaciones/ solo en productos.
  */
 export const PAGE_BRAND_ART = {
   home: {
@@ -9,7 +9,7 @@ export const PAGE_BRAND_ART = {
     wmApos: "88% 4%",
     wmBpos: "6% 78%",
     heroArt: "/images/grafica/3.png",
-    visitArt: "/images/aplicaciones/fachada2.png",
+    visitArt: "/images/brand/visita.png",
     visitDeco: "/images/brand/descriptor-cafe.png",
     visitTone: "ocean",
   },
@@ -19,8 +19,8 @@ export const PAGE_BRAND_ART = {
     wmApos: "90% 12%",
     wmBpos: "8% 85%",
     heroArt: "/images/grafica/Recurso-14.png",
-    brewImage: "/images/aplicaciones/VASOS-CALIENTESopción2.jpg",
-    visitArt: "/images/aplicaciones/Rompetráfico.jpg",
+    brewImage: "/images/products/caja-cafe.png",
+    visitArt: "/images/brand/pausa.png",
     visitDeco: "/images/brand/descriptor-caramelo.png",
     visitTone: "warm",
   },
@@ -29,7 +29,7 @@ export const PAGE_BRAND_ART = {
     watermarkB: "/images/decor/3.svg",
     wmApos: "85% 8%",
     wmBpos: "10% 80%",
-    visitArt: "/images/aplicaciones/VASOS-CALIENTE-1.jpg",
+    visitArt: "/images/brand/carta.png",
     visitDeco: "/images/brand/descriptor-crema.png",
     visitTone: "sage",
   },
@@ -50,7 +50,7 @@ export const PAGE_BRAND_ART = {
     wmApos: "87% 6%",
     wmBpos: "12% 88%",
     heroArt: "/images/grafica/Recurso-25.png",
-    visitArt: "/images/aplicaciones/bolsa-de-llevar.jpg",
+    visitArt: "/images/brand/horno.png",
     visitDeco: "/images/brand/descriptor-azul.png",
     visitTone: "caramel",
   },
@@ -60,7 +60,7 @@ export const PAGE_BRAND_ART = {
     wmApos: "90% 10%",
     wmBpos: "7% 75%",
     heroArt: "/images/grafica/Recurso-18.png",
-    visitArt: "/images/aplicaciones/Agenda.jpg",
+    visitArt: "/images/brand/pausa.png",
     visitDeco: "/images/brand/descriptor-caramelo.png",
     visitTone: "forest",
   },
@@ -71,7 +71,7 @@ export const PAGE_BRAND_ART = {
     wmBpos: "4% 82%",
     heroArt: "/images/grafica/2.png",
     contactImage: "/images/brand/visita.png",
-    visitArt: "/images/aplicaciones/Termo.jpg",
+    visitArt: "/images/brand/carta.png",
     visitDeco: "/images/brand/icon-mark.png",
     visitTone: "ocean",
   },
@@ -81,7 +81,7 @@ export const PAGE_BRAND_ART = {
     wmApos: "88% 14%",
     wmBpos: "9% 72%",
     heroArt: "/images/grafica/Recurso-30.png",
-    visitArt: "/images/aplicaciones/Totebag1v2.jpg",
+    visitArt: "/images/brand/mood.png",
     visitDeco: "/images/brand/descriptor-crema.png",
     visitTone: "sage",
   },
