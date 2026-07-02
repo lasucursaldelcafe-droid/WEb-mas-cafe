@@ -11,6 +11,7 @@ import { getEnabledRoutes } from "./routes.mjs";
 import { renderMenuBook, getMenuBookPagePaths } from "./menu-book.mjs";
 import { brandTitleHtml } from "./brand-title.mjs";
 import { loyaltyPromoSection, pageFidelizacion } from "./fidelizacion-page.mjs";
+import { getPageBrandArt } from "./brand-page-art.mjs";
 
 function marqueeHtml(items) {
   const doubled = [...items, ...items];
@@ -22,18 +23,23 @@ function marqueeHtml(items) {
     .join("");
 }
 
-function visitBand(href, brand, img) {
+function visitBand(href, brand, img, pageId = "home") {
+  const art = getPageBrandArt(pageId);
+  const visitImg = img(art.visitArt || "/images/brand/visita.png");
+  const decoImg = img(art.visitDeco || "/images/brand/icon-mark.png");
+  const plusImg = img("/images/brand/icon-mark.png");
+  const tone = art.visitTone ? ` visit-tone-${art.visitTone}` : "";
   const ctaLine = brand.visitLine || "San Fernando Nuevo · Cali";
-  const art = img ? img("/images/brand/visita.png") : "/images/brand/visita.png";
   return `
   <section class="visit-band">
     <div class="wrap">
-      <div class="visit-band-inner">
+      <div class="visit-band-inner${tone}">
         <div class="visit-band-art" aria-hidden="true">
-          <img src="${art}" alt="" loading="lazy"/>
+          <img src="${visitImg}" alt="" loading="lazy"/>
         </div>
         <div class="visit-band-copy">
-          <img class="visit-band-deco" src="${img ? img("/images/brand/icon-mark.png") : "/images/brand/icon-mark.png"}" alt="" aria-hidden="true"/>
+          <img class="visit-band-plus" src="${plusImg}" alt="" aria-hidden="true"/>
+          <img class="visit-band-deco" src="${decoImg}" alt="" aria-hidden="true"/>
           <p class="cta-tagline">${ctaLine}</p>
           <h2>${brandTitleHtml("Te esperamos en Cali")}</h2>
           <p>${addressLinkHtml(brand, { className: "address-link address-link--on-dark" })}</p>
@@ -178,7 +184,7 @@ export function pageHome() {
     </div>
   </section>
   ${loyaltyPromo.html}
-  ${visitBand(href, brand, img)}`;
+  ${visitBand(href, brand, img, "home")}`;
 
   return shell({
     title: "Café de especialidad colombiano",
@@ -222,7 +228,7 @@ export function pageCafe() {
       <p class="section-actions" style="text-align:center"><a class="btn btn-blue" href="${href("/tienda")}" data-track="tienda">Ver catálogo completo</a></p>
     </div>
   </section>
-  ${visitBand(href, brand, img)}`;
+  ${visitBand(href, brand, img, "cafe")}`;
 
   return shell({
     title: "Café de especialidad",
@@ -287,7 +293,7 @@ export function pageMenu() {
     ${renderMenuBook({ img, pages: bookPages, disclaimer: pm.disclaimer })}
     ${bookPages.length ? "" : `${renderTextMenuFallback(menu)}<div class="menu-footer wrap"><p>${pm.disclaimer}</p></div>`}
   </section>
-  ${visitBand(href, brand, img)}`;
+  ${visitBand(href, brand, img, "menu")}`;
 
   return shell({
     title: "Menú",
@@ -346,7 +352,7 @@ export function pageNosotros() {
       <p>&ldquo;${brand.quote}&rdquo;</p>
     </div>
   </section>
-  ${visitBand(href, brand, img)}`;
+  ${visitBand(href, brand, img, "nosotros")}`;
 
   return shell({
     title: "Nosotros",
@@ -377,7 +383,7 @@ export function pageTienda() {
       <p class="section-actions" style="text-align:center"><a class="btn btn-green" href="https://wa.me/${brand.whatsapp}" target="_blank" rel="noopener noreferrer">Pedir por WhatsApp</a></p>
     </div>
   </section>
-  ${visitBand(href, brand, img)}`;
+  ${visitBand(href, brand, img, "tienda")}`;
 
   return shell({
     title: "Tienda online",
@@ -416,7 +422,7 @@ export function pageBlog() {
       </article>`).join("")}
     </div>
   </section>
-  ${visitBand(href, brand, img)}`;
+  ${visitBand(href, brand, img, "blog")}`;
 
   return shell({
     title: "Blog",
@@ -474,7 +480,7 @@ export function pageContacto() {
     </div>
   </section>
   ${loyaltyPromo.html}
-  ${visitBand(href, brand, img)}`;
+  ${visitBand(href, brand, img, "contacto")}`;
 
   return shell({
     title: "Contacto",
@@ -491,7 +497,7 @@ export function pageCustom(route) {
   const site = loadSite();
   const { brand } = site;
   const pg = site.pages?.[route.slug] || site.pages?.[route.id] || {};
-  const { href } = createPathHelpers(1);
+  const { href, img } = createPathHelpers(1);
 
   const body = `
   <section class="page-hero light">
@@ -505,7 +511,7 @@ export function pageCustom(route) {
       <p style="font-size:1.05rem;line-height:1.8;opacity:.85">${pg.intro || pg.body || ""}</p>
     </div>
   </section>
-  ${visitBand(href, brand, img)}`;
+  ${visitBand(href, brand, img, route.id)}`;
 
   return shell({
     title: route.label,
