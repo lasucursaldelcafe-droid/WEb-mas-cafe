@@ -132,7 +132,7 @@
       "title": "Ambiente",
       "subtitle": "Sin prisa",
       "description": "Un espacio donde el tiempo baja y cada detalle está pensado para que te sientas a gusto desde que entras.",
-      "image": "/images/aplicaciones/Rompetráfico.jpg",
+      "image": "/images/brand/pausa.png",
       "layout": "left"
     },
     {
@@ -140,7 +140,7 @@
       "title": "Carta",
       "subtitle": "Café de especialidad",
       "description": "Microlotes colombianos con trazabilidad completa. Cada taza cuenta la historia de su origen y su productor.",
-      "image": "/images/aplicaciones/VASOS-CALIENTE-1.jpg",
+      "image": "/images/brand/carta.png",
       "layout": "right"
     },
     {
@@ -156,7 +156,7 @@
       "title": "Tiempo",
       "subtitle": "Para quedarse",
       "description": "Mesas amplias, luz natural y Wi‑Fi: un lugar para trabajar, conversar o simplemente desconectarse.",
-      "image": "/images/aplicaciones/fachada2.png",
+      "image": "/images/brand/mood.png",
       "layout": "right"
     }
   ],
@@ -276,7 +276,7 @@
       "excerpt": "Guía para disfrutar nuestro café en cafetera de goteo, prensa francesa o pour over.",
       "date": "15 may 2025",
       "category": "Barismo",
-      "image": "/images/aplicaciones/Termo.jpg",
+      "image": "/images/products/caja-cafe.png",
       "published": true
     },
     {
@@ -294,7 +294,7 @@
       "excerpt": "Los cafés extraordinarios deben ser absolutamente frescos. Te contamos cómo lo garantizamos.",
       "date": "11 feb 2025",
       "category": "Calidad",
-      "image": "/images/aplicaciones/VASOS-CALIENTES-2.jpg",
+      "image": "/images/brand/carta.png",
       "published": true
     }
   ],
