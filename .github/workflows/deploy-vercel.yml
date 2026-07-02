@@ -38,6 +38,11 @@ jobs:
 
   deploy:
     needs: validate
+    # El sitio principal se publica en GitHub Pages; Vercel es opcional.
+    if: >-
+      secrets.VERCEL_TOKEN != '' &&
+      secrets.VERCEL_ORG_ID != '' &&
+      secrets.VERCEL_PROJECT_ID != ''
     runs-on: ubuntu-latest
     steps:
       - name: Obtener código
