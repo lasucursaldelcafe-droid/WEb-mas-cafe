@@ -69,7 +69,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
         run: |
           WAIT="${{ github.event.inputs.wait_minutes || '45' }}"
-          ARGS="--wait --max-wait=${WAIT} --kickstart"
+          ARGS="--wait --max-wait=${WAIT} --kickstart --aggressive-kickstart"
           if [ "${{ github.event.inputs.kickstart }}" = "false" ]; then
             ARGS="--wait --max-wait=${WAIT}"
           fi
