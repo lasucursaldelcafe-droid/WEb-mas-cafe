@@ -14,6 +14,7 @@ import { existsSync, writeFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { loadEnvLocal } from "./lib/load-env-local.mjs";
+import { upsertEnvLocal } from "./lib/upsert-env-local.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
@@ -104,12 +105,30 @@ function delegateToCi(extraArgs) {
   return 0;
 }
 
+function materializeEnvLocal() {
+  const updates = {};
+  if (process.env.GODADDY_API_KEY) updates.GODADDY_API_KEY = process.env.GODADDY_API_KEY;
+  if (process.env.GODADDY_API_SECRET) updates.GODADDY_API_SECRET = process.env.GODADDY_API_SECRET;
+  const gh = resolveGhToken();
+  if (gh) {
+    updates.GH_PAGES_PAT = gh;
+    updates.GITHUB_TOKEN = gh;
+  }
+  if (Object.keys(updates).length) {
+    upsertEnvLocal(updates);
+    console.log("  ✓ .env.local materializado desde entorno\n");
+  }
+}
+
 function main() {
   const extraArgs = process.argv.slice(2);
 
   console.log("\n═══════════════════════════════════════════════════");
   console.log("  Cloud Agent — HTTPS mascafé.com");
   console.log("═══════════════════════════════════════════════════");
+
+  materializeEnvLocal();
+  loadEnvLocal();
 
   if (hasGithubToken() && (hasGodaddyCreds() || extraArgs.includes("--skip-godaddy"))) {
     console.log("\n▸ Credenciales disponibles — ejecución local\n");

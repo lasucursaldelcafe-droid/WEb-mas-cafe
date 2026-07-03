@@ -9,7 +9,7 @@ on:
       wait_minutes:
         description: "Minutos máximos esperando certificado SSL"
         type: number
-        default: 45
+        default: 90
       kickstart:
         description: "Forzar kickstart SSL si cert atascado"
         type: boolean

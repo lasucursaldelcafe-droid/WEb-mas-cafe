@@ -1,5 +1,6 @@
 {
   "purpose": "Marcador para disparar workflow enable-https en CI",
   "lastRunBy": "cloud-agent",
-  "triggeredAt": "2026-07-03T17:40:00.000Z"
+  "triggeredAt": "2026-07-03T18:35:00.000Z",
+  "note": "Re-disparo HTTPS tras bootstrap secrets Cloud Agent"
 }
