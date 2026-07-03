@@ -17,6 +17,7 @@ import {
   getPagesHealth,
   enableGithubPagesHttps,
   isCertificateReady,
+  kickstartSslCertificate,
 } from "./lib/github-pages-api.mjs";
 import { DOMAIN_DISPLAY, DOMAIN_PUNYCODE } from "./lib/domain-config.mjs";
 
@@ -43,6 +44,13 @@ async function tryEnableHttps() {
   }
 
   let config = await getPagesConfig();
+  if (!isCertificateReady(config) && config?.https_certificate?.state === "new") {
+    const kick = await kickstartSslCertificate();
+    log(`Kickstart SSL: ${kick.action}${kick.reason ? ` (${kick.reason})` : ""}`);
+    await sleep(15000);
+    config = await getPagesConfig();
+  }
+
   const deadline = Date.now() + maxWaitMin * 60 * 1000;
   let attempts = 0;
 

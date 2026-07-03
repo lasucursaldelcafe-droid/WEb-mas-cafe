@@ -1,0 +1,104 @@
+name: Activar HTTPS mascafé.com
+
+# Ejecuta enable-https con Secrets del repo (GoDaddy + GH_PAGES_PAT).
+# Disparadores: manual, programado, push a main (scripts dominio), PR cursor/*.
+
+on:
+  workflow_dispatch:
+    inputs:
+      wait_minutes:
+        description: "Minutos máximos esperando certificado SSL"
+        type: number
+        default: 45
+      kickstart:
+        description: "Forzar kickstart SSL si cert atascado"
+        type: boolean
+        default: true
+  schedule:
+    # Cada 3 h — complementa maintain-domain (cada 6 h)
+    - cron: "15 */3 * * *"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/enable-https.yml"
+      - "scripts/enable-https.mjs"
+      - "scripts/cloud-agent-https.mjs"
+      - "scripts/lib/github-pages-api.mjs"
+      - ".cloud-agent/https-trigger.json"
+  repository_dispatch:
+    types: [enable-https]
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: enable-https-mascafe
+  cancel-in-progress: false
+
+jobs:
+  https:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAGES_PAT || github.token }}
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Validar credenciales
+        env:
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
+        run: node scripts/validate-credentials.mjs
+
+      - name: Activar HTTPS
+        id: https
+        env:
+          GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+          GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
+        run: |
+          WAIT="${{ github.event.inputs.wait_minutes || '45' }}"
+          ARGS="--wait --max-wait=${WAIT} --kickstart"
+          if [ "${{ github.event.inputs.kickstart }}" = "false" ]; then
+            ARGS="--wait --max-wait=${WAIT}"
+          fi
+          node scripts/enable-https.mjs $ARGS
+          echo "https_ok=true" >> "$GITHUB_OUTPUT"
+
+      - name: Regenerar sitio si HTTPS activo
+        if: steps.https.outcome == 'success'
+        env:
+          ADMIN_PUBLISH_KEY: ${{ secrets.ADMIN_PUBLISH_KEY }}
+          GH_PAGES_PAT: ${{ secrets.GH_PAGES_PAT }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          if grep -q '"httpsReady": true' content/settings.json; then
+            node scripts/build-github-pages.mjs
+            npm run verify:seo
+          fi
+
+      - name: Commit settings HTTPS
+        if: steps.https.outcome == 'success'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/settings.json content/informe-requisitos.json 2>/dev/null || true
+          git diff --staged --quiet && exit 0
+          git commit -m "chore(seo): activar HTTPS en mascafé.com"
+          git push
+
+      - name: Verificar dominio
+        run: node scripts/verify-domain.mjs || true

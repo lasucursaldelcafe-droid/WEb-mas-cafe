@@ -147,6 +147,35 @@ export function isCertificateReady(pagesConfig) {
   return state ? HTTPS_READY_CERT_STATES.has(state) : false;
 }
 
+const STUCK_CERT_STATES = new Set(["new", "pending", "requested"]);
+
+/**
+ * Quita y vuelve a añadir el custom domain para forzar emisión del certificado SSL
+ * cuando GitHub lo deja atascado en «new» pese a DNS válido.
+ */
+export async function kickstartSslCertificate({ dryRun = false, pauseMs = 8000 } = {}) {
+  const existing = dryRun ? null : await getPagesConfig();
+  if (!existing?.cname) {
+    return { action: "skip", reason: "sin custom domain" };
+  }
+  if (isCertificateReady(existing)) {
+    return { action: "skip", reason: "certificado listo" };
+  }
+  const state = existing?.https_certificate?.state;
+  if (state && !STUCK_CERT_STATES.has(state)) {
+    return { action: "skip", reason: `estado ${state}` };
+  }
+
+  if (dryRun) {
+    return { action: "kickstart", cname: existing.cname };
+  }
+
+  await clearGithubPagesCustomDomain();
+  await new Promise((r) => setTimeout(r, pauseMs));
+  await configureGithubPagesDomain({ cname: existing.cname });
+  return { action: "kickstarted", cname: existing.cname };
+}
+
 /** Activa Enforce HTTPS cuando GitHub lo permite */
 export async function enableGithubPagesHttps({ dryRun = false } = {}) {
   const existing = dryRun ? null : await getPagesConfig();
