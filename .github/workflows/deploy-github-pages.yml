@@ -81,7 +81,7 @@ jobs:
           GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
           GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
           GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
-        run: node scripts/post-publish.mjs || true
+        run: node scripts/post-publish.mjs --wait --max-wait=30 || true
 
       - name: Verificar sitio
         run: |

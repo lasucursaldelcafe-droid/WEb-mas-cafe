@@ -5,6 +5,8 @@
  * Uso:
  *   npm run domain:enable-https
  *   npm run domain:enable-https -- --wait
+ *   npm run domain:enable-https -- --wait --max-wait=45
+ *   npm run domain:enable-https -- --skip-godaddy --kickstart
  */
 import { execSync } from "child_process";
 import { loadEnvLocal } from "./lib/load-env-local.mjs";
@@ -26,12 +28,15 @@ import {
   getPagesHealth,
   isCertificateReady,
   configureGithubPagesDomain,
+  kickstartSslCertificate,
 } from "./lib/github-pages-api.mjs";
 import { saveSeoSiteUrl } from "./lib/seo.mjs";
 
 loadEnvLocal();
 
-const { wait } = parseArgs();
+const opts = parseArgs();
+const wait = opts.wait && !opts.noWait;
+const maxWaitMin = opts.maxWaitMin || (wait ? 60 : 0);
 
 function log(msg) {
   console.log(`\n▸ ${msg}`);
@@ -41,10 +46,21 @@ async function sleep(ms) {
   await new Promise((r) => setTimeout(r, ms));
 }
 
+function hasGodaddyCreds() {
+  return Boolean(process.env.GODADDY_API_KEY && process.env.GODADDY_API_SECRET);
+}
+
+function skipGodaddyStep() {
+  return opts.skipGodaddy || !hasGodaddyCreds();
+}
+
 async function main() {
   console.log("\n═══════════════════════════════════════════════════");
   console.log("  HTTPS — mascafé.com");
   console.log(`  Dominio: ${DOMAIN_DISPLAY} (${DOMAIN_PUNYCODE})`);
+  if (skipGodaddyStep()) console.log("  GoDaddy: omitido (solo GitHub Pages API)");
+  if (opts.kickstart) console.log("  Modo: kickstart SSL si cert atascado");
+  if (wait) console.log(`  Espera máxima: ${maxWaitMin} min`);
   console.log("═══════════════════════════════════════════════════");
 
   log("1/4 DNS autoritativo (nameservers GoDaddy)");
@@ -59,8 +75,13 @@ async function main() {
     process.exit(1);
   }
 
-  log("2/4 Reaplicar DNS GoDaddy + custom domain");
-  await configureGodaddyForGitHubPages();
+  log("2/4 Reaplicar DNS + custom domain");
+  if (!skipGodaddyStep()) {
+    await configureGodaddyForGitHubPages();
+  } else if (!hasGodaddyCreds()) {
+    console.log("  ○ Sin GODADDY_API_* — usando DNS ya propagado");
+  }
+
   if (!isDnsReadyForGitHubPages()) {
     console.log("  ⏳ DNS público aún propagando…");
     if (!wait) {
@@ -76,15 +97,19 @@ async function main() {
 
   log("3/4 Health check GitHub Pages");
   let health;
-  let attempts = wait ? 30 : 3;
-  for (let i = 0; i < attempts; i++) {
-    health = await getPagesHealth({ retries: 1, delayMs: 2000 });
-    const d = health.domain;
-    const alt = health.alt_domain;
-    console.log(
-      `  intento ${i + 1}: apex valid=${d?.is_valid} https_eligible=${d?.is_https_eligible} | www valid=${alt?.is_valid} https_error=${alt?.https_error || "—"}`,
-    );
-    if (d?.is_valid && d?.is_https_eligible) break;
+  const healthAttempts = wait ? Math.min(maxWaitMin, 30) : 3;
+  for (let i = 0; i < healthAttempts; i++) {
+    try {
+      health = await getPagesHealth({ retries: 1, delayMs: 2000 });
+      const d = health.domain;
+      const alt = health.alt_domain;
+      console.log(
+        `  intento ${i + 1}: apex valid=${d?.is_valid} https_eligible=${d?.is_https_eligible} | www valid=${alt?.is_valid} https_error=${alt?.https_error || "—"}`,
+      );
+      if (d?.is_valid && d?.is_https_eligible) break;
+    } catch (err) {
+      console.log(`  intento ${i + 1}: health pendiente (${err.message})`);
+    }
     if (!wait) break;
     await sleep(60000);
   }
@@ -99,8 +124,19 @@ async function main() {
   let pages = await getPagesConfig();
   console.log(`  Certificado: ${pages?.https_certificate?.state || "—"} — ${pages?.https_certificate?.description || ""}`);
 
-  if (!isCertificateReady(pages) && wait) {
-    for (let i = 0; i < 60; i++) {
+  const certStuck = pages?.https_certificate?.state === "new";
+  if ((opts.kickstart || certStuck) && !isCertificateReady(pages)) {
+    console.log("  ↻ Kickstart: quitar y volver a añadir custom domain…");
+    const kick = await kickstartSslCertificate();
+    console.log(`  ↻ Resultado: ${kick.action}${kick.reason ? ` (${kick.reason})` : ""}`);
+    await sleep(15000);
+    pages = await getPagesConfig();
+    console.log(`  Certificado tras kickstart: ${pages?.https_certificate?.state || "—"}`);
+  }
+
+  if (!isCertificateReady(pages) && wait && maxWaitMin > 0) {
+    const deadline = Date.now() + maxWaitMin * 60 * 1000;
+    while (Date.now() < deadline) {
       await sleep(60000);
       pages = await getPagesConfig();
       const state = pages?.https_certificate?.state;
@@ -112,7 +148,7 @@ async function main() {
   if (!isCertificateReady(pages)) {
     console.log("\n  ⏳ Certificado SSL en proceso (normal: 15 min – 48 h tras DNS correcto).");
     console.log(`  Cuando el check esté verde: ${GITHUB_PAGES_SETTINGS}`);
-    console.log("  Vuelve a ejecutar: npm run domain:enable-https");
+    console.log("  Vuelve a ejecutar: npm run domain:enable-https -- --wait --kickstart");
     process.exit(0);
   }
 

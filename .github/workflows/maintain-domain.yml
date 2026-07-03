@@ -59,9 +59,7 @@ jobs:
           GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
           GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
         run: |
-          ARGS=""
-          if [ "${{ inputs.wait_for_https }}" = "true" ]; then ARGS="--wait --max-wait=30"; fi
-          node scripts/post-publish.mjs $ARGS || true
+          node scripts/post-publish.mjs --wait --max-wait=30 || true
 
       - name: Verificar dominio
         run: node scripts/verify-domain.mjs || true

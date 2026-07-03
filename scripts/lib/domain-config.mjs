@@ -41,6 +41,8 @@ export function godaddyApiBase() {
 }
 
 export function parseArgs(argv = process.argv.slice(2)) {
+  const maxWaitArg = argv.find((a) => a.startsWith("--max-wait="));
+  const maxWaitMin = maxWaitArg ? Number(maxWaitArg.split("=")[1]) : 0;
   return {
     dryRun: argv.includes("--dry-run"),
     skipGodaddy: argv.includes("--skip-godaddy"),
@@ -48,5 +50,7 @@ export function parseArgs(argv = process.argv.slice(2)) {
     verifyOnly: argv.includes("--verify-only"),
     wait: argv.includes("--wait"),
     noWait: argv.includes("--no-wait"),
+    kickstart: argv.includes("--kickstart"),
+    maxWaitMin: Number.isFinite(maxWaitMin) && maxWaitMin > 0 ? maxWaitMin : 0,
   };
 }
