@@ -51,6 +51,7 @@
     "domain:verify": "node scripts/verify-domain.mjs",
     "domain:enable-https": "node scripts/enable-https.mjs",
     "domain:enable-https:cloud": "node scripts/cloud-agent-https.mjs",
+    "env:bootstrap": "node scripts/bootstrap-cloud-env.mjs",
     "godaddy:optimize": "node scripts/godaddy-optimize.mjs",
     "seo:sync-google": "node scripts/sync-google-seo.mjs",
     "post:publish": "node scripts/post-publish.mjs",

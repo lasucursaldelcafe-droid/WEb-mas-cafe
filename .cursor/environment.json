@@ -1,0 +1,5 @@
+{
+  "install": "npm ci && node scripts/bootstrap-cloud-env.mjs",
+  "start": "",
+  "terminals": []
+}
