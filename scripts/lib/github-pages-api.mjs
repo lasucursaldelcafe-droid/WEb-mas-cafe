@@ -153,7 +153,11 @@ const STUCK_CERT_STATES = new Set(["new", "pending", "requested"]);
  * Quita y vuelve a añadir el custom domain para forzar emisión del certificado SSL
  * cuando GitHub lo deja atascado en «new» pese a DNS válido.
  */
-export async function kickstartSslCertificate({ dryRun = false, pauseMs = 8000 } = {}) {
+export async function kickstartSslCertificate({
+  dryRun = false,
+  pauseMs = 8000,
+  cycles = 1,
+} = {}) {
   const existing = dryRun ? null : await getPagesConfig();
   if (!existing?.cname) {
     return { action: "skip", reason: "sin custom domain" };
@@ -167,13 +171,19 @@ export async function kickstartSslCertificate({ dryRun = false, pauseMs = 8000 }
   }
 
   if (dryRun) {
-    return { action: "kickstart", cname: existing.cname };
+    return { action: "kickstart", cname: existing.cname, cycles };
   }
 
-  await clearGithubPagesCustomDomain();
-  await new Promise((r) => setTimeout(r, pauseMs));
-  await configureGithubPagesDomain({ cname: existing.cname });
-  return { action: "kickstarted", cname: existing.cname };
+  const cname = existing.cname;
+  for (let i = 0; i < cycles; i++) {
+    await clearGithubPagesCustomDomain();
+    await new Promise((r) => setTimeout(r, pauseMs));
+    await configureGithubPagesDomain({ cname });
+    if (i < cycles - 1) {
+      await new Promise((r) => setTimeout(r, pauseMs));
+    }
+  }
+  return { action: "kickstarted", cname, cycles };
 }
 
 /** Activa Enforce HTTPS cuando GitHub lo permite */

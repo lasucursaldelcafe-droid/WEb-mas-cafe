@@ -51,6 +51,7 @@ export function parseArgs(argv = process.argv.slice(2)) {
     wait: argv.includes("--wait"),
     noWait: argv.includes("--no-wait"),
     kickstart: argv.includes("--kickstart"),
+    aggressiveKickstart: argv.includes("--aggressive-kickstart"),
     maxWaitMin: Number.isFinite(maxWaitMin) && maxWaitMin > 0 ? maxWaitMin : 0,
   };
 }

@@ -93,6 +93,35 @@ export async function configureGodaddyForGitHubPages({ dryRun = false } = {}) {
   return { apex, www, domain: DOMAIN_PUNYCODE };
 }
 
+/** Elimina registros que bloquean la emisión del certificado SSL en GitHub Pages. */
+export async function pruneBlockingDnsRecords(domain = DOMAIN_PUNYCODE, { dryRun = false } = {}) {
+  const records = dryRun ? [] : await getDnsRecords(domain);
+  const removed = [];
+
+  const aaaaAt = records.filter((r) => r.type === "AAAA" && r.name === "@");
+  if (aaaaAt.length && !dryRun) {
+    await api(`/domains/${domain}/records/AAAA/@`, { method: "DELETE" });
+    removed.push(`AAAA @ (${aaaaAt.length})`);
+  } else if (aaaaAt.length) {
+    removed.push(`AAAA @ (${aaaaAt.length}, dry-run)`);
+  }
+
+  const aliasAt = records.filter(
+    (r) => (r.type === "ALIAS" || r.type === "ANAME") && r.name === "@",
+  );
+  if (aliasAt.length) {
+    removed.push(`⚠ ALIAS/ANAME @ (${aliasAt.length}) — eliminar manualmente en GoDaddy`);
+  }
+
+  const extraA = records.filter((r) => r.type === "A" && r.name === "@");
+  const badA = extraA.filter((r) => !GITHUB_PAGES_A_RECORDS.includes(r.data));
+  if (badA.length) {
+    removed.push(`⚠ A @ extra (${badA.map((r) => r.data).join(", ")})`);
+  }
+
+  return { removed, recordCount: records.length };
+}
+
 export async function testGodaddyCredentials() {
   await api(`/domains/${DOMAIN_PUNYCODE}`);
   return true;

@@ -81,7 +81,11 @@ function delegateToCi(extraArgs) {
     stdio: "inherit",
     env,
   });
-  execSync(`git push -u origin ${BRANCH} --force-with-lease`, { cwd: root, stdio: "inherit", env });
+  try {
+    execSync(`git push -u origin ${BRANCH} --force-with-lease`, { cwd: root, stdio: "inherit", env });
+  } catch {
+    execSync(`git push -u origin ${BRANCH} --force`, { cwd: root, stdio: "inherit", env });
+  }
 
   let prUrl = "";
   try {

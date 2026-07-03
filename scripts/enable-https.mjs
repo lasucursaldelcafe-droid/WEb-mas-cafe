@@ -10,7 +10,7 @@
  */
 import { execSync } from "child_process";
 import { loadEnvLocal } from "./lib/load-env-local.mjs";
-import { configureGodaddyForGitHubPages } from "./lib/godaddy-api.mjs";
+import { configureGodaddyForGitHubPages, pruneBlockingDnsRecords } from "./lib/godaddy-api.mjs";
 import {
   checkAuthoritativeApex,
   formatParkingWarning,
@@ -60,6 +60,7 @@ async function main() {
   console.log(`  Dominio: ${DOMAIN_DISPLAY} (${DOMAIN_PUNYCODE})`);
   if (skipGodaddyStep()) console.log("  GoDaddy: omitido (solo GitHub Pages API)");
   if (opts.kickstart) console.log("  Modo: kickstart SSL si cert atascado");
+  if (opts.aggressiveKickstart) console.log("  Modo: kickstart agresivo (2 ciclos, 120 s pausa)");
   if (wait) console.log(`  Espera máxima: ${maxWaitMin} min`);
   console.log("═══════════════════════════════════════════════════");
 
@@ -77,6 +78,10 @@ async function main() {
 
   log("2/4 Reaplicar DNS + custom domain");
   if (!skipGodaddyStep()) {
+    const pruned = await pruneBlockingDnsRecords();
+    if (pruned.removed.length) {
+      console.log(`  ↻ DNS limpiado: ${pruned.removed.join("; ")}`);
+    }
     await configureGodaddyForGitHubPages();
   } else if (!hasGodaddyCreds()) {
     console.log("  ○ Sin GODADDY_API_* — usando DNS ya propagado");
@@ -125,13 +130,31 @@ async function main() {
   console.log(`  Certificado: ${pages?.https_certificate?.state || "—"} — ${pages?.https_certificate?.description || ""}`);
 
   const certStuck = pages?.https_certificate?.state === "new";
-  if ((opts.kickstart || certStuck) && !isCertificateReady(pages)) {
+  const shouldKickstart =
+    (opts.kickstart || opts.aggressiveKickstart || certStuck) && !isCertificateReady(pages);
+  if (shouldKickstart) {
+    const kickOpts = opts.aggressiveKickstart
+      ? { pauseMs: 120_000, cycles: 2 }
+      : certStuck
+        ? { pauseMs: 60_000, cycles: 2 }
+        : {};
     console.log("  ↻ Kickstart: quitar y volver a añadir custom domain…");
-    const kick = await kickstartSslCertificate();
+    const kick = await kickstartSslCertificate(kickOpts);
     console.log(`  ↻ Resultado: ${kick.action}${kick.reason ? ` (${kick.reason})` : ""}`);
     await sleep(15000);
     pages = await getPagesConfig();
     console.log(`  Certificado tras kickstart: ${pages?.https_certificate?.state || "—"}`);
+  }
+
+  if (!isCertificateReady(pages) && health?.domain?.is_https_eligible) {
+    console.log("  ↻ Apex https_eligible — intentando Enforce HTTPS…");
+    try {
+      await enableGithubPagesHttps();
+      pages = await getPagesConfig();
+      console.log(`  Enforce HTTPS: ${pages?.https_enforced ? "activado" : "rechazado"}`);
+    } catch (err) {
+      console.log(`  ○ Enforce HTTPS: ${err.message}`);
+    }
   }
 
   if (!isCertificateReady(pages) && wait && maxWaitMin > 0) {
@@ -149,6 +172,11 @@ async function main() {
     console.log("\n  ⏳ Certificado SSL en proceso (normal: 15 min – 48 h tras DNS correcto).");
     console.log(`  Cuando el check esté verde: ${GITHUB_PAGES_SETTINGS}`);
     console.log("  Vuelve a ejecutar: npm run domain:enable-https -- --wait --kickstart");
+    if (certStuck) {
+      console.log(
+        "\n  Si lleva >48 h en «new»: abre ticket en https://support.github.com/contact (Pages + custom domain).",
+      );
+    }
     process.exit(0);
   }
 
