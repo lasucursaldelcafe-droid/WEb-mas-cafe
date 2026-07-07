@@ -156,6 +156,11 @@ export function isCertProvisioning(pagesConfig) {
   return state ? PROVISIONING_CERT_STATES.has(state) : false;
 }
 
+/** GitHub está emitiendo certificado — no tocar dominio ni kickstart. */
+export function isCertActivelyProvisioning(pagesConfig) {
+  return pagesConfig?.https_certificate?.state === "dns_changed";
+}
+
 export function isWwwCname(cname) {
   return Boolean(cname?.startsWith("www."));
 }

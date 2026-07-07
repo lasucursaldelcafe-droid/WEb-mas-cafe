@@ -32,6 +32,7 @@ import {
   kickstartSslCertificate,
   switchGithubPagesDomain,
   isCertProvisioning,
+  isCertActivelyProvisioning,
   isWwwCname,
 } from "./lib/github-pages-api.mjs";
 import { saveSeoSiteUrl } from "./lib/seo.mjs";
@@ -114,6 +115,17 @@ async function main() {
   if (opts.tryWww) console.log("  Modo: fallback www si apex no emite certificado");
   if (wait) console.log(`  Espera máxima: ${maxWaitMin} min`);
   console.log("═══════════════════════════════════════════════════");
+
+  const pagesAtStart = await getPagesConfig();
+  if (isCertActivelyProvisioning(pagesAtStart)) {
+    console.log(
+      `\n✅ Certificado en emisión (${pagesAtStart.https_certificate?.state}) para ${pagesAtStart.cname}`,
+    );
+    console.log("   No se modifica el dominio — espera 15–60 min y recarga https://www.mascafé.com\n");
+    const host = pagesAtStart.cname || DOMAIN_WWW_PUNYCODE;
+    if (await finalizeHttps(pagesAtStart, host)) process.exit(0);
+    process.exit(0);
+  }
 
   log("1/4 DNS autoritativo (nameservers GoDaddy)");
   const auth = checkAuthoritativeApex();
@@ -240,10 +252,13 @@ async function main() {
   }
 
   if (!isCertificateReady(pages) && wait && maxWaitMin > 0) {
+    const onWwwNow = isWwwCname(pages?.cname);
     const apexWaitMin =
-      opts.tryWww && certStuck ? Math.min(5, maxWaitMin) : maxWaitMin;
-    if (opts.tryWww && certStuck && apexWaitMin < maxWaitMin) {
+      opts.tryWww && certStuck && !onWwwNow ? Math.min(5, maxWaitMin) : maxWaitMin;
+    if (opts.tryWww && certStuck && !onWwwNow && apexWaitMin < maxWaitMin) {
       console.log(`  ○ Apex atascado — espera corta ${apexWaitMin} min antes de fallback www`);
+    } else if (onWwwNow) {
+      console.log(`  ○ Esperando certificado www: hasta ${apexWaitMin} min`);
     }
     const deadline = Date.now() + apexWaitMin * 60 * 1000;
     pages = await waitForCertificate(deadline);
