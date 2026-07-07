@@ -10,7 +10,7 @@
  */
 import { execSync } from "child_process";
 import { loadEnvLocal } from "./lib/load-env-local.mjs";
-import { configureGodaddyForGitHubPages, pruneBlockingDnsRecords } from "./lib/godaddy-api.mjs";
+import { configureGodaddyForGitHubPages, pruneBlockingDnsRecords, ensureCaaLetsEncrypt } from "./lib/godaddy-api.mjs";
 import {
   checkAuthoritativeApex,
   formatParkingWarning,
@@ -19,6 +19,7 @@ import { isDnsReadyForGitHubPages } from "./lib/dns-check.mjs";
 import {
   DOMAIN_DISPLAY,
   DOMAIN_PUNYCODE,
+  DOMAIN_WWW_PUNYCODE,
   GITHUB_PAGES_SETTINGS,
   parseArgs,
 } from "./lib/domain-config.mjs";
@@ -29,6 +30,7 @@ import {
   isCertificateReady,
   configureGithubPagesDomain,
   kickstartSslCertificate,
+  switchGithubPagesDomain,
 } from "./lib/github-pages-api.mjs";
 import { saveSeoSiteUrl } from "./lib/seo.mjs";
 
@@ -54,6 +56,52 @@ function skipGodaddyStep() {
   return opts.skipGodaddy || !hasGodaddyCreds();
 }
 
+async function waitForCertificate(deadlineMs) {
+  let pages = await getPagesConfig();
+  while (Date.now() < deadlineMs) {
+    if (isCertificateReady(pages)) return pages;
+    await sleep(60_000);
+    pages = await getPagesConfig();
+    console.log(`  esperando cert… ${pages?.https_certificate?.state || "—"}`);
+  }
+  return pages;
+}
+
+async function verifyHttpsUrl(host) {
+  const code = execSync(
+    `curl -sL -o /dev/null -w "%{http_code}" --max-time 20 "https://${host}/"`,
+    { encoding: "utf8" },
+  ).trim();
+  console.log(`\n  HTTPS https://${host}/ → HTTP ${code}`);
+  return code === "200";
+}
+
+async function finalizeHttps(pages, siteHost) {
+  if (!isCertificateReady(pages)) return false;
+  try {
+    await enableGithubPagesHttps();
+    pages = await getPagesConfig();
+    console.log(`  ✅ Enforce HTTPS: ${pages?.https_enforced ? "activado" : "pendiente"}`);
+  } catch (err) {
+    if (String(err).includes("Toggling https is disabled")) {
+      console.log("\n  ⏳ GitHub aún no permite forzar HTTPS — espera al check DNS verde.");
+      return false;
+    }
+    throw err;
+  }
+  try {
+    if (await verifyHttpsUrl(siteHost)) {
+      saveSeoSiteUrl(`https://${siteHost}`, { httpsReady: true });
+      console.log("  ✅ settings.json → httpsReady + siteUrl HTTPS");
+      console.log("\n✅ Conexión segura lista. Ejecuta: npm run build:github-pages\n");
+      return true;
+    }
+  } catch {
+    console.log("\n  ⏳ HTTPS aún propagando en CDN…\n");
+  }
+  return false;
+}
+
 async function main() {
   console.log("\n═══════════════════════════════════════════════════");
   console.log("  HTTPS — mascafé.com");
@@ -61,6 +109,7 @@ async function main() {
   if (skipGodaddyStep()) console.log("  GoDaddy: omitido (solo GitHub Pages API)");
   if (opts.kickstart) console.log("  Modo: kickstart SSL si cert atascado");
   if (opts.aggressiveKickstart) console.log("  Modo: kickstart agresivo (2 ciclos, 120 s pausa)");
+  if (opts.tryWww) console.log("  Modo: fallback www si apex no emite certificado");
   if (wait) console.log(`  Espera máxima: ${maxWaitMin} min`);
   console.log("═══════════════════════════════════════════════════");
 
@@ -83,6 +132,12 @@ async function main() {
       console.log(`  ↻ DNS limpiado: ${pruned.removed.join("; ")}`);
     }
     await configureGodaddyForGitHubPages();
+    try {
+      await ensureCaaLetsEncrypt();
+      console.log("  ✅ CAA letsencrypt.org");
+    } catch (err) {
+      console.log(`  ○ CAA: ${err.message}`);
+    }
   } else if (!hasGodaddyCreds()) {
     console.log("  ○ Sin GODADDY_API_* — usando DNS ya propagado");
   }
@@ -159,13 +214,28 @@ async function main() {
 
   if (!isCertificateReady(pages) && wait && maxWaitMin > 0) {
     const deadline = Date.now() + maxWaitMin * 60 * 1000;
-    while (Date.now() < deadline) {
-      await sleep(60000);
-      pages = await getPagesConfig();
-      const state = pages?.https_certificate?.state;
-      console.log(`  esperando cert… ${state}`);
-      if (isCertificateReady(pages)) break;
+    pages = await waitForCertificate(deadline);
+  }
+
+  let siteHost = pages?.cname || DOMAIN_PUNYCODE;
+
+  if (!isCertificateReady(pages) && (opts.tryWww || certStuck)) {
+    console.log("\n  ↻ Plan B: custom domain www (mejor emisión SSL con CNAME)…");
+    const switchResult = await switchGithubPagesDomain(DOMAIN_WWW_PUNYCODE, { pauseMs: 120_000 });
+    console.log(`  ↻ Dominio cambiado: ${switchResult.cname}`);
+    siteHost = DOMAIN_WWW_PUNYCODE;
+    await sleep(30_000);
+    pages = await getPagesConfig();
+    console.log(`  Certificado www: ${pages?.https_certificate?.state || "—"}`);
+
+    if (!isCertificateReady(pages) && wait && maxWaitMin > 0) {
+      const wwwDeadline = Date.now() + Math.min(maxWaitMin, 45) * 60 * 1000;
+      pages = await waitForCertificate(wwwDeadline);
     }
+  }
+
+  if (await finalizeHttps(pages, siteHost)) {
+    process.exit(0);
   }
 
   if (!isCertificateReady(pages)) {
@@ -180,33 +250,7 @@ async function main() {
     process.exit(0);
   }
 
-  try {
-    await enableGithubPagesHttps();
-    pages = await getPagesConfig();
-    console.log(`  ✅ Enforce HTTPS: ${pages?.https_enforced ? "activado" : "pendiente"}`);
-  } catch (err) {
-    if (String(err).includes("Toggling https is disabled")) {
-      console.log("\n  ⏳ GitHub aún no permite forzar HTTPS — espera al check DNS verde.");
-      process.exit(0);
-    }
-    throw err;
-  }
-
-  try {
-    const code = execSync(
-      `curl -sL -o /dev/null -w "%{http_code}" --max-time 20 "https://${DOMAIN_PUNYCODE}/"`,
-      { encoding: "utf8" },
-    ).trim();
-    console.log(`\n  HTTPS https://${DOMAIN_DISPLAY}/ → HTTP ${code}`);
-    if (code === "200") {
-      saveSeoSiteUrl(`https://${DOMAIN_PUNYCODE}`, { httpsReady: true });
-      console.log("  ✅ settings.json → httpsReady + siteUrl HTTPS");
-      console.log("\n✅ Conexión segura lista. Ejecuta: npm run build:github-pages\n");
-      process.exit(0);
-    }
-  } catch {
-    console.log("\n  ⏳ HTTPS aún propagando en CDN…\n");
-  }
+  process.exit(0);
 }
 
 main().catch((err) => {

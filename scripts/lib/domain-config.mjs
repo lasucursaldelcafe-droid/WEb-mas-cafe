@@ -11,6 +11,7 @@ const root = path.join(__dirname, "../..");
 export const DOMAIN_DISPLAY = "mascafé.com";
 export const DOMAIN_WWW = "www.mascafé.com";
 export const DOMAIN_PUNYCODE = "xn--mascaf-gva.com";
+export const DOMAIN_WWW_PUNYCODE = `www.${DOMAIN_PUNYCODE}`;
 export const DOMAIN_URL = `https://${DOMAIN_WWW}`;
 
 export const GITHUB_PAGES_HOST = "lasucursaldelcafe-droid.github.io";
@@ -52,6 +53,7 @@ export function parseArgs(argv = process.argv.slice(2)) {
     noWait: argv.includes("--no-wait"),
     kickstart: argv.includes("--kickstart"),
     aggressiveKickstart: argv.includes("--aggressive-kickstart"),
+    tryWww: argv.includes("--try-www"),
     maxWaitMin: Number.isFinite(maxWaitMin) && maxWaitMin > 0 ? maxWaitMin : 0,
   };
 }

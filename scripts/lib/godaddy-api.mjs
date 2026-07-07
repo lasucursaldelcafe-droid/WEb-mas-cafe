@@ -122,6 +122,19 @@ export async function pruneBlockingDnsRecords(domain = DOMAIN_PUNYCODE, { dryRun
   return { removed, recordCount: records.length };
 }
 
+/** CAA explícito para Let's Encrypt — requerido si el registrador impone restricciones. */
+export async function ensureCaaLetsEncrypt(domain = DOMAIN_PUNYCODE, { dryRun = false } = {}) {
+  const records = [{ data: '0 issue "letsencrypt.org"', ttl: 600 }];
+  if (dryRun) {
+    return { action: "PUT", path: `/domains/${domain}/records/CAA/@`, records };
+  }
+  await api(`/domains/${domain}/records/CAA/@`, {
+    method: "PUT",
+    body: JSON.stringify(records),
+  });
+  return { updated: 1, type: "CAA", name: "@", value: "letsencrypt.org" };
+}
+
 export async function testGodaddyCredentials() {
   await api(`/domains/${DOMAIN_PUNYCODE}`);
   return true;
