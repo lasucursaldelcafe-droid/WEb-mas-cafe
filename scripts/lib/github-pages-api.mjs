@@ -1,7 +1,7 @@
 /**
  * GitHub API — custom domain en GitHub Pages.
  */
-import { DOMAIN_DISPLAY, GITHUB_REPO } from "./domain-config.mjs";
+import { DOMAIN_DISPLAY, DOMAIN_PUNYCODE, GITHUB_REPO } from "./domain-config.mjs";
 
 const [owner, repo] = GITHUB_REPO.split("/");
 
@@ -55,7 +55,7 @@ export async function getPagesConfig() {
 }
 
 export async function configureGithubPagesDomain({
-  cname = DOMAIN_DISPLAY,
+  cname = DOMAIN_PUNYCODE,
   dryRun = false,
 } = {}) {
   const existing = dryRun ? null : await getPagesConfig();
@@ -184,6 +184,17 @@ export async function kickstartSslCertificate({
     }
   }
   return { action: "kickstarted", cname, cycles };
+}
+
+/** Cambia el custom domain (p. ej. apex → www cuando el certificado apex está atascado). */
+export async function switchGithubPagesDomain(cname, { dryRun = false, pauseMs = 120_000 } = {}) {
+  if (dryRun) {
+    return { action: "switch", cname, pauseMs };
+  }
+  await clearGithubPagesCustomDomain();
+  await new Promise((r) => setTimeout(r, pauseMs));
+  await configureGithubPagesDomain({ cname });
+  return { action: "switched", cname };
 }
 
 /** Activa Enforce HTTPS cuando GitHub lo permite */

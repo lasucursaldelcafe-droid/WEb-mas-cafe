@@ -103,7 +103,7 @@ jobs:
           GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
           GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
           GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
-        run: node scripts/enable-https.mjs --wait --max-wait=30 --kickstart --aggressive-kickstart || true
+        run: node scripts/enable-https.mjs --wait --max-wait=30 --kickstart --aggressive-kickstart --try-www || true
 
       - name: Verificar dominio
         if: env.DRY_RUN != '1'
