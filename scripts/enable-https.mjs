@@ -213,7 +213,12 @@ async function main() {
   }
 
   if (!isCertificateReady(pages) && wait && maxWaitMin > 0) {
-    const deadline = Date.now() + maxWaitMin * 60 * 1000;
+    const apexWaitMin =
+      opts.tryWww && certStuck ? Math.min(5, maxWaitMin) : maxWaitMin;
+    if (opts.tryWww && certStuck && apexWaitMin < maxWaitMin) {
+      console.log(`  ○ Apex atascado — espera corta ${apexWaitMin} min antes de fallback www`);
+    }
+    const deadline = Date.now() + apexWaitMin * 60 * 1000;
     pages = await waitForCertificate(deadline);
   }
 
@@ -229,7 +234,9 @@ async function main() {
     console.log(`  Certificado www: ${pages?.https_certificate?.state || "—"}`);
 
     if (!isCertificateReady(pages) && wait && maxWaitMin > 0) {
-      const wwwDeadline = Date.now() + Math.min(maxWaitMin, 45) * 60 * 1000;
+      const wwwWaitMin = Math.max(maxWaitMin - 5, 30);
+      const wwwDeadline = Date.now() + wwwWaitMin * 60 * 1000;
+      console.log(`  Espera certificado www: hasta ${wwwWaitMin} min`);
       pages = await waitForCertificate(wwwDeadline);
     }
   }
