@@ -14,7 +14,7 @@ import { generateWalletVisualPage } from "./lib/generate-wallet-visual.mjs";
 import { FAVICON_FILES, generateFavicons } from "./lib/generate-favicons-lib.mjs";
 import { generateWalletPage, generateCajaPage, generateWalletManifest } from "./lib/site-html/wallet-pages.mjs";
 import { generateRobotsTxt, generateSitemapXml } from "./lib/seo.mjs";
-import { DOMAIN_PUNYCODE } from "./lib/domain-config.mjs";
+import { DOMAIN_PUNYCODE, DOMAIN_WWW_PUNYCODE } from "./lib/domain-config.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
@@ -108,7 +108,7 @@ writeFileSync(
 );
 
 writeFileSync(path.join(outDir, ".nojekyll"), "");
-writeFileSync(path.join(outDir, "CNAME"), `${DOMAIN_PUNYCODE}\n`);
+writeFileSync(path.join(outDir, "CNAME"), `${DOMAIN_WWW_PUNYCODE}\n`);
 
 writeFileSync(path.join(outDir, "sitemap.xml"), generateSitemapXml(), "utf8");
 writeFileSync(path.join(outDir, "robots.txt"), generateRobotsTxt(), "utf8");

@@ -149,6 +149,17 @@ export function isCertificateReady(pagesConfig) {
 
 const STUCK_CERT_STATES = new Set(["new", "pending", "requested"]);
 
+const PROVISIONING_CERT_STATES = new Set(["dns_changed", "pending", "requested", "new"]);
+
+export function isCertProvisioning(pagesConfig) {
+  const state = pagesConfig?.https_certificate?.state;
+  return state ? PROVISIONING_CERT_STATES.has(state) : false;
+}
+
+export function isWwwCname(cname) {
+  return Boolean(cname?.startsWith("www."));
+}
+
 /**
  * Quita y vuelve a añadir el custom domain para forzar emisión del certificado SSL
  * cuando GitHub lo deja atascado en «new» pese a DNS válido.
