@@ -4,7 +4,29 @@ Un solo comando configura **DNS en GoDaddy** y **custom domain en GitHub Pages**
 
 ---
 
-## Opción A — Desde tu PC (recomendado la primera vez)
+## Opción A — Agente Windows (Python, recomendado en PC)
+
+Instala una vez y deja que repare HTTPS automáticamente cada 3 horas:
+
+```powershell
+# PowerShell en la carpeta del repo clonado
+.\tools\windows-https-agent\install.ps1
+```
+
+Requisitos: Python 3.11+, Node.js 22+, `.env.local` con `GODADDY_*` y `GH_PAGES_PAT`.
+
+| Acción | Comando |
+|--------|---------|
+| Ver estado | `run-status.bat` o `npm run domain:windows-agent -- status` |
+| Reparar ahora | `run-fix.bat` o `npm run domain:windows-agent -- fix` |
+| Usar CI (Secrets GitHub) | `npm run domain:windows-agent -- fix --ci` |
+| Bandeja del sistema | `install.ps1 -WithTray` → `python -m mascafe_agent tray` |
+
+Guía completa: `tools/windows-https-agent/README.md`
+
+---
+
+## Opción B — Desde tu PC (npm manual, primera vez)
 
 ### 1. Crear claves API GoDaddy
 
@@ -49,7 +71,7 @@ npm run domain:verify
 
 ---
 
-## Opción B — Desde GitHub Actions (sin PC)
+## Opción C — Desde GitHub Actions (sin PC)
 
 1. Añade **Secrets** en el repo:
    - https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/secrets/actions
