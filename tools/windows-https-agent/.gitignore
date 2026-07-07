@@ -1,0 +1,5 @@
+# Logs del agente Windows (no commitear)
+logs/
+.venv/
+__pycache__/
+*.pyc

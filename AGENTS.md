@@ -25,7 +25,10 @@ Al arrancar, el entorno ejecuta `node scripts/bootstrap-cloud-env.mjs` y escribe
 npm run env:bootstrap              # .env.local desde Cursor Secrets
 npm run domain:enable-https:cloud  # HTTPS local o delega a CI
 npm run domain:verify              # comprobar DNS/HTTP/HTTPS
+npm run domain:windows-agent -- status  # agente Python (PC Windows)
 ```
+
+**PC Windows (automatización local):** `tools/windows-https-agent/install.ps1` — Python + tarea programada cada 3 h. Ver `tools/windows-https-agent/README.md`.
 
 Si faltan credenciales locales, `domain:enable-https:cloud` abre PR o usa el workflow **Activar HTTPS mascafé.com** (Secrets ya configurados en GitHub).
 
