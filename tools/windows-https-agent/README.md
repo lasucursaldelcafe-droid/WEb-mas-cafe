@@ -36,6 +36,8 @@ Esto hace:
 2. `pip install -r requirements.txt`
 3. `npm ci` en el repo
 4. Tarea programada **MasCafe-HTTPS-Agent** (cada 3 horas)
+5. **Acceso directo en el Escritorio** → abre la app gráfica
+6. Abre la aplicación al terminar
 
 Opciones:
 
@@ -43,14 +45,36 @@ Opciones:
 # Sin tarea programada (solo instalar Python/npm)
 .\tools\windows-https-agent\install.ps1 -SkipSchedule
 
+# Iniciar la app al encender Windows
+.\tools\windows-https-agent\install.ps1 -Startup
+
 # Con icono en bandeja del sistema
 .\tools\windows-https-agent\install.ps1 -WithTray
+
+# Generar .exe standalone (opcional)
+.\tools\windows-https-agent\build-exe.ps1
+```
+
+## Aplicación Windows (interfaz gráfica)
+
+Doble clic en **`run-app.bat`** o en el acceso directo **Mas Cafe HTTPS** del Escritorio.
+
+La app muestra:
+
+- Estado DNS, certificado SSL y HTTPS en tiempo real
+- Botones: **Reparar ahora**, **Reparar vía CI**, enlaces a GitHub/GoDaddy
+- **Auto-reparar cada 3 horas** mientras la ventana esté abierta
+- Registro de actividad en la parte inferior
+
+```powershell
+npm run domain:windows-agent -- gui
 ```
 
 ## Uso rápido (doble clic)
 
 | Archivo | Acción |
 |---------|--------|
+| **`run-app.bat`** | **Abrir aplicación Windows (recomendado)** |
 | `run-status.bat` | Ver estado DNS / certificado / HTTPS |
 | `run-fix.bat` | Reparar HTTPS ahora (npm local) |
 | `run-monitor.bat` | Bucle cada 3 h hasta Ctrl+C |
@@ -83,6 +107,7 @@ npm run domain:windows-agent -- fix --ci
 | `fix` | Ejecuta `npm run domain:enable-https` con kickstart + www |
 | `fix --ci` | Dispara workflow GitHub Actions (usa Secrets del repo) |
 | `monitor` | Bucle: si HTTPS no está listo, repara y espera |
+| `gui` | Aplicación Windows con ventana gráfica |
 | `tray` | Icono en bandeja (requiere `-WithTray` en install) |
 
 ## Qué hace automáticamente
