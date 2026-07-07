@@ -31,6 +31,8 @@ import {
   configureGithubPagesDomain,
   kickstartSslCertificate,
   switchGithubPagesDomain,
+  isCertProvisioning,
+  isWwwCname,
 } from "./lib/github-pages-api.mjs";
 import { saveSeoSiteUrl } from "./lib/seo.mjs";
 
@@ -152,8 +154,27 @@ async function main() {
     console.log("  ✅ DNS público OK");
   }
 
-  await configureGithubPagesDomain();
-  console.log("  ✅ Custom domain activo");
+  let pagesEarly = await getPagesConfig();
+  const onWww = isWwwCname(pagesEarly?.cname);
+  const certProvisioning = isCertProvisioning(pagesEarly);
+  const apexStuck =
+    pagesEarly?.cname === DOMAIN_PUNYCODE &&
+    pagesEarly?.https_certificate?.state === "new";
+
+  if (onWww && certProvisioning) {
+    console.log(
+      `  ○ Dominio www preservado (${pagesEarly.cname}, cert: ${pagesEarly.https_certificate?.state})`,
+    );
+  } else if (opts.tryWww && apexStuck) {
+    console.log("  ↻ Apex atascado — cambiando a www sin resetear…");
+    await switchGithubPagesDomain(DOMAIN_WWW_PUNYCODE, { pauseMs: 30_000 });
+    pagesEarly = await getPagesConfig();
+    console.log(`  ✅ Custom domain → ${pagesEarly?.cname}`);
+  } else {
+    const cname = pagesEarly?.cname || DOMAIN_PUNYCODE;
+    await configureGithubPagesDomain({ cname });
+    console.log(`  ✅ Custom domain activo (${cname})`);
+  }
 
   log("3/4 Health check GitHub Pages");
   let health;
@@ -185,8 +206,14 @@ async function main() {
   console.log(`  Certificado: ${pages?.https_certificate?.state || "—"} — ${pages?.https_certificate?.description || ""}`);
 
   const certStuck = pages?.https_certificate?.state === "new";
+  const skipKickstart = isWwwCname(pages?.cname) && isCertProvisioning(pages);
   const shouldKickstart =
-    (opts.kickstart || opts.aggressiveKickstart || certStuck) && !isCertificateReady(pages);
+    !skipKickstart &&
+    (opts.kickstart || opts.aggressiveKickstart || certStuck) &&
+    !isCertificateReady(pages);
+  if (skipKickstart) {
+    console.log("  ○ Certificado www en emisión — omitiendo kickstart");
+  }
   if (shouldKickstart) {
     const kickOpts = opts.aggressiveKickstart
       ? { pauseMs: 120_000, cycles: 2 }
@@ -224,7 +251,7 @@ async function main() {
 
   let siteHost = pages?.cname || DOMAIN_PUNYCODE;
 
-  if (!isCertificateReady(pages) && (opts.tryWww || certStuck)) {
+  if (!isCertificateReady(pages) && (opts.tryWww || certStuck) && !isWwwCname(pages?.cname)) {
     console.log("\n  ↻ Plan B: custom domain www (mejor emisión SSL con CNAME)…");
     const switchResult = await switchGithubPagesDomain(DOMAIN_WWW_PUNYCODE, { pauseMs: 120_000 });
     console.log(`  ↻ Dominio cambiado: ${switchResult.cname}`);

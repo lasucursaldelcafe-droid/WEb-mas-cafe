@@ -34,7 +34,7 @@ permissions:
 
 concurrency:
   group: enable-https-mascafe
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   https:
