@@ -112,6 +112,13 @@ def cmd_tray(_: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_gui(_: argparse.Namespace) -> int:
+    from .gui import run_gui
+
+    run_gui()
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="mascafe-https-agent",
@@ -135,6 +142,7 @@ def build_parser() -> argparse.ArgumentParser:
     mon.add_argument("--once", action="store_true", help="Un solo ciclo y salir")
 
     sub.add_parser("tray", help="Icono en bandeja del sistema (Windows)")
+    sub.add_parser("gui", help="Abrir aplicación Windows con interfaz gráfica")
 
     return parser
 
@@ -147,6 +155,7 @@ def main(argv: list[str] | None = None) -> int:
         "fix": cmd_fix,
         "monitor": cmd_monitor,
         "tray": cmd_tray,
+        "gui": cmd_gui,
     }
     return handlers[args.command](args)
 

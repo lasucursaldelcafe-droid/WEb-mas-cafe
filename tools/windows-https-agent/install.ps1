@@ -1,7 +1,7 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-  Instala el agente HTTPS mascafé.com en Windows (Python + tarea programada).
+  Instala el agente HTTPS mascafé.com en Windows (Python + tarea programada + app GUI).
 
 .USAGE
   Abre PowerShell como usuario normal en la carpeta del repo y ejecuta:
@@ -10,10 +10,14 @@
   Opciones:
     -SkipSchedule     No registra tarea en el Programador de tareas
     -WithTray         Instala pystray + Pillow para icono en bandeja
+    -DesktopShortcut  Crea acceso directo en el Escritorio (default: sí)
+    -Startup          Inicia la app GUI al encender Windows (opcional)
 #>
 param(
     [switch]$SkipSchedule,
-    [switch]$WithTray
+    [switch]$WithTray,
+    [switch]$NoDesktopShortcut,
+    [switch]$Startup
 )
 
 $ErrorActionPreference = "Stop"
@@ -21,7 +25,9 @@ $AgentDir = $PSScriptRoot
 $RepoRoot = Resolve-Path (Join-Path $AgentDir "..\..")
 $VenvDir = Join-Path $AgentDir ".venv"
 $Python = Join-Path $VenvDir "Scripts\python.exe"
+$PythonW = Join-Path $VenvDir "Scripts\pythonw.exe"
 $LogDir = Join-Path $AgentDir "logs"
+$RunApp = Join-Path $AgentDir "run-app.bat"
 
 Write-Host ""
 Write-Host "═══════════════════════════════════════════════════"
@@ -109,15 +115,45 @@ if (-not $SkipSchedule) {
     Write-Host "  ✓ Tarea registrada. Ver: taskschd.msc → $TaskName"
 }
 
+if (-not $NoDesktopShortcut) {
+    $Desktop = [Environment]::GetFolderPath("Desktop")
+    $ShortcutPath = Join-Path $Desktop "Mas Cafe HTTPS.lnk"
+    $Wsh = New-Object -ComObject WScript.Shell
+    $Sc = $Wsh.CreateShortcut($ShortcutPath)
+    $Sc.TargetPath = $RunApp
+    $Sc.WorkingDirectory = $RepoRoot
+    $Sc.Description = "Agente HTTPS mascafé.com"
+    $Sc.Save()
+    Write-Host "▸ Acceso directo en Escritorio: $ShortcutPath"
+}
+
+if ($Startup) {
+    $StartupFolder = [Environment]::GetFolderPath("Startup")
+    $StartupLnk = Join-Path $StartupFolder "Mas Cafe HTTPS.lnk"
+    $Wsh = New-Object -ComObject WScript.Shell
+    $Sc = $Wsh.CreateShortcut($StartupLnk)
+    $Sc.TargetPath = $RunApp
+    $Sc.WorkingDirectory = $RepoRoot
+    $Sc.Description = "Iniciar agente HTTPS al arrancar Windows"
+    $Sc.Save()
+    Write-Host "▸ Inicio automático al encender Windows (carpeta Inicio)"
+}
+
 Write-Host ""
 Write-Host "✅ Instalación completa"
 Write-Host ""
-Write-Host "Comandos:"
+Write-Host "Abrir app gráfica:"
+Write-Host "  Doble clic: Escritorio → «Mas Cafe HTTPS»"
+Write-Host "  O: .\tools\windows-https-agent\run-app.bat"
+Write-Host ""
+Write-Host "Otros comandos:"
 Write-Host "  Estado:   .\tools\windows-https-agent\run-status.bat"
 Write-Host "  Reparar:  .\tools\windows-https-agent\run-fix.bat"
-Write-Host "  Monitor:  .\tools\windows-https-agent\run-monitor.bat"
-Write-Host "  CI remoto: $Python -m mascafe_agent fix --ci"
-if ($WithTray) {
-    Write-Host "  Bandeja:  $Python -m mascafe_agent tray"
-}
+Write-Host "  .exe:     .\tools\windows-https-agent\build-exe.ps1"
 Write-Host ""
+
+# Abrir la app al terminar instalación
+if (Test-Path $RunApp) {
+    Write-Host "▸ Abriendo aplicación…"
+    Start-Process -FilePath $RunApp -WorkingDirectory $RepoRoot
+}
