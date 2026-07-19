@@ -69,6 +69,29 @@ Si ves «No es seguro» o la página de GoDaddy:
 3. Ejecuta: `npm run domain:enable-https`
 4. Espera el certificado SSL de GitHub (15 min – 48 h).
 
+**Si el certificado lleva >48 h en estado `new`:**
+
+- App Windows: `.\tools\windows-https-agent\install.ps1` → Reparar vía CI
+- Ticket GitHub Support (texto modelo en `proyecto-mas-cafe/migracion/TERMINAR-PROYECTO.md`)
+- **Alternativa rápida:** Cloudflare (SSL gratis en ~15 min) — ver sección abajo
+
+---
+
+## Alternativa: Cloudflare (HTTPS rápido)
+
+Usar si GitHub Pages no emite certificado tras varios días.
+
+1. Cuenta en https://dash.cloudflare.com/ → **Add site** → `mascafé.com`
+2. Plan **Free**
+3. En GoDaddy → **Nameservers** → cambiar a los de Cloudflare
+4. En Cloudflare DNS:
+   - `A` `@` → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
+   - `CNAME` `www` → `lasucursaldelcafe-droid.github.io`
+5. SSL/TLS → **Full** (no «Flexible»)
+6. Esperar 5–15 min → probar https://www.mascafé.com
+
+Guía completa: `proyecto-mas-cafe/migracion/TERMINAR-PROYECTO.md` § Paso 3.3
+
 ---
 
 ## URLs objetivo

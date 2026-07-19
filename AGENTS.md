@@ -25,8 +25,11 @@ Al arrancar, el entorno ejecuta `node scripts/bootstrap-cloud-env.mjs` y escribe
 npm run env:bootstrap              # .env.local desde Cursor Secrets
 npm run domain:enable-https:cloud  # HTTPS local o delega a CI
 npm run domain:verify              # comprobar DNS/HTTP/HTTPS
+npm run project:status             # diagnóstico — qué falta para terminar
 npm run domain:windows-agent -- status  # agente Python (PC Windows)
 ```
+
+**Cerrar proyecto:** `proyecto-mas-cafe/migracion/TERMINAR-PROYECTO.md`
 
 **PC Windows (app automática):** ejecuta `.\tools\windows-https-agent\install.ps1` — crea acceso directo en Escritorio y tarea cada 3 h. Ver `tools/windows-https-agent/README.md`.
 

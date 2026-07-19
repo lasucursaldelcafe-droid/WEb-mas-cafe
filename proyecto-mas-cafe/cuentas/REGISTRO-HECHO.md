@@ -54,11 +54,9 @@ Formato sugerido por línea:
 - [x] API GoDaddy Production (key + secret en GitHub Secrets) | https://developer.godaddy.com/keys | 2026-06-30 | configurado
 - [x] DNS A @ + CNAME www vía API | npm run domain:configure | 2026-06-30 | aplicado — propagado
 - [x] DNS público (8.8.8.8) apunta a GitHub Pages | dig A @ → 185.199.x.x | 2026-06-30 |
-- [x] Custom domain activado en GitHub Pages | xn--mascaf-gva.com | 2026-06-30 |
-- [x] DNS automático GitHub Pages | npm run godaddy:optimize | 2026-06-30 | Cursor
-- [x] A records + CNAME www correctos en GoDaddy API | 4 IPs GitHub | 2026-06-30 |
-- [x] Parking GoDaddy resuelto | nameservers sirven GitHub | 2026-06-30 |
-- [ ] HTTPS certificado + Enforce HTTPS | `npm run domain:enable-https` | cert en estado «new» |
+- [x] Custom domain activado en GitHub Pages | www.xn--mascaf-gva.com | 2026-06-30 |
+- [x] HTTP www responde 200 | http://www.mascafé.com | 2026-07-19 |
+- [ ] HTTPS certificado + Enforce HTTPS | cert atascado en «new» | ver TERMINAR-PROYECTO.md |
 
 ### Supabase (wallet — backend gratuito)
 - [x] Proyecto creado | https://oogzhvdsjkvmwscqrfyu.supabase.co | 2026-07-01 |

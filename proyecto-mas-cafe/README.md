@@ -18,6 +18,7 @@ Punto central para **todo lo hecho**, **migración a www.mascafé.com**, **cuent
 | [migracion/AUTOMATIZAR-DOMINIO.md](./migracion/AUTOMATIZAR-DOMINIO.md) | **Automático:** `npm run domain:configure` |
 | [migracion/AUTOMATIZACION-AUTONOMA.md](./migracion/AUTOMATIZACION-AUTONOMA.md) | **Sin intervención:** workflows + `npm run setup:autonomous` |
 | [migracion/CHECKLIST.md](./migracion/CHECKLIST.md) | Checklist manual si la API falla |
+| [migracion/TERMINAR-PROYECTO.md](./migracion/TERMINAR-PROYECTO.md) | **Guía paso a paso para cerrar el proyecto** |
 | [entregables/README.md](./entregables/README.md) | Resumen de todo lo construido en los repositorios |
 
 ---
@@ -37,12 +38,15 @@ Guía completa: [migracion/AUTOMATIZAR-DOMINIO.md](./migracion/AUTOMATIZAR-DOMIN
 
 | Qué | URL |
 |-----|-----|
-| Sitio público | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/ |
+| Sitio en dominio (HTTP) | http://www.mascafé.com/ |
+| Sitio GitHub Pages | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/ |
 | Admin | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/ |
 | Informe constitución | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/ |
 | Repositorio | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe |
-| Dominio objetivo | https://www.mascafé.com (GoDaddy — pendiente DNS final) |
+| Objetivo HTTPS | https://www.mascafé.com *(pendiente certificado)* |
 | Firebase (respaldo) | https://mas-cafe-c8413.web.app/ |
+
+**Cerrar proyecto:** [migracion/TERMINAR-PROYECTO.md](./migracion/TERMINAR-PROYECTO.md)
 
 ---
 
