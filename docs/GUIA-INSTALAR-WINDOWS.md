@@ -86,7 +86,27 @@ Se abre el navegador → inicia sesión con la cuenta de Google del proyecto **m
 
 ---
 
-## Paso 7 — Publicar el sitio
+## Paso 7 — Automatizar HTTPS en mascafé.com (recomendado)
+
+Tras clonar el repo y crear `.env.local` con `GODADDY_API_*` y `GH_PAGES_PAT`:
+
+```powershell
+.\tools\windows-https-agent\install.ps1 -Startup
+```
+
+Esto instala la **app gráfica** que repara HTTPS automáticamente cada 3 horas.
+
+Guía completa para **terminar el proyecto**: [proyecto-mas-cafe/migracion/TERMINAR-PROYECTO.md](../proyecto-mas-cafe/migracion/TERMINAR-PROYECTO.md)
+
+Diagnóstico:
+
+```powershell
+npm run project:status
+```
+
+---
+
+## Paso 8 — Publicar wallet (opcional, fase 2)
 
 ```powershell
 npm run deploy:wallet

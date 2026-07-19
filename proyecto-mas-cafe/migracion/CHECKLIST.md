@@ -1,63 +1,67 @@
 # Checklist migración — www.mascafé.com
 
-> **Automático:** `npm run domain:configure` — [AUTOMATIZAR-DOMINIO.md](../AUTOMATIZAR-DOMINIO.md)
+> **Guía para terminar:** [TERMINAR-PROYECTO.md](./TERMINAR-PROYECTO.md)  
+> **Automático:** `npm run domain:configure` — [AUTOMATIZAR-DOMINIO.md](./AUTOMATIZAR-DOMINIO.md)  
+> **Diagnóstico:** `npm run project:status`
 
-## Estado actual
+## Estado actual (2026-07-19)
 
 | Item | Estado |
 |------|--------|
 | Sitio en GitHub Pages | ✅ En línea |
-| Dominio mascafé.com en GoDaddy | ⏳ Pendiente confirmar acceso |
-| DNS → GitHub Pages | ⏳ |
-| Custom domain GitHub verde | ⏳ |
-| URLs en site.json → mascafé.com | ⏳ |
-| Wallet + backend | 🔜 Fase siguiente |
+| DNS → GitHub Pages (A + CNAME www) | ✅ |
+| HTTP http://www.mascafé.com | ✅ 200 |
+| HTTPS / candado verde | ❌ Certificado GitHub atascado |
+| `site.json` → https://www.mascafé.com | ✅ |
+| `settings.json` httpsReady | ❌ Se activa solo al emitir HTTPS |
+| App Windows automática | ✅ `tools/windows-https-agent/` |
+| Wallet + backend | ⏳ Fase 2 (Supabase listo, falta SA Google) |
 
 ---
 
 ## Paso a paso — dominio (fase estática)
 
 ### 1. GoDaddy
-- [ ] Iniciar sesión: https://sso.godaddy.com/
-- [ ] Abrir DNS: https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com
-- [ ] Desactivar parking / «Coming soon» / forwarding que tape el sitio
-- [ ] Eliminar registros A incorrectos (IPs GoDaddy tipo `76.223.x.x`)
-- [ ] Agregar 4 registros **A** en `@`:
-  - `185.199.108.153`
-  - `185.199.109.153`
-  - `185.199.110.153`
-  - `185.199.111.153`
-- [ ] Agregar **CNAME** `www` → `lasucursaldelcafe-droid.github.io`
+- [x] Iniciar sesión: https://sso.godaddy.com/
+- [x] DNS: https://dcc.godaddy.com/control/dnsmanagement?domainName=xn--mascaf-gva.com
+- [x] Desactivar parking / forwarding
+- [x] 4 registros **A** en `@` → IPs GitHub (185.199.108–111.153)
+- [x] **CNAME** `www` → `lasucursaldelcafe-droid.github.io`
+- [ ] Verificar que no hay reenvío activo en pestaña **Reenvío**
 
 ### 2. GitHub Pages
-- [ ] Abrir: https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe/settings/pages
-- [ ] Custom domain: `mascafé.com` (o `www.mascafé.com` según prefieran)
-- [ ] Esperar check DNS verde (puede tardar 10 min – 48 h)
-- [ ] Activar **Enforce HTTPS**
+- [x] Custom domain configurado (`www.xn--mascaf-gva.com` o apex)
+- [x] DNS check verde / https_eligible
+- [ ] Certificado SSL emitido (no atascado en `new`)
+- [ ] **Enforce HTTPS** activado
 
-### 3. Verificación (yo puedo ayudar en terminal)
+### 3. Desbloquear HTTPS (acción requerida)
+- [ ] Instalar app Windows: `.\tools\windows-https-agent\install.ps1`
+- [ ] Ejecutar reparación: app → **Reparar vía CI**
+- [ ] Esperar 24–48 h (workflow cada 3 h)
+- [ ] Si >48 h: ticket GitHub Support o Cloudflare (ver TERMINAR-PROYECTO.md §3)
+
+### 4. Verificación final
 ```bash
-dig mascafé.com A +short
-dig www.mascafé.com CNAME +short
+npm run project:status
+npm run domain:verify
 curl -sI https://www.mascafé.com | head -5
 ```
 
-### 4. Actualizar proyecto (Cursor)
-- [ ] `content/site.json` → `brand.website` = `https://www.mascafé.com`
-- [ ] `content/settings.json` → `customDomain`
-- [ ] Regenerar informe
+### 5. Actualizar proyecto tras HTTPS
+- [ ] `content/settings.json` → `httpsReady: true` (automático con enable-https)
 - [ ] Push a main → deploy
+- [ ] Anotar en [../cuentas/REGISTRO-HECHO.md](../cuentas/REGISTRO-HECHO.md)
 
 ---
 
 ## Paso a paso — wallet (fase backend)
 
-Cuando el dominio esté estable para el sitio estático, **para wallet** habrá que:
+Cuando HTTPS esté activo:
 
-1. Elegir hosting con Node.js (Vercel recomendado)
-2. Conectar repo y variables de entorno
-3. Cambiar DNS `www` del CNAME de GitHub al de Vercel/Render
-4. Mantener o redirigir rutas actuales
+1. Pegar `secrets/google-wallet-sa.json`
+2. `npm run wallet:google-auto`
+3. Probar `/wallet/` en móvil con HTTPS
 
 Detalle en [../entregables/wallet-pendiente.md](../entregables/wallet-pendiente.md)
 

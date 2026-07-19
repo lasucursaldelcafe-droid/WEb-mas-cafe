@@ -38,28 +38,39 @@ async function main() {
   console.log(www.ok ? "  ✅ OK" : "  ❌ Falta CNAME www");
 
   const urls = [
-    `https://${DOMAIN_PUNYCODE}/`,
-    `https://www.${DOMAIN_PUNYCODE}/`,
-    `https://${DOMAIN_WWW}/`,
+    { url: `http://${DOMAIN_PUNYCODE}/`, label: "HTTP apex" },
+    { url: `http://www.${DOMAIN_PUNYCODE}/`, label: "HTTP www" },
+    { url: `https://${DOMAIN_PUNYCODE}/`, label: "HTTPS apex" },
+    { url: `https://www.${DOMAIN_PUNYCODE}/`, label: "HTTPS www" },
+    { url: `https://${DOMAIN_WWW}/`, label: "HTTPS www (unicode)" },
   ];
 
-  console.log("\nHTTP:");
+  console.log("\nHTTP / HTTPS:");
+  let httpsOk = 0;
   let httpOk = 0;
-  for (const url of urls) {
+  for (const { url, label } of urls) {
     const code = await httpStatus(url);
     const icon = code === 200 ? "✅" : code > 0 ? "⚠️" : "❌";
-    console.log(`  ${icon} ${url} → HTTP ${code || "sin respuesta"}`);
-    if (code === 200) httpOk++;
+    console.log(`  ${icon} ${label}: ${url} → ${code || "sin respuesta"}`);
+    if (code === 200) {
+      if (url.startsWith("https://")) httpsOk++;
+      if (url.startsWith("http://")) httpOk++;
+    }
   }
 
   const dnsOk = apex.ok && www.ok;
   console.log("\n───");
-  if (dnsOk && httpOk > 0) {
-    console.log("✅ Dominio configurado y respondiendo.\n");
+  if (dnsOk && httpsOk > 0) {
+    console.log("✅ Dominio con HTTPS activo.\n");
     process.exit(0);
   }
+  if (dnsOk && httpOk > 0) {
+    console.log("⏳ DNS y HTTP OK. Falta certificado HTTPS (npm run domain:enable-https).\n");
+    console.log("   Guía: proyecto-mas-cafe/migracion/TERMINAR-PROYECTO.md\n");
+    process.exit(verifyOnly ? 0 : 0);
+  }
   if (dnsOk) {
-    console.log("⏳ DNS correcto. HTTPS puede tardar hasta 48 h en GitHub Pages.\n");
+    console.log("⏳ DNS correcto. Espera propagación HTTP/HTTPS (hasta 48 h).\n");
     process.exit(verifyOnly ? 0 : 0);
   }
   console.log("❌ DNS pendiente. Ejecuta: npm run domain:configure\n");

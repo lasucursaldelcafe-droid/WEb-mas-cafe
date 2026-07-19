@@ -6,11 +6,14 @@ Sitio web de **Más Café** — café de especialidad en Cali, Colombia.
 
 | | URL |
 |-|-----|
-| **Sitio público** | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/ |
-| **Informe marca (constitución web)** | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/ |
+| **Sitio (dominio)** | http://www.mascafé.com/ *(HTTPS pendiente — ver abajo)* |
+| **Sitio (GitHub Pages)** | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/ |
+| **Informe marca** | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/informe/ |
 | **Admin** | https://lasucursaldelcafe-droid.github.io/WEb-mas-cafe/admin/ |
 | **Repositorio** | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe |
-| **Dominio futuro** | https://www.mascafé.com/ |
+| **Objetivo final** | https://www.mascafé.com/ *(candado verde)* |
+
+> **Terminar migración:** [proyecto-mas-cafe/migracion/TERMINAR-PROYECTO.md](proyecto-mas-cafe/migracion/TERMINAR-PROYECTO.md) · Diagnóstico: `npm run project:status`
 
 ### Páginas del sitio
 
