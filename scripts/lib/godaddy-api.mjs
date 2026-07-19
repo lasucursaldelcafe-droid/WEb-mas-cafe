@@ -124,7 +124,7 @@ export async function pruneBlockingDnsRecords(domain = DOMAIN_PUNYCODE, { dryRun
 
 /** CAA explícito para Let's Encrypt — requerido si el registrador impone restricciones. */
 export async function ensureCaaLetsEncrypt(domain = DOMAIN_PUNYCODE, { dryRun = false } = {}) {
-  const records = [{ data: '0 issue "letsencrypt.org"', ttl: 600 }];
+  const records = [{ flags: 0, tag: "issue", data: "letsencrypt.org", ttl: 600 }];
   if (dryRun) {
     return { action: "PUT", path: `/domains/${domain}/records/CAA/@`, records };
   }
@@ -138,6 +138,19 @@ export async function ensureCaaLetsEncrypt(domain = DOMAIN_PUNYCODE, { dryRun = 
 export async function testGodaddyCredentials() {
   await api(`/domains/${DOMAIN_PUNYCODE}`);
   return true;
+}
+
+/** Cambia nameservers del dominio (p. ej. hacia Cloudflare). */
+export async function putNameservers(nameServers, { domain = DOMAIN_PUNYCODE, dryRun = false } = {}) {
+  const payload = { nameServers };
+  if (dryRun) {
+    return { action: "PUT", path: `/domains/${domain}/nameservers`, nameServers };
+  }
+  await api(`/domains/${domain}/nameservers`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+  return { updated: nameServers.length, domain };
 }
 
 /** Reemplaza todos los registros MX del apex (@). */

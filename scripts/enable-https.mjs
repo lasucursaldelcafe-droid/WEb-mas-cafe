@@ -28,6 +28,7 @@ import {
   getPagesConfig,
   getPagesHealth,
   isCertificateReady,
+  clearGithubPagesCustomDomain,
   configureGithubPagesDomain,
   kickstartSslCertificate,
   switchGithubPagesDomain,
@@ -50,6 +51,27 @@ function log(msg) {
 
 async function sleep(ms) {
   await new Promise((r) => setTimeout(r, ms));
+}
+
+/** Reset total + www + 3 ciclos kickstart — último recurso cuando cert atascado en «new». */
+async function nuclearKickstartSsl() {
+  console.log("\n  ☢ Modo nuclear: quitar dominio → pausa 2 min → www → 3 kickstarts");
+  await clearGithubPagesCustomDomain();
+  await sleep(120_000);
+  await configureGithubPagesDomain({ cname: DOMAIN_WWW_PUNYCODE });
+  await sleep(60_000);
+  let pages = await getPagesConfig();
+  console.log(`  ☢ Dominio: ${pages?.cname} · cert: ${pages?.https_certificate?.state || "—"}`);
+
+  for (let cycle = 1; cycle <= 3; cycle++) {
+    if (isCertificateReady(pages)) break;
+    console.log(`  ☢ Kickstart nuclear ${cycle}/3…`);
+    await kickstartSslCertificate({ pauseMs: 120_000, cycles: 1 });
+    await sleep(90_000);
+    pages = await getPagesConfig();
+    console.log(`  ☢ Tras ciclo ${cycle}: ${pages?.https_certificate?.state || "—"}`);
+  }
+  return pages;
 }
 
 function hasGodaddyCreds() {
@@ -114,6 +136,7 @@ async function main() {
   if (opts.kickstart) console.log("  Modo: kickstart SSL si cert atascado");
   if (opts.aggressiveKickstart) console.log("  Modo: kickstart agresivo (2 ciclos, 120 s pausa)");
   if (opts.tryWww) console.log("  Modo: fallback www si apex no emite certificado");
+  if (opts.nuclear) console.log("  Modo: nuclear (reset dominio + 3 kickstarts)");
   if (wait) console.log(`  Espera máxima: ${maxWaitMin} min`);
   console.log("═══════════════════════════════════════════════════");
 
@@ -211,6 +234,11 @@ async function main() {
   log("4/4 Certificado y Enforce HTTPS");
   let pages = await getPagesConfig();
   console.log(`  Certificado: ${pages?.https_certificate?.state || "—"} — ${pages?.https_certificate?.description || ""}`);
+
+  if (opts.nuclear && !isCertificateReady(pages)) {
+    pages = await nuclearKickstartSsl();
+    console.log(`  Certificado tras nuclear: ${pages?.https_certificate?.state || "—"}`);
+  }
 
   const certStuck = pages?.https_certificate?.state === "new";
   const skipKickstart = isWwwCname(pages?.cname) && isCertActivelyProvisioning(pages);

@@ -25,6 +25,9 @@ on:
       - "scripts/cloud-agent-https.mjs"
       - "scripts/lib/github-pages-api.mjs"
       - ".cloud-agent/https-trigger.json"
+      - "scripts/setup-cloudflare-https.mjs"
+      - "scripts/auto-unblock-https.mjs"
+      - ".github/workflows/unblock-https-hourly.yml"
   repository_dispatch:
     types: [enable-https]
 
@@ -68,8 +71,8 @@ jobs:
           GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
           GITHUB_TOKEN: ${{ secrets.GH_PAGES_PAT || github.token }}
         run: |
-          WAIT="${{ github.event.inputs.wait_minutes || '45' }}"
-          ARGS="--wait --max-wait=${WAIT} --kickstart --aggressive-kickstart --try-www"
+          WAIT="${{ github.event.inputs.wait_minutes || '90' }}"
+          ARGS="--wait --max-wait=${WAIT} --kickstart --aggressive-kickstart --try-www --nuclear"
           if [ "${{ github.event.inputs.kickstart }}" = "false" ]; then
             ARGS="--wait --max-wait=${WAIT}"
           fi

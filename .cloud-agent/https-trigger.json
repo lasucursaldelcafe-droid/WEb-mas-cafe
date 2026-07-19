@@ -1,7 +1,12 @@
 {
-  "triggeredAt": "2026-07-07T17:50:00.000Z",
+  "triggeredAt": "2026-07-19T18:05:00.000Z",
+  "mode": "nuclear-auto-unblock",
   "args": [
+    "--wait",
+    "--max-wait=90",
+    "--kickstart",
+    "--aggressive-kickstart",
     "--try-www",
-    "--aggressive-kickstart"
+    "--nuclear"
   ]
 }

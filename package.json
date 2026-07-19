@@ -53,6 +53,8 @@
     "domain:enable-https:cloud": "node scripts/cloud-agent-https.mjs",
     "domain:windows-agent": "node scripts/windows-https-agent.mjs",
     "project:status": "node scripts/project-status.mjs",
+    "domain:auto-unblock": "node scripts/auto-unblock-https.mjs",
+    "domain:cloudflare-https": "node scripts/setup-cloudflare-https.mjs",
     "env:bootstrap": "node scripts/bootstrap-cloud-env.mjs",
     "godaddy:optimize": "node scripts/godaddy-optimize.mjs",
     "seo:sync-google": "node scripts/sync-google-seo.mjs",
