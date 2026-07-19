@@ -151,9 +151,21 @@ const STUCK_CERT_STATES = new Set(["new", "pending", "requested"]);
 
 const PROVISIONING_CERT_STATES = new Set(["dns_changed", "pending", "requested", "new"]);
 
+/** Emisión real en curso — NO incluye «new» atascado semanas */
+const ACTIVE_PROVISIONING_CERT_STATES = new Set(["dns_changed", "pending", "requested"]);
+
 export function isCertProvisioning(pagesConfig) {
   const state = pagesConfig?.https_certificate?.state;
   return state ? PROVISIONING_CERT_STATES.has(state) : false;
+}
+
+export function isCertActivelyProvisioning(pagesConfig) {
+  const state = pagesConfig?.https_certificate?.state;
+  return state ? ACTIVE_PROVISIONING_CERT_STATES.has(state) : false;
+}
+
+export function isCertStuckNew(pagesConfig) {
+  return pagesConfig?.https_certificate?.state === "new";
 }
 
 export function isWwwCname(cname) {

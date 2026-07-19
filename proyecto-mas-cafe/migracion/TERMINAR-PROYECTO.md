@@ -103,6 +103,8 @@ npm run domain:enable-https -- --wait --max-wait=45 --kickstart --aggressive-kic
 
 ## Paso 3 — Desbloquear HTTPS (bloqueador principal)
 
+> **Guía detallada:** [SOLUCION-HTTPS-BLOQUEADO.md](./SOLUCION-HTTPS-BLOQUEADO.md)
+
 GitHub Pages a veces deja el certificado en estado `new` aunque el DNS sea correcto.
 
 ### 3.1 Opción A — Automatización (probar 24–48 h)

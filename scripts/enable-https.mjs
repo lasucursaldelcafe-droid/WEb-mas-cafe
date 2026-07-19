@@ -32,6 +32,8 @@ import {
   kickstartSslCertificate,
   switchGithubPagesDomain,
   isCertProvisioning,
+  isCertActivelyProvisioning,
+  isCertStuckNew,
   isWwwCname,
 } from "./lib/github-pages-api.mjs";
 import { saveSeoSiteUrl } from "./lib/seo.mjs";
@@ -156,14 +158,19 @@ async function main() {
 
   let pagesEarly = await getPagesConfig();
   const onWww = isWwwCname(pagesEarly?.cname);
-  const certProvisioning = isCertProvisioning(pagesEarly);
+  const certActive = isCertActivelyProvisioning(pagesEarly);
+  const certStuckNew = isCertStuckNew(pagesEarly);
   const apexStuck =
     pagesEarly?.cname === DOMAIN_PUNYCODE &&
     pagesEarly?.https_certificate?.state === "new";
 
-  if (onWww && certProvisioning) {
+  if (onWww && certActive) {
     console.log(
       `  ○ Dominio www preservado (${pagesEarly.cname}, cert: ${pagesEarly.https_certificate?.state})`,
+    );
+  } else if (onWww && certStuckNew) {
+    console.log(
+      `  ↻ Cert atascado en «new» en www — se forzará kickstart (no preservar)`,
     );
   } else if (opts.tryWww && apexStuck) {
     console.log("  ↻ Apex atascado — cambiando a www sin resetear…");
@@ -206,13 +213,13 @@ async function main() {
   console.log(`  Certificado: ${pages?.https_certificate?.state || "—"} — ${pages?.https_certificate?.description || ""}`);
 
   const certStuck = pages?.https_certificate?.state === "new";
-  const skipKickstart = isWwwCname(pages?.cname) && isCertProvisioning(pages);
+  const skipKickstart = isWwwCname(pages?.cname) && isCertActivelyProvisioning(pages);
   const shouldKickstart =
     !skipKickstart &&
     (opts.kickstart || opts.aggressiveKickstart || certStuck) &&
     !isCertificateReady(pages);
   if (skipKickstart) {
-    console.log("  ○ Certificado www en emisión — omitiendo kickstart");
+    console.log("  ○ Certificado www en emisión activa — omitiendo kickstart");
   }
   if (shouldKickstart) {
     const kickOpts = opts.aggressiveKickstart
